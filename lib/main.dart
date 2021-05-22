@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:wayawaya/app/auth/signup/sign_up_screen.dart';
 import 'package:wayawaya/app/auth/splash/splash_screen.dart';
 import 'package:wayawaya/app/mall/mall_screen.dart';
 import 'package:wayawaya/utils/app_strings.dart';
@@ -43,6 +44,13 @@ class MyApp extends StatelessWidget {
       case AppString.LOGIN_SCREEN_ROUTE:
         return PageTransition(
           child: LoginScreen(),
+          type: PageTransitionType.rightToLeft,
+          settings: settings,
+        );
+        break;
+      case AppString.SIGN_UP_SCREEN_ROUTE:
+        return PageTransition(
+          child: SignUpScreen(),
           type: PageTransitionType.rightToLeft,
           settings: settings,
         );

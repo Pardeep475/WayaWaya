@@ -10,6 +10,11 @@ class AppString {
   // session Manager
   static const IS_FIRST_TIME = "IS_FIRST_TIME";
 
+  static const String PRIVACY_POLICY_URL =
+      "http://www.connectwayawaya.co.za/privacy-notice/";
+  static const String TERMS_CONDITION_URL =
+      "http://www.connectwayawaya.co.za/terms-conditions/";
+
   static const app_name = "Waya Waya";
   static const check_your_internet_connectivity =
       "Your Internet seems slow please check your internet connection";
@@ -33,9 +38,25 @@ class AppString {
   static const request_code = "Request Code";
   static const authentication_code = "Authentication Code";
   static const ok = "OK";
+  static const mr = "Mr.";
+  static const ms = "Ms.";
   static const forgot_password = "Forgot password?";
   static const not_account_yet = "No account yet? Create one";
   static const enter_valid_email_address = "Enter valid email address";
+  static const first_name = "First Name";
+  static const enter_your_first_name = "Enter your first name";
+  static const last_name = "Last Name";
+  static const enter_your_last_name = "Enter your last name";
+  static const dob = "Date of Birth";
+  static const enter_your_dob = "Enter your date of birth";
+  static const cell_number = "Cell Number";
+  static const enter_your_cell_number = "Enter your cell number";
+  static const privacy_policy = "Privacy Policy";
+  static const news_letter = "Newsletter";
+  static const disagree = "DISAGREE";
+  static const agree = "AGREE";
+  static const term_and_conditions = "Terms and Conditions";
+  static const already_have_an_account = "Already have an Account?";
   static const enter_authentication_code = "Enter valid authentication code";
   static const enter_valid_password = "Enter valid password";
   static const enter_valid_confirm_password = "Enter valid confirm password";
@@ -51,6 +72,7 @@ class AppString {
 
   // Routes
   static const LOGIN_SCREEN_ROUTE = "LOGIN_SCREEN_ROUTE";
+  static const SIGN_UP_SCREEN_ROUTE = "SIGN_UP_SCREEN_ROUTE";
   static const FORGOT_PASSWORD_SCREEN_ROUTE = "FORGOT_PASSWORD_SCREEN_ROUTE";
   static const SPLASH_SCREEN_ROUTE = "SPLASH_SCREEN_ROUTE";
   static const MALL_SCREEN_ROUTE = "MALL_SCREEN_ROUTE";

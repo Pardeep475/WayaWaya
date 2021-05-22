@@ -226,7 +226,7 @@ class _LoginScreenState extends State<LoginScreen> {
       },
       child: Container(
         width: MediaQuery.of(context).size.width,
-        padding: EdgeInsets.symmetric(vertical: Dimens.ten),
+        padding: EdgeInsets.symmetric(vertical: Dimens.seven),
         child: Text(
           AppString.forgot_password,
           textAlign: TextAlign.center,
@@ -243,12 +243,11 @@ class _LoginScreenState extends State<LoginScreen> {
     return InkWell(
       onTap: () {
         debugPrint('create account');
-        // Navigator.of(context)
-        //     .push(MaterialPageRoute(builder: (_) => Register())),
+        Navigator.pushNamed(context, AppString.SIGN_UP_SCREEN_ROUTE);
       },
       child: Container(
         width: MediaQuery.of(context).size.width,
-        padding: EdgeInsets.symmetric(vertical: Dimens.ten),
+        padding: EdgeInsets.symmetric(vertical: Dimens.seven),
         child: Text(
           AppString.not_account_yet,
           textAlign: TextAlign.center,
@@ -356,8 +355,9 @@ class _LoginScreenState extends State<LoginScreen> {
               username: _emailController.text,
               password: _passwordController.text);
           _loginBloc.loginApi(userModel);
-        }else{
-          Utils.showSnackBar(AppString.check_your_internet_connectivity, context);
+        } else {
+          Utils.showSnackBar(
+              AppString.check_your_internet_connectivity, context);
         }
       });
     }
