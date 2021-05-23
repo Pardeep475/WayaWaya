@@ -3,11 +3,13 @@ import 'size_config.dart';
 class Dimens {
   static final Dimens _dimens = Dimens._internal();
 
-  factory Dimens(){
+  factory Dimens() {
     return _dimens;
   }
 
   Dimens._internal();
+
+  // static const heightMultiplier = SizeConfig.heightMultiplier;
 
 // divide dimens to 8.96 for responsive
   static final one = 0.11 * SizeConfig.heightMultiplier;

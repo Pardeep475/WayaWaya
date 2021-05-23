@@ -1,0 +1,19 @@
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+    <defs>
+        <style>.cls-1{fill:none;stroke:#fff;stroke-miterlimit:10;stroke-width:2px;}</style>
+    </defs>
+    <rect class="cls-1" x="23.39" y="36.85" width="209.21" height="30.13" rx="4" />
+    <path class="cls-1"
+        d="M228.6,113.52H27.26a3.93,3.93,0,0,1-3.94-3.94V87.32a3.93,3.93,0,0,1,3.94-3.93H228.6a3.93,3.93,0,0,1,3.93,3.93v22.26A3.93,3.93,0,0,1,228.6,113.52Z" />
+    <rect class="cls-1" x="15.35" y="137.27" width="225.45" height="15.73" rx="4.1" />
+    <path class="cls-1" d="M23.32,153V212.4a2,2,0,0,0,2,2H44.55a2,2,0,0,0,2-2V153" />
+    <path class="cls-1" d="M209.37,153v59.39a2,2,0,0,0,2,2H230.6a2,2,0,0,0,2-2V153" />
+    <line class="cls-1" x1="201.49" y1="137.27" x2="201.49" y2="113.52" />
+    <line class="cls-1" x1="216.7" y1="113.52" x2="216.7" y2="137.27" />
+    <line class="cls-1" x1="38.91" y1="137.47" x2="38.91" y2="113.71" />
+    <line class="cls-1" x1="54.12" y1="113.71" x2="54.12" y2="137.47" />
+    <line class="cls-1" x1="201.73" y1="83.39" x2="201.73" y2="67.19" />
+    <line class="cls-1" x1="216.94" y1="67.19" x2="216.94" y2="83.39" />
+    <line class="cls-1" x1="38.91" y1="83.39" x2="38.91" y2="67.19" />
+    <line class="cls-1" x1="54.12" y1="67.19" x2="54.12" y2="83.39" />
+</svg>

@@ -4,7 +4,6 @@ import 'package:wayawaya/common/custom_raise_button.dart';
 import 'package:wayawaya/network/live/model/api_response.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_strings.dart';
-import 'package:wayawaya/utils/dimens.dart';
 import 'package:wayawaya/utils/utils.dart';
 
 import 'bloc/forgot_password_bloc.dart';
@@ -17,48 +16,90 @@ class ForgotPassword extends StatefulWidget {
 }
 
 class ForgotPasswordState extends State<ForgotPassword> {
-  final _formKey = GlobalKey<FormState>();
-  final _formKey2 = GlobalKey<FormState>();
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _codeController = TextEditingController();
-  TextEditingController _passController = TextEditingController();
-  TextEditingController _confirmPassController = TextEditingController();
-  final _forgotPasswordBloc = ForgotPasswordBloc();
+  var _formKey;
+  var _formKey2 ;
+  TextEditingController _emailController;
+  TextEditingController _codeController;
+  TextEditingController _passController;
+  TextEditingController _confirmPassController;
+  var _forgotPasswordBloc;
 
   @override
-  void dispose() {
-    if (_emailController != null) _emailController.dispose();
-    if (_codeController != null) _codeController.dispose();
-    if (_passController != null) _passController.dispose();
-    if (_confirmPassController != null) _confirmPassController.dispose();
-    super.dispose();
+  void initState() {
+    super.initState();
+    _initViews();
+  }
+
+  _initViews() {
+    debugPrint('performance_testing:-   forgot password initState ');
+    _formKey = GlobalKey<FormState>();
+    _formKey2 = GlobalKey<FormState>();
+    _emailController = TextEditingController();
+    _codeController = TextEditingController();
+    _passController = TextEditingController();
+    _confirmPassController = TextEditingController();
+    _forgotPasswordBloc = ForgotPasswordBloc();
   }
 
   @override
   Widget build(BuildContext context) {
+    debugPrint('performance_testing:-   forgot password build method call ');
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.grey[100],
         body: Stack(
           children: [
             Container(
-              margin: EdgeInsets.all(Dimens.fifteen),
+              margin: EdgeInsets.all(15),
               child: Form(
                 key: _formKey,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                     Text(
                       AppString.enter_your_email_phone_username,
                       style: TextStyle(
                         color: Colors.grey[500],
-                        fontSize: Dimens.eighteen,
+                        fontSize: 18,
                       ),
                     ),
-                    _emailField(),
-                    SizedBox(
-                      height: Dimens.twenty,
+                    TextFormField(
+                      autofocus: false,
+                      controller: _emailController,
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return AppString.enter_valid_email_address;
+                        } else if (!Utils.emailValidation(value)) {
+                          return AppString.email_validation_error_message;
+                        }
+                        return null;
+                      },
+                      decoration: const InputDecoration(
+                        labelText: AppString.email,
+                        alignLabelWithHint: true,
+                        floatingLabelBehavior: FloatingLabelBehavior.auto,
+                        hintStyle: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: AppColor.colored_text,
+                            width: 2,
+                          ),
+                        ),
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: AppColor.borderColor,
+                          ),
+                        ),
+                      ),
+                      keyboardType: TextInputType.emailAddress,
+                      textInputAction: TextInputAction.done,
+                    ),
+                    const SizedBox(
+                      height: 20,
                     ),
                     Builder(
                       builder: (BuildContext context) {
@@ -77,7 +118,7 @@ class ForgotPasswordState extends State<ForgotPassword> {
                         );
                       },
                     ),
-                    SizedBox(height: Dimens.ten),
+                    const SizedBox(height: 10),
                     Builder(
                       builder: (BuildContext context) {
                         return CustomRaiseButton(
@@ -188,40 +229,7 @@ class ForgotPasswordState extends State<ForgotPassword> {
   }
 
   // widget of email field
-  _emailField() => TextFormField(
-        autofocus: false,
-        controller: _emailController,
-        validator: (value) {
-          if (value.isEmpty) {
-            return AppString.enter_valid_email_address;
-          } else if (!Utils.emailValidation(value)) {
-            return AppString.email_validation_error_message;
-          }
-          return null;
-        },
-        decoration: InputDecoration(
-          labelText: AppString.email,
-          alignLabelWithHint: true,
-          floatingLabelBehavior: FloatingLabelBehavior.auto,
-          hintStyle: TextStyle(
-            fontSize: Dimens.fifteen,
-            fontWeight: FontWeight.w500,
-          ),
-          focusedBorder: UnderlineInputBorder(
-            borderSide: BorderSide(
-              color: AppColor.colored_text,
-              width: Dimens.two,
-            ),
-          ),
-          enabledBorder: UnderlineInputBorder(
-            borderSide: BorderSide(
-              color: AppColor.borderColor,
-            ),
-          ),
-        ),
-        keyboardType: TextInputType.emailAddress,
-        textInputAction: TextInputAction.done,
-      );
+
 
   commonErrorAndSuccessDialog(
       {String title,
@@ -234,7 +242,8 @@ class ForgotPasswordState extends State<ForgotPassword> {
           final curvedValue = Curves.easeInOutBack.transform(a1.value) - 1.0;
           return Transform(
             transform: Matrix4.translationValues(0.0, curvedValue * 200, 0.0),
-            child: Opacity(
+            child: AnimatedOpacity(
+              duration: Duration(milliseconds: 100),
               opacity: a1.value,
               child: AlertDialog(
                 title: Text(title),
@@ -243,7 +252,7 @@ class ForgotPasswordState extends State<ForgotPassword> {
                     content,
                     style: TextStyle(
                       color: Colors.grey[600],
-                      fontSize: Dimens.sixteen,
+                      fontSize: 16,
                       height: 1.2,
                     ),
                   ),
@@ -254,7 +263,7 @@ class ForgotPasswordState extends State<ForgotPassword> {
                       buttonText ?? AppString.ok,
                       style: TextStyle(
                         color: Colors.black,
-                        fontSize: Dimens.fifteen,
+                        fontSize: 15,
                       ),
                     ),
                     onPressed: onPressed,
@@ -280,7 +289,7 @@ class ForgotPasswordState extends State<ForgotPassword> {
           child: Opacity(
             opacity: a1.value,
             child: AlertDialog(
-              insetPadding: EdgeInsets.all(Dimens.ten),
+              insetPadding: EdgeInsets.all(10),
               title: Text(AppString.password_reset),
               content: Container(
                 child: Column(
@@ -297,7 +306,7 @@ class ForgotPasswordState extends State<ForgotPassword> {
                             _confirmPasswordField(),
                             Container(
                               width: MediaQuery.of(context).size.width,
-                              height: Dimens.sixty,
+                              height: 60,
                               child: Row(
                                 children: [
                                   InkWell(
@@ -308,13 +317,13 @@ class ForgotPasswordState extends State<ForgotPassword> {
                                     },
                                     child: Padding(
                                       padding: EdgeInsets.fromLTRB(0,
-                                          Dimens.five, Dimens.ten, Dimens.five),
+                                          5, 10, 5),
                                       child: Text(
                                         AppString.request_code.toUpperCase(),
                                         style: TextStyle(
                                           color: Colors.black,
                                           fontWeight: FontWeight.w600,
-                                          fontSize: Dimens.fifteen,
+                                          fontSize: 15,
                                         ),
                                       ),
                                     ),
@@ -328,14 +337,14 @@ class ForgotPasswordState extends State<ForgotPassword> {
                                       Navigator.pop(context);
                                     },
                                     child: Padding(
-                                      padding: EdgeInsets.fromLTRB(Dimens.ten,
-                                          Dimens.five, Dimens.ten, Dimens.five),
+                                      padding: EdgeInsets.fromLTRB(10,
+                                          5, 10, 5),
                                       child: Text(
                                         AppString.cancel.toUpperCase(),
                                         style: TextStyle(
                                           color: Colors.black,
                                           fontWeight: FontWeight.w600,
-                                          fontSize: Dimens.fifteen,
+                                          fontSize: 15,
                                         ),
                                       ),
                                     ),
@@ -349,14 +358,14 @@ class ForgotPasswordState extends State<ForgotPassword> {
                                       _authenticationApiResponse();
                                     },
                                     child: Padding(
-                                      padding: EdgeInsets.fromLTRB(Dimens.ten,
-                                          Dimens.five, 0, Dimens.five),
+                                      padding: EdgeInsets.fromLTRB(10,
+                                          5, 0, 5),
                                       child: Text(
                                         AppString.ok.toUpperCase(),
                                         style: TextStyle(
                                           color: Colors.black,
                                           fontWeight: FontWeight.w600,
-                                          fontSize: Dimens.fifteen,
+                                          fontSize: 15,
                                         ),
                                       ),
                                     ),
@@ -393,13 +402,13 @@ class ForgotPasswordState extends State<ForgotPassword> {
         alignLabelWithHint: true,
         floatingLabelBehavior: FloatingLabelBehavior.auto,
         hintStyle: TextStyle(
-          fontSize: Dimens.fifteen,
+          fontSize: 15,
           fontWeight: FontWeight.w500,
         ),
         focusedBorder: UnderlineInputBorder(
           borderSide: BorderSide(
             color: AppColor.colored_text,
-            width: Dimens.two,
+            width: 2,
           ),
         ),
         enabledBorder: UnderlineInputBorder(
@@ -424,13 +433,13 @@ class ForgotPasswordState extends State<ForgotPassword> {
         alignLabelWithHint: true,
         floatingLabelBehavior: FloatingLabelBehavior.auto,
         hintStyle: TextStyle(
-          fontSize: Dimens.fifteen,
+          fontSize: 15,
           fontWeight: FontWeight.w500,
         ),
         focusedBorder: UnderlineInputBorder(
           borderSide: BorderSide(
             color: AppColor.colored_text,
-            width: Dimens.two,
+            width: 2,
           ),
         ),
         enabledBorder: UnderlineInputBorder(
@@ -463,13 +472,13 @@ class ForgotPasswordState extends State<ForgotPassword> {
         alignLabelWithHint: true,
         floatingLabelBehavior: FloatingLabelBehavior.auto,
         hintStyle: TextStyle(
-          fontSize: Dimens.fifteen,
+          fontSize: 15,
           fontWeight: FontWeight.w500,
         ),
         focusedBorder: UnderlineInputBorder(
           borderSide: BorderSide(
             color: AppColor.colored_text,
-            width: Dimens.two,
+            width: 2,
           ),
         ),
         enabledBorder: UnderlineInputBorder(
@@ -543,5 +552,14 @@ class ForgotPasswordState extends State<ForgotPassword> {
         }
       });
     }
+  }
+
+  @override
+  void dispose() {
+    if (_emailController != null) _emailController.dispose();
+    if (_codeController != null) _codeController.dispose();
+    if (_passController != null) _passController.dispose();
+    if (_confirmPassController != null) _confirmPassController.dispose();
+    super.dispose();
   }
 }

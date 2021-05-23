@@ -1,0 +1,16 @@
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+    <defs>
+        <style>.cls-1{fill:none;stroke:#fff;stroke-miterlimit:10;stroke-width:2px;}</style>
+    </defs>
+    <circle class="cls-1" cx="71.27" cy="178.97" r="25.16"
+        transform="translate(-48.81 28.33) rotate(-16.85)" />
+    <circle class="cls-1" cx="201.05" cy="178.97" r="25.16"
+        transform="translate(-39.2 57.6) rotate(-14.87)" />
+    <line class="cls-1" x1="96.43" y1="178.97" x2="175.89" y2="178.97" />
+    <path class="cls-1"
+        d="M46.11,179H29.36S17.22,177.22,16.91,166s0-115.78,0-115.78S19.2,38.1,31.44,39,147,39,147,39s11.52-.57,12.14,11c.12,2.25.19,8.57.23,17.27.17,35.75-.23,111.77-.23,111.77" />
+    <path class="cls-1"
+        d="M159.38,67.2l53.77.16s6.56-.47,10,6.53,19.67,60.69,19.67,60.69v33.93s2,7.59-9,10.46-7.63,0-7.63,0" />
+    <polygon class="cls-1"
+        points="177.98 85.88 207.39 85.88 219.53 121.05 177.98 121.05 177.98 85.88" />
+</svg>

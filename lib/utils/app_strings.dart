@@ -11,9 +11,9 @@ class AppString {
   static const IS_FIRST_TIME = "IS_FIRST_TIME";
 
   static const String PRIVACY_POLICY_URL =
-      "http://www.connectwayawaya.co.za/privacy-notice/";
+      "https://www.connectwayawaya.co.za/privacy-notice/";
   static const String TERMS_CONDITION_URL =
-      "http://www.connectwayawaya.co.za/terms-conditions/";
+      "https://www.connectwayawaya.co.za/terms-conditions/";
 
   static const app_name = "Waya Waya";
   static const check_your_internet_connectivity =
@@ -76,4 +76,28 @@ class AppString {
   static const FORGOT_PASSWORD_SCREEN_ROUTE = "FORGOT_PASSWORD_SCREEN_ROUTE";
   static const SPLASH_SCREEN_ROUTE = "SPLASH_SCREEN_ROUTE";
   static const MALL_SCREEN_ROUTE = "MALL_SCREEN_ROUTE";
+
+// db
+  static const String ADMIN_DB_FILE = "admin.db";
+  // table names
+  static const String VENUE_PROFILE_TABLE_NAME = "venue_profile";
+  static const String MENU_TABLE_NAME = "menu";
+  static const String APP_SOFTWARE_PARAMETER_TABLE_NAME = "app_sw";
+  static const String MAIN_MENU_PERMISSION_TABLE_NAME = "main_menu_permission";
+  static const String IN_MALL_TABLE_NAME = "whats_happening";
+  static const String MALL_PROFILE_TABLE_NAME = "mall_profiles";
+  static const String OFFER_TABLE_NAME = "offer";
+  static const String VENUE_TABLE_NAME = "venues";
+  static const String BEACON_TABLE_NAME = "beacon";
+  static const String BEACON_RETAIL_UNIT_TABLE_NAME = "retail_units";
+  static const String CATEGORIES_TABLE_NAME = "categories";
+  static const String CAMPAIGN_TABLE_NAME = "campaign";
+  static const String FAVOURITE_TABLE_NAME = "favourites";
+  static const String TRIGGER_ZONES_TABLE_NAME = "trigger_zones";
+  static const String LOYALTY_TABLE_NAME = "loyalty";
+  static const String RETAIL_CATEGORY_TABLE_NAME = "retail_category_map";
+  static const String PARKING_TABLE_NAME = "parking";
+  static const String CINEMAS_TABLE_NAME = "cinemas";
+  static const String THEME_TABLE_NAME = "theme";
+
 }

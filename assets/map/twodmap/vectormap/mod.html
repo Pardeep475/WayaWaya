@@ -1,0 +1,212 @@
+<!doctype html>
+<html ng-app="twoDMapApp">
+  <head>
+    <title>My AngularJS App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1, user-scalable=no">
+  	<!-- Angular Material style sheet -->
+	<link rel="stylesheet" type="text/css" href="../../ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
+    <link rel="stylesheet" type="text/css" href="jquery-jvectormap-2.0.3.css">
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/angular-material/1.1.21/angular-material.min.css" integrity="sha256-qpcuZVV/FpX6TtlD2tp9rXpgrDmTPIm013++2dO2w60=" crossorigin="anonymous" /> -->
+	<link rel="stylesheet" type="text/css" href="../../cdnjs.cloudflare.com/ajax/libs/selectize.js/0.8.5/css/selectize.default.css">
+    <link rel="stylesheet" type="text/css" href="../../fonts.googleapis.com/icon.css">
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/4.9.95/css/materialdesignicons.min.css" integrity="sha256-orhFmLdAikn1cv90PcWIa93VOQx4tAQWA32hnBP40M4=" crossorigin="anonymous" /> -->
+	<link rel="stylesheet" type="text/css" href="main.css">
+    <link rel="stylesheet" type="text/css" href="svg.css">
+
+    <!-- <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> -->
+
+  <!-- <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.8.5/css/selectize.bootstrap2.css"> -->
+  <!-- <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.8.5/css/selectize.bootstrap3.css"> -->
+
+    <script src="../../code.jquery.com/jquery-3.1.1.min.js"></script>
+    <!-- <script src="jquery-jvectormap-2.0.3.min.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/jvectormap@2.0.4/jquery-jvectormap.min.js"></script>
+
+  </head>
+  <body ng-controller="mapCtrl" >
+        <two-d-map map-info="map.mapInfo" category="category" building="currentBuilding" floor="currentFloor" selected-regions="map.selectedRegions"></two-d-map>
+
+  <!-- Angular Material requires Angular.js Libraries -->
+  <script src="../../ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
+  <script src="../../ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script>
+  <script src="../../ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-aria.min.js"></script>
+  <script src="../../ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.min.js"></script>
+    <!-- Angular Material Library -->
+  <script src="../../ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
+  <script src="../../pc035860.github.io/ngSelect/ngSelect.min.js"></script>
+  <script src="module.js"></script>
+  <script src="ngStorage.js"></script>
+
+  <!-- Angular Material Library -->
+    <script type="text/javascript">
+
+       var app = angular.module('twoDMapApp', ['TwoDMap', 'ngStorage']);
+    // angular.element(document).ready(function () {
+        app
+        .config(["$locationProvider", "$localStorageProvider", function($locationProvider, $localStorageProvider){
+            $locationProvider.html5Mode({enabled: true,
+            requireBase: false});
+            $localStorageProvider.setKeyPrefix("");
+        }])
+        .controller('mapCtrl', ["$http", "$location", "$scope", "$localStorage", function($http, $location, $scope, $localStorage) {
+            $scope.countryName = "lynwood";
+            $scope.currentBuilding = ""
+            $scope.currentFloor = "";
+            $scope.map = null;
+            var customTip=$('#customTip');
+            var shopName=$('#shopName');
+            customTip.hide();
+            shopName.hide();
+            // console.log("---",encodeURIComponent($location.search().api_key))
+            // alert($location.search().map_data_url );
+            // console.log($location.search().map_data_url);
+            // console.log('Force load data', $location.search().reload);
+            if (angular.isDefined($location.search().reload) && $location.search().reload !== "0") {
+                // console.log('Force load data ', $location.search().reload);
+                delete $localStorage['map_data' + $location.search().api_key];
+            }
+            // console.log('Data in local storage', angular.isDefined($localStorage['map_data']));
+            if (angular.isUndefined($localStorage['map_data' + $location.search().api_key])) {
+                $http({
+                    method : "GET",
+                    url :$location.search().map_data_url,
+                    // url : "http://192.168.0.42/api/v1/mallMapData?map=svg2d",
+                    // url : "http://localhost:5000/api/v1/mallMapData?map=svg2d",
+                    // url : "https://api.omnistride.net/api/v1/mallMapData?map=svg2d",
+                    headers : {
+                        'Content-Type' : 'application/json',
+                        'Accept' : 'application/json',
+                        'Authorization': 'Bearer '+ $location.search().api_key
+                        // 'Authorization': 'Bearer Qfe@3t_|@0FBAwn8N3JRRaM&wD3NJwKfqVISly5PMu05i6omydoCvx1Hco|K5zOs'
+                    }
+
+                }).then( _success, _error );
+            }
+            else {
+                var localResponse = {
+                    'data': $localStorage['map_data' +  $location.search().api_key]
+                }
+                // console.log("Local Response", $localStorage['map_data']);
+                _success(localResponse);
+            }
+
+            function _success(response) {
+
+                // response['data']['mapInfo']['B1']['F1']['mData'].width = 480;
+                // response['data']['mapInfo']['B1']['F1']['mData'].height = 300;
+                console.log("API Response", response);
+                $scope.map = response["data"];
+                $localStorage['map_data'+$location.search().api_key] = $scope.map;
+                var buildings = Object.keys($scope.map["mapInfo"]);
+                // console.log("Buildings " , buildings);
+                // $scope.category = "Stairs";
+
+                if($location.search().category) {
+                  
+                  var category = $location.search().category;
+                  console.log("Category", category)
+                  var res = category.match(/(B[0-9])-(F[0-9])-([a-zA-Z0-9\s]+)/g);
+                  if (res ) {
+                    c = category.split("-");
+                    console.log(category)
+                    $scope.currentBuilding = c[0];
+                    $scope.currentFloor = c[1]
+                    $scope.category = c[2];
+                  } else {
+                    
+                    $scope.currentBuilding = buildings[0];
+                    var floors = Object.keys($scope.map['mapInfo'][buildings[0]]);
+                    if(floors.length > 0) {
+                                for (i in floors) {
+                                    var b = $scope.map['mapInfo'][buildings[0]][floors[i]]
+                                    if (!angular.isArray(b)) {
+                                        // console.log("FLoors", floors[i])
+                                        for (var key in sample) {
+                                            $scope.map['mapInfo'][buildings[0]][ floors[i]].regions[0].values[key] = sample[key]
+                                        }
+
+                                        for (var key in colors) {
+                                            $scope.map['mapInfo'][buildings[0]][floors[i]].regions[0].scale[key] = colors[key]
+                                        }
+
+                                        // console.log(angular.isArray(b))
+                                        $scope.currentFloor = floors[i];
+                                        // $scope.currentFloor = "F1";
+                                        // console.log("Selected -------> " + $scope.currentBuilding+"--"+$scope.currentFloor);
+
+                                    }
+                                }
+
+                        } else {
+                                alert("Map Not Found");
+                        }
+                        console.log(res, $scope.currentBuilding, $scope.currentFloor, category)
+                    $scope.category = category;
+                  }
+                  // console.log("Floor Selection" , $scope.currentBuilding, $scope.currentFloor, $location.search().retail_unit);
+                }
+                else if($location.search().retail_unit) {
+
+                        var d = $location.search().retail_unit.split("-");
+                        $scope.map.mapInfo[d[0]][d[1]].selectedRegions = [$location.search().retail_unit];
+                        $scope.currentBuilding = d[0];
+                        $scope.currentFloor = d[1];
+                        // console.log("Floor Selection" , $scope.currentBuilding, $scope.currentFloor, $location.search().retail_unit);
+
+                }
+                else if (buildings.length > 0) {
+
+                         $scope.currentBuilding = buildings[0];
+
+                         var floors = Object.keys($scope.map['mapInfo'][buildings[0]]);
+                        //  console.log("Floors ", $scope.map)
+
+                        var sample = {"id1":"Roads","SITE_0":"Roads"};
+
+                        var colors = {
+                            // "GREEN": "#096308",
+                            // "CREAM": "#e8c89b",
+                            "Roads": "#696969",
+                            // "Parking": "#a8a9af"
+                        }
+
+                         if(floors.length > 0) {
+                                for (i in floors) {
+                                    var b = $scope.map['mapInfo'][buildings[0]][floors[i]]
+                                    if (!angular.isArray(b)) {
+                                        // console.log("FLoors", floors[i])
+                                        for (var key in sample) {
+                                            $scope.map['mapInfo'][buildings[0]][ floors[i]].regions[0].values[key] = sample[key]
+                                        }
+
+                                        for (var key in colors) {
+                                            $scope.map['mapInfo'][buildings[0]][floors[i]].regions[0].scale[key] = colors[key]
+                                        }
+
+                                        // console.log(angular.isArray(b))
+                                        $scope.currentFloor = floors[i];
+                                        // $scope.currentFloor = "F1";
+                                        // console.log("Selected -------> " + $scope.currentBuilding+"--"+$scope.currentFloor);
+
+                                    }
+                                }
+
+                        } else {
+                                alert("Map Not Found");
+                        }
+
+                } else {
+                        alert("Map Not Found");
+                }
+                // console.log("Floor Selection" , $scope.currentBuilding, $scope.currentFloor, $location.search().retail_unit);
+            }
+
+            function _error(response) {
+                $scope.showLoader = false;
+                // console.log(response.statusText);
+            }
+
+    }]);
+  </script>
+  </body>
+  </html>

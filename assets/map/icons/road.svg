@@ -1,0 +1,14 @@
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+    <defs>
+        <style>
+            .cls-1,.cls-2,.cls-3,.cls-4,.cls-5{fill:none;stroke:#fff;stroke-miterlimit:10;}.cls-1{stroke-width:2px;}.cls-2{stroke-width:3px;}.cls-3{stroke-width:4px;}.cls-4{stroke-width:5px;}.cls-5{stroke-width:6px;}
+        </style>
+    </defs>
+    <path class="cls-1" d="M129.69,18c.35,1.94,0,14,0,14" />
+    <line class="cls-2" x1="129.69" y1="42.37" x2="129.85" y2="68.51" />
+    <line class="cls-3" x1="129.85" y1="82.69" x2="129.69" y2="113.35" />
+    <line class="cls-4" x1="129.85" y1="128.31" x2="129.85" y2="166" />
+    <line class="cls-5" x1="129.69" y1="186.5" x2="129.69" y2="234.03" />
+    <line class="cls-1" x1="229.66" y1="234.03" x2="174.36" y2="20.3" />
+    <line class="cls-1" x1="30.43" y1="234.03" x2="85.02" y2="18" />
+</svg>

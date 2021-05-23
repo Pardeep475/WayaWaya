@@ -1,0 +1,13 @@
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+    <defs>
+        <style>.cls-1{fill:none;stroke:#fff;stroke-miterlimit:10;stroke-width:2px;}</style>
+    </defs>
+    <rect class="cls-1" x="29.02" y="24.44" width="203.28" height="203.28" />
+    <polyline class="cls-1" points="153.52 80.5 174.81 60.15 195.46 80.5" />
+    <line class="cls-1" x1="174.8" y1="108.65" x2="174.81" y2="60.15" />
+    <polyline class="cls-1" points="196.47 171.69 175.18 192.04 154.52 171.69" />
+    <line class="cls-1" x1="175.18" y1="143.55" x2="175.18" y2="192.04" />
+    <circle class="cls-1" cx="94.81" cy="74.67" r="18.35" />
+    <polygon class="cls-1"
+        points="69.35 103.55 120.4 103.55 125.23 151.42 113.92 151.42 108.81 195.71 80.25 195.71 76.07 151.55 64.39 151.42 69.35 103.55" />
+</svg>

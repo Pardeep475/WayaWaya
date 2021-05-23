@@ -2,7 +2,6 @@ import 'dart:io';
 
 // import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:wayawaya/app/auth/signup/sign_up_screen.dart';
 import 'package:wayawaya/app/auth/splash/splash_screen.dart';
@@ -87,6 +86,17 @@ class MyApp extends StatelessWidget {
     }
   }
 }
+
+
+
+
+
+// Copyright 2013 The Flutter Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
+// ignore_for_file: public_member_api_docs
+
 
 // class MyApp extends StatelessWidget {
 //   @override

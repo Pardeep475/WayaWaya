@@ -1,0 +1,51 @@
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+    <defs>
+        <style>
+            .cls-1{fill:none;stroke:#fff;stroke-miterlimit:10;stroke-width:2px;}.cls-2{fill:#fff;}
+        </style>
+    </defs>
+    <polyline class="cls-1" points="67.01 18 51.8 70.99 51.8 82" />
+    <polyline class="cls-1" points="81.93 18 73.82 70.99 73.82 81.96" />
+    <polyline class="cls-1" points="96.58 18 96.58 70.8 96.58 82" />
+    <line class="cls-1" x1="118.84" y1="18" x2="118.84" y2="82" />
+    <line class="cls-1" x1="141.37" y1="18" x2="141.37" y2="81.96" />
+    <line class="cls-1" x1="163.92" y1="18" x2="163.92" y2="81.96" />
+    <polyline class="cls-1" points="178.35 18 186.33 70.99 186.33 82" />
+    <polyline class="cls-1" points="193.96 18 208.72 70.99 208.72 82" />
+    <path class="cls-1" d="M28.85,82a11.49,11.49,0,0,0,23,0" />
+    <path class="cls-1"
+        d="M152.71,138.07c.13-2.75-.2-15,0-15.52.41-1,.63-7.42,7.47-7.43,5.95,0,7.47,6.79,7.47,6.79v16.16" />
+    <line class="cls-1" x1="165.06" y1="102.76" x2="160.18" y2="115.12" />
+    <path class="cls-1"
+        d="M167.65,121.18c.92-1.88,3.48-5.57,7-5.58,5.95,0,7.47,6.65,7.47,6.65v15.82" />
+    <line class="cls-1" x1="179.56" y1="103.24" x2="174.68" y2="115.6" />
+    <path class="cls-1"
+        d="M182.15,122.25c.61-2.11,3.09-6.22,8-6.23,5.95,0,7.47,6.65,7.47,6.65v15.82" />
+    <line class="cls-1" x1="195.06" y1="103.24" x2="190.18" y2="115.6" />
+    <path class="cls-1" d="M51.8,81.33a11,11,0,1,0,22,0" />
+    <path class="cls-1" d="M73.84,82a11.37,11.37,0,1,0,22.74,0" />
+    <path class="cls-1" d="M96.58,82a11.14,11.14,0,1,0,22.26,0" />
+    <path class="cls-1" d="M118.84,82a11.27,11.27,0,1,0,22.53,0" />
+    <path class="cls-1" d="M141.37,82a11.28,11.28,0,1,0,22.55,0" />
+    <path class="cls-1" d="M163.92,81.33a11.21,11.21,0,1,0,22.41,0" />
+    <path class="cls-1" d="M186.33,81.33a11.2,11.2,0,1,0,22.39,0" />
+    <path class="cls-1" d="M208.72,81.33a11.39,11.39,0,1,0,22.77,0" />
+    <rect class="cls-2" x="155.92" y="150.68" width="38.98" height="6.5" />
+    <rect class="cls-1" x="29.23" y="168.81" width="201.14" height="66.94" />
+    <polyline class="cls-1" points="141.37 168.74 141.37 138.07 208.26 138.07 208.72 168.74" />
+    <line class="cls-1" x1="36.88" y1="92.82" x2="36.88" y2="168.81" />
+    <line class="cls-1" x1="223.46" y1="92.82" x2="223.46" y2="169.51" />
+    <ellipse class="cls-1" cx="69.47" cy="133.92" rx="8.15" ry="13.44"
+        transform="translate(-69.73 75.75) rotate(-39.9)" />
+    <ellipse class="cls-1" cx="90.74" cy="133.92" rx="8.15" ry="13.44"
+        transform="translate(-64.78 89.4) rotate(-39.9)" />
+    <ellipse class="cls-1" cx="106.94" cy="156.72" rx="8.15" ry="13.44"
+        transform="translate(-75.63 105.1) rotate(-39.9)" />
+    <ellipse class="cls-1" cx="85.46" cy="156.72" rx="8.15" ry="13.44"
+        transform="translate(-80.63 91.32) rotate(-39.9)" />
+    <path class="cls-1"
+        d="M73.18,166.07c3.46-2.89,4.59-9.84-.17-15.54s-13.61-8-17.07-5.08S53.55,155.3,58.31,161,69.73,169,73.18,166.07Z" />
+    <polyline class="cls-1"
+        points="28.86 82 28.86 70.99 28.86 63.15 52.36 18 208.72 18 231.49 63.53 231.49 70.8 231.49 81.96" />
+    <path class="cls-1" d="M28.92,71l202.57-.19" />
+</svg>

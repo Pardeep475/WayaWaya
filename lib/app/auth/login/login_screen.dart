@@ -5,7 +5,6 @@ import 'package:wayawaya/network/live/model/api_response.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_images.dart';
 import 'package:wayawaya/utils/app_strings.dart';
-import 'package:wayawaya/utils/dimens.dart';
 import 'package:wayawaya/utils/utils.dart';
 import '../../../constants.dart';
 import 'bloc/login_bloc.dart';
@@ -20,15 +19,29 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
-  final _loginBloc = LoginBloc();
+  TextEditingController _emailController;
+  TextEditingController _passwordController;
+  var _formKey;
+  var _loginBloc;
+
+  @override
+  void initState() {
+    super.initState();
+    _initViews();
+  }
+
+  _initViews() {
+    debugPrint('performance_testing:-   login screen initState ');
+    _emailController = TextEditingController();
+    _passwordController = TextEditingController();
+    _formKey = GlobalKey<FormState>();
+    _loginBloc = LoginBloc();
+  }
 
   @override
   Widget build(BuildContext context) {
     // var user = Provider.of<AuthProvider>(context, listen: true);
-
+    debugPrint('performance_testing:-   login screen build ');
     return SafeArea(
       child: Scaffold(
         persistentFooterButtons: [
@@ -45,15 +58,49 @@ class _LoginScreenState extends State<LoginScreen> {
               );
             },
           ),
-          forgotLabel(),
-          createAccLabel(),
+          InkWell(
+            onTap: () {
+              debugPrint('forgot password');
+              _forgotButtonPressed(context);
+            },
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              padding: const EdgeInsets.symmetric(vertical: 7),
+              child: const Text(
+                AppString.forgot_password,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontWeight: FontWeight.w400,
+                  color: AppColor.colored_text,
+                ),
+              ),
+            ),
+          ),
+          InkWell(
+            onTap: () {
+              debugPrint('create account');
+              Navigator.pushNamed(context, AppString.SIGN_UP_SCREEN_ROUTE);
+            },
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              padding: const EdgeInsets.symmetric(vertical: 7),
+              child: const Text(
+                AppString.not_account_yet,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontWeight: FontWeight.w400,
+                  color: AppColor.colored_text,
+                ),
+              ),
+            ),
+          ),
         ],
         body: Stack(
           children: [
             Column(
               children: [
                 Container(
-                  margin: EdgeInsets.symmetric(horizontal: Dimens.fifteen),
+                  margin: const EdgeInsets.symmetric(horizontal: 15),
                   child: SingleChildScrollView(
                     child: Column(
                       children: [
@@ -67,14 +114,14 @@ class _LoginScreenState extends State<LoginScreen> {
                               onTap: () {
                                 debugPrint('skip button pressed');
                               },
-                              child: Padding(
-                                padding: EdgeInsets.fromLTRB(Dimens.twenty,
-                                    Dimens.ten, Dimens.six, Dimens.ten),
-                                child: Text(
+                              child: const Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(20, 10, 6, 10),
+                                child: const Text(
                                   AppString.skip,
                                   style: TextStyle(
                                     color: AppColor.primary,
-                                    fontSize: Dimens.sixteen,
+                                    fontSize: 16,
                                   ),
                                 ),
                               ),
@@ -83,8 +130,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         Image.asset(
                           AppImages.icon_logo,
-                          width: Dimens.threeHundred,
-                          height: Dimens.threeHundred,
+                          width: 300,
+                          height: 300,
                           fit: BoxFit.cover,
                         ),
                         Form(
@@ -155,18 +202,18 @@ class _LoginScreenState extends State<LoginScreen> {
       controller: _passwordController,
       validator: (value) =>
           value.isEmpty ? AppString.enter_valid_password : null,
-      decoration: InputDecoration(
+      decoration: const InputDecoration(
         labelText: AppString.password,
         alignLabelWithHint: true,
         floatingLabelBehavior: FloatingLabelBehavior.auto,
         hintStyle: TextStyle(
-          fontSize: Dimens.fifteen,
+          fontSize: 15,
           fontWeight: FontWeight.w500,
         ),
         focusedBorder: UnderlineInputBorder(
           borderSide: BorderSide(
             color: AppColor.colored_text,
-            width: Dimens.two,
+            width: 2,
           ),
         ),
         enabledBorder: UnderlineInputBorder(
@@ -193,18 +240,18 @@ class _LoginScreenState extends State<LoginScreen> {
         }
         return null;
       },
-      decoration: InputDecoration(
+      decoration: const InputDecoration(
         labelText: AppString.email,
         alignLabelWithHint: true,
         floatingLabelBehavior: FloatingLabelBehavior.auto,
         hintStyle: TextStyle(
-          fontSize: Dimens.fifteen,
+          fontSize: 15,
           fontWeight: FontWeight.w500,
         ),
         focusedBorder: UnderlineInputBorder(
           borderSide: BorderSide(
             color: AppColor.colored_text,
-            width: Dimens.two,
+            width: 2,
           ),
         ),
         enabledBorder: UnderlineInputBorder(
@@ -218,130 +265,88 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget forgotLabel() {
-    return InkWell(
-      onTap: () {
-        debugPrint('forgot password');
-        _forgotButtonPressed(context);
-      },
-      child: Container(
-        width: MediaQuery.of(context).size.width,
-        padding: EdgeInsets.symmetric(vertical: Dimens.seven),
-        child: Text(
-          AppString.forgot_password,
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontWeight: FontWeight.w400,
-            color: AppColor.colored_text,
-          ),
-        ),
-      ),
-    );
-  }
+  // errorDialog() {
+  //   printR('HELLO');
+  //   showDialog(
+  //     context: context,
+  //     barrierDismissible: false,
+  //     builder: (_) => AlertDialog(
+  //       title: Container(
+  //         child: Row(
+  //           children: [
+  //             Icon(
+  //               FontAwesomeIcons.exclamationCircle,
+  //               color: Colors.red,
+  //             ),
+  //             SizedBox(
+  //               width: 10,
+  //             ),
+  //             Text('Sorry'),
+  //           ],
+  //         ),
+  //       ),
+  //       content: Container(
+  //         child: Text(
+  //           'Invalid Credentials. Check username and password.',
+  //           style: TextStyle(
+  //             color: Colors.grey[600],
+  //             fontSize: 14,
+  //           ),
+  //         ),
+  //       ),
+  //       actions: <Widget>[
+  //         TextButton(
+  //           child: Text(
+  //             'OK',
+  //             style: TextStyle(
+  //               color: black,
+  //               fontSize: 15,
+  //             ),
+  //           ),
+  //           onPressed: () {
+  //             Navigator.of(context).pop();
+  //           },
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
-  Widget createAccLabel() {
-    return InkWell(
-      onTap: () {
-        debugPrint('create account');
-        Navigator.pushNamed(context, AppString.SIGN_UP_SCREEN_ROUTE);
-      },
-      child: Container(
-        width: MediaQuery.of(context).size.width,
-        padding: EdgeInsets.symmetric(vertical: Dimens.seven),
-        child: Text(
-          AppString.not_account_yet,
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontWeight: FontWeight.w400,
-            color: AppColor.colored_text,
-          ),
-        ),
-      ),
-    );
-  }
-
-  errorDialog() {
-    printR('HELLO');
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (_) => AlertDialog(
-        title: Container(
-          child: Row(
-            children: [
-              Icon(
-                FontAwesomeIcons.exclamationCircle,
-                color: Colors.red,
-              ),
-              SizedBox(
-                width: 10,
-              ),
-              Text('Sorry'),
-            ],
-          ),
-        ),
-        content: Container(
-          child: Text(
-            'Invalid Credentials. Check username and password.',
-            style: TextStyle(
-              color: Colors.grey[600],
-              fontSize: 14,
-            ),
-          ),
-        ),
-        actions: <Widget>[
-          TextButton(
-            child: Text(
-              'OK',
-              style: TextStyle(
-                color: black,
-                fontSize: 15,
-              ),
-            ),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  authDialog() {
-    showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (_) {
-          Future.delayed(Duration(seconds: 1), () {
-            Navigator.of(context).pop(true);
-          });
-          return AlertDialog(
-            content: Container(
-              child: Row(
-                children: [
-                  SizedBox(
-                    height: 20,
-                    width: 20,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2.0,
-                    ),
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Text(
-                    'Signing in.....',
-                    style: TextStyle(
-                      color: Colors.grey[600],
-                      fontSize: 14,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        });
-  }
+  // authDialog() {
+  //   showDialog(
+  //       context: context,
+  //       barrierDismissible: false,
+  //       builder: (_) {
+  //         Future.delayed(Duration(seconds: 1), () {
+  //           Navigator.of(context).pop(true);
+  //         });
+  //         return AlertDialog(
+  //           content: Container(
+  //             child: Row(
+  //               children: [
+  //                 SizedBox(
+  //                   height: 20,
+  //                   width: 20,
+  //                   child: CircularProgressIndicator(
+  //                     strokeWidth: 2.0,
+  //                   ),
+  //                 ),
+  //                 SizedBox(
+  //                   width: 10,
+  //                 ),
+  //                 Text(
+  //                   'Signing in.....',
+  //                   style: TextStyle(
+  //                     color: Colors.grey[600],
+  //                     fontSize: 14,
+  //                   ),
+  //                 ),
+  //               ],
+  //             ),
+  //           ),
+  //         );
+  //       });
+  // }
 
   _forgotButtonPressed(BuildContext context) {
     Navigator.pushNamed(context, AppString.FORGOT_PASSWORD_SCREEN_ROUTE);

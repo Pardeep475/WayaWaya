@@ -1,14 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
+import 'package:flutter_holo_date_picker/date_picker.dart';
+import 'package:flutter_holo_date_picker/i18n/date_picker_i18n.dart';
 import 'package:wayawaya/common/custom_raise_button.dart';
-import 'package:wayawaya/common/full_screen_dialog_with_web_view.dart';
+import 'package:wayawaya/common/full_screen_privacy_policy_dialog.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/dimens.dart';
 import 'package:wayawaya/utils/utils.dart';
+import 'package:intl/intl.dart' as intl;
 
-import '../../../constants.dart';
+import '../../../utils/app_color.dart';
+import 'bloc/sign_up_bloc.dart';
 
 class SignUpScreen extends StatefulWidget {
   @override
@@ -16,47 +19,60 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _firstNameController = TextEditingController();
-  TextEditingController _lastNameController = TextEditingController();
-  TextEditingController _dobController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
-  TextEditingController _confirmPassController = TextEditingController();
-  TextEditingController _phoneController = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
+  TextEditingController _emailController;
+  TextEditingController _firstNameController;
+  TextEditingController _lastNameController;
+  TextEditingController _dobController;
+  TextEditingController _passwordController;
+  TextEditingController _confirmPassController;
+  TextEditingController _phoneController;
+  var _formKey;
   int _groupValue = -1;
   bool _newsCheck = true;
   bool _tncCheck = false;
   bool privacyPolicy = false;
-  bool _genderSelected = false;
-  bool showHint = true;
-  bool showLabel = false;
   DateTime _selectedDate;
 
-  // _selectDate(BuildContext context) async {
-  //   final intl.DateFormat formatter = intl.DateFormat('MM/dd/yyyy');
-  //   setState(() {
-  //     showHint = false;
-  //     showLabel = true;
-  //   });
-  //   DateTime newSelectedDate = await DatePicker.showSimpleDatePicker(
-  //     context,
-  //     initialDate: _selectedDate != null ? _selectedDate : DateTime.now(),
-  //     dateFormat: "dd-MMMM-yyyy",
-  //     locale: DateTimePickerLocale.en_us,
-  //     firstDate: DateTime(1800),
-  //     lastDate: DateTime(2040),
-  //   );
-  //
-  //   if (newSelectedDate != null) {
-  //     _selectedDate = newSelectedDate;
-  //     _dobController
-  //       ..text = formatter.format(_selectedDate)
-  //       ..selection = TextSelection.fromPosition(TextPosition(
-  //           offset: _dobController.text.length,
-  //           affinity: TextAffinity.upstream));
-  //   }
-  // }
+  var _signUpBloc;
+
+  @override
+  void initState() {
+    super.initState();
+    _initViews();
+  }
+
+  _initViews() {
+    _emailController = TextEditingController();
+    _firstNameController = TextEditingController();
+    _lastNameController = TextEditingController();
+    _dobController = TextEditingController();
+    _passwordController = TextEditingController();
+    _confirmPassController = TextEditingController();
+    _phoneController = TextEditingController();
+    _formKey = GlobalKey<FormState>();
+    _signUpBloc = SignUpBloc();
+  }
+
+  _selectDate(BuildContext context) async {
+    final intl.DateFormat formatter = intl.DateFormat('MM/dd/yyyy');
+    DateTime newSelectedDate = await DatePicker.showSimpleDatePicker(
+      context,
+      initialDate: _selectedDate != null ? _selectedDate : DateTime.now(),
+      dateFormat: "dd-MMMM-yyyy",
+      locale: DateTimePickerLocale.en_us,
+      firstDate: DateTime(1800),
+      lastDate: DateTime(2040),
+    );
+
+    if (newSelectedDate != null) {
+      _selectedDate = newSelectedDate;
+      _dobController
+        ..text = formatter.format(_selectedDate)
+        ..selection = TextSelection.fromPosition(TextPosition(
+            offset: _dobController.text.length,
+            affinity: TextAffinity.upstream));
+    }
+  }
 
   // errorDialog() {
   //   showDialog(
@@ -104,97 +120,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   //   );
   // }
 
-  // tncDialog() {
-  //   bool tnc;
-  //   showDialog(
-  //     context: context,
-  //     barrierDismissible: true,
-  //     builder: (_) => AlertDialog(
-  //       title: Text('Terms and Conditions'),
-  //       insetPadding: EdgeInsets.symmetric(horizontal: 24, vertical: 70),
-  //       content: Container(
-  //         child: SingleChildScrollView(
-  //           child: Column(
-  //             children: [
-  //               Text(
-  //                 'Terms and Conditions: Free WI-FI Service'.toUpperCase(),
-  //                 style: TextStyle(
-  //                   color: Colors.grey[600],
-  //                   fontSize: 17,
-  //                   height: 1.5,
-  //                 ),
-  //               ),
-  //               Container(
-  //                 height: 270,
-  //                 child: Align(
-  //                   alignment: Alignment.centerLeft,
-  //                   child: Text(
-  //                     'INTRODUCTION',
-  //                     style: TextStyle(
-  //                       color: Colors.grey[600],
-  //                       fontSize: 16,
-  //                     ),
-  //                   ),
-  //                 ),
-  //               ),
-  //               Text(
-  //                 '1.1    Vulkile Property Fund Limited(herein reffered to as "Vulkile") is the registered owner of various shopping centers within South Africa.',
-  //                 style: TextStyle(
-  //                   color: Colors.grey[600],
-  //                   fontSize: 16,
-  //                   height: 1.5,
-  //                 ),
-  //                 textAlign: TextAlign.start,
-  //               ),
-  //             ],
-  //           ),
-  //         ),
-  //       ),
-  //       actions: <Widget>[
-  //         TextButton(
-  //           child: Text(
-  //             'DISAGREE',
-  //             style: TextStyle(
-  //               color: black,
-  //               fontSize: 15,
-  //             ),
-  //           ),
-  //           onPressed: () {
-  //             setState(() {
-  //               tnc = false;
-  //               _tncCheck = tnc;
-  //             });
-  //             Navigator.of(context).pop();
-  //           },
-  //         ),
-  //         TextButton(
-  //           child: Text(
-  //             'AGREE',
-  //             style: TextStyle(
-  //               color: black,
-  //               fontSize: 15,
-  //             ),
-  //           ),
-  //           onPressed: () {
-  //             setState(() {
-  //               tnc = true;
-  //               _tncCheck = tnc;
-  //             });
-  //             Navigator.of(context).pop();
-  //           },
-  //         ),
-  //       ],
-  //     ),
-  //   ).then((value) {
-  //     if(tnc) print('I AM TRUE');
-  //     else print('I AM FALSE');
-  //   });
-  // }
-
   @override
   Widget build(BuildContext context) {
-    // var user = Provider.of<AuthProvider>(context, listen: true);
-
     return Scaffold(
       backgroundColor: Colors.grey[100],
       resizeToAvoidBottomInset: false,
@@ -218,7 +145,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               borderRadius: 0,
               width: MediaQuery.of(context).size.width,
               onPressed: () {
-                // _loginButtonPressed(context);
+                _submitButtonPressed(context);
               },
             );
           },
@@ -260,48 +187,55 @@ class _SignUpScreenState extends State<SignUpScreen> {
         width: MediaQuery.of(context).size.width,
         padding: EdgeInsets.only(bottom: Dimens.two),
         margin: EdgeInsets.only(bottom: Dimens.five),
-        child: Row(
-          children: <Widget>[
-            Container(
-              width: Dimens.thirtyFive,
-              child: Radio(
-                value: 0,
-                groupValue: _groupValue,
-                onChanged: (newValue) => setState(() {
-                  _groupValue = newValue;
-                  _genderSelected = true;
-                }),
-                activeColor: appLightColor,
-              ),
-            ),
-            Text(
-              AppString.mr,
-              style: TextStyle(
-                fontWeight: FontWeight.w400,
-                fontSize: Dimens.sixteen,
-              ),
-            ),
-            Container(
-              width: Dimens.thirtyFive,
-              child: Radio(
-                value: 1,
-                groupValue: _groupValue,
-                onChanged: (newValue) => setState(() {
-                  _groupValue = newValue;
-                  _genderSelected = true;
-                }),
-                activeColor: appLightColor,
-              ),
-            ),
-            Text(
-              AppString.ms,
-              style: TextStyle(
-                fontWeight: FontWeight.w400,
-                fontSize: Dimens.sixteen,
-              ),
-            ),
-          ],
-        ),
+        child: StreamBuilder<int>(
+            initialData: -1,
+            stream: _signUpBloc.genderStream,
+            builder: (context, snapshot) {
+              return Row(
+                children: <Widget>[
+                  Container(
+                    width: Dimens.thirtyFive,
+                    child: Radio(
+                      value: 0,
+                      groupValue: snapshot.data,
+                      onChanged: (newValue) {
+                        debugPrint('radio_button_click:-   $newValue');
+                        _groupValue = newValue;
+                        _signUpBloc.genderSink.add(_groupValue);
+                      },
+                      activeColor: AppColor.colored_text,
+                    ),
+                  ),
+                  Text(
+                    AppString.mr,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w400,
+                      fontSize: Dimens.sixteen,
+                    ),
+                  ),
+                  Container(
+                    width: Dimens.thirtyFive,
+                    child: Radio(
+                      value: 1,
+                      groupValue: snapshot.data,
+                      onChanged: (newValue) {
+                        debugPrint('radio_button_click:-   $newValue');
+                        _groupValue = newValue;
+                        _signUpBloc.genderSink.add(_groupValue);
+                      },
+                      activeColor: AppColor.colored_text,
+                    ),
+                  ),
+                  Text(
+                    AppString.ms,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w400,
+                      fontSize: Dimens.sixteen,
+                    ),
+                  ),
+                ],
+              );
+            }),
       );
 
   Widget _emailWidget() => TextFormField(
@@ -420,14 +354,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Widget _dobWidget() => GestureDetector(
         onTap: () {
           print("dob widget click");
+          _selectDate(context);
         },
         child: TextFormField(
           autofocus: false,
           controller: _dobController,
           validator: (value) {
-            if (value.isEmpty) {
-              return AppString.enter_your_dob;
-            }
+            // if (value.isEmpty) {
+            //   return AppString.enter_your_dob;
+            // }
             return null;
           },
           decoration: InputDecoration(
@@ -546,11 +481,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
         autofocus: false,
         controller: _phoneController,
         validator: (value) {
-          if (value.isEmpty) {
-            return AppString.enter_your_cell_number;
-          } else {
-            return null;
-          }
+          // if (value.isEmpty) {
+          //   return AppString.enter_your_cell_number;
+          // } else {
+          return null;
+          // }
         },
         decoration: InputDecoration(
           labelText: AppString.cell_number,
@@ -583,7 +518,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Widget _privacyLabel() => InkWell(
         onTap: () {
           debugPrint('privacy policy');
-          Navigator.of(context).push(FullScreenDialogWithWebView());
+          Navigator.push(
+            context,
+            FullScreenPrivacyPolicyDialog(
+                title: AppString.privacy_policy,
+                url: AppString.PRIVACY_POLICY_URL),
+          ).then((value) {
+            if (value != null) privacyPolicy = value;
+
+            debugPrint('Privacy Policy   $privacyPolicy');
+          });
         },
         child: Container(
           width: MediaQuery.of(context).size.width,
@@ -625,15 +569,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
           children: [
             SizedBox(
               width: Dimens.twentyFour,
-              child: Checkbox(
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                value: _newsCheck,
-                onChanged: (bool value) {
-                  setState(() {
-                    _newsCheck = value;
-                  });
-                },
-              ),
+              child: StreamBuilder<bool>(
+                  initialData: true,
+                  stream: _signUpBloc.newsLetterStream,
+                  builder: (context, snapshot) {
+                    return Checkbox(
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      value: snapshot.data,
+                      onChanged: (bool value) {
+                        _newsCheck = value;
+                        _signUpBloc.newsLetterSink.add(_newsCheck);
+                        debugPrint('News Letter :-  $_newsCheck');
+                      },
+                    );
+                  }),
             ),
             SizedBox(
               width: Dimens.twentyFour,
@@ -652,29 +601,39 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   Widget _termAndConditionsWidget() => Container(
         height: Dimens.thirty,
-        child: InkWell(
-          onTap: () {
-            // tncDialog();
-          },
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              SizedBox(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            SizedBox(
+              width: Dimens.twentyFour,
+              child: StreamBuilder<bool>(
+                  initialData: false,
+                  stream: _signUpBloc.tACStream,
+                  builder: (context, snapshot) {
+                    return Checkbox(
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      value: snapshot.data,
+                      onChanged: (bool value) {
+                        _termAndConditionOnClick();
+                      },
+                    );
+                  }),
+            ),
+            GestureDetector(
+              onTap: () {
+                _termAndConditionOnClick();
+              },
+              child: SizedBox(
                 width: Dimens.twentyFour,
-                child: Checkbox(
-                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  value: _tncCheck,
-                  onChanged: (bool value) {
-                    // tncDialog();
-                  },
-                ),
               ),
-              SizedBox(
-                width: Dimens.twentyFour,
-              ),
-              Text(
+            ),
+            GestureDetector(
+              onTap: () {
+                _termAndConditionOnClick();
+              },
+              child: Text(
                 AppString.term_and_conditions,
                 style: TextStyle(
                   fontSize: Dimens.seventeen,
@@ -682,87 +641,39 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   fontWeight: FontWeight.w400,
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       );
 
-  privacyDialog() {
-    showDialog(
-      context: context,
-      barrierDismissible: true,
-      builder: (_) => AlertDialog(
-        title: Text(AppString.privacy_policy),
-        insetPadding: EdgeInsets.symmetric(
-            horizontal: Dimens.twentyFour, vertical: Dimens.ten),
-        contentPadding: EdgeInsets.zero,
-        content: Container(
-          margin: EdgeInsets.only(top: Dimens.two),
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                Container(
-                  height: Dimens.oneThirty,
-                  color: Color(0xffC3C0D3),
-                  padding: EdgeInsets.only(left: Dimens.fortyFive),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Image.asset(
-                      'assets/yellow_fist_bump.png',
-                      height: Dimens.forty,
-                      width: Dimens.forty,
-                    ),
-                  ),
-                ),
-                Container(
-                  color: Color(0xffDEDCE7),
-                  padding: EdgeInsets.symmetric(
-                      horizontal: Dimens.twenty, vertical: Dimens.twentyFive),
-                  child: WebviewScaffold(
-                    url: "https://instagram.com/mahi7781",
-                    withZoom: true,
-                    withLocalStorage: true,
-                    initialChild: Container(
-                      child: const Center(
-                        child: Text("Loading...."),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-        actions: <Widget>[
-          TextButton(
-            child: Text(
-              AppString.disagree.toUpperCase(),
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: Dimens.fifteen,
-              ),
-            ),
-            onPressed: () {
-              privacyPolicy = false;
-              Navigator.of(context).pop();
-            },
-          ),
-          TextButton(
-            child: Text(
-              AppString.agree.toUpperCase(),
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: Dimens.fifteen,
-              ),
-            ),
-            onPressed: () {
-              privacyPolicy = true;
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      ),
-    );
+  _termAndConditionOnClick() {
+    debugPrint('Term and condition');
+    if (_tncCheck) {
+      _tncCheck = false;
+      _signUpBloc.tACSink.add(_tncCheck);
+    } else {
+      Navigator.push(
+        context,
+        FullScreenPrivacyPolicyDialog(
+            title: AppString.term_and_conditions,
+            url: AppString.TERMS_CONDITION_URL),
+      ).then((value) {
+        setState(() {
+          if (value != null) {
+            _tncCheck = value;
+            _signUpBloc.tACSink.add(_tncCheck);
+
+            debugPrint('Term and condition  --->  $_tncCheck');
+          }
+        });
+      });
+    }
+  }
+
+  void _submitButtonPressed(BuildContext context) {
+    if (_formKey.currentState.validate() && _tncCheck == true) {
+      _formKey.currentState.save();
+    }
   }
 
   @override

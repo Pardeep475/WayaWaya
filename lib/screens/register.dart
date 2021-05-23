@@ -329,7 +329,6 @@ class _RegisterState extends State<Register> {
   @override
   Widget build(BuildContext context) {
     var user = Provider.of<AuthProvider>(context, listen: true);
-
     return Scaffold(
       backgroundColor: bgColor,
       resizeToAvoidBottomInset: false,
