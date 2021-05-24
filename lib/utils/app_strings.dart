@@ -11,9 +11,9 @@ class AppString {
   static const IS_FIRST_TIME = "IS_FIRST_TIME";
 
   static const String PRIVACY_POLICY_URL =
-      "https://www.connectwayawaya.co.za/privacy-notice/";
+      "http://www.connectwayawaya.co.za/privacy-notice/";
   static const String TERMS_CONDITION_URL =
-      "https://www.connectwayawaya.co.za/terms-conditions/";
+      "http://www.connectwayawaya.co.za/terms-conditions/";
 
   static const app_name = "Waya Waya";
   static const check_your_internet_connectivity =
@@ -69,6 +69,7 @@ class AppString {
       "Verification email has been sent to registered email address";
   static const unable_to_verify_email = "Unable to verify email";
   static const password_change_successfully = "Password changed successfully";
+  static const select_your_default_mall = "Select Your Default Mall";
 
   // Routes
   static const LOGIN_SCREEN_ROUTE = "LOGIN_SCREEN_ROUTE";

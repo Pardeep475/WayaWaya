@@ -36,10 +36,12 @@ class DataBaseHelper {
       debugPrint("database_testing :-  is database delete  $isDataBaseDelete");
       if (isDataBaseDelete) {
         // return await openDatabase(path, version: _dbVersion, onCreate: _onCreate);
-        _database = await openDatabase(path, version: _dbVersion);
+        _database = await openDatabase(path,
+            version: _dbVersion, onCreate: _onCreateVenueProfileTable);
       }
     } else {
-      _database =  await openDatabase(path, version: _dbVersion);
+      _database = await openDatabase(path,
+          version: _dbVersion, onCreate: _onCreateVenueProfileTable);
     }
   }
 
@@ -92,7 +94,8 @@ class DataBaseHelper {
   ''');
   }
 
-  Future<List<Map<String, dynamic>>> queryVenueProfileItem(String dbName) async {
+  Future<List<Map<String, dynamic>>> queryVenueProfileItem(
+      String dbName) async {
     // Database _db = await instance.database;
     // // return await _db.query(_tableName, where: '$loadNumber = ?', whereArgs: [loadNumber]);
     // // (await _db.query('sqlite_master', columns: ['type', 'name']))
@@ -100,12 +103,12 @@ class DataBaseHelper {
     // //   print(row.values);
     // // });
     //
-    try{
-    //
-    //   if(_db == null){
-    //     debugPrint('pardeep_testing:-   db is null');
-    //     return null;
-    //   }
+    try {
+      //
+      //   if(_db == null){
+      //     debugPrint('pardeep_testing:-   db is null');
+      //     return null;
+      //   }
 
       Directory directory = await getApplicationDocumentsDirectory();
       String path = join(directory.path, dbName);
@@ -115,16 +118,15 @@ class DataBaseHelper {
       //     .forEach((row) {
       //   print(row.values.first.toString());
       // });
-      final tables = await _db.rawQuery('SELECT * FROM sqlite_master ORDER BY name;');
+      final tables = await _db.query('venue_data');
       // var tableNames = (await _db
       //     .query('sqlite_master', where: 'type = ?', whereArgs: ['table']))
       //     .map((row) => row['name'] as String)
       //     .toList(growable: false);
       debugPrint('pardeep_testing:-   $tables');
-    }catch(e){
+    } catch (e) {
       debugPrint('pardeep_testing:-   error $e');
     }
-
 
     // return await _db.rawQuery('SELECT * FROM null');
   }

@@ -10,9 +10,16 @@ import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/size_config.dart';
 import 'app/auth/forgotpassword/forgot_password_screen.dart';
 import 'app/auth/login/login_screen.dart';
+import 'network/local/super_admin_database_helper.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // SuperAdminDatabaseHelper _superAdminDatabaseHelper =
+  //     SuperAdminDatabaseHelper();
+  // await _superAdminDatabaseHelper.initDataBase();
+
+  await SuperAdminDatabaseHelper.initDataBase();
+
   runApp(MyApp());
 }
 
@@ -87,16 +94,11 @@ class MyApp extends StatelessWidget {
   }
 }
 
-
-
-
-
 // Copyright 2013 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
 // ignore_for_file: public_member_api_docs
-
 
 // class MyApp extends StatelessWidget {
 //   @override

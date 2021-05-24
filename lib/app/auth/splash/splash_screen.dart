@@ -1,7 +1,9 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:wayawaya/network/local/super_admin_database_helper.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/session_manager.dart';
 
@@ -18,36 +20,16 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      // print("WidgetsBinding");
       _openFurtherScreen();
     });
-
-    // _initImages().then((value) {
-    //   _openFurtherScreen();
-    // });
   }
-
-  Future _initImages() async {
-    // >> To get paths you need these 2 lines
-    final manifestContent =
-        await DefaultAssetBundle.of(context).loadString('AssetManifest.json');
-
-    final Map<String, dynamic> manifestMap = json.decode(manifestContent);
-    // >> To get paths you need these 2 lines
-
-    final imagePaths = manifestMap.keys
-        .where((String key) => key.contains('database/'))
-        .where((String key) => key.contains('.db'))
-        .toList();
-
-    imagePaths.forEach((element) async {
-      debugPrint('pardeep_testing_database :--- Database   Name     $element');
-      final DataBaseHelper _database = DataBaseHelper.instance;
-      await _database.initiateDataBase(dbName: element);
-      await _database.queryVenueProfileItem(element);
-      await _database.closeDataBase();
-    });
-  }
+  //
+  // Future _initImages() async {
+  //   SuperAdminDatabaseHelper _superAdminDatabaseHelper =
+  //       SuperAdminDatabaseHelper();
+  //   await _superAdminDatabaseHelper.initDataBase();
+  //   // await _superAdminDatabaseHelper.getVenueProfile();
+  // }
 
   _openFurtherScreen() async {
     // bool isFirstTime = await SessionManager.isFirstTime();
@@ -60,9 +42,7 @@ class _SplashScreenState extends State<SplashScreen> {
     //   Navigator.pushNamed(context, AppString.LOGIN_SCREEN_ROUTE);
     // }
 
-    Future.delayed(Duration(milliseconds: 100), () {
-      Navigator.pushNamed(context, AppString.LOGIN_SCREEN_ROUTE);
-    });
+    Navigator.pushNamed(context, AppString.MALL_SCREEN_ROUTE);
   }
 
   @override

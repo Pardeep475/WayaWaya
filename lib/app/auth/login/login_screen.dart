@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:wayawaya/common/custom_raise_button.dart';
 import 'package:wayawaya/network/live/model/api_response.dart';
 import 'package:wayawaya/utils/app_color.dart';
@@ -23,6 +22,7 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController _passwordController;
   var _formKey;
   var _loginBloc;
+
 
   @override
   void initState() {
