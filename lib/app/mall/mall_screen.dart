@@ -1,14 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:wayawaya/common/model/mall_profile_model.dart';
-import 'package:wayawaya/network/local/super_admin_database_helper.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_strings.dart';
-import 'dart:async';
-import 'dart:convert';
-import 'dart:typed_data';
-
+import 'package:wayawaya/utils/session_manager.dart';
 import 'bloc/mall_bloc.dart';
 
 class MallScreen extends StatefulWidget {
@@ -34,11 +29,12 @@ class _MallScreenState extends State<MallScreen> {
       appBar: AppBar(
         backgroundColor: AppColor.primaryDark,
         centerTitle: true,
+        automaticallyImplyLeading: false,
         title: const Text(
           AppString.select_your_default_mall,
           style: const TextStyle(
-            color: AppColor.white,
-            fontWeight: FontWeight.w200,
+            color: AppColor.softWhite,
+            fontWeight: FontWeight.w600,
           ),
         ),
       ),
@@ -64,11 +60,11 @@ class _MallScreenState extends State<MallScreen> {
                     );
                   },
                   itemBuilder: (_, index) {
-                    debugPrint(
-                        'image_data_testing:-  ${snapshot.data[index].logo_base64}');
-
                     return InkWell(
                       onTap: () {
+                        SessionManager.setFirstTime(true);
+                        SessionManager.setDefaultMall(snapshot.data[index].identifier);
+                        Navigator.pushReplacementNamed(context, AppString.LOGIN_SCREEN_ROUTE);
                         // App.prefs.setBool('defaultMall', true);
                         // App.prefs.setString('selectedMall', getMallName(index).toString());
                         // printR(App.prefs.getString('selectedMall').toString());
@@ -91,10 +87,10 @@ class _MallScreenState extends State<MallScreen> {
                               height: 80,
                               width: 90,
                               margin: const EdgeInsets.only(left: 20),
-                              child: Image.memory(base64
-                                  .decode(snapshot.data[index].logo_base64)),
+                              child: Image.asset(
+                                  'assets/image/ic_launcher_${snapshot.data[index].identifier}.png'),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               width: 30,
                             ),
                             Expanded(
@@ -118,67 +114,4 @@ class _MallScreenState extends State<MallScreen> {
       ),
     );
   }
-
-//  ListView.separated(
-//             itemCount: 12,
-//             separatorBuilder: (_, index) {
-//               return Container(
-//                 height: 6,
-//                 color: appDarkColor.withOpacity(0.2),
-//               );
-//             },
-//             itemBuilder: (_, index) {
-//               return InkWell(
-//                 onTap: () {
-//                   App.prefs.setBool('defaultMall', true);
-//                   App.prefs.setString('selectedMall', getMallName(index).toString());
-//                   printR(App.prefs.getString('selectedMall').toString());
-//                   widget.onlyChangeMall ? Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
-//                     builder: (_) => Splash(),
-//                   ), (route) => false) : Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
-//                     builder: (_) => BackgroundScreen(),
-//                   ), (route) => false);
-//                 },
-//                 child: Container(
-//                   height: 125,
-//                   width: App.width(context),
-//                   color: Color(0xff6CD1D5).withOpacity(0.5),
-//                   margin: EdgeInsets.fromLTRB(5, 0, 5, 0),
-//                   child: Row(
-//                     mainAxisAlignment: MainAxisAlignment.start,
-//                     crossAxisAlignment: CrossAxisAlignment.center,
-//                     children: [
-//                       Container(
-//                         height: 80,
-//                         width: 90,
-//                         margin: EdgeInsets.only(left: 20),
-//                         decoration: BoxDecoration(
-//                           image: DecorationImage(
-//                             fit: BoxFit.contain,
-//                             image: AssetImage(
-//                               getMallLogo(index).toString(),
-//                             ),
-//                           ),
-//                         ),
-//                       ),
-//                       SizedBox(
-//                         width: 30,
-//                       ),
-//                       Expanded(
-//                         child: Container(
-//                           padding: EdgeInsets.only(right: 2),
-//                           child: Text(
-//                             getMallName(index).toString(),
-//                             style: TextStyle(
-//                               fontSize: 18,
-//                               fontWeight: FontWeight.bold,
-//                             ),
-//                           ),
-//                         ),
-//                       ),
-//                     ],
-//                   ),
-//                 ),
-//               );
-//             })
 }

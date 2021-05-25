@@ -9,6 +9,7 @@ class AppString {
 
   // session Manager
   static const IS_FIRST_TIME = "IS_FIRST_TIME";
+  static const DEFAULT_MALL = "DEFAULT_MALL";
 
   static const String PRIVACY_POLICY_URL =
       "http://www.connectwayawaya.co.za/privacy-notice/";

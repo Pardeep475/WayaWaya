@@ -16,6 +16,8 @@ class AppColor {
   static const secondaryBlack = Color(0xFF8A000000);
   static const borderColor = Color(0xFFBDBDBD);
   static const secondaryColor = Color(0xFF939393);
+  static const softWhite = Color(0xFFf0f0f0);
+  static const mall_card_back_color = Color(0xFF80CCE6F4);
 
   static const white = Color(0xFFFFFFFF);
   static const black = Color(0xFF000000);

@@ -4,6 +4,8 @@ import 'package:wayawaya/network/live/model/api_response.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_images.dart';
 import 'package:wayawaya/utils/app_strings.dart';
+import 'package:wayawaya/utils/dimens.dart';
+import 'package:wayawaya/utils/session_manager.dart';
 import 'package:wayawaya/utils/utils.dart';
 import '../../../constants.dart';
 import 'bloc/login_bloc.dart';
@@ -22,7 +24,6 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController _passwordController;
   var _formKey;
   var _loginBloc;
-
 
   @override
   void initState() {
@@ -128,11 +129,20 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                         ),
-                        Image.asset(
-                          AppImages.icon_logo,
-                          width: 300,
-                          height: 300,
-                          fit: BoxFit.cover,
+                        FutureBuilder(
+                          builder: (context, snapshot) {
+                            if (snapshot.data == null) {
+                              return const SizedBox();
+                            }
+                            return Image.asset(
+                              snapshot.data,
+                              width: 300,
+                              height: 300,
+                              fit: BoxFit.cover,
+                            );
+                          },
+                          initialData: null,
+                          future: getImageFromAssets(),
                         ),
                         Form(
                           key: _formKey,
@@ -196,24 +206,33 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  Future<String> getImageFromAssets() async {
+    String defaultMall = await SessionManager.getDefaultMall();
+    return 'assets/image/ic_launcher_$defaultMall.png';
+  }
+
   Widget _passwordField() {
     return TextFormField(
       autofocus: false,
       controller: _passwordController,
       validator: (value) =>
           value.isEmpty ? AppString.enter_valid_password : null,
-      decoration: const InputDecoration(
+      decoration: InputDecoration(
         labelText: AppString.password,
         alignLabelWithHint: true,
         floatingLabelBehavior: FloatingLabelBehavior.auto,
+        labelStyle: TextStyle(
+          fontSize: Dimens.sixteen,
+          fontWeight: FontWeight.w400,
+        ),
         hintStyle: TextStyle(
-          fontSize: 15,
-          fontWeight: FontWeight.w500,
+          fontSize: Dimens.sixteen,
+          fontWeight: FontWeight.w400,
         ),
         focusedBorder: UnderlineInputBorder(
           borderSide: BorderSide(
             color: AppColor.colored_text,
-            width: 2,
+            width: Dimens.two,
           ),
         ),
         enabledBorder: UnderlineInputBorder(
@@ -240,18 +259,22 @@ class _LoginScreenState extends State<LoginScreen> {
         }
         return null;
       },
-      decoration: const InputDecoration(
+      decoration: InputDecoration(
         labelText: AppString.email,
         alignLabelWithHint: true,
         floatingLabelBehavior: FloatingLabelBehavior.auto,
+        labelStyle: TextStyle(
+          fontSize: Dimens.sixteen,
+          fontWeight: FontWeight.w400,
+        ),
         hintStyle: TextStyle(
-          fontSize: 15,
-          fontWeight: FontWeight.w500,
+          fontSize: Dimens.sixteen,
+          fontWeight: FontWeight.w400,
         ),
         focusedBorder: UnderlineInputBorder(
           borderSide: BorderSide(
             color: AppColor.colored_text,
-            width: 2,
+            width: Dimens.two,
           ),
         ),
         enabledBorder: UnderlineInputBorder(

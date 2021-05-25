@@ -23,26 +23,19 @@ class _SplashScreenState extends State<SplashScreen> {
       _openFurtherScreen();
     });
   }
-  //
-  // Future _initImages() async {
-  //   SuperAdminDatabaseHelper _superAdminDatabaseHelper =
-  //       SuperAdminDatabaseHelper();
-  //   await _superAdminDatabaseHelper.initDataBase();
-  //   // await _superAdminDatabaseHelper.getVenueProfile();
-  // }
+
 
   _openFurtherScreen() async {
-    // bool isFirstTime = await SessionManager.isFirstTime();
-    // if (!isFirstTime) {
-    //   // open mall screen
-    //   SessionManager.setFirstTime(true);
-    //   Navigator.pushNamed(context, AppString.MALL_SCREEN_ROUTE);
-    // } else {
-    //   // open login screen
-    //   Navigator.pushNamed(context, AppString.LOGIN_SCREEN_ROUTE);
-    // }
+    bool isFirstTime = await SessionManager.isFirstTime();
+    if (!isFirstTime) {
+      // open mall screen
+      Navigator.pushReplacementNamed(context, AppString.MALL_SCREEN_ROUTE);
+    } else {
+      // open login screen
+      Navigator.pushReplacementNamed(context, AppString.LOGIN_SCREEN_ROUTE);
+    }
 
-    Navigator.pushNamed(context, AppString.MALL_SCREEN_ROUTE);
+    // Navigator.pushNamed(context, AppString.MALL_SCREEN_ROUTE);
   }
 
   @override

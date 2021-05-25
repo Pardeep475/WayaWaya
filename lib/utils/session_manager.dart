@@ -23,6 +23,15 @@ class SessionManager {
         .then((value) => value.getBool(AppString.IS_FIRST_TIME) ?? false);
   }
 
+  static void setDefaultMall(String defaultMall) async {
+    _pref.then((value) => value.setString(AppString.DEFAULT_MALL, defaultMall));
+  }
+
+  static Future<String> getDefaultMall() {
+    return _pref
+        .then((value) => value.getString(AppString.DEFAULT_MALL) ?? "");
+  }
+
 //   void setIsLogin(bool isLogin) async {
 //     _pref.then((value) => value.setBool(AppString.IS_LOGIN, isLogin));
 //   }

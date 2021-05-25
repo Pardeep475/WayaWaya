@@ -4,6 +4,7 @@ import 'package:wayawaya/common/custom_raise_button.dart';
 import 'package:wayawaya/network/live/model/api_response.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_strings.dart';
+import 'package:wayawaya/utils/dimens.dart';
 import 'package:wayawaya/utils/utils.dart';
 
 import 'bloc/forgot_password_bloc.dart';
@@ -61,7 +62,7 @@ class ForgotPasswordState extends State<ForgotPassword> {
                       AppString.enter_your_email_phone_username,
                       style: TextStyle(
                         color: Colors.grey[500],
-                        fontSize: 18,
+                        fontSize: 15,
                       ),
                     ),
                     TextFormField(
@@ -75,18 +76,22 @@ class ForgotPasswordState extends State<ForgotPassword> {
                         }
                         return null;
                       },
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         labelText: AppString.email,
                         alignLabelWithHint: true,
                         floatingLabelBehavior: FloatingLabelBehavior.auto,
+                        labelStyle: TextStyle(
+                          fontSize: Dimens.sixteen,
+                          fontWeight: FontWeight.w400,
+                        ),
                         hintStyle: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w500,
+                          fontSize: Dimens.sixteen,
+                          fontWeight: FontWeight.w400,
                         ),
                         focusedBorder: UnderlineInputBorder(
                           borderSide: BorderSide(
                             color: AppColor.colored_text,
-                            width: 2,
+                            width: Dimens.two,
                           ),
                         ),
                         enabledBorder: UnderlineInputBorder(
@@ -401,14 +406,18 @@ class ForgotPasswordState extends State<ForgotPassword> {
         labelText: AppString.authentication_code,
         alignLabelWithHint: true,
         floatingLabelBehavior: FloatingLabelBehavior.auto,
+        labelStyle: TextStyle(
+          fontSize: Dimens.sixteen,
+          fontWeight: FontWeight.w400,
+        ),
         hintStyle: TextStyle(
-          fontSize: 15,
-          fontWeight: FontWeight.w500,
+          fontSize: Dimens.sixteen,
+          fontWeight: FontWeight.w400,
         ),
         focusedBorder: UnderlineInputBorder(
           borderSide: BorderSide(
             color: AppColor.colored_text,
-            width: 2,
+            width: Dimens.two,
           ),
         ),
         enabledBorder: UnderlineInputBorder(
@@ -432,14 +441,18 @@ class ForgotPasswordState extends State<ForgotPassword> {
         labelText: AppString.password,
         alignLabelWithHint: true,
         floatingLabelBehavior: FloatingLabelBehavior.auto,
+        labelStyle: TextStyle(
+          fontSize: Dimens.sixteen,
+          fontWeight: FontWeight.w400,
+        ),
         hintStyle: TextStyle(
-          fontSize: 15,
-          fontWeight: FontWeight.w500,
+          fontSize: Dimens.sixteen,
+          fontWeight: FontWeight.w400,
         ),
         focusedBorder: UnderlineInputBorder(
           borderSide: BorderSide(
             color: AppColor.colored_text,
-            width: 2,
+            width: Dimens.two,
           ),
         ),
         enabledBorder: UnderlineInputBorder(
@@ -471,14 +484,18 @@ class ForgotPasswordState extends State<ForgotPassword> {
         labelText: AppString.confirm_password,
         alignLabelWithHint: true,
         floatingLabelBehavior: FloatingLabelBehavior.auto,
+        labelStyle: TextStyle(
+          fontSize: Dimens.sixteen,
+          fontWeight: FontWeight.w400,
+        ),
         hintStyle: TextStyle(
-          fontSize: 15,
-          fontWeight: FontWeight.w500,
+          fontSize: Dimens.sixteen,
+          fontWeight: FontWeight.w400,
         ),
         focusedBorder: UnderlineInputBorder(
           borderSide: BorderSide(
             color: AppColor.colored_text,
-            width: 2,
+            width: Dimens.two,
           ),
         ),
         enabledBorder: UnderlineInputBorder(
