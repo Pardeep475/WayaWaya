@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:wayawaya/network/live/exception_handling/exception_handling.dart';
 import 'package:wayawaya/utils/app_strings.dart';
+import 'package:wayawaya/utils/session_manager.dart';
 import '../network_constants.dart';
 
 class ApiBaseHelper {
@@ -17,15 +18,13 @@ class ApiBaseHelper {
 
   static final dio = Dio();
 
-  Future<dynamic> get({String url}) async {
-    debugPrint('api_url  :-  ${NetworkConstants.base_url}$url');
+  Future<dynamic> get({String url, String authHeader}) async {
     try {
+      debugPrint('auth_header  :-  $authHeader');
+      debugPrint('api_url  :-  ${NetworkConstants.base_url}$url');
       final response = await dio.get('${NetworkConstants.base_url}$url',
           options: Options(
-            headers: {
-              "Authorization":
-                  "Bearer twG0iiIbMw3IxS5MMw|R6f29ZKdAz7TaDA1cJFFSwtysP88doc_Vwq8EbJfPIN2I"
-            },
+            headers: {"Authorization": "Bearer $authHeader"},
           ));
       debugPrint('pardeep_testing:-  ${response.statusCode}');
       return response;
@@ -45,17 +44,45 @@ class ApiBaseHelper {
     }
   }
 
-  Future<dynamic> post({String url, dynamic params}) async {
+  Future<dynamic> post({String url, String authHeader, dynamic params}) async {
     try {
       debugPrint('api_url  :-  ${NetworkConstants.base_url}$url');
+      debugPrint('auth_header  :-  $authHeader');
       debugPrint('api_params   :-   $params    ');
       final response = await dio.post('${NetworkConstants.base_url}$url',
           data: params,
           options: Options(
-            headers: {
-              "Authorization":
-                  "Bearer twG0iiIbMw3IxS5MMw|R6f29ZKdAz7TaDA1cJFFSwtysP88doc_Vwq8EbJfPIN2I"
-            },
+            headers: {"Authorization": "Bearer $authHeader"},
+          ));
+      debugPrint('api_response_print:-    $response');
+
+      return response;
+    } on SocketException {
+      throw NoInternetException(AppString.check_your_internet_connectivity);
+    } on HttpException {
+      throw NoServiceFoundException(AppString.no_service_found_exception);
+    } on FormatException {
+      throw InvalidFormatException(AppString.invalid_format_exception);
+    } catch (e) {
+      debugPrint("pardeep_testing:-   ${e.toString()}");
+      if (e is DioError) {
+        return e;
+      } else {
+        throw UnknownException(e.toString());
+      }
+    }
+  }
+
+  Future<dynamic> patch({String url, dynamic params}) async {
+    try {
+      String authHeader = await SessionManager.getDefaultMall();
+      debugPrint('api_url  :-  ${NetworkConstants.base_url}$url');
+      debugPrint('auth_header  :-  $authHeader');
+      debugPrint('api_params   :-   $params    ');
+      final response = await dio.post('${NetworkConstants.base_url}$url',
+          data: params,
+          options: Options(
+            headers: {"Authorization": "Bearer $authHeader"},
           ));
       debugPrint('api_response_print:-    $response');
 

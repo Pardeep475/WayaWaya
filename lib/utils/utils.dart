@@ -105,4 +105,52 @@ class Utils {
           Animation<double> secondaryAnimation) {},
     );
   }
+
+  static commonErrorDialog({BuildContext context,String icon,String ti}) {
+    showGeneralDialog(
+      barrierColor: Colors.black.withOpacity(0.1),
+      transitionBuilder: (context, a1, a2, widget) {
+        return Transform.scale(
+          scale: a1.value,
+          child: Opacity(
+            opacity: a1.value,
+            child: AlertDialog(
+              content: Container(
+                height: Dimens.forty,
+                child: Row(
+                  children: [
+                    SizedBox(
+                      height: Dimens.thirty,
+                      width: Dimens.thirty,
+                      child: CircularProgressIndicator(
+                        strokeWidth: Dimens.two,
+                        backgroundColor: AppColor.primaryDark,
+                      ),
+                    ),
+                    SizedBox(
+                      width: Dimens.ten,
+                    ),
+                    Text(
+                      AppString.processing_data,
+                      style: TextStyle(
+                        color: Colors.grey[600],
+                        fontSize: Dimens.forteen,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+      transitionDuration: Duration(milliseconds: 200),
+      barrierDismissible: false,
+      barrierLabel: '',
+      context: context,
+      pageBuilder: (BuildContext context, Animation<double> animation,
+          Animation<double> secondaryAnimation) {},
+    );
+  }
+
 }

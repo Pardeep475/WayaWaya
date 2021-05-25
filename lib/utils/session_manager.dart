@@ -28,9 +28,18 @@ class SessionManager {
   }
 
   static Future<String> getDefaultMall() {
-    return _pref
-        .then((value) => value.getString(AppString.DEFAULT_MALL) ?? "");
+    return _pref.then((value) => value.getString(AppString.DEFAULT_MALL) ?? "");
   }
+
+  static void setCurrentDevice(String currentDevice) async {
+    _pref.then((value) => value.setString(AppString.CURRENT_DEVICE, currentDevice));
+  }
+
+  static Future<String> getCurrentDevice() {
+    return _pref.then((value) => value.getString(AppString.CURRENT_DEVICE) ?? "");
+  }
+
+//
 
 //   void setIsLogin(bool isLogin) async {
 //     _pref.then((value) => value.setBool(AppString.IS_LOGIN, isLogin));

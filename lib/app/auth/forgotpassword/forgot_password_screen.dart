@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:wayawaya/app/common/dialogs/common_error_dialog.dart';
 import 'package:wayawaya/common/custom_raise_button.dart';
 import 'package:wayawaya/network/live/model/api_response.dart';
 import 'package:wayawaya/utils/app_color.dart';
@@ -18,7 +20,8 @@ class ForgotPassword extends StatefulWidget {
 
 class ForgotPasswordState extends State<ForgotPassword> {
   var _formKey;
-  var _formKey2 ;
+  var _formKey2;
+
   TextEditingController _emailController;
   TextEditingController _codeController;
   TextEditingController _passController;
@@ -58,7 +61,7 @@ class ForgotPasswordState extends State<ForgotPassword> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                     Text(
+                    Text(
                       AppString.enter_your_email_phone_username,
                       style: TextStyle(
                         color: Colors.grey[500],
@@ -235,7 +238,6 @@ class ForgotPasswordState extends State<ForgotPassword> {
 
   // widget of email field
 
-
   commonErrorAndSuccessDialog(
       {String title,
       String content,
@@ -321,8 +323,7 @@ class ForgotPasswordState extends State<ForgotPassword> {
                                       _requestCodeApi();
                                     },
                                     child: Padding(
-                                      padding: EdgeInsets.fromLTRB(0,
-                                          5, 10, 5),
+                                      padding: EdgeInsets.fromLTRB(0, 5, 10, 5),
                                       child: Text(
                                         AppString.request_code.toUpperCase(),
                                         style: TextStyle(
@@ -342,8 +343,8 @@ class ForgotPasswordState extends State<ForgotPassword> {
                                       Navigator.pop(context);
                                     },
                                     child: Padding(
-                                      padding: EdgeInsets.fromLTRB(10,
-                                          5, 10, 5),
+                                      padding:
+                                          EdgeInsets.fromLTRB(10, 5, 10, 5),
                                       child: Text(
                                         AppString.cancel.toUpperCase(),
                                         style: TextStyle(
@@ -363,8 +364,7 @@ class ForgotPasswordState extends State<ForgotPassword> {
                                       _authenticationApiResponse();
                                     },
                                     child: Padding(
-                                      padding: EdgeInsets.fromLTRB(10,
-                                          5, 0, 5),
+                                      padding: EdgeInsets.fromLTRB(10, 5, 0, 5),
                                       child: Text(
                                         AppString.ok.toUpperCase(),
                                         style: TextStyle(
@@ -517,9 +517,50 @@ class ForgotPasswordState extends State<ForgotPassword> {
         _forgotPasswordBloc.forgotPasswordApi(
             _emailController.text, "FORGOT_PASSWORD");
       } else {
-        Utils.showSnackBar(AppString.check_your_internet_connectivity, context);
+        _showErrorDialog(
+          icon: Icon(
+            FontAwesomeIcons.exclamationTriangle,
+            color: AppColor.orange_500,
+          ),
+          title: AppString.login.toUpperCase(),
+          content: AppString.check_your_internet_connectivity,
+          buttonText: AppString.ok.toUpperCase(),
+          onPressed: () => Navigator.pop(context),
+        );
       }
     });
+  }
+
+  _showErrorDialog(
+      {Icon icon,
+      String title,
+      String content,
+      String buttonText,
+      VoidCallback onPressed}) {
+    showGeneralDialog(
+        barrierColor: Colors.black.withOpacity(0.1),
+        transitionBuilder: (context, a1, a2, widget) {
+          final curvedValue = Curves.easeInOutBack.transform(a1.value) - 1.0;
+          return Transform(
+            transform: Matrix4.translationValues(0.0, curvedValue * 200, 0.0),
+            child: AnimatedOpacity(
+              duration: Duration(milliseconds: 100),
+              opacity: a1.value,
+              child: CommonErrorDialog(
+                icon: icon,
+                title: title,
+                content: content,
+                buttonText: buttonText,
+                onPressed: onPressed,
+              ),
+            ),
+          );
+        },
+        transitionDuration: Duration(milliseconds: 200),
+        barrierDismissible: false,
+        barrierLabel: '',
+        context: context,
+        pageBuilder: (context, animation1, animation2) {});
   }
 
   // forgot password api (which send the reset email)
@@ -529,7 +570,16 @@ class ForgotPasswordState extends State<ForgotPassword> {
         _forgotPasswordBloc.forgotPasswordApi(
             _emailController.text, "REQUEST_CODE");
       } else {
-        Utils.showSnackBar(AppString.check_your_internet_connectivity, context);
+        _showErrorDialog(
+          icon: Icon(
+            FontAwesomeIcons.exclamationTriangle,
+            color: AppColor.orange_500,
+          ),
+          title: AppString.login.toUpperCase(),
+          content: AppString.check_your_internet_connectivity,
+          buttonText: AppString.ok.toUpperCase(),
+          onPressed: () => Navigator.pop(context),
+        );
       }
     });
   }
@@ -564,8 +614,16 @@ class ForgotPasswordState extends State<ForgotPassword> {
           _forgotPasswordBloc.authenticationCodeApi(_emailController.text,
               authenticationCodeModel, "AUTHENTICATE_CODE");
         } else {
-          Utils.showSnackBar(
-              AppString.check_your_internet_connectivity, context);
+          _showErrorDialog(
+            icon: Icon(
+              FontAwesomeIcons.exclamationTriangle,
+              color: AppColor.orange_500,
+            ),
+            title: AppString.login.toUpperCase(),
+            content: AppString.check_your_internet_connectivity,
+            buttonText: AppString.ok.toUpperCase(),
+            onPressed: () => Navigator.pop(context),
+          );
         }
       });
     }

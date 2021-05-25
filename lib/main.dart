@@ -1,12 +1,14 @@
 import 'dart:io';
 
 // import 'package:device_preview/device_preview.dart';
+import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:wayawaya/app/auth/signup/sign_up_screen.dart';
 import 'package:wayawaya/app/auth/splash/splash_screen.dart';
 import 'package:wayawaya/app/mall/mall_screen.dart';
 import 'package:wayawaya/utils/app_strings.dart';
+import 'package:wayawaya/utils/session_manager.dart';
 import 'package:wayawaya/utils/size_config.dart';
 import 'app/auth/forgotpassword/forgot_password_screen.dart';
 import 'app/auth/login/login_screen.dart';
@@ -23,7 +25,18 @@ Future<void> main() async {
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => MyAppState();
+}
+
+class MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    super.initState();
+    _getCurrentDeviceInfo();
+  }
+
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
@@ -90,6 +103,24 @@ class MyApp extends StatelessWidget {
             settings: settings,
           );
         }
+    }
+  }
+
+  _getCurrentDeviceInfo() async {
+    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    if (Platform.isAndroid) {
+      AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+      debugPrint(
+          'device_info_testing:- ${'${androidInfo.manufacturer}${AppString.DEVICE_SEPARATOR}${androidInfo.model}${AppString.DEVICE_SEPARATOR}ANDROID${androidInfo.version.release}'.toUpperCase().trim()}'); // e.g.
+      String finalDevice =
+          '${androidInfo.manufacturer}${AppString.DEVICE_SEPARATOR}${androidInfo.model}${AppString.DEVICE_SEPARATOR}ANDROID${androidInfo.version.release}'
+              .toUpperCase()
+              .trim();
+      SessionManager.setCurrentDevice(finalDevice ?? ""); // "Moto G (4)"
+    } else {
+      IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
+      debugPrint('device_info_testing ${iosInfo.utsname.machine}'); //
+      SessionManager.setCurrentDevice(iosInfo.utsname.machine ?? "");
     }
   }
 }

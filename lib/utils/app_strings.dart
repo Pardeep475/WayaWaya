@@ -10,7 +10,10 @@ class AppString {
   // session Manager
   static const IS_FIRST_TIME = "IS_FIRST_TIME";
   static const DEFAULT_MALL = "DEFAULT_MALL";
+  static const AUTH_HEADER = "AUTH_HEADER";
+  static const CURRENT_DEVICE = "CURRENT_DEVICE";
 
+  static const String DEVICE_SEPARATOR = "~^";
   static const String PRIVACY_POLICY_URL =
       "http://www.connectwayawaya.co.za/privacy-notice/";
   static const String TERMS_CONDITION_URL =
@@ -18,7 +21,7 @@ class AppString {
 
   static const app_name = "Waya Waya";
   static const check_your_internet_connectivity =
-      "Your Internet seems slow please check your internet connection";
+      "Unable to connect to server, please check your internet connection or try again later.";
   static const no_internet_connectivity =
       "Your device not connected to Internet please check your internet connection";
   static const no_service_found_exception = "No service found ";
@@ -56,6 +59,7 @@ class AppString {
   static const news_letter = "Newsletter";
   static const disagree = "DISAGREE";
   static const agree = "AGREE";
+  static const sorry = "Sorry";
   static const term_and_conditions = "Terms and Conditions";
   static const already_have_an_account = "Already have an Account?";
   static const enter_authentication_code = "Enter valid authentication code";
@@ -71,6 +75,8 @@ class AppString {
   static const unable_to_verify_email = "Unable to verify email";
   static const password_change_successfully = "Password changed successfully";
   static const select_your_default_mall = "Select Your Default Mall";
+  static const invalid_cred_check_user_name_and_password =
+      "Invalid Credentials. Check username and password.";
 
   // Routes
   static const LOGIN_SCREEN_ROUTE = "LOGIN_SCREEN_ROUTE";
@@ -81,6 +87,7 @@ class AppString {
 
 // db
   static const String ADMIN_DB_FILE = "admin.db";
+
   // table names
   static const String VENUE_PROFILE_TABLE_NAME = "venue_profile";
   static const String MENU_TABLE_NAME = "menu";
@@ -101,5 +108,4 @@ class AppString {
   static const String PARKING_TABLE_NAME = "parking";
   static const String CINEMAS_TABLE_NAME = "cinemas";
   static const String THEME_TABLE_NAME = "theme";
-
 }
