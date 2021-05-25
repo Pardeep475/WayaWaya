@@ -17,7 +17,7 @@ class ApiRepository {
   final _apiProvider = ApiBaseHelper();
 
   Future<dynamic> loginApiRepository(UserModel userModel) async {
-    String authHeader = await SessionManager.getDefaultMall();
+    String authHeader = await SessionManager.getAuthHeader();
     final response = await _apiProvider.post(
         url: NetworkConstants.login_end_point,
         params: userModelToJson(userModel),
@@ -27,8 +27,31 @@ class ApiRepository {
     return response;
   }
 
+  Future<dynamic> fetchUserDetailRepository({String authHeader,String email}) async {
+    // String authHeader = await SessionManager.getAuthHeader();
+    final response = await _apiProvider.get(
+        url: '${NetworkConstants.fetch_user_detail}/$email',
+        authHeader: authHeader);
+    return response;
+  }
+
+  Future<dynamic> fetchUserDetailApiRepository(
+      {String authHeader,
+      String userId,
+      dynamic data,
+      Map<String, dynamic> map}) async {
+    final response = await _apiProvider.fetchUserDetail(
+        url: '${NetworkConstants.fetch_user_detail}/$userId',
+        params: data,
+        authHeader: authHeader,
+        map: map);
+
+    // return UserApiResponse.fromJson(response);
+    return response;
+  }
+
   Future<dynamic> forgotPasswordApiRepository(String email) async {
-    String authHeader = await SessionManager.getDefaultMall();
+    String authHeader = await SessionManager.getAuthHeader();
     final response = await _apiProvider.get(
         url: '${NetworkConstants.forgot_password_end_point}$email',
         authHeader: authHeader);
@@ -37,7 +60,7 @@ class ApiRepository {
 
   Future<dynamic> authenticationCodeApiRepository(
       AuthenticationCodeModel authenticationCodeModel) async {
-    String authHeader = await SessionManager.getDefaultMall();
+    String authHeader = await SessionManager.getAuthHeader();
     final response = await _apiProvider.post(
         url: '${NetworkConstants.new_password_end_point}',
         params: authenticationCodeModelToJson(authenticationCodeModel),

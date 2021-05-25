@@ -9,9 +9,7 @@ import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/dimens.dart';
 import 'package:wayawaya/utils/session_manager.dart';
 import 'package:wayawaya/utils/utils.dart';
-import '../../../constants.dart';
 import 'bloc/login_bloc.dart';
-import 'model/user_api_response.dart';
 import 'model/user_model.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -412,7 +410,7 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  _loginComplete(UserApiResponse _userApiResponse) {}
+  _loginComplete() {}
 
   @override
   void dispose() {

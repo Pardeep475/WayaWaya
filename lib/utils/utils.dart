@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import 'app_color.dart';
 import 'app_strings.dart';
@@ -59,6 +60,17 @@ class Utils {
     return regex.hasMatch(email);
   }
 
+  static String dateConvert(String value, String format) {
+    try {
+      DateTime date = DateTime.parse(format);
+      String formattedDate = DateFormat(format).format(date.toLocal());
+      return formattedDate;
+    } catch (e) {
+      debugPrint('date_format_tesing:-   $e');
+      return '';
+    }
+  }
+
   static commonProgressDialog(BuildContext context) {
     showGeneralDialog(
       barrierColor: Colors.black.withOpacity(0.1),
@@ -106,7 +118,7 @@ class Utils {
     );
   }
 
-  static commonErrorDialog({BuildContext context,String icon,String ti}) {
+  static commonErrorDialog({BuildContext context, String icon, String ti}) {
     showGeneralDialog(
       barrierColor: Colors.black.withOpacity(0.1),
       transitionBuilder: (context, a1, a2, widget) {
@@ -152,5 +164,4 @@ class Utils {
           Animation<double> secondaryAnimation) {},
     );
   }
-
 }

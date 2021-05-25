@@ -73,14 +73,18 @@ class ApiBaseHelper {
     }
   }
 
-  Future<dynamic> patch({String url, dynamic params}) async {
+  Future<dynamic> fetchUserDetail(
+      {String url,
+      String authHeader,
+      dynamic params,
+      Map<String, dynamic> map}) async {
     try {
-      String authHeader = await SessionManager.getDefaultMall();
       debugPrint('api_url  :-  ${NetworkConstants.base_url}$url');
       debugPrint('auth_header  :-  $authHeader');
       debugPrint('api_params   :-   $params    ');
-      final response = await dio.post('${NetworkConstants.base_url}$url',
+      final response = await dio.patch('${NetworkConstants.base_url}$url',
           data: params,
+          queryParameters: map,
           options: Options(
             headers: {"Authorization": "Bearer $authHeader"},
           ));

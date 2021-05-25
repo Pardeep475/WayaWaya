@@ -1,5 +1,13 @@
-Map<String, dynamic> languageStoreModelToJson(LanguageStore data) =>
-    /*json.encode(*/ data.toJson() /*)*/;
+// Map<String, dynamic> languageStoreModelToJson(LanguageStore data) =>
+//     /*json.encode(*/ data.toJson() /*)*/;
+
+import 'dart:convert';
+
+LanguageStore languageStoreFromJson(String str) =>
+    LanguageStore.fromJson(json.decode(str));
+
+String languageStoreToJson(LanguageStore data) =>
+    json.encode(data.toJson());
 
 class LanguageStore{
   String language;
@@ -11,4 +19,9 @@ class LanguageStore{
     "language": language,
     "text": text,
   };
+
+  LanguageStore.fromJson(Map<String, dynamic> json) {
+    language = json['language'];
+    text = json['text'];
+  }
 }

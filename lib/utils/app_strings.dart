@@ -12,8 +12,16 @@ class AppString {
   static const DEFAULT_MALL = "DEFAULT_MALL";
   static const AUTH_HEADER = "AUTH_HEADER";
   static const CURRENT_DEVICE = "CURRENT_DEVICE";
+  static const JWT_TOKEN = "JWT_TOKEN";
+  static const REFRESH_TOKEN = "REFRESH_TOKEN";
+  static const USER_DATA = "USER_DATA";
 
   static const String DEVICE_SEPARATOR = "~^";
+  static const String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
+  static const String DATE_FORMAT_UPDATE = "yyyy-MM-dd hh:mm:ss a";
+  static const String DATE_FORMAT_WITHOUT_TIME = "yyyy-MM-dd 00:00:00";
+  static const String STATE = "state";
+
   static const String PRIVACY_POLICY_URL =
       "http://www.connectwayawaya.co.za/privacy-notice/";
   static const String TERMS_CONDITION_URL =

@@ -4,7 +4,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:wayawaya/app/auth/forgotpassword/model/authentication_code_model.dart';
 import 'package:wayawaya/app/auth/forgotpassword/model/error_response.dart';
-import 'package:wayawaya/app/auth/login/model/user_api_response.dart';
 import 'package:wayawaya/network/live/exception_handling/exception_handling.dart';
 import 'package:wayawaya/network/live/model/api_response.dart';
 import 'package:wayawaya/network/live/repository/api_repository.dart';

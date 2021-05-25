@@ -63,8 +63,11 @@ class _MallScreenState extends State<MallScreen> {
                     return InkWell(
                       onTap: () {
                         SessionManager.setFirstTime(true);
-                        SessionManager.setDefaultMall(snapshot.data[index].identifier);
-                        Navigator.pushReplacementNamed(context, AppString.LOGIN_SCREEN_ROUTE);
+                        SessionManager.setDefaultMall(
+                            snapshot.data[index].identifier);
+                        SessionManager.setAuthHeader(snapshot.data[index].key);
+                        Navigator.pushReplacementNamed(
+                            context, AppString.LOGIN_SCREEN_ROUTE);
                         // App.prefs.setBool('defaultMall', true);
                         // App.prefs.setString('selectedMall', getMallName(index).toString());
                         // printR(App.prefs.getString('selectedMall').toString());
