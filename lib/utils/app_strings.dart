@@ -68,6 +68,7 @@ class AppString {
   static const disagree = "DISAGREE";
   static const agree = "AGREE";
   static const sorry = "Sorry";
+  static const preferences = "PREFERENCES";
   static const term_and_conditions = "Terms and Conditions";
   static const already_have_an_account = "Already have an Account?";
   static const enter_authentication_code = "Enter valid authentication code";
@@ -92,6 +93,7 @@ class AppString {
   static const FORGOT_PASSWORD_SCREEN_ROUTE = "FORGOT_PASSWORD_SCREEN_ROUTE";
   static const SPLASH_SCREEN_ROUTE = "SPLASH_SCREEN_ROUTE";
   static const MALL_SCREEN_ROUTE = "MALL_SCREEN_ROUTE";
+  static const HOME_SCREEN_ROUTE = "HOME_SCREEN_ROUTE";
 
 // db
   static const String ADMIN_DB_FILE = "admin.db";

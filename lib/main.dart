@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:wayawaya/app/auth/home/home_screen.dart';
 import 'package:wayawaya/app/auth/signup/sign_up_screen.dart';
 import 'package:wayawaya/app/auth/splash/splash_screen.dart';
 import 'package:wayawaya/app/mall/mall_screen.dart';
@@ -91,6 +92,13 @@ class MyAppState extends State<MyApp> {
       case AppString.MALL_SCREEN_ROUTE:
         return PageTransition(
           child: MallScreen(),
+          type: PageTransitionType.rightToLeft,
+          settings: settings,
+        );
+        break;
+      case AppString.HOME_SCREEN_ROUTE:
+        return PageTransition(
+          child: HomeScreen(),
           type: PageTransitionType.rightToLeft,
           settings: settings,
         );

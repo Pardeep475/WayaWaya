@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:wayawaya/app/auth/forgotpassword/model/error_response.dart';
+import 'package:wayawaya/app/auth/login/model/guest_user_api_response.dart';
 import 'package:wayawaya/app/auth/login/model/user_data_response.dart';
 import 'package:wayawaya/app/auth/login/model/user_model.dart';
 import 'package:wayawaya/network/live/exception_handling/exception_handling.dart';
@@ -48,7 +49,7 @@ class LoginBloc {
         }
       } else {
         debugPrint('login_api_testing:-  $user');
-        _jwtParse(differ, user);
+        _jwtParse("USER_DETAILS", user);
         // loginSink.add(ApiResponse.completed(ErrorResponse(differ: differ)));
       }
     } catch (e) {
@@ -170,7 +171,7 @@ class LoginBloc {
           debugPrint("testing__:-   ${user.response.data['message']}");
         }
       } else {
-        loginSink.add(ApiResponse.completed(ErrorResponse(differ: differ)));
+        loginSuccess(user, differ);
       }
     } catch (e) {
       debugPrint("error_in_login_api:-  $e");
@@ -201,5 +202,91 @@ class LoginBloc {
 
   dispose() {
     _loginController?.close();
+  }
+
+  void loginSuccess(user, differ) async {
+    try {
+      String accessToken = await SessionManager.getJWTToken();
+
+      UserDataResponse userDataResponse = UserDataResponse(
+        accessToken: accessToken,
+        lastName: user.data['last_name'] == null
+            ? null
+            : user.data['last_name'].toString(),
+        username: user.data['user_name'] == null
+            ? null
+            : user.data['user_name'].toString(),
+        userId: user.data['_id'] == null ? null : user.data['_id'].toString(),
+        gender: user.data[''] == null ? null : user.data[''].toString(),
+        dob: user.data['date_of_birth'] == null
+            ? null
+            : user.data['date_of_birth'].toString(),
+        firstName: user.data['first_name'] == null
+            ? null
+            : user.data['first_name'].toString(),
+        cellnumber: user.data['cell_number_list'] == null
+            ? null
+            : user.data['cell_number_list'].toString(),
+        isLogin: true,
+        isTester: user.data['tester_flag'],
+        email: user.data['email_list'] == null
+            ? null
+            : user.data['email_list'].toString(),
+        clientApi: user.data['social_media'] == null
+            ? null
+            : user.data['social_media'].toString(),
+        loginType: user.data['social_media'] == null
+            ? null
+            : user.data['social_media'].toString(),
+        loyaltyStatus: user.data['loyalty_status'] == null
+            ? null
+            : user.data['loyalty_status'].toString(),
+        categories: user.data['preferences'] == null
+            ? null
+            : user.data['preferences']['categories'] == null
+                ? null
+                : user.data['preferences']['categories'].toString(),
+        notification: user.data['preferences'] == null
+            ? null
+            : user.data['preferences']['notification'] == null
+                ? null
+                : user.data['preferences']['notification'].toString(),
+        favouriteMall: user.data['preferences'] == null
+            ? null
+            : user.data['preferences']['favorite_malls'] == null
+                ? null
+                : user.data['preferences']['favorite_malls'].toString(),
+        language: user.data['preferences'] == null
+            ? null
+            : user.data['preferences']['default_language'] == null
+                ? null
+                : user.data['preferences']['default_language'].toString(),
+        currency: user.data['preferences'] == null
+            ? null
+            : user.data['preferences']['alternate_currency'] == null
+                ? null
+                : user.data['preferences']['alternate_currency'].toString(),
+        devices: user.data['devices'] == null
+            ? null
+            : user.data['devices'].toString(),
+        registrationDate: user.data['registration_date'] == null
+            ? null
+            : user.data['registration_date'].toString(),
+      );
+      SessionManager.setUserData(userDataResponseToJson(userDataResponse));
+
+      String userData = await SessionManager.getUserData();
+      UserDataResponse response = userDataResponseFromJson(userData);
+      debugPrint('login_response_tesing:-  ${response.cellnumber}');
+      loginSink.add(ApiResponse.completed(ErrorResponse(differ: differ)));
+    } catch (e) {
+      debugPrint("login_success_testing:-  error $e");
+      loginSink.add(
+        ApiResponse.error(
+          ErrorResponse(differ: differ, message: 'UserDetailError'),
+        ),
+      );
+
+    }
   }
 }

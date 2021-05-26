@@ -21,17 +21,18 @@ class UserDataResponse {
   bool isLogin;
   String loginType;
   String userId;
-  List<ContactNumber> cellnumber;
+  String cellnumber;
   String clientApi;
-  List<String> categories;
+  String categories;
   String favouriteMall;
   String currency;
   String language;
-  List<String> devices;
-  LoyaltyStatus loyaltyStatus;
+  String devices;
+  String loyaltyStatus;
   String gender;
   String registrationDate;
   bool isTester;
+  String notification;
 
   UserDataResponse(
       {this.firstName,
@@ -53,14 +54,13 @@ class UserDataResponse {
       this.loyaltyStatus,
       this.gender,
       this.registrationDate,
+      this.notification,
       this.isTester});
 
   UserDataResponse.fromJson(Map<String, dynamic> json) {
     firstName = json['firstName'];
     lastName = json['lastName'];
-    dob = json['dob'] != null && json['dob'] != ''
-        ? Utils.dateConvert(json['dob'].toString(), AppString.DATE_FORMAT)
-        : "";
+    dob = json['dob'] != null ? json['dob'].toString() : null;
     username = json['username'];
     email = json['email'];
     accessToken = json['accessToken'];
@@ -78,6 +78,7 @@ class UserDataResponse {
     gender = json['gender'];
     registrationDate = json['registrationDate'];
     isTester = json['isTester'];
+    notification = json['notification'];
   }
 
   Map<String, dynamic> toJson() {
@@ -102,6 +103,7 @@ class UserDataResponse {
     data['gender'] = this.gender;
     data['registrationDate'] = this.registrationDate;
     data['isTester'] = this.isTester;
+    data['notification'] = this.notification;
     return data;
   }
 }

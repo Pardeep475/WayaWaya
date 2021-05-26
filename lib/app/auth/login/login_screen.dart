@@ -182,7 +182,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         debugPrint("completed");
                         Navigator.pop(context);
                         Future.delayed(Duration(milliseconds: 100), () {
-                          // _loginComplete(snapshot.data.data);
+                          _loginComplete();
                         });
                       }
                       break;
@@ -206,17 +206,31 @@ class _LoginScreenState extends State<LoginScreen> {
                               onPressed: () => Navigator.pop(context),
                             );
                           } else {
-                            _showErrorDialog(
-                              icon: Icon(
-                                FontAwesomeIcons.exclamationTriangle,
-                                color: AppColor.orange_500,
-                              ),
-                              title: AppString.login.toUpperCase(),
-                              content:
-                                  AppString.check_your_internet_connectivity,
-                              buttonText: AppString.ok.toUpperCase(),
-                              onPressed: () => Navigator.pop(context),
-                            );
+                            if (snapshot.data.data.differ == 'USER_DETAILS') {
+                              _showErrorDialog(
+                                icon: Icon(
+                                  FontAwesomeIcons.exclamationTriangle,
+                                  color: AppColor.orange_500,
+                                ),
+                                title: AppString.login.toUpperCase(),
+                                content:
+                                    AppString.check_your_internet_connectivity,
+                                buttonText: AppString.preferences.toUpperCase(),
+                                onPressed: _loginComplete,
+                              );
+                            } else {
+                              _showErrorDialog(
+                                icon: Icon(
+                                  FontAwesomeIcons.exclamationTriangle,
+                                  color: AppColor.orange_500,
+                                ),
+                                title: AppString.login.toUpperCase(),
+                                content:
+                                    AppString.check_your_internet_connectivity,
+                                buttonText: AppString.ok.toUpperCase(),
+                                onPressed: () => Navigator.pop(context),
+                              );
+                            }
                           }
                         });
                       }
@@ -410,7 +424,10 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  _loginComplete() {}
+  _loginComplete() {
+    Navigator.pushNamedAndRemoveUntil(
+        context, AppString.HOME_SCREEN_ROUTE, (route) => false);
+  }
 
   @override
   void dispose() {
