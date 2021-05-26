@@ -15,6 +15,7 @@ class AppString {
   static const JWT_TOKEN = "JWT_TOKEN";
   static const REFRESH_TOKEN = "REFRESH_TOKEN";
   static const USER_DATA = "USER_DATA";
+  static const SMALL_DEFAULT_MALL_DATA = "SMALL_DEFAULT_MALL_DATA";
 
   static const String DEVICE_SEPARATOR = "~^";
   static const String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
@@ -52,6 +53,8 @@ class AppString {
   static const ok = "OK";
   static const mr = "Mr.";
   static const ms = "Ms.";
+  static const String USER_GENDER_MALE = "mr";
+  static const String USER_GENDER_FEMALE = "ms";
   static const forgot_password = "Forgot password?";
   static const not_account_yet = "No account yet? Create one";
   static const enter_valid_email_address = "Enter valid email address";

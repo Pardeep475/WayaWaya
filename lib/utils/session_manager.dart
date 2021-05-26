@@ -73,7 +73,17 @@ class SessionManager {
   }
 
   static Future<String> getUserData() {
-    return _pref.then((value) => value.getString(AppString.USER_DATA) ?? false);
+    return _pref.then((value) => value.getString(AppString.USER_DATA));
+  }
+
+  static void setSmallDefaultMallData(String smallMallDefaultData) async {
+    _pref.then((value) => value.setString(
+        AppString.SMALL_DEFAULT_MALL_DATA, smallMallDefaultData));
+  }
+
+  static Future<String> getSmallDefaultMallData() {
+    return _pref
+        .then((value) => value.getString(AppString.SMALL_DEFAULT_MALL_DATA));
   }
 
   void clearAllData() {

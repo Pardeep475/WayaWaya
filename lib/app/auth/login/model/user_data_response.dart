@@ -1,10 +1,5 @@
 import 'dart:convert';
 
-import 'package:wayawaya/app/auth/signup/model/contact_number.dart';
-import 'package:wayawaya/app/auth/signup/model/loyalty_status.dart';
-import 'package:wayawaya/utils/app_strings.dart';
-import 'package:wayawaya/utils/utils.dart';
-
 UserDataResponse userDataResponseFromJson(String str) =>
     UserDataResponse.fromJson(json.decode(str));
 

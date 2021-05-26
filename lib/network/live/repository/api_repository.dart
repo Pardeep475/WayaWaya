@@ -1,5 +1,6 @@
 import 'package:wayawaya/app/auth/forgotpassword/model/authentication_code_model.dart';
 import 'package:wayawaya/app/auth/login/model/user_model.dart';
+import 'package:wayawaya/app/auth/signup/model/sign_up_model.dart';
 import 'package:wayawaya/network/live/base/api_base_helper.dart';
 import 'package:wayawaya/utils/session_manager.dart';
 
@@ -27,26 +28,12 @@ class ApiRepository {
     return response;
   }
 
-  Future<dynamic> fetchUserDetailRepository({String authHeader,String email}) async {
+  Future<dynamic> fetchUserDetailRepository(
+      {String authHeader, String email}) async {
     // String authHeader = await SessionManager.getAuthHeader();
     final response = await _apiProvider.get(
         url: '${NetworkConstants.fetch_user_detail}/$email',
         authHeader: authHeader);
-    return response;
-  }
-
-  Future<dynamic> fetchUserDetailApiRepository(
-      {String authHeader,
-      String userId,
-      dynamic data,
-      Map<String, dynamic> map}) async {
-    final response = await _apiProvider.fetchUserDetail(
-        url: '${NetworkConstants.fetch_user_detail}/$userId',
-        params: data,
-        authHeader: authHeader,
-        map: map);
-
-    // return UserApiResponse.fromJson(response);
     return response;
   }
 
@@ -64,6 +51,15 @@ class ApiRepository {
     final response = await _apiProvider.post(
         url: '${NetworkConstants.new_password_end_point}',
         params: authenticationCodeModelToJson(authenticationCodeModel),
+        authHeader: authHeader);
+    return response;
+  }
+
+  Future<dynamic> registerUserApiRepository(SignUpModel signUpModel) async {
+    String authHeader = await SessionManager.getAuthHeader();
+    final response = await _apiProvider.post(
+        url: '${NetworkConstants.new_password_end_point}',
+        params: signUpModelToJson(signUpModel),
         authHeader: authHeader);
     return response;
   }

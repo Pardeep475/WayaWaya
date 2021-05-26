@@ -2,11 +2,19 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_holo_date_picker/date_picker.dart';
 import 'package:flutter_holo_date_picker/i18n/date_picker_i18n.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:wayawaya/app/auth/signup/model/sign_up_model.dart';
+import 'package:wayawaya/app/common/dialogs/common_error_dialog.dart';
+import 'package:wayawaya/app/common/model/contact_number.dart';
+import 'package:wayawaya/app/common/model/email_list.dart';
+import 'package:wayawaya/app/common/model/guest_preference.dart';
+import 'package:wayawaya/app/common/model/social_media.dart';
 import 'package:wayawaya/common/custom_raise_button.dart';
 import 'package:wayawaya/common/full_screen_privacy_policy_dialog.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/dimens.dart';
+import 'package:wayawaya/utils/session_manager.dart';
 import 'package:wayawaya/utils/utils.dart';
 import 'package:intl/intl.dart' as intl;
 
@@ -33,7 +41,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   bool privacyPolicy = false;
   DateTime _selectedDate;
 
-  var _signUpBloc;
+  SignUpBloc _signUpBloc;
 
   @override
   void initState() {
@@ -442,7 +450,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         validator: (value) {
           if (value.isEmpty) {
             return AppString.enter_valid_confirm_password;
-          } else if (value == _passwordController.text) {
+          } else if (value != _passwordController.text) {
             return AppString.password_and_confirm_password_must_be_same;
           } else {
             return null;
@@ -670,10 +678,181 @@ class _SignUpScreenState extends State<SignUpScreen> {
     }
   }
 
-  void _submitButtonPressed(BuildContext context) {
+  void _submitButtonPressed(BuildContext context) async {
     if (_formKey.currentState.validate() && _tncCheck == true) {
       _formKey.currentState.save();
+
+      Utils.checkConnectivity().then((value) async {
+        if (value) {
+          SignUpModel signUpModel = await _getSignUpModel();
+          _signUpBloc.registerApi(signUpModel, "SIGN_UP_API");
+        } else {
+          _showErrorDialog(
+            icon: Icon(
+              FontAwesomeIcons.exclamationTriangle,
+              color: AppColor.orange_500,
+            ),
+            title: AppString.login.toUpperCase(),
+            content: AppString.check_your_internet_connectivity,
+            buttonText: AppString.ok.toUpperCase(),
+            onPressed: () => Navigator.pop(context),
+          );
+        }
+      });
     }
+  }
+
+  Future<SignUpModel> _getSignUpModel() async {
+    SignUpModel _signUpModel = SignUpModel();
+    _signUpModel.firstName = _firstNameController.text;
+    _signUpModel.lastName = _lastNameController.text;
+    _signUpModel.password = _passwordController.text;
+    _signUpModel.emailList = _getEmailList();
+    _signUpModel.title = _getGender();
+    _signUpModel.dateOfBirth =
+        Utils.dateConvert(_selectedDate.toString(), AppString.DATE_FORMAT);
+    _signUpModel.cellNumberList = _getCellNumberList();
+    _signUpModel.socialMedia = _getSocialMedia();
+    _signUpModel.timeZone =
+        Utils.dateConvert(DateTime.now().toString(), 'yyyy-MM-ddTHH:mm:ss');
+    _signUpModel.registrationDate =
+        Utils.dateConvert(DateTime.now().toString(), AppString.DATE_FORMAT);
+    _signUpModel.agreeNotifications = false;
+    _signUpModel.agreeTnc = _tncCheck;
+    _signUpModel.agreeNewsletter = _newsCheck;
+    _signUpModel.userName = _emailController.text;
+    _signUpModel.testerFlag = false;
+    _signUpModel.devices = await _getDevicesList();
+    _signUpModel.preferences = await getPreferences();
+
+    return _signUpModel;
+  }
+
+  Future<Preferences> getPreferences() async {
+    String mallId = await SessionManager.getDefaultMall();
+    dynamic mallData = await SessionManager.getSmallDefaultMallData();
+    String currency = _getCurrency(mallData);
+    String language = _getLanguageCode(mallData);
+
+    Preferences _preferences = Preferences(
+        alternateCurrency: currency,
+        favoriteMalls: mallId,
+        notification: 12,
+        defaultLanguage: language);
+
+    return _preferences;
+  }
+
+  int _getNotification(dynamic mallData) {
+    try {
+      String defaultNotification;
+      List _notificationList = mallData['notification_list'];
+      _notificationList.forEach((element) {
+        if (element['local'] == true) {
+          List notificationLabel = element['notification_label'];
+
+          // notificationLabel.forEach((value) {
+          //   defaultNotification
+          // });
+
+          List notificationSplit = element.trim().split(" ");
+        }
+      });
+    } catch (e) {
+      return 6;
+    }
+  }
+
+  String _getLanguageCode(dynamic mallData) {
+    try {
+      return mallData['language_list'][0]['code'];
+    } catch (e) {
+      return '';
+    }
+  }
+
+  String _getCurrency(dynamic mallData) {
+    try {
+      return '${mallData['currency_list'][0]['code']}, ${mallData['currency_list'][0]['country_code']}';
+    } catch (e) {
+      return '';
+    }
+  }
+
+  SocialMedia _getSocialMedia() {
+    SocialMedia _socialMedia =
+        SocialMedia(type: 'normal', socialId: '', token: '');
+    return _socialMedia;
+  }
+
+  Future<List<String>> _getDevicesList() async {
+    List<String> _deviceList = [];
+    String _device = await SessionManager.getCurrentDevice();
+    if (_device != null)
+      _deviceList.add(_device);
+    else
+      _deviceList.add('');
+    return _deviceList;
+  }
+
+  List<CellNumberList> _getCellNumberList() {
+    List<CellNumberList> _cellNumberList = [];
+    CellNumberList _cellNumber =
+        CellNumberList(data: _phoneController.text ?? "", type: 'mobile');
+    _cellNumberList.add(_cellNumber);
+    return _cellNumberList;
+  }
+
+  EmailList _getEmailList() {
+    EmailList _emailList = EmailList();
+    _emailList.type = "primary";
+    _emailList.mode = "primary";
+    _emailList.value = _emailController.text;
+    return _emailList;
+  }
+
+  String _getGender() {
+    String gender = "";
+    if (_groupValue == 0) {
+      gender = AppString.USER_GENDER_MALE;
+    } else if (_groupValue == 1) {
+      gender = AppString.USER_GENDER_FEMALE;
+    } else {
+      gender = "unknown";
+    }
+    return gender;
+  }
+
+  _showErrorDialog(
+      {Icon icon,
+      String title,
+      String content,
+      String buttonText,
+      VoidCallback onPressed}) {
+    showGeneralDialog(
+        barrierColor: Colors.black.withOpacity(0.1),
+        transitionBuilder: (context, a1, a2, widget) {
+          final curvedValue = Curves.easeInOutBack.transform(a1.value) - 1.0;
+          return Transform(
+            transform: Matrix4.translationValues(0.0, curvedValue * 200, 0.0),
+            child: AnimatedOpacity(
+              duration: Duration(milliseconds: 100),
+              opacity: a1.value,
+              child: CommonErrorDialog(
+                icon: icon,
+                title: title,
+                content: content,
+                buttonText: buttonText,
+                onPressed: onPressed,
+              ),
+            ),
+          );
+        },
+        transitionDuration: Duration(milliseconds: 200),
+        barrierDismissible: false,
+        barrierLabel: '',
+        context: context,
+        pageBuilder: (context, animation1, animation2) {});
   }
 
   @override
