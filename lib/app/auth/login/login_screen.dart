@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:wayawaya/app/auth/forgotpassword/model/error_response.dart';
 import 'package:wayawaya/app/common/dialogs/common_error_dialog.dart';
 import 'package:wayawaya/common/custom_raise_button.dart';
@@ -397,6 +398,14 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   _forgotButtonPressed(BuildContext context) {
+    // try {
+    //   print(DateTime.now().toUtc().timeZoneOffset);
+    //   print(DateTime.now().timeZoneOffset);
+    //   print(DateFormat("Z").format(DateTime.now()));
+    // } catch (e) {
+    //   debugPrint('time_zone:-  $e');
+    // }
+
     Navigator.pushNamed(context, AppString.FORGOT_PASSWORD_SCREEN_ROUTE);
   }
 

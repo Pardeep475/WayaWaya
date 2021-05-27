@@ -10,14 +10,14 @@ class EmailList {
   String mode;
 
   factory EmailList.fromJson(Map<String, dynamic> json) => EmailList(
-    type: json["type"] == null ? null : json["type"],
-    value: json["value"] == null ? null : json["value"],
-    mode: json["mode"] == null ? null : json["mode"],
+    type: json["type"] == null ? '' : json["type"],
+    value: json["value"] == null ? '' : json["value"],
+    mode: json["mode"] == null ? '' : json["mode"],
   );
 
   Map<String, dynamic> toJson() => {
-    "type": type == null ? null : type,
-    "value": value == null ? null : value,
-    "mode": mode == null ? null : mode,
+    "type": type == null ? '' : type,
+    "value": value == null ? '' : value,
+    "mode": mode == null ? '' : mode,
   };
 }

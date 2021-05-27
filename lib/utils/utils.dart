@@ -62,7 +62,7 @@ class Utils {
 
   static String dateConvert(String value, String format) {
     try {
-      DateTime date = DateTime.parse(format);
+      DateTime date = DateTime.parse(value);
       String formattedDate = DateFormat(format).format(date.toLocal());
       return formattedDate;
     } catch (e) {

@@ -58,7 +58,7 @@ class ApiRepository {
   Future<dynamic> registerUserApiRepository(SignUpModel signUpModel) async {
     String authHeader = await SessionManager.getAuthHeader();
     final response = await _apiProvider.post(
-        url: '${NetworkConstants.new_password_end_point}',
+        url: '${NetworkConstants.register_user_end_point}',
         params: signUpModelToJson(signUpModel),
         authHeader: authHeader);
     return response;

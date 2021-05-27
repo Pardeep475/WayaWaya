@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_holo_date_picker/date_picker.dart';
 import 'package:flutter_holo_date_picker/i18n/date_picker_i18n.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:wayawaya/app/auth/forgotpassword/model/error_response.dart';
 import 'package:wayawaya/app/auth/signup/model/sign_up_model.dart';
 import 'package:wayawaya/app/common/dialogs/common_error_dialog.dart';
 import 'package:wayawaya/app/common/model/contact_number.dart';
@@ -11,6 +14,7 @@ import 'package:wayawaya/app/common/model/guest_preference.dart';
 import 'package:wayawaya/app/common/model/social_media.dart';
 import 'package:wayawaya/common/custom_raise_button.dart';
 import 'package:wayawaya/common/full_screen_privacy_policy_dialog.dart';
+import 'package:wayawaya/network/live/model/api_response.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/dimens.dart';
@@ -82,52 +86,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
     }
   }
 
-  // errorDialog() {
-  //   showDialog(
-  //     context: context,
-  //     barrierDismissible: false,
-  //     builder: (_) => AlertDialog(
-  //       title: Container(
-  //         child: Row(
-  //           children: [
-  //             Icon(
-  //               FontAwesomeIcons.exclamationCircle,
-  //               color: Colors.red,
-  //             ),
-  //             SizedBox(
-  //               width: 10,
-  //             ),
-  //             Text('Sorry'),
-  //           ],
-  //         ),
-  //       ),
-  //       content: Container(
-  //         child: Text(
-  //           'Invalid Credentials. Check username and password.',
-  //           style: TextStyle(
-  //             color: Colors.grey[600],
-  //             fontSize: 14,
-  //           ),
-  //         ),
-  //       ),
-  //       actions: <Widget>[
-  //         TextButton(
-  //           child: Text(
-  //             'OK',
-  //             style: TextStyle(
-  //               color: black,
-  //               fontSize: 15,
-  //             ),
-  //           ),
-  //           onPressed: () {
-  //             Navigator.of(context).pop();
-  //           },
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -161,33 +119,115 @@ class _SignUpScreenState extends State<SignUpScreen> {
         _privacyLabel(),
         _alreadyHaveAnAccountLabel(),
       ],
-      body: SafeArea(
-        child: Form(
-          key: _formKey,
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                _radioButtonWidget(),
-                Container(
-                  margin: EdgeInsets.symmetric(horizontal: Dimens.ten),
-                  child: Column(
-                    children: [
-                      _emailWidget(),
-                      _firstNameWidget(),
-                      _lastNameWidget(),
-                      _dobWidget(),
-                      _passwordWidget(),
-                      _confirmPasswordWidget(),
-                      _phoneNumberWidget(),
-                    ],
-                  ),
+      body: Stack(
+        children: [
+          SafeArea(
+            child: Form(
+              key: _formKey,
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    _radioButtonWidget(),
+                    Container(
+                      margin: EdgeInsets.symmetric(horizontal: Dimens.ten),
+                      child: Column(
+                        children: [
+                          _emailWidget(),
+                          _firstNameWidget(),
+                          _lastNameWidget(),
+                          _dobWidget(),
+                          _passwordWidget(),
+                          _confirmPasswordWidget(),
+                          _phoneNumberWidget(),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
-        ),
+          StreamBuilder<ApiResponse<ErrorResponse>>(
+            stream: _signUpBloc.signUpStream,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                switch (snapshot.data.status) {
+                  case Status.LOADING:
+                    Future.delayed(Duration(milliseconds: 200), () {
+                      Utils.commonProgressDialog(context);
+                    });
+                    return Container(
+                      width: MediaQuery.of(context).size.width,
+                      color: Colors.transparent,
+                      height: MediaQuery.of(context).size.height,
+                    );
+                    break;
+                  case Status.COMPLETED:
+                    {
+                      debugPrint("completed");
+                      Navigator.pop(context);
+                      Future.delayed(Duration(milliseconds: 100), () {
+                        _loginComplete();
+                      });
+                    }
+                    break;
+                  case Status.ERROR:
+                    {
+                      Navigator.pop(context);
+                      Future.delayed(Duration(milliseconds: 100), () {
+                        debugPrint("Error error ${snapshot.data.data.message}");
+
+                        if (snapshot.data.data.differ == 'SIGN_UP_API') {
+                          _showErrorDialog(
+                            icon: Icon(
+                              FontAwesomeIcons.exclamationCircle,
+                              color: AppColor.red_500,
+                            ),
+                            title: AppString.sorry,
+                            content: snapshot.data.data.message,
+                            buttonText: AppString.ok.toUpperCase(),
+                            onPressed: () => Navigator.pop(context),
+                          );
+                        } else if (snapshot.data.data.differ ==
+                            'USER_DETAILS') {
+                          _showErrorDialog(
+                            icon: Icon(
+                              FontAwesomeIcons.exclamationTriangle,
+                              color: AppColor.orange_500,
+                            ),
+                            title: AppString.error.toUpperCase(),
+                            content: AppString.check_your_internet_connectivity,
+                            buttonText: AppString.preferences.toUpperCase(),
+                            onPressed: _loginComplete,
+                          );
+                        } else {
+                          _showErrorDialog(
+                            icon: Icon(
+                              FontAwesomeIcons.exclamationTriangle,
+                              color: AppColor.orange_500,
+                            ),
+                            title: AppString.error.toUpperCase(),
+                            content: AppString.check_your_internet_connectivity,
+                            buttonText: AppString.ok.toUpperCase(),
+                            onPressed: () => Navigator.pop(context),
+                          );
+                        }
+                      });
+                    }
+                    break;
+                }
+              }
+              return SizedBox();
+            },
+          ),
+        ],
       ),
     );
+  }
+
+  _loginComplete() {
+    Navigator.pushNamedAndRemoveUntil(
+        context, AppString.HOME_SCREEN_ROUTE, (route) => false);
   }
 
   Widget _radioButtonWidget() => Container(
@@ -703,6 +743,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   Future<SignUpModel> _getSignUpModel() async {
+    debugPrint("date_of_birth:-   $_selectedDate");
     SignUpModel _signUpModel = SignUpModel();
     _signUpModel.firstName = _firstNameController.text;
     _signUpModel.lastName = _lastNameController.text;
@@ -713,8 +754,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         Utils.dateConvert(_selectedDate.toString(), AppString.DATE_FORMAT);
     _signUpModel.cellNumberList = _getCellNumberList();
     _signUpModel.socialMedia = _getSocialMedia();
-    _signUpModel.timeZone =
-        Utils.dateConvert(DateTime.now().toString(), 'yyyy-MM-ddTHH:mm:ss');
+    _signUpModel.timeZone = '+0530';
     _signUpModel.registrationDate =
         Utils.dateConvert(DateTime.now().toString(), AppString.DATE_FORMAT);
     _signUpModel.agreeNotifications = false;
@@ -729,18 +769,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   Future<Preferences> getPreferences() async {
-    String mallId = await SessionManager.getDefaultMall();
-    dynamic mallData = await SessionManager.getSmallDefaultMallData();
-    String currency = _getCurrency(mallData);
-    String language = _getLanguageCode(mallData);
+    try {
+      String mallId = await SessionManager.getDefaultMall();
+      dynamic mallData = await SessionManager.getSmallDefaultMallData();
+      dynamic value = json.decode(mallData);
+      String currency = _getCurrency(value);
+      String language = _getLanguageCode(value);
+      Preferences _preferences = Preferences(
+          alternateCurrency: currency,
+          favoriteMalls: mallId,
+          notification: 12,
+          defaultLanguage: language);
 
-    Preferences _preferences = Preferences(
-        alternateCurrency: currency,
-        favoriteMalls: mallId,
-        notification: 12,
-        defaultLanguage: language);
-
-    return _preferences;
+      return _preferences;
+    } catch (e) {
+      return null;
+    }
   }
 
   int _getNotification(dynamic mallData) {
@@ -759,7 +803,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         }
       });
     } catch (e) {
-      return 6;
+      return 12;
     }
   }
 
@@ -857,13 +901,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   void dispose() {
-    if (_emailController != null) _emailController.dispose();
-    if (_firstNameController != null) _firstNameController.dispose();
-    if (_lastNameController != null) _lastNameController.dispose();
-    if (_dobController != null) _dobController.dispose();
-    if (_passwordController != null) _passwordController.dispose();
-    if (_confirmPassController != null) _confirmPassController.dispose();
-    if (_phoneController != null) _phoneController.dispose();
+    // if (_emailController != null) _emailController.dispose();
+    // if (_firstNameController != null) _firstNameController.dispose();
+    // if (_lastNameController != null) _lastNameController.dispose();
+    // if (_dobController != null) _dobController.dispose();
+    // if (_passwordController != null) _passwordController.dispose();
+    // if (_confirmPassController != null) _confirmPassController.dispose();
+    // if (_phoneController != null) _phoneController.dispose();
     super.dispose();
   }
 }

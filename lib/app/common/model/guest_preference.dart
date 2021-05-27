@@ -15,27 +15,27 @@ class Preferences {
 
   factory Preferences.fromJson(Map<String, dynamic> json) => Preferences(
         favoriteMalls:
-            json["favorite_malls"] == null ? null : json["favorite_malls"],
+            json["favorite_malls"] == null ? '' : json["favorite_malls"],
         categories: json["categories"] == null
-            ? null
+            ? []
             : List<String>.from(json["categories"].map((x) => x)),
         defaultLanguage:
-            json["default_language"] == null ? null : json["default_language"],
+            json["default_language"] == null ? '' : json["default_language"],
         notification:
-            json["notification"] == null ? null : json["notification"],
+            json["notification"] == null ? '' : json["notification"],
         alternateCurrency: json["alternate_currency"] == null
-            ? null
+            ? ''
             : json["alternate_currency"],
       );
 
   Map<String, dynamic> toJson() => {
-        "favorite_malls": favoriteMalls == null ? null : favoriteMalls,
+        "favorite_malls": favoriteMalls == null ? '' : favoriteMalls,
         "categories": categories == null
-            ? null
+            ? []
             : List<dynamic>.from(categories.map((x) => x)),
-        "default_language": defaultLanguage == null ? null : defaultLanguage,
-        "notification": notification == null ? null : notification,
+        "default_language": defaultLanguage == null ? '' : defaultLanguage,
+        "notification": notification == null ? '0' : notification,
         "alternate_currency":
-            alternateCurrency == null ? null : alternateCurrency,
+            alternateCurrency == null ? '' : alternateCurrency,
       };
 }
