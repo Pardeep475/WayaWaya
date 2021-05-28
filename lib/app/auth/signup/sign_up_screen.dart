@@ -564,18 +564,36 @@ class _SignUpScreenState extends State<SignUpScreen> {
       );
 
   Widget _privacyLabel() => InkWell(
-        onTap: () {
+        onTap: () async {
           debugPrint('privacy policy');
-          Navigator.push(
-            context,
-            FullScreenPrivacyPolicyDialog(
-                title: AppString.privacy_policy,
-                url: AppString.PRIVACY_POLICY_URL),
-          ).then((value) {
-            if (value != null) privacyPolicy = value;
+          try {
+            dynamic mallData = await SessionManager.getSmallDefaultMallData();
+            dynamic value = json.decode(mallData);
+            debugPrint('privacy_policy_url:---->   ${value['privacy_policy_url'][0]['text']}');
+            dynamic ppUrl = value['privacy_policy_url'][0]['text'];
 
-            debugPrint('Privacy Policy   $privacyPolicy');
-          });
+            Navigator.push(
+              context,
+              FullScreenPrivacyPolicyDialog(
+                  title: AppString.privacy_policy, url: ppUrl),
+            ).then((value) {
+              if (value != null) privacyPolicy = value;
+
+              debugPrint('Privacy Policy   $privacyPolicy');
+            });
+          } catch (e) {
+            debugPrint('privacy_policy_url:---->   error');
+            Navigator.push(
+              context,
+              FullScreenPrivacyPolicyDialog(
+                  title: AppString.privacy_policy,
+                  url: AppString.PRIVACY_POLICY_URL),
+            ).then((value) {
+              if (value != null) privacyPolicy = value;
+
+              debugPrint('Privacy Policy   $privacyPolicy');
+            });
+          }
         },
         child: Container(
           width: MediaQuery.of(context).size.width,
@@ -694,27 +712,47 @@ class _SignUpScreenState extends State<SignUpScreen> {
         ),
       );
 
-  _termAndConditionOnClick() {
+  _termAndConditionOnClick() async {
     debugPrint('Term and condition');
     if (_tncCheck) {
       _tncCheck = false;
       _signUpBloc.tACSink.add(_tncCheck);
     } else {
-      Navigator.push(
-        context,
-        FullScreenPrivacyPolicyDialog(
-            title: AppString.term_and_conditions,
-            url: AppString.TERMS_CONDITION_URL),
-      ).then((value) {
-        setState(() {
-          if (value != null) {
-            _tncCheck = value;
-            _signUpBloc.tACSink.add(_tncCheck);
+      try {
+        dynamic mallData = await SessionManager.getSmallDefaultMallData();
+        dynamic value = json.decode(mallData);
+        dynamic tAcUrl = value['terms_and_conditions_url'][0]['text'];
+        Navigator.push(
+          context,
+          FullScreenPrivacyPolicyDialog(
+              title: AppString.term_and_conditions, url: tAcUrl),
+        ).then((value) {
+          setState(() {
+            if (value != null) {
+              _tncCheck = value;
+              _signUpBloc.tACSink.add(_tncCheck);
 
-            debugPrint('Term and condition  --->  $_tncCheck');
-          }
+              debugPrint('Term and condition  --->  $_tncCheck');
+            }
+          });
         });
-      });
+      } catch (e) {
+        Navigator.push(
+          context,
+          FullScreenPrivacyPolicyDialog(
+              title: AppString.term_and_conditions,
+              url: AppString.TERMS_CONDITION_URL),
+        ).then((value) {
+          setState(() {
+            if (value != null) {
+              _tncCheck = value;
+              _signUpBloc.tACSink.add(_tncCheck);
+
+              debugPrint('Term and condition  --->  $_tncCheck');
+            }
+          });
+        });
+      }
     }
   }
 

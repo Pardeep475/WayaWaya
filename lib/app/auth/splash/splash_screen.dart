@@ -62,7 +62,8 @@ class _SplashScreenState extends State<SplashScreen> {
       Navigator.pushReplacementNamed(context, AppString.LOGIN_SCREEN_ROUTE);
     } else {
       // open login screen
-      Navigator.pushReplacementNamed(context, AppString.HOME_SCREEN_ROUTE);
+      Navigator.pushReplacementNamed(context, AppString.LOGIN_SCREEN_ROUTE);
+      // Navigator.pushReplacementNamed(context, AppString.HOME_SCREEN_ROUTE);
     }
   }
 

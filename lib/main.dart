@@ -62,8 +62,8 @@ class MyAppState extends State<MyApp> {
               scaffoldBackgroundColor: Colors.grey[100]),
           debugShowCheckedModeBanner: false,
           onGenerateRoute: _customGenerateRoute,
-          // home: isFirstTime ? SplashScreen() : MallScreen(),
-          home: SelectPreferencesScreen(),
+          home: isFirstTime ? SplashScreen() : MallScreen(),
+          // home: SelectPreferencesScreen(),
         );
       });
     });

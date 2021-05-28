@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/dimens.dart';
+import 'package:webview_flutter/platform_interface.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import 'bloc/web_view_bloc.dart';
@@ -89,8 +90,14 @@ class FullScreenPrivacyPolicyDialog extends ModalRoute<bool> {
               child: Stack(
                 children: [
                   WebView(
-                    initialUrl: this.url ?? AppString.PRIVACY_POLICY_URL,
+                    initialUrl:
+                        Uri.dataFromString(this.url, mimeType: 'text/html',parameters: { 'charset': 'utf-8' }).toString()
+                                 ??
+                            AppString.PRIVACY_POLICY_URL,
                     javascriptMode: JavascriptMode.unrestricted,
+                    onWebResourceError: (WebResourceError error) {
+                      print("WebView_error:- $error");
+                    },
                     onWebViewCreated: (WebViewController webViewController) {
                       _controller.complete(webViewController);
                     },
