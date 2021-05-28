@@ -30,6 +30,9 @@ class _LoginScreenState extends State<LoginScreen> {
   void initState() {
     super.initState();
     _initViews();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      SessionManager.setISLoginScreenVisible(true);
+    });
   }
 
   _initViews() {
@@ -115,7 +118,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                 // onTap: () => Navigator.of(context)
                                 //     .push(MaterialPageRoute(builder: (_) => Preferences())),
                                 onTap: () {
-                                  debugPrint('skip button pressed');
+                                  Navigator.pushNamedAndRemoveUntil(
+                                      context,
+                                      AppString.SELECT_PREFERENCES_SCREEN_ROUTE,
+                                      (route) => false);
                                 },
                                 child: const Padding(
                                   padding:

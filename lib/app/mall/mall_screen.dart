@@ -69,7 +69,7 @@ class _MallScreenState extends State<MallScreen> {
                         SessionManager.setSmallDefaultMallData(
                             snapshot.data[index].venue_data);
                         Navigator.pushReplacementNamed(
-                            context, AppString.LOGIN_SCREEN_ROUTE);
+                            context, AppString.SPLASH_SCREEN_ROUTE);
                         // App.prefs.setBool('defaultMall', true);
                         // App.prefs.setString('selectedMall', getMallName(index).toString());
                         // printR(App.prefs.getString('selectedMall').toString());

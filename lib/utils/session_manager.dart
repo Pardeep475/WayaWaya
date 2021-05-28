@@ -86,6 +86,16 @@ class SessionManager {
         .then((value) => value.getString(AppString.SMALL_DEFAULT_MALL_DATA));
   }
 
+  static void setISLoginScreenVisible(bool isLoginScreenVisible) async {
+    _pref.then((value) =>
+        value.setBool(AppString.IS_LOGIN_SCREEN_VISIBLE, isLoginScreenVisible));
+  }
+
+  static Future<bool> getISLoginScreenVisible() {
+    return _pref.then(
+        (value) => value.getBool(AppString.IS_LOGIN_SCREEN_VISIBLE) ?? false);
+  }
+
   void clearAllData() {
     _pref.then((value) {
       value.clear();

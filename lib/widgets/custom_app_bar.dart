@@ -46,7 +46,7 @@ class _MyAppBarState extends State<MyAppBar> {
   String _selectedMall;
 
   getMallLogo() {
-    _selectedMall = App.prefs.get('selectedMall');
+    _selectedMall = 'Dobsonville Mall';
     print(_selectedMall);
     switch (_selectedMall) {
       case 'Dobsonville Mall':
@@ -79,8 +79,8 @@ class _MyAppBarState extends State<MyAppBar> {
   @override
   void initState() {
     super.initState();
-    _loggedIn = App.prefs.getString('email');
-    _selectedMall = App.prefs.get('selectedMall');
+    _loggedIn = 'Pardeep Kumar';
+    _selectedMall = 'Dobsonville Mall';
     getMallLogo();
     print(_loggedIn);
   }

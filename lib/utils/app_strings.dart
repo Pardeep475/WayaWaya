@@ -7,11 +7,14 @@ class AppString {
 
   AppString._internal();
 
+  static const DEFAULT_MALL_KEY = 'twG0iiIbMw3IxS5MMw|R6f29ZKdAz7TaDA1cJFFSwtysP88doc_Vwq8EbJfPIN2I';
+
   // session Manager
   static const IS_FIRST_TIME = "IS_FIRST_TIME";
   static const DEFAULT_MALL = "DEFAULT_MALL";
   static const AUTH_HEADER = "AUTH_HEADER";
   static const CURRENT_DEVICE = "CURRENT_DEVICE";
+  static const IS_LOGIN_SCREEN_VISIBLE = "IS_LOGIN_SCREEN_VISIBLE";
   static const JWT_TOKEN = "JWT_TOKEN";
   static const REFRESH_TOKEN = "REFRESH_TOKEN";
   static const USER_DATA = "USER_DATA";
@@ -97,6 +100,7 @@ class AppString {
   static const SPLASH_SCREEN_ROUTE = "SPLASH_SCREEN_ROUTE";
   static const MALL_SCREEN_ROUTE = "MALL_SCREEN_ROUTE";
   static const HOME_SCREEN_ROUTE = "HOME_SCREEN_ROUTE";
+  static const SELECT_PREFERENCES_SCREEN_ROUTE = "SELECT_PREFERENCES_SCREEN_ROUTE";
 
 // db
   static const String ADMIN_DB_FILE = "admin.db";

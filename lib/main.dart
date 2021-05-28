@@ -8,6 +8,7 @@ import 'package:wayawaya/app/auth/home/home_screen.dart';
 import 'package:wayawaya/app/auth/signup/sign_up_screen.dart';
 import 'package:wayawaya/app/auth/splash/splash_screen.dart';
 import 'package:wayawaya/app/mall/mall_screen.dart';
+import 'package:wayawaya/app/preferences/select_preferences_screen.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/session_manager.dart';
 import 'package:wayawaya/utils/size_config.dart';
@@ -22,16 +23,25 @@ Future<void> main() async {
   // await _superAdminDatabaseHelper.initDataBase();
 
   await SuperAdminDatabaseHelper.initDataBase();
-
-  runApp(MyApp());
+  bool isFirstTime = await SessionManager.isFirstTime();
+  runApp(MyApp(isFirstTime: isFirstTime));
 }
 
 class MyApp extends StatefulWidget {
+  final bool isFirstTime;
+
+  MyApp({this.isFirstTime});
+
   @override
-  State<StatefulWidget> createState() => MyAppState();
+  State<StatefulWidget> createState() =>
+      MyAppState(isFirstTime: this.isFirstTime);
 }
 
 class MyAppState extends State<MyApp> {
+  final bool isFirstTime;
+
+  MyAppState({this.isFirstTime});
+
   @override
   void initState() {
     super.initState();
@@ -52,7 +62,8 @@ class MyAppState extends State<MyApp> {
               scaffoldBackgroundColor: Colors.grey[100]),
           debugShowCheckedModeBanner: false,
           onGenerateRoute: _customGenerateRoute,
-          home: SplashScreen(),
+          // home: isFirstTime ? SplashScreen() : MallScreen(),
+          home: SelectPreferencesScreen(),
         );
       });
     });
@@ -99,6 +110,13 @@ class MyAppState extends State<MyApp> {
       case AppString.HOME_SCREEN_ROUTE:
         return PageTransition(
           child: HomeScreen(),
+          type: PageTransitionType.rightToLeft,
+          settings: settings,
+        );
+        break;
+      case AppString.SELECT_PREFERENCES_SCREEN_ROUTE:
+        return PageTransition(
+          child: SelectPreferencesScreen(),
           type: PageTransitionType.rightToLeft,
           settings: settings,
         );

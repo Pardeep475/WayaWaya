@@ -16,7 +16,7 @@ class MallBloc {
 
   getMallData() async {
     List<MallProfileModel> _mallList =
-        await SuperAdminDatabaseHelper.getVenueProfile();
+        await SuperAdminDatabaseHelper.getAllVenueProfile();
     debugPrint('database_testing:-   ${_mallList.length}');
     mallProfileSink.add(_mallList);
   }
