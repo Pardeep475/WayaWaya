@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:wayawaya/common/bloc/web_view_bloc.dart';
 
 // import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:wayawaya/utils/app_color.dart';
@@ -10,7 +11,7 @@ import 'package:wayawaya/utils/dimens.dart';
 import 'package:webview_flutter/platform_interface.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-import 'bloc/web_view_bloc.dart';
+
 
 class FullScreenPrivacyPolicyDialog extends ModalRoute<bool> {
   final Completer<WebViewController> _controller =

@@ -2,13 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:wayawaya/app/common/dialogs/common_error_dialog.dart';
-import 'package:wayawaya/common/custom_raise_button.dart';
+import 'package:wayawaya/app/common/custom_raise_button.dart';
 import 'package:wayawaya/network/live/model/api_response.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/dimens.dart';
 import 'package:wayawaya/utils/utils.dart';
-
 import 'bloc/forgot_password_bloc.dart';
 import 'model/authentication_code_model.dart';
 import 'model/error_response.dart';

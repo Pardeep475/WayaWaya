@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:wayawaya/screens/map/mall_map.dart';
 import 'package:wayawaya/screens/rewards/qr_code_scanner.dart';
+import 'package:wayawaya/utils/app_color.dart';
 
 import '../../config.dart';
 import '../events_list.dart';
@@ -35,13 +36,15 @@ class MenuTile extends StatelessWidget {
                 return RhombusMenu(enabled: true);
               })),
       child: Container(
-          margin: EdgeInsets.all(4.0),
-          height: 50,
-          width: 50,
-          decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.grey),
-          child: RhombusMenu(
-            enabled: false,
-          )),
+        margin: EdgeInsets.only(left: 4.0),
+        height: 50,
+        width: 50,
+        decoration:
+            BoxDecoration(shape: BoxShape.circle, color: AppColor.primary),
+        child: RhombusMenu(
+          enabled: false,
+        ),
+      ),
     );
   }
 }
@@ -103,7 +106,7 @@ class RhombusMenu extends StatelessWidget {
                 icon: Icon(
                   Icons.home,
                   color: Colors.white,
-                  size: 40,
+                  size: 35,
                 ),
                 label: "Home",
                 enabled: enabled,
@@ -125,7 +128,7 @@ class RhombusMenu extends StatelessWidget {
                 icon: Icon(
                   Icons.local_offer,
                   color: Colors.white,
-                  size: 40,
+                  size: 35,
                 ),
                 label: "Offers",
                 enabled: enabled,
@@ -143,7 +146,7 @@ class RhombusMenu extends StatelessWidget {
                 icon: Icon(
                   Icons.event,
                   color: Colors.white,
-                  size: 40,
+                  size: 35,
                 ),
                 label: "Events",
                 enabled: enabled,
@@ -166,7 +169,7 @@ class RhombusMenu extends StatelessWidget {
                 icon: Icon(
                   Icons.shop,
                   color: Colors.white,
-                  size: 40,
+                  size: 35,
                 ),
                 label: "Shops",
                 enabled: enabled,
@@ -183,10 +186,10 @@ class RhombusMenu extends StatelessWidget {
                 color: Colors.white,
                 icon: Image.asset(
                   'assets/qr_scan.png',
-                  height: 44,
-                  width: 44,
+                  height: 45,
+                  width: 45,
                 ),
-                label: "Connect",
+                label: "",
                 enabled: enabled,
                 cubic: _getCubic("Connect"),
                 onPressed: () {
@@ -201,8 +204,9 @@ class RhombusMenu extends StatelessWidget {
                 color: Colors.yellow,
                 icon: Icon(
                   Icons.restaurant,
+                  // getIconUsingPrefix(name: 'fa-cutlery'),
                   color: Colors.white,
-                  size: 40,
+                  size: 35,
                 ),
                 label: "Restaurants",
                 enabled: enabled,
@@ -211,7 +215,7 @@ class RhombusMenu extends StatelessWidget {
                   Navigator.pop(context);
                   App.pushTo(
                     context: context,
-                    screen: ShopRestList(title: "RESTAURANTS"),
+                    screen: ShopRestList(title: "My RESTAURANTS"),
                   );
                 },
               )
@@ -225,7 +229,7 @@ class RhombusMenu extends StatelessWidget {
                 icon: Icon(
                   Icons.local_offer_rounded,
                   color: Colors.white,
-                  size: 40,
+                  size: 35,
                 ),
                 label: "Rewards",
                 enabled: enabled,
@@ -243,7 +247,7 @@ class RhombusMenu extends StatelessWidget {
                 icon: Icon(
                   Icons.panorama_wide_angle,
                   color: Colors.white,
-                  size: 40,
+                  size: 35,
                 ),
                 label: "The Mall",
                 enabled: enabled,
@@ -266,7 +270,7 @@ class RhombusMenu extends StatelessWidget {
                 icon: Icon(
                   Icons.map,
                   color: Colors.white,
-                  size: 40,
+                  size: 35,
                 ),
                 label: "Mall Map",
                 enabled: enabled,
@@ -294,6 +298,7 @@ class MenuButton extends StatefulWidget {
   final bool enabled;
   final Cubic cubic;
   final Function onPressed;
+
   const MenuButton(
       {Key key,
       this.color,
@@ -311,7 +316,7 @@ class MenuButton extends StatefulWidget {
 class _MenuButtonState extends State<MenuButton> {
   @override
   Widget build(BuildContext context) {
-    double size = widget.enabled ? 80 : 6;
+    double size = widget.enabled ? 90 : 6;
     return ClipOval(
       child: Material(
         color: Colors.transparent,
@@ -329,26 +334,33 @@ class _MenuButtonState extends State<MenuButton> {
             child: Container(
               height: size,
               width: size,
-              padding: EdgeInsets.only(top: 8),
               clipBehavior: Clip.antiAlias,
               decoration:
                   BoxDecoration(shape: BoxShape.circle, color: widget.color),
               child: widget.enabled
-                  ? Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Flexible(child: widget.icon),
-                        Expanded(
+                  ? Center(
+                      child: Wrap(
+                        children: [
+                          Center(child: widget.icon),
+                          const SizedBox(
+                            height: 4,
+                          ),
+                          Center(
                             child: Material(
-                                color: Colors.transparent,
-                                child: Text(
-                                  widget.label,
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 12),
-                                  overflow: TextOverflow.clip,
-                                )))
-                      ],
+                              color: Colors.transparent,
+                              child: Text(
+                                widget.label,
+                                textAlign: TextAlign.center,
+                                maxLines: 1,
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 12),
+                                overflow: TextOverflow.ellipsis,
+                                softWrap: false,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     )
                   : SizedBox.shrink(),
             ),
@@ -356,6 +368,131 @@ class _MenuButtonState extends State<MenuButton> {
         ),
       ),
     );
+
+    // Column(
+    //   children: [
+    //     SizedBox(
+    //       height: widget.label.isNotEmpty ? 15 : 0,
+    //     ),
+    //     Expanded(
+    //       flex: 0,
+    //       child: Align(
+    //           alignment: widget.label.isNotEmpty
+    //               ? Alignment.bottomCenter
+    //               : Alignment.center,
+    //           child: widget.icon),
+    //     ),
+    //     widget.label.isNotEmpty
+    //         ? Expanded(
+    //       child: Container(
+    //         margin: EdgeInsets.only(top: 5),
+    //         child: Material(
+    //           color: Colors.transparent,
+    //           child: Text(
+    //             widget.label,
+    //             textAlign: TextAlign.center,
+    //             maxLines: 1,
+    //             style: TextStyle(
+    //                 color: Colors.white, fontSize: 12),
+    //             overflow: TextOverflow.ellipsis,
+    //             softWrap: false,
+    //           ),
+    //         ),
+    //       ),
+    //     )
+    //         : Visibility(
+    //       visible: widget.label.isNotEmpty,
+    //       child: Container(
+    //         margin: EdgeInsets.only(top: 5),
+    //         child: Text(
+    //           widget.label,
+    //           textAlign: TextAlign.center,
+    //           maxLines: 1,
+    //           style: TextStyle(
+    //               color: Colors.white, fontSize: 12),
+    //           overflow: TextOverflow.ellipsis,
+    //           softWrap: false,
+    //         ),
+    //       ),
+    //     )
+    //   ],
+    // )
+
+    // return ClipOval(
+    //   child: Material(
+    //     color: Colors.transparent,
+    //     child: Hero(
+    //       tag: widget.label,
+    //       // flightShuttleBuilder: (flightContext, animation, flightDirection, fromHeroContext, toHeroContext) {
+    //
+    //       // } ,
+    //       // createRectTween: (begin, end) {
+    //       //   return CustomRectTween(begin: begin, end: end, cubic: cubic);
+    //       // },
+    //       // transitionOnUserGestures: true,
+    //       child: GestureDetector(
+    //         onTap: widget.enabled ? () => widget.onPressed() : null,
+    //         child: Container(
+    //           height: size,
+    //           width: size,
+    //           clipBehavior: Clip.antiAlias,
+    //           decoration:
+    //           BoxDecoration(shape: BoxShape.circle, color: widget.color),
+    //           child: widget.enabled
+    //               ? Column(
+    //             children: [
+    //               SizedBox(
+    //                 height: widget.label.isNotEmpty ? 15 : 0,
+    //               ),
+    //               Expanded(
+    //                 flex: 0,
+    //                 child: Align(
+    //                     alignment: widget.label.isNotEmpty
+    //                         ? Alignment.bottomCenter
+    //                         : Alignment.center,
+    //                     child: widget.icon),
+    //               ),
+    //               widget.label.isNotEmpty
+    //                   ? Expanded(
+    //                 child: Container(
+    //                   margin: EdgeInsets.only(top: 5),
+    //                   child: Material(
+    //                     color: Colors.transparent,
+    //                     child: Text(
+    //                       widget.label,
+    //                       textAlign: TextAlign.center,
+    //                       maxLines: 1,
+    //                       style: TextStyle(
+    //                           color: Colors.white, fontSize: 12),
+    //                       overflow: TextOverflow.ellipsis,
+    //                       softWrap: false,
+    //                     ),
+    //                   ),
+    //                 ),
+    //               )
+    //                   : Visibility(
+    //                 visible: widget.label.isNotEmpty,
+    //                 child: Container(
+    //                   margin: EdgeInsets.only(top: 5),
+    //                   child: Text(
+    //                     widget.label,
+    //                     textAlign: TextAlign.center,
+    //                     maxLines: 1,
+    //                     style: TextStyle(
+    //                         color: Colors.white, fontSize: 12),
+    //                     overflow: TextOverflow.ellipsis,
+    //                     softWrap: false,
+    //                   ),
+    //                 ),
+    //               )
+    //             ],
+    //           )
+    //               : SizedBox.shrink(),
+    //         ),
+    //       ),
+    //     ),
+    //   ),
+    // );
   }
 }
 

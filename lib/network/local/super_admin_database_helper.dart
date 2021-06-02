@@ -108,6 +108,7 @@ class SuperAdminDatabaseHelper {
         limit: 1,
       );
     });
+    // _db.close();
     debugPrint('database_testing:-   ${data.length}');
     List<MallProfileModel> _mallList = [];
     data.forEach((element) {

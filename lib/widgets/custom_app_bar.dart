@@ -87,6 +87,7 @@ class _MyAppBarState extends State<MyAppBar> {
 
   @override
   Widget build(BuildContext context) {
+
     return widget.isSliver
         ? SliverAppBar(
             backgroundColor: Colors.grey[700],
@@ -101,7 +102,8 @@ class _MyAppBarState extends State<MyAppBar> {
               height: 58,
               child: Padding(
                 padding: widget.padding ??
-                    EdgeInsets.only(left: 70, top: 20, bottom: 20, right: 20),
+                    const EdgeInsets.only(
+                        left: 70, top: 20, bottom: 20, right: 20),
                 child: Text(
                   widget.title,
                   maxLines: 3,
@@ -121,7 +123,7 @@ class _MyAppBarState extends State<MyAppBar> {
                       ),
                       onTap: widget.onSnowTap ?? () {},
                     )
-                  : Container(),
+                  : const SizedBox(),
               IconButton(
                 icon: Icon(
                   Icons.settings,

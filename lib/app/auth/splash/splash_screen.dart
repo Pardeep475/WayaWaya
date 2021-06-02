@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:wayawaya/common/model/mall_profile_model.dart';
+import 'package:wayawaya/network/local/profile_database_helper.dart';
 import 'package:wayawaya/network/local/super_admin_database_helper.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/session_manager.dart';
@@ -55,6 +56,8 @@ class _SplashScreenState extends State<SplashScreen> {
         SessionManager.setSmallDefaultMallData(_mallList[0].venue_data);
       }
     }
+
+    await ProfileDatabaseHelper.initDataBase(defaultMall);
 
     bool isFirstTime = await SessionManager.getISLoginScreenVisible();
     if (!isFirstTime) {

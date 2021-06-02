@@ -8,12 +8,12 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:wayawaya/app/auth/forgotpassword/model/error_response.dart';
 import 'package:wayawaya/app/auth/signup/model/sign_up_model.dart';
 import 'package:wayawaya/app/common/dialogs/common_error_dialog.dart';
+import 'package:wayawaya/app/common/full_screen_privacy_policy_dialog.dart';
 import 'package:wayawaya/app/common/model/contact_number.dart';
 import 'package:wayawaya/app/common/model/email_list.dart';
 import 'package:wayawaya/app/common/model/guest_preference.dart';
 import 'package:wayawaya/app/common/model/social_media.dart';
-import 'package:wayawaya/common/custom_raise_button.dart';
-import 'package:wayawaya/common/full_screen_privacy_policy_dialog.dart';
+import 'package:wayawaya/app/common/custom_raise_button.dart';
 import 'package:wayawaya/network/live/model/api_response.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_strings.dart';
@@ -569,7 +569,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
           try {
             dynamic mallData = await SessionManager.getSmallDefaultMallData();
             dynamic value = json.decode(mallData);
-            debugPrint('privacy_policy_url:---->   ${value['privacy_policy_url'][0]['text']}');
+            debugPrint(
+                'privacy_policy_url:---->   ${value['privacy_policy_url'][0]['text']}');
             dynamic ppUrl = value['privacy_policy_url'][0]['text'];
 
             Navigator.push(
@@ -757,6 +758,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   void _submitButtonPressed(BuildContext context) async {
+    if (!_tncCheck) {
+      _showErrorDialog(
+        icon: Icon(
+          FontAwesomeIcons.exclamationTriangle,
+          color: AppColor.orange_500,
+        ),
+        title: AppString.error.toUpperCase(),
+        content: AppString.error_term_and_conditions,
+        buttonText: AppString.ok.toUpperCase(),
+        onPressed: () => Navigator.pop(context),
+      );
+      return;
+    }
+
     if (_formKey.currentState.validate() && _tncCheck == true) {
       _formKey.currentState.save();
 

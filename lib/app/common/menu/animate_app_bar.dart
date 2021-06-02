@@ -1,15 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:wayawaya/screens/rewards/menu_button.dart';
-import '../settings.dart';
-import '../../config.dart';
-import '../../constants.dart';
-import 'package:wayawaya/widgets/custom_app_bar.dart';
-import '../login.dart';
-import '../search_page.dart';
+import 'package:wayawaya/app/common/menu/bloc/animate_app_bar_widget_bloc.dart';
+import 'package:wayawaya/app/common/menu/custom_app_bar.dart';
+import 'package:wayawaya/utils/app_color.dart';
 
-///SEARCH PAGE & SHOP DOESN'T USE THIS CLASS
-
-class MenuNew extends StatefulWidget {
+class AnimateAppBar extends StatefulWidget {
   @required
   final String title;
   final bool isSliver;
@@ -25,71 +19,55 @@ class MenuNew extends StatefulWidget {
   final bool floating;
   final bool pinned;
   final bool snap;
-  final List<Widget> normalChildren;
   @required
   final List<Widget> children;
 
-  MenuNew(
+  AnimateAppBar(
       {this.title,
-      this.children,
+      this.isSliver,
       this.onSnowTap,
       this.onSettingsTap,
       this.onSearchTap,
       this.padding,
       this.lastIcon,
       this.bottom,
+      this.physics,
+      this.titleSize,
+      this.centerTitle,
       this.floating,
       this.pinned,
       this.snap,
-      this.physics,
-      this.isSliver = true,
-      this.normalChildren,
-      this.centerTitle,
-      this.titleSize});
+      this.children});
 
   @override
-  _MenuNewState createState() => _MenuNewState();
+  State<StatefulWidget> createState() => _AnimateAppBarState();
 }
 
-class _MenuNewState extends State<MenuNew> with SingleTickerProviderStateMixin {
+class _AnimateAppBarState extends State<AnimateAppBar> {
   TextEditingController _searchController = TextEditingController();
   ScrollController _scrollController;
-  List<Widget> _children;
   bool showMenuIcon = true;
   bool showSearch = false;
 
-  @override
-  void initState() {
-    if (widget.isSliver == true) {
-      setState(() {
-        _children = widget.children;
-      });
-    } else {
-      setState(() {
-        _children = widget.normalChildren;
-      });
-    }
-    super.initState();
-  }
+  AnimateAppBarWidgetBloc _animateAppBarWidgetBloc;
 
   @override
-  void dispose() {
-    super.dispose();
+  void initState() {
+    _animateAppBarWidgetBloc = AnimateAppBarWidgetBloc();
+    super.initState();
   }
 
   searchBar() {
     return Container(
       height: 50,
-      color: white,
-      width: App.width(context),
+      color: AppColor.white,
+      width: MediaQuery.of(context).size.width,
       child: Row(
         children: [
           ///Back Button
           InkWell(
             onTap: () {
-              setState(() {
-                showSearch = false;
-              });
+              _animateAppBarWidgetBloc.searchSink.add(false);
               FocusScope.of(context).unfocus();
               _searchController.clear();
             },
@@ -101,7 +79,7 @@ class _MenuNewState extends State<MenuNew> with SingleTickerProviderStateMixin {
                     color: Colors.grey[700],
                   ),
                   CircleAvatar(
-                    backgroundColor: white,
+                    backgroundColor: AppColor.white,
                     radius: 20,
                     foregroundImage: AssetImage(
                       'assets/menu_app_ic.png',
@@ -117,19 +95,17 @@ class _MenuNewState extends State<MenuNew> with SingleTickerProviderStateMixin {
               child: TextField(
                 autofocus: true,
                 onSubmitted: (val) {
-                  setState(() {
-                    showSearch = false;
-                  });
+                  _animateAppBarWidgetBloc.searchSink.add(false);
                   FocusScope.of(context).unfocus();
-                  Navigator.of(context)
-                      .push(
-                        MaterialPageRoute(
-                          builder: (_) => SearchPage(
-                            searchTerm: _searchController.text,
-                          ),
-                        ),
-                      )
-                      .whenComplete(() => _searchController.clear());
+                  // Navigator.of(context)
+                  //     .push(
+                  //       MaterialPageRoute(
+                  //         builder: (_) => SearchPage(
+                  //           searchTerm: _searchController.text,
+                  //         ),
+                  //       ),
+                  //     )
+                  //     .whenComplete(() => _searchController.clear());
                 },
                 controller: _searchController,
                 cursorHeight: 25,
@@ -163,13 +139,14 @@ class _MenuNewState extends State<MenuNew> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint('animate_app_bar_testing:-  ${widget.isSliver}');
     return SafeArea(
       child: Scaffold(
-        backgroundColor: bgColor,
+        backgroundColor: Colors.grey[100],
         body: Container(
-          height: App.height(context),
-          width: App.width(context),
-          color: bgColor,
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+          color: Colors.grey[100],
           child: widget.isSliver
               ? Stack(
                   children: [
@@ -178,41 +155,52 @@ class _MenuNewState extends State<MenuNew> with SingleTickerProviderStateMixin {
                       physics: widget.physics ?? BouncingScrollPhysics(),
                       shrinkWrap: true,
                       slivers: [
-                        MyAppBar(
+                        CustomAppBar(
                           title: widget.title,
                           centerTitle: widget.centerTitle ?? false,
                           padding: widget.padding ??
                               EdgeInsets.only(left: 0, top: 16),
-                          titleSize: widget.titleSize ?? 14,
-                          onSnowTap: widget.onSnowTap ??
+                          titleSize: widget.titleSize ?? 16,
+                          onSnowTap: widget
+                              .onSnowTap /*??
                               () => Navigator.push(
                                     context,
                                     MaterialPageRoute(builder: (_) => Login()),
-                                  ),
-                          onSettingsTap: widget.onSettingsTap ??
+                                  )*/
+                          ,
+                          onSettingsTap: widget
+                              .onSettingsTap /*??
                               () => Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                         builder: (_) => Settings()),
-                                  ),
+                                  )*/
+                          ,
                           onSearchTap: widget.onSearchTap ??
                               () {
-                                setState(() {
-                                  showSearch = true;
-                                });
+                                _animateAppBarWidgetBloc.searchSink.add(true);
+                                // setState(() {
+                                //   showSearch = true;
+                                // });
                               },
                         ),
-                        ..._children,
+                        ...widget.children ?? [],
                       ],
                     ),
 
                     ///SEARCH
                     Align(
                       alignment: Alignment.topCenter,
-                      child: Visibility(
-                        visible: showSearch,
-                        child: searchBar(),
-                      ),
+                      child: StreamBuilder<bool>(
+                          initialData: false,
+                          stream: _animateAppBarWidgetBloc.searchStream,
+                          builder: (context, snapshot) {
+                            if (snapshot.data) {
+                              return searchBar();
+                            } else {
+                              return SizedBox();
+                            }
+                          }),
                     ),
                   ],
                 )
@@ -221,10 +209,16 @@ class _MenuNewState extends State<MenuNew> with SingleTickerProviderStateMixin {
                     ///SEARCH
                     Align(
                       alignment: Alignment.topCenter,
-                      child: Visibility(
-                        visible: showSearch,
-                        child: searchBar(),
-                      ),
+                      child: StreamBuilder<bool>(
+                          initialData: false,
+                          stream: _animateAppBarWidgetBloc.searchStream,
+                          builder: (context, snapshot) {
+                            if (snapshot.data) {
+                              return searchBar();
+                            } else {
+                              return SizedBox();
+                            }
+                          }),
                     ),
                   ],
                 ),
