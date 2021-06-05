@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:wayawaya/common/model/language_store.dart';
+import 'package:wayawaya/network/live/network_constants.dart';
 
 import 'app_color.dart';
 import 'app_strings.dart';
@@ -163,5 +165,73 @@ class Utils {
       pageBuilder: (BuildContext context, Animation<double> animation,
           Animation<double> secondaryAnimation) {},
     );
+  }
+
+  static String getTranslatedCode(
+      BuildContext context, List<LanguageStore> translatedData) {
+    String languageCode =
+        '${Localizations.localeOf(context).languageCode}_${Localizations.localeOf(context).countryCode}';
+    String languageCode1 = '${Localizations.localeOf(context).languageCode}';
+    String preferredLanguageLocal = 'en_UK';
+
+    String text = "";
+    if (translatedData != null) {
+      translatedData.forEach((language) {
+        if (language.language == preferredLanguageLocal) {
+          text = language.text;
+          return;
+        } else if (language.language == languageCode) {
+          text = language.text;
+          return;
+        } else if (language.language == languageCode1) {
+          text = language.text;
+          return;
+        } else {
+          String defaultLang = "en_US";
+          if (language.language == defaultLang ||
+              language.language.contains("en")) {
+            text = language.text;
+          }
+        }
+      });
+    }
+    return text;
+  }
+
+  static String getFlagUrl(String item) {
+    switch (item) {
+      case "en_US":
+        {
+          return parseMediaUrl(
+              "http://res.cloudinary.com/intelipower/image/upload/v1512717289/media/5203363f47bc4c2991a7a2bf3f4a2cb4/flags/flags-png-250/us.png");
+        }
+      case 'fr':
+        {
+          return parseMediaUrl(
+              "http://res.cloudinary.com/intelipower/image/upload/v1512717289/media/5203363f47bc4c2991a7a2bf3f4a2cb4/flags/flags-png-250/fr.png");
+        }
+      case 'en_UK':
+        {
+          return parseMediaUrl(
+              "http://res.cloudinary.com/intelipower/image/upload/v1512717289/media/5203363f47bc4c2991a7a2bf3f4a2cb4/flags/flags-png-250/gb.png");
+        }
+      default:
+        {
+          return parseMediaUrl(
+              "http://res.cloudinary.com/intelipower/image/upload/v1512717289/media/5203363f47bc4c2991a7a2bf3f4a2cb4/flags/flags-png-250/gb.png");
+        }
+    }
+  }
+
+  static String parseMediaUrl(String url) {
+    if (url.contains("media.dev.fattengage.com")) {
+      return url.replaceFirst(
+          "media.dev.fattengage.com", NetworkConstants.base_url_image);
+    } else if (url.contains("api.fattiengage.com")) {
+      return url.replaceFirst(
+          "api.fattiengage.com", NetworkConstants.base_url_image);
+    } else {
+      return url;
+    }
   }
 }

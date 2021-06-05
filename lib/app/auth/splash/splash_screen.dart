@@ -61,11 +61,15 @@ class _SplashScreenState extends State<SplashScreen> {
 
     bool isFirstTime = await SessionManager.getISLoginScreenVisible();
     if (!isFirstTime) {
-      // open mall screen
-      Navigator.pushReplacementNamed(context, AppString.LOGIN_SCREEN_ROUTE);
+      // open Login screen
+      // Navigator.pushReplacementNamed(context, AppString.LOGIN_SCREEN_ROUTE);
+      Navigator.pushNamedAndRemoveUntil(
+          context, AppString.LOGIN_SCREEN_ROUTE, (route) => false);
     } else {
-      // open login screen
-      Navigator.pushReplacementNamed(context, AppString.LOGIN_SCREEN_ROUTE);
+      // open Home screen
+      // Navigator.pushReplacementNamed(context, AppString.HOME_SCREEN_ROUTE);
+      Navigator.pushNamedAndRemoveUntil(
+          context, AppString.HOME_SCREEN_ROUTE, (route) => false);
       // Navigator.pushReplacementNamed(context, AppString.HOME_SCREEN_ROUTE);
     }
   }

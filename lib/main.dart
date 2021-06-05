@@ -4,16 +4,18 @@ import 'dart:io';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:wayawaya/app/auth/home/home_screen.dart';
 import 'package:wayawaya/app/auth/signup/sign_up_screen.dart';
 import 'package:wayawaya/app/auth/splash/splash_screen.dart';
 import 'package:wayawaya/app/mall/mall_screen.dart';
 import 'package:wayawaya/app/preferences/select_preferences_screen.dart';
+import 'package:wayawaya/app/settings/settings_screen.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/session_manager.dart';
 import 'package:wayawaya/utils/size_config.dart';
 import 'app/auth/forgotpassword/forgot_password_screen.dart';
 import 'app/auth/login/login_screen.dart';
+import 'app/home/home_screen.dart';
+import 'app/settings/my_devices_screen.dart';
 import 'network/local/super_admin_database_helper.dart';
 
 Future<void> main() async {
@@ -117,6 +119,20 @@ class MyAppState extends State<MyApp> {
       case AppString.SELECT_PREFERENCES_SCREEN_ROUTE:
         return PageTransition(
           child: SelectPreferencesScreen(),
+          type: PageTransitionType.rightToLeft,
+          settings: settings,
+        );
+        break;
+      case AppString.SETTINGS_SCREEN_ROUTE:
+        return PageTransition(
+          child: SettingsScreen(),
+          type: PageTransitionType.rightToLeft,
+          settings: settings,
+        );
+        break;
+      case AppString.MY_DEVICES_SCREEN_ROUTE:
+        return PageTransition(
+          child: MyDeviceScreen(),
           type: PageTransitionType.rightToLeft,
           settings: settings,
         );

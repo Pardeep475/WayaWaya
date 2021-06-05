@@ -439,6 +439,8 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   _loginComplete() {
+    debugPrint('login_testing :-   login complete');
+    SessionManager.setISLogin(true);
     Navigator.pushNamedAndRemoveUntil(
         context, AppString.HOME_SCREEN_ROUTE, (route) => false);
   }

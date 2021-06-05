@@ -1,16 +1,24 @@
 import 'dart:ui';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:wayawaya/app/common/menu/animate_app_bar.dart';
-import 'package:wayawaya/screens/rewards/menunew.dart';
+import 'package:wayawaya/app/preferences/bloc/select_preferences_bloc.dart';
+import 'package:wayawaya/app/preferences/model/currency_model.dart';
+import 'package:wayawaya/app/preferences/model/language_model.dart';
+import 'package:wayawaya/app/preferences/model/notification_model.dart';
+import 'package:wayawaya/common/model/mall_profile_model.dart';
+import 'package:wayawaya/network/local/profile_database_helper.dart';
 import 'package:wayawaya/utils/app_strings.dart';
+import 'package:wayawaya/utils/session_manager.dart';
+import 'package:wayawaya/utils/utils.dart';
 import 'package:wayawaya/widgets/fav_malls.dart';
-import 'package:wayawaya/widgets/interested_cat.dart';
 
 import '../../config.dart';
 import '../../constants.dart';
+import 'model/preferences_categories.dart';
 
 class SelectPreferencesScreen extends StatefulWidget {
   @override
@@ -158,6 +166,45 @@ class _SelectPreferencesScreenState extends State<SelectPreferencesScreen> {
     );
   }
 
+  SelectPreferencesBloc _selectPreferencesBloc;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _selectPreferencesBloc = SelectPreferencesBloc();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      _selectPreferencesBloc.getMallData();
+      _selectPreferencesBloc.getNotificationData(context);
+    });
+  }
+
+  void changedDropDownItem(NotificationModel selectedCity) {
+    print("Selected city $selectedCity, we are going to refresh the UI");
+    _selectPreferencesBloc.notificationSink.add(selectedCity);
+    _currentNotification = selectedCity.title;
+  }
+
+  _getPreferencesCategories() async {
+    try {
+      String databasePath = await SessionManager.getDefaultMall();
+      List<PreferencesCategory> preferencesCategoriesList =
+          await ProfileDatabaseHelper.getPreferencesCategories(
+              databasePath, '0', '10');
+      debugPrint('database_testing:-  ${preferencesCategoriesList.length}');
+    } catch (e) {
+      debugPrint('database_testing:-  $e');
+    }
+  }
+
+  _updateValues({int pos, MallProfileModel mallProfileModel, bool selected}) {
+    debugPrint(
+        'updated_mall_data_testing:-  index  $pos  active  ${mallProfileModel.active}  selected:-  $selected');
+    _selectPreferencesBloc.updateItemMallList(pos, mallProfileModel, selected);
+  }
+
+  String _currentNotification = "12 daily";
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -168,6 +215,9 @@ class _SelectPreferencesScreenState extends State<SelectPreferencesScreen> {
             AnimateAppBar(
               title: AppString.preferences.toUpperCase(),
               isSliver: true,
+              floating: false,
+              pinned: true,
+              snap: false,
               onSnowTap: () {
                 setState(() {
                   debugPrint('animation_click_testing:-   menu click');
@@ -175,11 +225,137 @@ class _SelectPreferencesScreenState extends State<SelectPreferencesScreen> {
                 });
               },
               children: [
-                // SliverToBoxAdapter(
-                //   child: SizedBox(
-                //     height: 13,
-                //   ),
-                // ),
+                SliverToBoxAdapter(
+                  child: StreamBuilder<NotificationModel>(
+                      initialData: null,
+                      stream: _selectPreferencesBloc.notificationStream,
+                      builder: (context, snapshot) {
+                        if (snapshot.data == null) return SizedBox();
+                        return Container(
+                          margin: EdgeInsets.only(top: 10),
+                          padding: EdgeInsets.symmetric(horizontal: 15),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              Text(
+                                AppString.notification_frequency,
+                                style: _title,
+                              ),
+                              DropdownButton(
+                                underline: SizedBox(),
+                                isExpanded: true,
+                                value: snapshot.data,
+                                items: _selectPreferencesBloc.getDropDownItems,
+                                onChanged: (notificationData) {
+                                  changedDropDownItem(notificationData);
+                                },
+                              ),
+                            ],
+                          ),
+                        );
+                      }),
+                ),
+
+                SliverToBoxAdapter(
+                  child: StreamBuilder<List<MallProfileModel>>(
+                      initialData: [],
+                      stream: _selectPreferencesBloc.mallProfileStream,
+                      builder: (context, snapshot) {
+                        if (snapshot.data == null) return SizedBox();
+                        return Container(
+                          margin: EdgeInsets.only(top: 10),
+                          padding: EdgeInsets.symmetric(horizontal: 15),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              Text(
+                                AppString.favourite_malls,
+                                style: _title,
+                              ),
+                              ListView.builder(
+                                itemCount: snapshot.data.length,
+                                padding: EdgeInsets.only(top: 10),
+                                physics: NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                itemBuilder: (_, index) {
+                                  return FavMall(
+                                    index: index,
+                                    mallProfileModel: snapshot.data[index],
+                                    onPressed: _updateValues,
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                        );
+                      }),
+                ),
+
+                SliverToBoxAdapter(
+                  child: StreamBuilder<List<CurrencyModel>>(
+                      initialData: null,
+                      stream: _selectPreferencesBloc.currencyStream,
+                      builder: (context, snapshot) {
+                        if (snapshot.data == null) return SizedBox();
+                        return Container(
+                          margin: EdgeInsets.only(top: 10),
+                          padding: EdgeInsets.symmetric(horizontal: 15),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              Text(
+                                AppString.alternate_currency,
+                                style: _title,
+                              ),
+                              ListView.builder(
+                                itemCount: snapshot.data.length,
+                                physics: NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                itemBuilder: (_, index) {
+                                  return _itemCurrencyWidget(
+                                      snapshot.data[index]);
+                                },
+                              ),
+                            ],
+                          ),
+                        );
+                      }),
+                ),
+
+                SliverToBoxAdapter(
+                  child: StreamBuilder<List<LanguageModel>>(
+                      initialData: null,
+                      stream: _selectPreferencesBloc.languageStream,
+                      builder: (context, snapshot) {
+                        if (snapshot.data == null) return SizedBox();
+                        return Container(
+                          margin: EdgeInsets.only(top: 10),
+                          padding: EdgeInsets.symmetric(horizontal: 15),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              Text(
+                                AppString.default_language,
+                                style: _title,
+                              ),
+                              ListView.builder(
+                                itemCount: snapshot.data.length,
+                                physics: NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                itemBuilder: (_, index) {
+                                  return _itemLanguageWidget(
+                                      snapshot.data[index]);
+                                },
+                              ),
+                            ],
+                          ),
+                        );
+                      }),
+                ),
                 // SliverToBoxAdapter(
                 //   child: Container(
                 //     padding: EdgeInsets.symmetric(horizontal: 15),
@@ -211,13 +387,6 @@ class _SelectPreferencesScreenState extends State<SelectPreferencesScreen> {
                 //             }),
                 //       ),
                 //       Padding(
-                //         padding: EdgeInsets.symmetric(horizontal: 15),
-                //         child: Text(
-                //           'Notification Frequency',
-                //           style: _title,
-                //         ),
-                //       ),
-                //       Padding(
                 //         padding: const EdgeInsets.symmetric(
                 //             vertical: 10, horizontal: 15),
                 //         child: Text(
@@ -225,185 +394,68 @@ class _SelectPreferencesScreenState extends State<SelectPreferencesScreen> {
                 //           style: _content,
                 //         ),
                 //       ),
-                //       Padding(
-                //         padding:
-                //         const EdgeInsets.only(top: 8, left: 15, right: 15),
-                //         child: Text(
-                //           'Favourite Malls',
-                //           style: _title,
-                //         ),
-                //       ),
-                //       Container(
-                //         height: 35 * 12.0 + 20,
-                //         width: App.width(context),
-                //         margin: EdgeInsets.only(top: 10),
-                //         padding: EdgeInsets.symmetric(horizontal: 15),
-                //         child: ListView.builder(
-                //           itemCount: 12,
-                //           physics: NeverScrollableScrollPhysics(),
-                //           shrinkWrap: true,
-                //           itemBuilder: (_, index) {
-                //             return FavMall(
-                //               index: index,
-                //             );
-                //           },
-                //         ),
-                //       ),
                 //     ],
                 //   ),
                 // ),
-                // SliverToBoxAdapter(
-                //   child: Padding(
-                //     padding: const EdgeInsets.symmetric(horizontal: 15),
-                //     child: Text(
-                //       'Alternate Currency',
-                //       style: _title,
-                //     ),
-                //   ),
-                // ),
-                // SliverToBoxAdapter(
-                //   child: Container(
-                //     height: 50,
-                //     width: App.width(context),
-                //     padding: EdgeInsets.symmetric(horizontal: 15),
-                //     child: Row(
-                //       mainAxisAlignment: MainAxisAlignment.start,
-                //       children: [
-                //         Container(
-                //           height: 20,
-                //           width: 20,
-                //           color: Colors.grey[200],
-                //           margin: EdgeInsets.only(right: 10),
-                //         ),
-                //         Text(
-                //           'ZAR',
-                //           style: TextStyle(
-                //             color: Colors.grey[700],
-                //             fontWeight: FontWeight.w400,
-                //           ),
-                //         ),
-                //         Spacer(
-                //           flex: 1,
-                //         ),
-                //         Padding(
-                //           padding: const EdgeInsets.only(right: 10),
-                //           child: ShadowText(
-                //             'ZA',
-                //             style: TextStyle(
-                //               fontSize: 19,
-                //               color: Colors.grey[800],
-                //             ),
-                //           ),
-                //         ),
-                //       ],
-                //     ),
-                //   ),
-                // ),
-                // SliverToBoxAdapter(
-                //   child: Padding(
-                //     padding: EdgeInsets.symmetric(horizontal: 15),
-                //     child: Text(
-                //       'Default Language',
-                //       style: _title,
-                //     ),
-                //   ),
-                // ),
-                // SliverToBoxAdapter(
-                //   child: Container(
-                //     height: 60,
-                //     margin: EdgeInsets.only(bottom: 4),
-                //     padding: EdgeInsets.symmetric(horizontal: 15),
-                //     child: Row(
-                //       children: [
-                //         Container(
-                //           width: 20,
-                //           margin: EdgeInsets.only(right: 10),
-                //           child: Checkbox(
-                //             value: _lang,
-                //             onChanged: (bool value) {
-                //               setState(() {
-                //                 _lang = value;
-                //               });
-                //             },
-                //           ),
-                //         ),
-                //         Text(
-                //           'English (UK)',
-                //           style: TextStyle(
-                //             color: Colors.grey[700],
-                //             fontWeight: FontWeight.w400,
-                //           ),
-                //         ),
-                //         Spacer(),
-                //         Container(
-                //           height: 20,
-                //           width: 40,
-                //           child: Image.asset(
-                //             'assets/uk_flag.jpg',
-                //           ),
-                //         ),
-                //       ],
-                //     ),
-                //   ),
-                // ),
-                // SliverToBoxAdapter(
-                //   child: Container(
-                //     width: App.width(context),
-                //     margin: EdgeInsets.only(bottom: 3),
-                //     padding: EdgeInsets.symmetric(horizontal: 15),
-                //     child: Row(
-                //       children: [
-                //         Expanded(
-                //           flex: 1,
-                //           child: InkWell(
-                //             onTap: () => successDialog(),
-                //             child: Card(
-                //               shadowColor: Colors.grey[400],
-                //               child: Container(
-                //                 height: 50,
-                //                 width: App.width(context) / 2.3,
-                //                 child: Center(
-                //                   child: Text(
-                //                     'SAVE',
-                //                     style: TextStyle(
-                //                       color: Colors.grey[600],
-                //                       fontSize: 17,
-                //                     ),
-                //                   ),
-                //                 ),
-                //               ),
-                //             ),
-                //           ),
-                //         ),
-                //         SizedBox(
-                //           width: 10,
-                //         ),
-                //         Expanded(
-                //           flex: 1,
-                //           child: InkWell(
-                //             onTap: () => Navigator.pop(context),
-                //             child: Card(
-                //               shadowColor: Colors.grey[400],
-                //               child: Container(
-                //                 height: 50,
-                //                 width: App.width(context) / 2.3,
-                //                 child: Center(
-                //                   child: Text(
-                //                     'CANCEL',
-                //                     style: TextStyle(
-                //                       color: Colors.grey[600],
-                //                       fontSize: 17,
-                //                     ),
-                //                   ),
-                //                 ),
-                //               ),
-                //             ),
-                //           ),
-                //         ),
-                //       ],
-                //     ),
-                //   ),
-                // ),
+
+                SliverToBoxAdapter(
+                  child: Container(
+                    width: App.width(context),
+                    margin: EdgeInsets.only(bottom: 3),
+                    padding: EdgeInsets.symmetric(horizontal: 15),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          flex: 1,
+                          child: InkWell(
+                            // onTap: () => successDialog(),
+                            child: Card(
+                              shadowColor: Colors.grey[400],
+                              child: Container(
+                                height: 50,
+                                width: App.width(context) / 2.3,
+                                child: Center(
+                                  child: Text(
+                                    'SAVE',
+                                    style: TextStyle(
+                                      color: Colors.grey[600],
+                                      fontSize: 17,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Expanded(
+                          flex: 1,
+                          child: InkWell(
+                            // onTap: () => Navigator.pop(context),
+                            child: Card(
+                              shadowColor: Colors.grey[400],
+                              child: Container(
+                                height: 50,
+                                width: App.width(context) / 2.3,
+                                child: Center(
+                                  child: Text(
+                                    'CANCEL',
+                                    style: TextStyle(
+                                      color: Colors.grey[600],
+                                      fontSize: 17,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ],
             ),
 
@@ -485,6 +537,91 @@ class _SelectPreferencesScreenState extends State<SelectPreferencesScreen> {
         ),
       ),
     );
+  }
+
+  Widget _itemCurrencyWidget(CurrencyModel _currencyModel) {
+    return Container(
+      height: 50,
+      width: MediaQuery.of(context).size.width,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Container(
+            width: 20,
+            margin: EdgeInsets.only(right: 10),
+            child: Checkbox(
+              value: true,
+              onChanged: null,
+            ),
+          ),
+          Text(
+            _currencyModel.code.toUpperCase(),
+            style: TextStyle(
+              color: Colors.grey[700],
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+          Spacer(
+            flex: 1,
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 10),
+            child: ShadowText(
+              _firstTwo(_currencyModel.code.toUpperCase()),
+              style: TextStyle(
+                fontSize: 19,
+                color: Colors.grey[800],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _itemLanguageWidget(LanguageModel _languageModel) {
+    return Container(
+      height: 60,
+      margin: EdgeInsets.only(bottom: 4),
+      child: Row(
+        children: [
+          Container(
+            width: 20,
+            margin: EdgeInsets.only(right: 10),
+            child: Checkbox(
+              value: _lang,
+              onChanged: (bool value) {
+                _lang = value;
+              },
+            ),
+          ),
+          Text(
+            _languageModel.name ?? "",
+            style: TextStyle(
+              color: Colors.grey[700],
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+          Spacer(),
+          CachedNetworkImage(
+            height: 25,
+            width: 40,
+            imageUrl: Utils.getFlagUrl(_languageModel.code ?? ""),
+          ),
+          // Container(
+          //   height: 20,
+          //   width: 40,
+          //   child: Image.asset(
+          //     'assets/uk_flag.jpg',
+          //   ),
+          // ),
+        ],
+      ),
+    );
+  }
+
+  String _firstTwo(String str) {
+    return str.length < 2 ? str : str.substring(0, 2);
   }
 }
 

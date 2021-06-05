@@ -1,9 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:wayawaya/app/common/dialogs/common_error_dialog.dart';
+import 'package:wayawaya/app/common/dialogs/common_login_dialog.dart';
 import 'package:wayawaya/common/model/categories_model.dart';
 import 'package:wayawaya/screens/rewards/menu_button.dart';
 import 'package:wayawaya/screens/select_def_mall.dart';
 import 'package:wayawaya/screens/settings.dart';
+import 'package:wayawaya/utils/app_color.dart';
+import 'package:wayawaya/utils/app_strings.dart';
+import 'package:wayawaya/utils/session_manager.dart';
 
 import '../../../config.dart';
 import '../../../constants.dart';
@@ -141,8 +147,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                     color: appLightColor,
                     size: 34,
                   ),
-                  onPressed: widget.onSettingsTap ??
-                      () => App.pushTo(context: context, screen: Settings()),
+                  onPressed: widget.onSettingsTap ?? _onSettingsButtonClick,
                 ),
                 widget.lastIcon ??
                     IconButton(
@@ -156,13 +161,9 @@ class _CustomAppBarState extends State<CustomAppBar> {
                     ),
                 _loggedIn != null
                     ? InkWell(
-                        onTap: () => App.pushTo(
-                            context: context,
-                            screen: SelectMall(
-                              onlyChangeMall: true,
-                            )),
+                        onTap: () => _onMallSelection(),
                         child: Padding(
-                          padding: const EdgeInsets.only(right: 20, left: 5),
+                          padding: const EdgeInsets.only(right: 5, left: 5),
                           child: CircleAvatar(
                             radius: 20,
                             backgroundColor: appLightColor,
@@ -213,9 +214,8 @@ class _CustomAppBarState extends State<CustomAppBar> {
                           color: appLightColor,
                           size: 34,
                         ),
-                        onPressed: widget.onSettingsTap ??
-                            () => App.pushTo(
-                                context: context, screen: Settings()),
+                        onPressed:
+                            widget.onSettingsTap ?? _onSettingsButtonClick,
                       ),
                       widget.lastIcon ??
                           IconButton(
@@ -229,14 +229,9 @@ class _CustomAppBarState extends State<CustomAppBar> {
                           ),
                       _loggedIn != null
                           ? InkWell(
-                              onTap: () => App.pushTo(
-                                  context: context,
-                                  screen: SelectMall(
-                                    onlyChangeMall: true,
-                                  )),
+                              onTap: () => _onMallSelection(),
                               child: Padding(
-                                padding:
-                                    const EdgeInsets.only(right: 20, left: 5),
+                                padding: const EdgeInsets.only(right: 5, left: 5),
                                 child: StreamBuilder<String>(
                                     initialData: null,
                                     stream: _customAppBarBloc
@@ -293,7 +288,8 @@ class _CustomAppBarState extends State<CustomAppBar> {
                           Icons.settings,
                           color: appLightColor,
                         ),
-                        onPressed: widget.onSettingsTap ?? () {},
+                        onPressed:
+                            widget.onSettingsTap ?? _onSettingsButtonClick,
                       ),
                       widget.lastIcon ??
                           IconButton(
@@ -305,11 +301,9 @@ class _CustomAppBarState extends State<CustomAppBar> {
                           ),
                       _loggedIn != null
                           ? InkWell(
-                              onTap: () => App.pushTo(
-                                  context: context, screen: SelectMall()),
+                              onTap: () => _onMallSelection(),
                               child: Padding(
-                                padding:
-                                    const EdgeInsets.only(right: 10, left: 5),
+                                padding: const EdgeInsets.only(right: 5, left: 5),
                                 child: CircleAvatar(
                                   radius: 20,
                                   backgroundColor: appLightColor,
@@ -325,5 +319,61 @@ class _CustomAppBarState extends State<CustomAppBar> {
                   );
           }
         });
+  }
+
+  _onMallSelection() {
+    debugPrint('mall_selection_screen:-  _onMallSelection ');
+    Navigator.pushNamed(context, AppString.MALL_SCREEN_ROUTE);
+  }
+
+  _onSettingsButtonClick() async {
+    bool isLogin = await SessionManager.isLogin();
+    if (isLogin != null && isLogin) {
+      Navigator.pushNamed(context, AppString.SETTINGS_SCREEN_ROUTE);
+    } else {
+      _showErrorDialog(
+        icon: Icon(
+          FontAwesomeIcons.exclamationTriangle,
+          color: AppColor.orange_500,
+        ),
+        title: AppString.login.toUpperCase(),
+        content: AppString.currently_not_logged_in,
+        buttonText: AppString.login.toUpperCase(),
+        onPressed: () =>
+            Navigator.pushNamed(context, AppString.LOGIN_SCREEN_ROUTE),
+      );
+    }
+  }
+
+  _showErrorDialog(
+      {Icon icon,
+      String title,
+      String content,
+      String buttonText,
+      VoidCallback onPressed}) {
+    showGeneralDialog(
+        barrierColor: Colors.black.withOpacity(0.1),
+        transitionBuilder: (context, a1, a2, widget) {
+          final curvedValue = Curves.easeInOutBack.transform(a1.value) - 1.0;
+          return Transform(
+            transform: Matrix4.translationValues(0.0, curvedValue * 200, 0.0),
+            child: AnimatedOpacity(
+              duration: Duration(milliseconds: 100),
+              opacity: a1.value,
+              child: CommonLoginDialog(
+                icon: icon,
+                title: title,
+                content: content,
+                buttonText: buttonText,
+                onPressed: onPressed,
+              ),
+            ),
+          );
+        },
+        transitionDuration: Duration(milliseconds: 200),
+        barrierDismissible: false,
+        barrierLabel: '',
+        context: context,
+        pageBuilder: (context, animation1, animation2) {});
   }
 }

@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart' as path;
+import 'package:wayawaya/app/preferences/model/preferences_categories.dart';
 import 'package:wayawaya/common/model/categories_model.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 
@@ -86,4 +87,59 @@ class ProfileDatabaseHelper {
     data.map((e) => debugPrint('database_testing:-    $e'));
     return _mallList;
   }
+
+  static Future<List<PreferencesCategory>> getPreferencesCategories(
+      String path,
+      String limit,
+      String offset,
+      ) async {
+    debugPrint('database_testing:-  preferences  ');
+    if (_db == null) {
+      await initDataBase(path);
+    }
+    List<Map> data;
+    String subscribed = "WHERE subscription = 1";
+    await _db.transaction((txn) async {
+      data = await txn.rawQuery(
+          "WITH RECURSIVE menu_tree (category_id, name, label, level, parent, subscription) \n" +
+              "AS ( \n" +
+              "  SELECT\n" +
+              "    category_id, \n" +
+              "    '' || name, \n" +
+              "    '' || label, \n" +
+              "    0, \n" +
+              "    parent,\n" +
+              "\tsubscription\n" +
+              "  FROM categories \n" +
+              "  WHERE parent = ''\n" +
+              "  UNION ALL\n" +
+              "  SELECT\n" +
+              "    mn.category_id, \n" +
+              "    mt.name || ' <> ' || mn.name, \n" +
+              "    mt.label || ' <> ' || mn.label, \n" +
+              "    mt.level + 0, \n" +
+              "    mt.category_id,\n" +
+              "\tmn.subscription\n" +
+              "  FROM categories mn, menu_tree mt \n" +
+              "  WHERE mn.parent = mt.category_id \n" +
+              ") \n" +
+              "SELECT * FROM menu_tree \n" +
+              subscribed +
+              " AND level >= 0 \n" +
+              "ORDER BY level DESC, name LIMIT " +
+              limit +
+              " OFFSET " +
+              offset);
+    });
+    // _db.close();
+    debugPrint('database_testing:-  preferences  ${data.length}');
+    // debugPrint('database_testing:-   $data');
+    List<PreferencesCategory> _preferencesCategoriesList = [];
+    data.forEach((element) {
+      _preferencesCategoriesList.add(PreferencesCategory.fromJson(element));
+    });
+
+    return _preferencesCategoriesList;
+  }
+
 }

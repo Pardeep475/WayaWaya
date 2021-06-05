@@ -157,6 +157,9 @@ class _AnimateAppBarState extends State<AnimateAppBar> {
                       slivers: [
                         CustomAppBar(
                           title: widget.title,
+                          pinned: widget.pinned ?? false,
+                          snap: widget.snap ?? false,
+                          floating: widget.floating ?? false,
                           centerTitle: widget.centerTitle ?? false,
                           padding: widget.padding ??
                               EdgeInsets.only(left: 0, top: 16),

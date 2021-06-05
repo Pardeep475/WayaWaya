@@ -20,6 +20,7 @@ class AppString {
   static const REFRESH_TOKEN = "REFRESH_TOKEN";
   static const USER_DATA = "USER_DATA";
   static const SMALL_DEFAULT_MALL_DATA = "SMALL_DEFAULT_MALL_DATA";
+  static const IS_LOGIN = "IS_LOGIN";
 
   static const String DEVICE_SEPARATOR = "~^";
   static const String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
@@ -76,7 +77,13 @@ class AppString {
   static const agree = "AGREE";
   static const sorry = "Sorry";
   static const preferences = "PREFERENCES";
+  static const settings = "SETTINGS";
+  static const logout = "LOGOUT";
   static const term_and_conditions = "Terms and Conditions";
+  static const my_account = "My Account";
+  static const preferences_small = "Preferences";
+  static const my_devices = "My Devices";
+  static const my_favourites = "My Favourites";
   static const already_have_an_account = "Already have an Account?";
   static const enter_authentication_code = "Enter valid authentication code";
   static const enter_valid_password = "Enter valid password";
@@ -93,6 +100,19 @@ class AppString {
   static const select_your_default_mall = "Select Your Default Mall";
   static const invalid_cred_check_user_name_and_password =
       "Invalid Credentials. Check username and password.";
+  static const String error_term_and_conditions =
+      "Please agree your terms & conditions";
+  static const String currently_not_logged_in =
+      "Currently you are not logged in to access this feature please login with valid credentials.";
+  static const app_version = "App version - v1.0.0";
+  static const favourite_malls = "Favourite Malls";
+  static const notification_frequency = "Notification Frequency";
+  static const alternate_currency = "Alternate Currency";
+  static const default_language = "Default Language";
+  static const home = "Home";
+  static const String ANDROID_NAME = "ANDROID";
+  static const String IOS_NAME = "IOS";
+  static const String device_sync_error = "Unable to sync devices since no internet. You\'ll able to see only locally saved devices for now.";
 
   // Routes
   static const LOGIN_SCREEN_ROUTE = "LOGIN_SCREEN_ROUTE";
@@ -103,6 +123,8 @@ class AppString {
   static const HOME_SCREEN_ROUTE = "HOME_SCREEN_ROUTE";
   static const SELECT_PREFERENCES_SCREEN_ROUTE =
       "SELECT_PREFERENCES_SCREEN_ROUTE";
+  static const SETTINGS_SCREEN_ROUTE = "SETTINGS_SCREEN_ROUTE";
+  static const MY_DEVICES_SCREEN_ROUTE = "MY_DEVICES_SCREEN_ROUTE";
 
 // db
   static const String ADMIN_DB_FILE = "admin.db";
@@ -127,5 +149,4 @@ class AppString {
   static const String PARKING_TABLE_NAME = "parking";
   static const String CINEMAS_TABLE_NAME = "cinemas";
   static const String THEME_TABLE_NAME = "theme";
-  static const String error_term_and_conditions = "Please agree your terms & conditions";
 }

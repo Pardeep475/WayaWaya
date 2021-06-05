@@ -11,7 +11,8 @@ class NetworkConstants {
   static const base_url = "https://api.omnistride.net/api/v1/";
 
   static const base_url_image =
-      "https://app.treadstoneus.com/application/uploads/users/";
+      "res.cloudinary.com/intelipower/image/upload";
+
 
   // end points
   static const login_end_point = "accounts/guest";

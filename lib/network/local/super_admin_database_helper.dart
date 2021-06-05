@@ -1,10 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart' as path;
+import 'package:wayawaya/app/preferences/model/preferences_categories.dart';
 import 'package:wayawaya/common/model/mall_profile_model.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 
@@ -115,7 +117,8 @@ class SuperAdminDatabaseHelper {
       _mallList.add(MallProfileModel.fromJson(element));
     });
 
-    data.map((e) => debugPrint('database_testing:-    $e'));
     return _mallList;
   }
+
+
 }

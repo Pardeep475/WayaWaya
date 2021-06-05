@@ -23,6 +23,15 @@ class SessionManager {
         .then((value) => value.getBool(AppString.IS_FIRST_TIME) ?? false);
   }
 
+  static void setISLogin(bool isLogin) {
+    _pref.then((value) => value.setBool(AppString.IS_LOGIN, isLogin));
+  }
+
+  static Future<bool> isLogin() {
+    return _pref
+        .then((value) => value.getBool(AppString.IS_LOGIN) ?? null);
+  }
+
   static void setAuthHeader(String authHeader) async {
     _pref.then((value) => value.setString(AppString.AUTH_HEADER, authHeader));
   }

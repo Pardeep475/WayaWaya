@@ -1,9 +1,13 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:wayawaya/app/common/menu/animate_app_bar.dart';
+import 'package:wayawaya/screens/login.dart';
 import 'package:wayawaya/screens/rewards/menunew.dart';
-import '../config.dart';
-import '../constants.dart';
-import '../widgets/slidable.dart';
-import 'login.dart';
+import 'package:wayawaya/utils/app_strings.dart';
+import 'package:wayawaya/widgets/slidable.dart';
+
+import '../../config.dart';
+import '../../constants.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -11,7 +15,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  bool gesturesVisible = true;
 
   @override
   Widget build(BuildContext context) {
@@ -25,8 +28,12 @@ class _HomeScreenState extends State<HomeScreen> {
             width: App.width(context),
             child: Stack(
               children: [
-                MenuNew(
-                  title: 'HOME',
+                AnimateAppBar(
+                  title: AppString.home.toUpperCase(),
+                  isSliver: true,
+                  floating: false,
+                  pinned: true,
+                  snap: false,
                   onSnowTap: () => Navigator.push(
                     context,
                     MaterialPageRoute(builder: (_) => Login()),
@@ -53,61 +60,58 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
 
                 ///GESTURES GUIDE
-                Visibility(
-                  visible: App.prefs.getBool('homeGestures') ?? true,
-                  child: InkWell(
-                    onTap: () {
-                      setState(() {
-                        App.prefs.setBool('homeGestures', false);
-                      });
-                    },
-                    child: Container(
-                      height: App.height(context),
-                      width: App.width(context),
-                      padding: const EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.66),
-                      ),
-                      child: Stack(
-                        children: [
-                          Positioned(
-                            left: 0,
-                            child: gestureV(text: 'Menu'),
-                          ),
-                          Align(
-                            alignment: Alignment.topCenter,
-                            child: Padding(
-                              padding: const EdgeInsets.only(
-                                  top: 0, bottom: 20, left: 20),
-                              child: gestureH(text: 'Change Mall'),
-                            ),
-                          ),
-                          Positioned(
-                            right: 0,
-                            child: gestureV(text: 'Account Details'),
-                          ),
-                          Positioned(
-                            right: 0,
-                            top: 160,
-                            child: gestureV(text: 'Swipe to view more offers'),
-                          ),
-                          Positioned(
-                            right: 0,
-                            top: 300,
-                            child: gestureV(text: 'Swipe to view more events'),
-                          ),
-                          Align(
-                            alignment: Alignment.bottomCenter,
-                            child: Padding(
-                              padding: const EdgeInsets.only(bottom: 10),
-                              child: gestureV(text: 'Swipe to view more ads'),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+                // Visibility(
+                //   visible: true,
+                //   child: InkWell(
+                //     onTap: () {
+                //     },
+                //     child: Container(
+                //       height: App.height(context),
+                //       width: App.width(context),
+                //       padding: const EdgeInsets.all(20),
+                //       decoration: BoxDecoration(
+                //         color: Colors.black.withOpacity(0.66),
+                //       ),
+                //       child: Stack(
+                //         children: [
+                //           Positioned(
+                //             left: 0,
+                //             child: gestureV(text: 'Menu'),
+                //           ),
+                //           Align(
+                //             alignment: Alignment.topCenter,
+                //             child: Padding(
+                //               padding: const EdgeInsets.only(
+                //                   top: 0, bottom: 20, left: 20),
+                //               child: gestureH(text: 'Change Mall'),
+                //             ),
+                //           ),
+                //           Positioned(
+                //             right: 0,
+                //             child: gestureV(text: 'Account Details'),
+                //           ),
+                //           Positioned(
+                //             right: 0,
+                //             top: 160,
+                //             child: gestureV(text: 'Swipe to view more offers'),
+                //           ),
+                //           Positioned(
+                //             right: 0,
+                //             top: 300,
+                //             child: gestureV(text: 'Swipe to view more events'),
+                //           ),
+                //           Align(
+                //             alignment: Alignment.bottomCenter,
+                //             child: Padding(
+                //               padding: const EdgeInsets.only(bottom: 10),
+                //               child: gestureV(text: 'Swipe to view more ads'),
+                //             ),
+                //           ),
+                //         ],
+                //       ),
+                //     ),
+                //   ),
+                // ),
               ],
             ),
           ),

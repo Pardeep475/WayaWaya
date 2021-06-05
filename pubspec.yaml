@@ -54,6 +54,7 @@ dependencies:
   webview_flutter: ^2.0.7
   device_info: ^2.0.1
   jwt_decoder: ^2.0.1
+  community_material_icon:
 
 dev_dependencies:
   flutter_test:
