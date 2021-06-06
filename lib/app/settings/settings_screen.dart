@@ -131,6 +131,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
       case AppString.preferences_small:
         {
           debugPrint('settings_click_testing:-  ${settingsModel.title}');
+          Navigator.pushNamed(
+              context, AppString.SELECT_PREFERENCES_SCREEN_ROUTE);
           break;
         }
       case AppString.my_devices:

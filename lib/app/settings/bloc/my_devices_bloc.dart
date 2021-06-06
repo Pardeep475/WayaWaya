@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -156,12 +157,12 @@ class MyDevicesBloc {
             : user.data['first_name'].toString(),
         cellnumber: user.data['cell_number_list'] == null
             ? null
-            : user.data['cell_number_list'].toString(),
+            : json.encode(user.data['cell_number_list']),
         isLogin: true,
         isTester: user.data['tester_flag'],
         email: user.data['email_list'] == null
             ? null
-            : user.data['email_list'].toString(),
+            : json.encode(user.data['email_list']),
         clientApi: user.data['social_media'] == null
             ? null
             : user.data['social_media'].toString(),
