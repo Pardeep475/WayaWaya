@@ -15,6 +15,7 @@ import 'package:wayawaya/utils/size_config.dart';
 import 'app/auth/forgotpassword/forgot_password_screen.dart';
 import 'app/auth/login/login_screen.dart';
 import 'app/home/home_screen.dart';
+import 'app/settings/my_account_screen.dart';
 import 'app/settings/my_devices_screen.dart';
 import 'network/local/super_admin_database_helper.dart';
 
@@ -133,6 +134,13 @@ class MyAppState extends State<MyApp> {
       case AppString.MY_DEVICES_SCREEN_ROUTE:
         return PageTransition(
           child: MyDeviceScreen(),
+          type: PageTransitionType.rightToLeft,
+          settings: settings,
+        );
+        break;
+      case AppString.MY_ACCOUNT_SCREEN_ROUTE:
+        return PageTransition(
+          child: MyAccountScreen(),
           type: PageTransitionType.rightToLeft,
           settings: settings,
         );

@@ -226,12 +226,12 @@ class LoginBloc {
             : user.data['first_name'].toString(),
         cellnumber: user.data['cell_number_list'] == null
             ? null
-            : user.data['cell_number_list'].toString(),
+            : json.encode(user.data['cell_number_list']),
         isLogin: true,
         isTester: user.data['tester_flag'],
         email: user.data['email_list'] == null
             ? null
-            : user.data['email_list'].toString(),
+            : json.encode(user.data['email_list']),
         clientApi: user.data['social_media'] == null
             ? null
             : user.data['social_media'].toString(),
@@ -277,7 +277,7 @@ class LoginBloc {
 
       String userData = await SessionManager.getUserData();
       UserDataResponse response = userDataResponseFromJson(userData);
-      debugPrint('login_response_tesing:-  ${response.cellnumber}');
+      debugPrint('login_response_tesing:-  ${response.email}');
       loginSink.add(ApiResponse.completed(ErrorResponse(differ: differ)));
     } catch (e) {
       debugPrint("login_success_testing:-  error $e");
@@ -286,7 +286,6 @@ class LoginBloc {
           ErrorResponse(differ: differ, message: 'UserDetailError'),
         ),
       );
-
     }
   }
 }

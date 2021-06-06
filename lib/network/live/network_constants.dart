@@ -20,5 +20,6 @@ class NetworkConstants {
   static const forgot_password_end_point = "resetPassword/";
   static const new_password_end_point = "newPassword";
   static const register_user_end_point = "register/users";
+  static const update_user_end_point = "guests/";
 
 }

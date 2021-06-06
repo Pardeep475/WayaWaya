@@ -234,4 +234,18 @@ class Utils {
       return url;
     }
   }
+
+  static String uploadDateFormat(String value) {
+    try {
+      DateFormat originalFormat = new DateFormat("dd/MM/yyyy");
+      DateFormat targetFormat = new DateFormat(AppString.DATE_FORMAT);
+      DateTime date = originalFormat.parse(value);
+      String formattedDate = targetFormat.format(date.toLocal());
+      debugPrint("date_format_birthday---->    $formattedDate");
+      return formattedDate;
+    } catch (e) {
+      return "";
+    }
+  }
+
 }

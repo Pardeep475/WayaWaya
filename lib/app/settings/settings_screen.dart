@@ -3,6 +3,7 @@ import 'package:wayawaya/app/common/menu/animate_app_bar.dart';
 import 'package:wayawaya/app/settings/model/settings_model.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_strings.dart';
+import 'package:wayawaya/utils/session_manager.dart';
 import '../../constants.dart';
 import 'bloc/settings_bloc.dart';
 import 'custom_view/custom_settings_card.dart';
@@ -112,8 +113,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  _logoutButtonClick() {
+  _logoutButtonClick() async {
     debugPrint('settings_click_testing:-  logout');
+    SessionManager.setISLogin(false);
+    Navigator.pushNamedAndRemoveUntil(
+        context, AppString.SPLASH_SCREEN_ROUTE, (route) => false);
   }
 
   _onItemClick(SettingsModel settingsModel) {
@@ -121,6 +125,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       case AppString.my_account:
         {
           debugPrint('settings_click_testing:-  ${settingsModel.title}');
+          Navigator.pushNamed(context, AppString.MY_ACCOUNT_SCREEN_ROUTE);
           break;
         }
       case AppString.preferences_small:

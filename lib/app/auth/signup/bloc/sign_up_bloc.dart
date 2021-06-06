@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -51,17 +52,21 @@ class SignUpBloc {
           debugPrint('testing_   :-  ${user.response.data["_error"]}');
           signUpSink.add(
             ApiResponse.error(
-              ErrorResponse(differ: differ, message: user.response.data['_error']['message']),
+              ErrorResponse(
+                  differ: differ,
+                  message: user.response.data['_error']['message']),
             ),
           );
         } else {
           signUpSink.add(
             ApiResponse.error(
               ErrorResponse(
-                  differ: differ, message: user.response.data['_error']['message']),
+                  differ: differ,
+                  message: user.response.data['_error']['message']),
             ),
           );
-          debugPrint("testing__:-   ${user.response.data['_error']['message']}");
+          debugPrint(
+              "testing__:-   ${user.response.data['_error']['message']}");
         }
       } else {
         debugPrint('login_api_testing:-  $user');
@@ -184,12 +189,12 @@ class SignUpBloc {
             : user.data['first_name'].toString(),
         cellnumber: user.data['cell_number_list'] == null
             ? null
-            : user.data['cell_number_list'].toString(),
+            : json.encode(user.data['cell_number_list']),
         isLogin: true,
         isTester: user.data['tester_flag'],
         email: user.data['email_list'] == null
             ? null
-            : user.data['email_list'].toString(),
+            : json.encode(user.data['email_list']),
         clientApi: user.data['social_media'] == null
             ? null
             : user.data['social_media'].toString(),

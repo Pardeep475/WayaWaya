@@ -73,7 +73,7 @@ class ApiBaseHelper {
     }
   }
 
-  Future<dynamic> fetchUserDetail(
+  Future<dynamic> patch(
       {String url,
       String authHeader,
       dynamic params,

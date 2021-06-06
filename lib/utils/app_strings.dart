@@ -113,6 +113,10 @@ class AppString {
   static const String ANDROID_NAME = "ANDROID";
   static const String IOS_NAME = "IOS";
   static const String device_sync_error = "Unable to sync devices since no internet. You\'ll able to see only locally saved devices for now.";
+  static const String save = "Save";
+  static const String my_profile = "MY PROFILE";
+  static const String your_account_updated_successfully = "Your account updated successfully.";
+  static const String home_page = "HOMEPAGE";
 
   // Routes
   static const LOGIN_SCREEN_ROUTE = "LOGIN_SCREEN_ROUTE";
@@ -125,6 +129,7 @@ class AppString {
       "SELECT_PREFERENCES_SCREEN_ROUTE";
   static const SETTINGS_SCREEN_ROUTE = "SETTINGS_SCREEN_ROUTE";
   static const MY_DEVICES_SCREEN_ROUTE = "MY_DEVICES_SCREEN_ROUTE";
+  static const MY_ACCOUNT_SCREEN_ROUTE = "MY_ACCOUNT_SCREEN_ROUTE";
 
 // db
   static const String ADMIN_DB_FILE = "admin.db";
