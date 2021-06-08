@@ -55,7 +55,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 backgroundColor: AppColor.white,
                 title: AppString.login.toUpperCase(),
                 borderRadius: 0,
-                width: MediaQuery.of(context).size.width,
+                width: MediaQuery
+                    .of(context)
+                    .size
+                    .width,
                 onPressed: () {
                   _loginButtonPressed(context);
                 },
@@ -68,7 +71,10 @@ class _LoginScreenState extends State<LoginScreen> {
               _forgotButtonPressed(context);
             },
             child: Container(
-              width: MediaQuery.of(context).size.width,
+              width: MediaQuery
+                  .of(context)
+                  .size
+                  .width,
               padding: const EdgeInsets.symmetric(vertical: 7),
               child: const Text(
                 AppString.forgot_password,
@@ -86,7 +92,10 @@ class _LoginScreenState extends State<LoginScreen> {
               Navigator.pushNamed(context, AppString.SIGN_UP_SCREEN_ROUTE);
             },
             child: Container(
-              width: MediaQuery.of(context).size.width,
+              width: MediaQuery
+                  .of(context)
+                  .size
+                  .width,
               padding: const EdgeInsets.symmetric(vertical: 7),
               child: const Text(
                 AppString.not_account_yet,
@@ -120,11 +129,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                   Navigator.pushNamedAndRemoveUntil(
                                       context,
                                       AppString.SELECT_PREFERENCES_SCREEN_ROUTE,
-                                      (route) => false);
+                                          (route) => false);
                                 },
                                 child: const Padding(
                                   padding:
-                                      const EdgeInsets.fromLTRB(20, 10, 6, 10),
+                                  const EdgeInsets.fromLTRB(20, 10, 6, 10),
                                   child: const Text(
                                     AppString.skip,
                                     style: TextStyle(
@@ -178,9 +187,15 @@ class _LoginScreenState extends State<LoginScreen> {
                         Utils.commonProgressDialog(context);
                       });
                       return Container(
-                        width: MediaQuery.of(context).size.width,
+                        width: MediaQuery
+                            .of(context)
+                            .size
+                            .width,
                         color: Colors.transparent,
-                        height: MediaQuery.of(context).size.height,
+                        height: MediaQuery
+                            .of(context)
+                            .size
+                            .height,
                       );
                       break;
                     case Status.COMPLETED:
@@ -220,7 +235,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                                 title: AppString.login.toUpperCase(),
                                 content:
-                                    AppString.check_your_internet_connectivity,
+                                AppString.check_your_internet_connectivity,
                                 buttonText: AppString.preferences.toUpperCase(),
                                 onPressed: _loginComplete,
                               );
@@ -232,7 +247,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                                 title: AppString.login.toUpperCase(),
                                 content:
-                                    AppString.check_your_internet_connectivity,
+                                AppString.check_your_internet_connectivity,
                                 buttonText: AppString.ok.toUpperCase(),
                                 onPressed: () => Navigator.pop(context),
                               );
@@ -262,7 +277,7 @@ class _LoginScreenState extends State<LoginScreen> {
       autofocus: false,
       controller: _passwordController,
       validator: (value) =>
-          value.isEmpty ? AppString.enter_valid_password : null,
+      value.isEmpty ? AppString.enter_valid_password : null,
       decoration: InputDecoration(
         labelText: AppString.password,
         alignLabelWithHint: true,
@@ -334,12 +349,11 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  _showErrorDialog(
-      {Icon icon,
-      String title,
-      String content,
-      String buttonText,
-      VoidCallback onPressed}) {
+  _showErrorDialog({Icon icon,
+    String title,
+    String content,
+    String buttonText,
+    VoidCallback onPressed}) {
     showGeneralDialog(
         barrierColor: Colors.black.withOpacity(0.1),
         transitionBuilder: (context, a1, a2, widget) {

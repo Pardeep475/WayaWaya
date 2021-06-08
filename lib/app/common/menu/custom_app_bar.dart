@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:wayawaya/app/common/dialogs/common_error_dialog.dart';
 import 'package:wayawaya/app/common/dialogs/common_login_dialog.dart';
+import 'package:wayawaya/app/common/menu/model/main_menu_permission.dart';
 import 'package:wayawaya/common/model/categories_model.dart';
 import 'package:wayawaya/screens/rewards/menu_button.dart';
 import 'package:wayawaya/screens/select_def_mall.dart';
@@ -29,6 +30,8 @@ class CustomAppBar extends StatefulWidget {
   final bool pinned;
   final bool snap;
   @required
+  final List<MainMenuPermission> mainMenuPermissionList;
+  @required
   final String title;
 
   CustomAppBar(
@@ -44,6 +47,7 @@ class CustomAppBar extends StatefulWidget {
       this.floating,
       this.pinned,
       this.snap,
+      this.mainMenuPermissionList,
       this.title});
 
   @override
@@ -91,13 +95,12 @@ class _CustomAppBarState extends State<CustomAppBar> {
   @override
   void initState() {
     _customAppBarBloc = CustomAppBarBloc();
-    getProfileCategories();
     super.initState();
-
     _loggedIn = 'Pardeep Kumar';
     _selectedMall = 'Dobsonville Mall';
-    // getMallLogo();
-    // print(_loggedIn);
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      getProfileCategories();
+    });
   }
 
   getProfileCategories() async {
@@ -120,7 +123,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
               pinned: widget.pinned ?? false,
               snap: widget.snap ?? false,
               centerTitle: widget.centerTitle ?? false,
-              leading: MenuTile(),
+              leading: MenuTile(itemList: widget.mainMenuPermissionList),
               title: Text(
                 widget.title,
                 maxLines: 1,
@@ -187,7 +190,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                     pinned: widget.pinned ?? false,
                     snap: widget.snap ?? false,
                     centerTitle: widget.centerTitle ?? false,
-                    leading: MenuTile(),
+                    leading: MenuTile(itemList: widget.mainMenuPermissionList),
                     title: Text(
                       widget.title,
                       maxLines: 1,
@@ -231,7 +234,8 @@ class _CustomAppBarState extends State<CustomAppBar> {
                           ? InkWell(
                               onTap: () => _onMallSelection(),
                               child: Padding(
-                                padding: const EdgeInsets.only(right: 5, left: 5),
+                                padding:
+                                    const EdgeInsets.only(right: 5, left: 5),
                                 child: StreamBuilder<String>(
                                     initialData: null,
                                     stream: _customAppBarBloc
@@ -303,7 +307,8 @@ class _CustomAppBarState extends State<CustomAppBar> {
                           ? InkWell(
                               onTap: () => _onMallSelection(),
                               child: Padding(
-                                padding: const EdgeInsets.only(right: 5, left: 5),
+                                padding:
+                                    const EdgeInsets.only(right: 5, left: 5),
                                 child: CircleAvatar(
                                   radius: 20,
                                   backgroundColor: appLightColor,

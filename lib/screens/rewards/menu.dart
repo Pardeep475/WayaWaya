@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:wayawaya/app/common/menu/model/main_menu_permission.dart';
 import 'package:wayawaya/screens/rewards/qr_code_scanner.dart';
 import '../settings.dart';
 import './../../config.dart';
@@ -37,6 +38,7 @@ class Menu extends StatefulWidget {
   final List<Widget> normalChildren;
   @required
   final List<Widget> children;
+  final List<MainMenuPermission> mainMenuPermissionList;
 
   Menu(
       {this.title,
@@ -53,6 +55,7 @@ class Menu extends StatefulWidget {
       this.physics,
       this.isSliver = true,
       this.normalChildren,
+        this.mainMenuPermissionList,
       this.centerTitle,
       this.titleSize});
 
@@ -286,6 +289,7 @@ class _MenuState extends State<Menu> with SingleTickerProviderStateMixin {
                           centerTitle: widget.centerTitle ?? false,
                           padding: widget.padding ?? null,
                           titleSize: widget.titleSize ?? 14,
+                          mainMenuPermissionList: widget.mainMenuPermissionList,
                           onSnowTap: widget.onSnowTap ??
                               () => Navigator.push(
                                     context,

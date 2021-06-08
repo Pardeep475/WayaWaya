@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart' as path;
+import 'package:wayawaya/app/common/menu/model/main_menu_permission.dart';
 import 'package:wayawaya/app/preferences/model/preferences_categories.dart';
 import 'package:wayawaya/common/model/mall_profile_model.dart';
 import 'package:wayawaya/utils/app_strings.dart';
@@ -120,5 +121,31 @@ class SuperAdminDatabaseHelper {
     return _mallList;
   }
 
+  static Future<List<MainMenuPermission>> getMenuButtons(
+      String tableKey) async {
+    if (_db == null) {
+      await initDataBase();
+    }
+    List<Map> data;
+    await _db.transaction((txn) async {
+      data = await txn.query(
+        AppString.MAIN_MENU_PERMISSION_TABLE_NAME,
+        where: "venue_profile_id = ?",
+        whereArgs: ['$tableKey'],
+        orderBy: 'sequence_number ASC',
+      );
+    });
 
+    List<MainMenuPermission> _mainMenuPermissionList = [];
+    data.forEach((element) {
+      _mainMenuPermissionList.add(MainMenuPermission.fromJson(element));
+    });
+
+    _mainMenuPermissionList.forEach((element) {
+      debugPrint(
+          'database_testing_menu_permission:-   ${element.displayName[0].text}');
+    });
+
+    return _mainMenuPermissionList;
+  }
 }

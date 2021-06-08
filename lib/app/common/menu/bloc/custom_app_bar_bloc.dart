@@ -20,12 +20,12 @@ class CustomAppBarBloc {
 
   Stream<String> get identifierCategoryStream => _identifierController.stream;
 
-  Future<List<Category>> getProfileCategories() async {
+  Future getProfileCategories() async {
     String databasePath = await SessionManager.getDefaultMall();
-    List<Category> categories =
-        await ProfileDatabaseHelper.getAllCategories(databasePath);
-    profileCategorySink.add(categories);
+    // List<Category> categories =
+    //     await ProfileDatabaseHelper.getAllCategories(databasePath);
+    // profileCategorySink.add(categories);
     identifierCategorySink.add(databasePath);
-    return categories;
+    // return categories;
   }
 }

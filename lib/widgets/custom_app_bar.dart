@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wayawaya/app/common/menu/model/main_menu_permission.dart';
 import 'package:wayawaya/config.dart';
 import 'package:wayawaya/screens/rewards/menu_button.dart';
 import 'package:wayawaya/screens/select_def_mall.dart';
@@ -18,6 +19,7 @@ class MyAppBar extends StatefulWidget {
   final bool floating;
   final bool pinned;
   final bool snap;
+  final List<MainMenuPermission> mainMenuPermissionList;
   @required
   final String title;
 
@@ -34,6 +36,7 @@ class MyAppBar extends StatefulWidget {
     this.pinned,
     this.centerTitle,
     this.titleSize,
+    this.mainMenuPermissionList,
     this.isSliver = true,
   });
 
@@ -87,7 +90,6 @@ class _MyAppBarState extends State<MyAppBar> {
 
   @override
   Widget build(BuildContext context) {
-
     return widget.isSliver
         ? SliverAppBar(
             backgroundColor: Colors.grey[700],
@@ -97,7 +99,7 @@ class _MyAppBarState extends State<MyAppBar> {
             pinned: widget.pinned ?? false,
             snap: widget.snap ?? false,
             centerTitle: widget.centerTitle ?? false,
-            leading: MenuTile(),
+            leading: MenuTile(itemList: widget.mainMenuPermissionList),
             title: Container(
               height: 58,
               child: Padding(

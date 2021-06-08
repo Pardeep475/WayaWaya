@@ -5,7 +5,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:wayawaya/app/auth/forgotpassword/model/error_response.dart';
-import 'package:wayawaya/app/auth/login/model/guest_user_api_response.dart';
 import 'package:wayawaya/app/auth/login/model/user_data_response.dart';
 import 'package:wayawaya/app/auth/login/model/user_model.dart';
 import 'package:wayawaya/network/live/exception_handling/exception_handling.dart';

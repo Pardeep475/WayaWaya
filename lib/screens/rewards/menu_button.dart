@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wayawaya/app/common/menu/model/main_menu_permission.dart';
 import 'package:wayawaya/screens/map/mall_map.dart';
 import 'package:wayawaya/screens/rewards/qr_code_scanner.dart';
 import 'package:wayawaya/utils/app_color.dart';
@@ -12,12 +13,16 @@ import '../shops_and_rest_list.dart';
 import 'rewards_new.dart';
 
 class MenuTile extends StatelessWidget {
-  const MenuTile({
-    Key key,
-  }) : super(key: key);
+  List<MainMenuPermission> _itemList = [];
+
+  MenuTile({Key key, List<MainMenuPermission> itemList}) {
+    this._itemList = itemList;
+  }
 
   @override
   Widget build(BuildContext context) {
+    debugPrint(
+        'main_menu_permission_testing:-----  MenuTile ${_itemList != null ? _itemList.length : 'null'}');
     return GestureDetector(
       onTap: () => Navigator.push(
           context,
@@ -33,7 +38,10 @@ class MenuTile extends StatelessWidget {
                 Animation<double> animation,
                 Animation<double> secondaryAnimation,
               ) {
-                return RhombusMenu(enabled: true);
+                return RhombusMenu(
+                  enabled: true,
+                  menuPermissionList: _itemList,
+                );
               })),
       child: Container(
         margin: EdgeInsets.only(left: 4.0),
@@ -43,6 +51,7 @@ class MenuTile extends StatelessWidget {
             BoxDecoration(shape: BoxShape.circle, color: AppColor.primary),
         child: RhombusMenu(
           enabled: false,
+          menuPermissionList: _itemList,
         ),
       ),
     );
@@ -52,8 +61,13 @@ class MenuTile extends StatelessWidget {
 class RhombusMenu extends StatelessWidget {
   final bool enabled;
   final Animation<double> animation;
+  final List<MainMenuPermission> menuPermissionList;
 
-  const RhombusMenu({Key key, @required this.enabled, this.animation})
+  const RhombusMenu(
+      {Key key,
+      @required this.enabled,
+      @required this.menuPermissionList,
+      this.animation})
       : super(key: key);
 
   static Cubic _getCubic(var label) {
@@ -92,6 +106,8 @@ class RhombusMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint(
+        'main_menu_permission_testing:----- RhombusMenu  ${menuPermissionList != null ? menuPermissionList.length : 'null'}');
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: enabled ? 32 : 12, vertical: 8),
       child: Column(

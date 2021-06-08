@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:wayawaya/app/common/menu/bloc/animate_app_bar_widget_bloc.dart';
 import 'package:wayawaya/app/common/menu/custom_app_bar.dart';
+import 'package:wayawaya/app/common/menu/model/main_menu_permission.dart';
 import 'package:wayawaya/utils/app_color.dart';
 
 class AnimateAppBar extends StatefulWidget {
@@ -20,6 +21,8 @@ class AnimateAppBar extends StatefulWidget {
   final bool pinned;
   final bool snap;
   @required
+  final List<MainMenuPermission> mainMenuPermissions;
+  @required
   final List<Widget> children;
 
   AnimateAppBar(
@@ -37,6 +40,7 @@ class AnimateAppBar extends StatefulWidget {
       this.floating,
       this.pinned,
       this.snap,
+      this.mainMenuPermissions,
       this.children});
 
   @override
@@ -164,6 +168,7 @@ class _AnimateAppBarState extends State<AnimateAppBar> {
                           padding: widget.padding ??
                               EdgeInsets.only(left: 0, top: 16),
                           titleSize: widget.titleSize ?? 16,
+                          mainMenuPermissionList: widget.mainMenuPermissions,
                           onSnowTap: widget
                               .onSnowTap /*??
                               () => Navigator.push(
