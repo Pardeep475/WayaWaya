@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart' as path;
+import 'package:wayawaya/app/home/model/campaign_model.dart';
 import 'package:wayawaya/app/preferences/model/preferences_categories.dart';
 import 'package:wayawaya/common/model/categories_model.dart';
 import 'package:wayawaya/utils/app_strings.dart';
@@ -173,5 +174,30 @@ class ProfileDatabaseHelper {
     });
 
     return _preferencesCategoriesList;
+  }
+
+  static Future<List<Campaign>> getAllCampaign(String databasePath) async {
+    debugPrint('database_testing:-  database path $databasePath');
+    if (_db == null) {
+      await initDataBase(databasePath);
+    }
+    List<Map> data;
+    await _db.transaction((txn) async {
+      data = await txn.query(
+        AppString.CAMPAIGN_TABLE_NAME,
+        where: "status = ?",
+        whereArgs: ['approved'],
+        orderBy: 'start_date ASC',
+      );
+    });
+    // _db.close();
+    debugPrint('database_testing:-   ${data.length}');
+    debugPrint('database_testing:-   $data');
+    List<Campaign> _mallList = [];
+    data.forEach((element) {
+      _mallList.add(Campaign.fromJson(element));
+    });
+    data.map((e) => debugPrint('database_testing:-    $e'));
+    return _mallList;
   }
 }

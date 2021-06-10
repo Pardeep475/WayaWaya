@@ -14,8 +14,7 @@ import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/session_manager.dart';
 
 class LoginBloc {
-  StreamController _loginController =
-      StreamController<ApiResponse<ErrorResponse>>();
+  StreamController _loginController = StreamController<ApiResponse<ErrorResponse>>();
 
   StreamSink<ApiResponse<ErrorResponse>> get loginSink => _loginController.sink;
 

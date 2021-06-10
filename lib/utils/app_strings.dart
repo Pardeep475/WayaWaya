@@ -112,10 +112,12 @@ class AppString {
   static const home = "Home";
   static const String ANDROID_NAME = "ANDROID";
   static const String IOS_NAME = "IOS";
-  static const String device_sync_error = "Unable to sync devices since no internet. You\'ll able to see only locally saved devices for now.";
+  static const String device_sync_error =
+      "Unable to sync devices since no internet. You\'ll able to see only locally saved devices for now.";
   static const String save = "Save";
   static const String my_profile = "MY PROFILE";
-  static const String your_account_updated_successfully = "Your account updated successfully.";
+  static const String your_account_updated_successfully =
+      "Your account updated successfully.";
   static const String home_page = "HOMEPAGE";
 
   // Routes
@@ -154,4 +156,11 @@ class AppString {
   static const String PARKING_TABLE_NAME = "parking";
   static const String CINEMAS_TABLE_NAME = "cinemas";
   static const String THEME_TABLE_NAME = "theme";
+
+  // keys
+  static const String OFFER_CAMPAIGN = "offer";
+  static const String EVENT_CAMPAIGN = "event";
+  static const String WHATSON_CAMPAIGN = "whatson";
+  static const String ACTIVITIES_CAMPAIGN = "activity";
+  static const String CINEMA_CAMPAIGN = "cinema";
 }

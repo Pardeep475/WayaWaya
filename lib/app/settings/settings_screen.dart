@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:wayawaya/app/common/menu/animate_app_bar.dart';
+import 'package:wayawaya/app/home/model/campaign_model.dart';
 import 'package:wayawaya/app/settings/model/settings_model.dart';
 import 'package:wayawaya/network/local/profile_database_helper.dart';
-import 'package:wayawaya/network/local/super_admin_database_helper.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/session_manager.dart';
@@ -166,6 +166,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   _implementLocalDb() async {
     String defaultMall = await SessionManager.getDefaultMall();
-    await SuperAdminDatabaseHelper.getMenuButtons(defaultMall);
+    List<Campaign> campaignList =
+        await ProfileDatabaseHelper.getAllCampaign(defaultMall);
+    debugPrint(
+        'campaignList:-  ${campaignList.length}   ${campaignList[0].offerQrCode}');
   }
 }
