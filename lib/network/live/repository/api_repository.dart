@@ -1,6 +1,7 @@
 import 'package:wayawaya/app/auth/forgotpassword/model/authentication_code_model.dart';
 import 'package:wayawaya/app/auth/login/model/user_model.dart';
 import 'package:wayawaya/app/auth/signup/model/sign_up_model.dart';
+import 'package:wayawaya/app/preferences/model/upload_preferences_model.dart';
 import 'package:wayawaya/app/settings/model/update_user_model.dart';
 import 'package:wayawaya/network/live/base/api_base_helper.dart';
 import 'package:wayawaya/utils/session_manager.dart';
@@ -76,4 +77,18 @@ class ApiRepository {
 
     return response;
   }
+
+  Future<dynamic> updateUserPreferencesApiRepository(
+      {String userId, dynamic params, Map<String, dynamic> map}) async {
+    String authHeader = await SessionManager.getJWTToken();
+    final response = await _apiProvider.patch(
+        url: '${NetworkConstants.update_user_end_point}$userId',
+        params: uploadPreferencesModelToJson(params),
+        authHeader: authHeader,
+        map: map);
+
+    return response;
+  }
+
+
 }

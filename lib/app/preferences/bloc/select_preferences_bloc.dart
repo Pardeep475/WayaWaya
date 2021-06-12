@@ -1,20 +1,39 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:wayawaya/app/auth/forgotpassword/model/error_response.dart';
+import 'package:wayawaya/app/auth/login/model/user_data_response.dart';
+import 'package:wayawaya/app/preferences/model/category_model.dart';
 import 'package:wayawaya/app/preferences/model/currency_model.dart';
 import 'package:wayawaya/app/preferences/model/language_model.dart';
 import 'package:wayawaya/app/preferences/model/notification_model.dart';
 import 'package:wayawaya/app/preferences/model/preferences_categories.dart';
+import 'package:wayawaya/app/preferences/model/upload_preferences_model.dart';
 import 'package:wayawaya/common/model/language_store.dart';
 import 'package:wayawaya/common/model/mall_profile_model.dart';
+import 'package:wayawaya/network/live/exception_handling/exception_handling.dart';
+import 'package:wayawaya/network/live/model/api_response.dart';
+import 'package:wayawaya/network/live/repository/api_repository.dart';
 import 'package:wayawaya/network/local/profile_database_helper.dart';
 import 'package:wayawaya/network/local/super_admin_database_helper.dart';
 import 'package:wayawaya/utils/session_manager.dart';
 import 'package:wayawaya/utils/utils.dart';
 
+// language, currency
 class SelectPreferencesBloc {
   List<DropdownMenuItem<NotificationModel>> items = [];
+
+  // ignore: close_sinks
+  StreamController _selectPreferencesController =
+      StreamController<ApiResponse<ErrorResponse>>();
+
+  StreamSink<ApiResponse<ErrorResponse>> get selectPreferencesSink =>
+      _selectPreferencesController.sink;
+
+  Stream<ApiResponse<ErrorResponse>> get selectPreferencesStream =>
+      _selectPreferencesController.stream;
 
 // ignore: close_sinks
   StreamController _mallProfileController =
@@ -28,12 +47,12 @@ class SelectPreferencesBloc {
 
   // ignore: close_sinks
   StreamController _categoriesController =
-      StreamController<List<PreferencesCategory>>();
+      StreamController<List<CategoryModel>>();
 
-  StreamSink<List<PreferencesCategory>> get categoriesSink =>
+  StreamSink<List<CategoryModel>> get categoriesSink =>
       _categoriesController.sink;
 
-  Stream<List<PreferencesCategory>> get categoriesStream =>
+  Stream<List<CategoryModel>> get categoriesStream =>
       _categoriesController.stream;
 
   // ignore: close_sinks
@@ -45,6 +64,13 @@ class SelectPreferencesBloc {
 
   Stream<NotificationModel> get notificationStream =>
       _notificationController.stream;
+
+// ignore: close_sinks
+  StreamController _languageCheckBoxController = StreamController<bool>();
+
+  StreamSink<bool> get languageCheckBoxSink => _languageCheckBoxController.sink;
+
+  Stream<bool> get languageCheckBoxStream => _languageCheckBoxController.stream;
 
   // ignore: close_sinks
   StreamController _currencyController =
@@ -63,29 +89,48 @@ class SelectPreferencesBloc {
   Stream<List<LanguageModel>> get languageStream => _languageController.stream;
 
   List<MallProfileModel> _allMallList = [];
+  List<String> _categoriesList = [];
+
+  String _selectedCurrency = '';
+  String _selectedLanguage = '';
+  String _favoriteMall = '';
+
+  final _repository = ApiRepository();
+  UserDataResponse _response;
 
   getMallData() async {
+    String userData = await SessionManager.getUserData();
+    _response = userDataResponseFromJson(userData);
+
     List<MallProfileModel> _mallList =
         await SuperAdminDatabaseHelper.getAllVenueProfile();
-    debugPrint('database_testing:-   ${_mallList.length}');
+
     _allMallList.addAll(_mallList);
 
-    String key = await SessionManager.getDefaultMall();
-    bool isSelected = false;
-    for (int i = 0; i < _allMallList.length; i++) {
-      if (key == _allMallList[i].identifier) {
-        isSelected = true;
-        updateItemMallList(i, _allMallList[i], true);
-        return;
-      }
+    if (_response == null) {
+      String key = await SessionManager.getDefaultMall();
+      _favoriteMall = key;
+    } else {
+      _favoriteMall = _response.favouriteMall;
     }
 
+    debugPrint('favorite_mall_testing:-   $_favoriteMall');
+    bool isSelected = false;
+    for (int i = 0; i < _allMallList.length; i++) {
+      if (_response == null) {
+        updateItemMallList(i, _allMallList[i], i == 0 ? true : false);
+        return;
+      } else {
+        if (_response.favouriteMall == _allMallList[i].identifier) {
+          isSelected = true;
+          updateItemMallList(i, _allMallList[i], true);
+          return;
+        }
+      }
+    }
     if (!isSelected) {
       updateItemMallList(0, _allMallList[0], true);
     }
-
-    debugPrint('Mall_profile_updated_successfully');
-    // mallProfileSink.add(_mallList);
   }
 
   getNotificationData(BuildContext context) async {
@@ -94,13 +139,23 @@ class SelectPreferencesBloc {
     List<NotificationModel> notificationList = _getNotification(context, value);
     debugPrint('notification_list_testing:-  ${notificationList.toString()}');
     _buildDropDownMenuItems(notificationList);
-    notificationList.forEach((element) {
-      if (element.local) {
-        debugPrint('notification_list_testing:-  ${element.title}');
-        notificationSink.add(element);
-        return;
-      }
-    });
+
+    if (_response == null) {
+      notificationList.forEach((element) {
+        if (element.local) {
+          debugPrint('notification_list_testing:-  ${element.title}');
+          notificationSink.add(element);
+          return;
+        }
+      });
+    } else {
+      notificationList.forEach((element) {
+        if (element.title.contains(_response.notification)) {
+          notificationSink.add(element);
+        }
+      });
+    }
+
     _getCurrency(value);
     _getLanguageCode(value);
   }
@@ -200,6 +255,7 @@ class SelectPreferencesBloc {
 
   updateItemMallList(
       int position, MallProfileModel mallProfileModel, bool selected) {
+    _favoriteMall = mallProfileModel.identifier;
     mallProfileModel.active = selected ? 0 : 1;
     List<MallProfileModel> mallList = [];
     for (int i = 0; i < _allMallList.length; i++) {
@@ -220,21 +276,176 @@ class SelectPreferencesBloc {
     mallProfileSink.add(_allMallList);
   }
 
+  // categories implemented
   getPreferencesCategories() async {
     try {
       String defaultMall = await SessionManager.getDefaultMall();
+      // String categories = await SessionManager.getGuestUserCategory();
       List<PreferencesCategory> categoriesList =
           await ProfileDatabaseHelper.getPreferencesCategories(
               defaultMall, "10000", "10000");
 
-      categoriesSink.add(categoriesList);
+      debugPrint('preference_categories: -    ${_response.categories}');
 
-      // campaignList.forEach((element) {
-      //   debugPrint(
-      //       'preference_categories:-  ${element.name.replaceAll('<>', '/')}');
-      // });
+      if (_response.categories != null) {
+        debugPrint(
+            'preference_categories: -  response.categories  ${_response.categories}');
+        _response.categories.forEach((element) {
+          debugPrint('preference_categories: -    $element');
+          _categoriesList.add(element as String);
+        });
+
+        debugPrint(
+            'preference_categories:- _intrestedCategories   ${_categoriesList.length}');
+      }
+      List<CategoryModel> _finalList = [];
+      bool isLogin = await SessionManager.isLogin();
+      categoriesList.forEach((element) {
+        String categoryName = element.name.replaceAll('<>', '/');
+        String categoryId = element.categoryId;
+        bool isSelected = isLogin ? _categoriesList.contains(categoryId) : true;
+
+        debugPrint(
+            'preference_categories:-  CategoryName:-   $categoryName    CategoryId:-  $categoryId     IsSelected:-    $isSelected');
+
+        CategoryModel categoryModel = CategoryModel(
+            categoryId: categoryId,
+            categoryName: categoryName,
+            isSelected: isSelected);
+
+        _finalList.add(categoryModel);
+      });
+
+      categoriesSink.add(_finalList);
     } catch (e) {
       debugPrint('database_testing:-  $e');
+    }
+  }
+
+// save data localy without login
+  Future putOfflineUserPreferenceData(
+      int notify, String favMall, String curr, String lang) async {
+    SessionManager.setGuestUserCategory(jsonEncode(_categoriesList));
+    SessionManager.setGuestUserNotification(notify);
+    SessionManager.setGuestUserFavouriteMall(favMall);
+    SessionManager.setGuestUserCurrency(curr);
+    SessionManager.setGuestUserLanguage(lang);
+    return null;
+  }
+
+  List<String> get categoriesList => _categoriesList;
+
+// add and remove data when switch on and off categories
+  updateCategoriesList(String categoryId) {
+    bool hasData = _categoriesList.contains(categoryId);
+    debugPrint('preference_categories:-   hasData   $hasData');
+    if (hasData) {
+      _categoriesList.remove(categoryId);
+    } else {
+      _categoriesList.add(categoryId);
+    }
+  }
+
+  // update currency
+  updateCurrentCurrency(String currency) {
+    _selectedCurrency = currency;
+  }
+
+  String get selectedCurrency => _selectedCurrency;
+
+// update language
+  updateCurrentLanguage(String language) {
+    debugPrint('updateCurrentLanguage :-  $language');
+    _selectedLanguage = language;
+  }
+
+  String get selectedLanguage => _selectedLanguage;
+
+  String get getFavoriteMall => _favoriteMall;
+
+  updateUserInfoApi({BuildContext context, UploadPreferencesModel data}) async {
+    selectPreferencesSink.add(ApiResponse.loading(null));
+    String userData = await SessionManager.getUserData();
+    UserDataResponse _response = userDataResponseFromJson(userData);
+    try {
+      Map<String, String> patchQuery = {"state": "1"};
+      dynamic user = await _repository.updateUserPreferencesApiRepository(
+          userId: _response.username, params: data, map: patchQuery);
+      debugPrint("testing__:-  success $user");
+      if (user is DioError) {
+        debugPrint("testing__:-   ${user.response.data}");
+        selectPreferencesSink.add(ApiResponse.error(ErrorResponse()));
+      } else {
+        debugPrint("testing__:-   Profile updated successfully");
+        updateUserOnLocal(data, context);
+      }
+    } catch (e) {
+      debugPrint("error_in_login_api:-  $e");
+      selectPreferencesSink.add(ApiResponse.error(e));
+      if (e is UnknownException ||
+          e is InvalidFormatException ||
+          e is NoServiceFoundException ||
+          e is NoInternetException ||
+          e is FetchDataException ||
+          e is UnauthorisedException ||
+          e is BadRequestException) {
+        debugPrint("error_in_login_api:-  e is exception");
+        selectPreferencesSink.add(
+          ApiResponse.error(
+            ErrorResponse(message: e.message),
+          ),
+        );
+      } else {
+        debugPrint("error_in_login_api:-  $e is String");
+        selectPreferencesSink.add(
+          ApiResponse.error(
+            ErrorResponse(message: e),
+          ),
+        );
+      }
+    }
+  }
+
+  void updateUserOnLocal(
+      UploadPreferencesModel user, BuildContext context) async {
+    try {
+      String accessToken = await SessionManager.getJWTToken();
+      String userData = await SessionManager.getUserData();
+      UserDataResponse _response = userDataResponseFromJson(userData);
+      UserDataResponse userDataResponse = UserDataResponse(
+        accessToken: accessToken,
+        lastName: _response.lastName,
+        username: _response.username,
+        userId: _response.userId,
+        gender: _response.gender,
+        dob: _response.dob,
+        firstName: _response.firstName,
+        cellnumber: _response.cellnumber,
+        isLogin: _response.isLogin,
+        isTester: _response.isTester,
+        email: _response.email,
+        clientApi: _response.clientApi,
+        loginType: _response.loginType,
+        loyaltyStatus: _response.loyaltyStatus,
+        categories: user.preferences.categories,
+        notification: user.preferences.notification.toString(),
+        favouriteMall: user.preferences.favoriteMalls,
+        language: user.preferences.defaultLanguage,
+        currency: user.preferences.alternateCurrency,
+        devices: _response.devices,
+        registrationDate: _response.registrationDate,
+      );
+      SessionManager.setUserData(userDataResponseToJson(userDataResponse));
+
+      debugPrint('login_response_tesing:-  ${_response.cellnumber}');
+      selectPreferencesSink.add(ApiResponse.completed(ErrorResponse()));
+    } catch (e) {
+      debugPrint("login_success_testing:-  error $e");
+      selectPreferencesSink.add(
+        ApiResponse.error(
+          ErrorResponse(message: e),
+        ),
+      );
     }
   }
 }

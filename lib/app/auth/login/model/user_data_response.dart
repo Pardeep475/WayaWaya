@@ -18,7 +18,7 @@ class UserDataResponse {
   String userId;
   String cellnumber;
   String clientApi;
-  String categories;
+  List<dynamic> categories;
   String favouriteMall;
   String currency;
   String language;

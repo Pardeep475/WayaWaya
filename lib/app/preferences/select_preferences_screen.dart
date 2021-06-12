@@ -5,16 +5,19 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:wayawaya/app/common/dialogs/common_login_dialog.dart';
+import 'package:wayawaya/app/auth/forgotpassword/model/error_response.dart';
+import 'package:wayawaya/app/common/dialogs/common_error_dialog.dart';
 import 'package:wayawaya/app/common/dialogs/common_login_with_home_page.dart';
+import 'package:wayawaya/app/common/dialogs/common_preferences_saved_dialog.dart';
 import 'package:wayawaya/app/common/menu/animate_app_bar.dart';
 import 'package:wayawaya/app/preferences/bloc/select_preferences_bloc.dart';
 import 'package:wayawaya/app/preferences/model/currency_model.dart';
 import 'package:wayawaya/app/preferences/model/language_model.dart';
 import 'package:wayawaya/app/preferences/model/notification_model.dart';
+import 'package:wayawaya/app/preferences/model/upload_preferences_model.dart';
 import 'package:wayawaya/app/preferences/view/category_preferences.dart';
 import 'package:wayawaya/common/model/mall_profile_model.dart';
-import 'package:wayawaya/network/local/profile_database_helper.dart';
+import 'package:wayawaya/network/live/model/api_response.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/session_manager.dart';
@@ -23,7 +26,7 @@ import 'package:wayawaya/widgets/fav_malls.dart';
 
 import '../../config.dart';
 import '../../constants.dart';
-import 'model/preferences_categories.dart';
+import 'model/category_model.dart';
 
 class SelectPreferencesScreen extends StatefulWidget {
   @override
@@ -45,64 +48,6 @@ class _SelectPreferencesScreenState extends State<SelectPreferencesScreen> {
     fontSize: 15,
     fontWeight: FontWeight.w500,
   );
-
-  getMallName(int index) {
-    switch (index) {
-      case 0:
-        return 'Dobsonville';
-      case 1:
-        return 'Hillfox Value Centre';
-      case 2:
-        return 'Durban Workshop';
-      case 3:
-        return 'Randburg Square Centre';
-      case 4:
-        return 'Atlantis City';
-      case 5:
-        return 'Hammarsdale Junction';
-      case 6:
-        return 'Kolonnade Retail Park';
-      case 7:
-        return 'Bloemfontein Plaza';
-      case 8:
-        return 'Gugulethu Square';
-      case 9:
-        return 'Mdantsane City Shopping Centre';
-      case 10:
-        return 'Pine Crest Centre';
-      case 11:
-        return 'Nonesi Mall';
-    }
-  }
-
-  getMallLogo(int index) {
-    switch (index) {
-      case 0:
-        return 'assets/dobsonville.png';
-      case 1:
-        return 'assets/hillfox.png';
-      case 2:
-        return 'assets/durban.png';
-      case 3:
-        return 'assets/randburg.png';
-      case 4:
-        return 'assets/atlantis.png';
-      case 5:
-        return 'assets/hammarsdale.png';
-      case 6:
-        return 'assets/kolonnade.png';
-      case 7:
-        return 'assets/bloemfontein.png';
-      case 8:
-        return 'assets/gugulethu.png';
-      case 9:
-        return 'assets/mdantsane.png';
-      case 10:
-        return 'assets/pinecrest.png';
-      case 11:
-        return 'assets/nonesi.png';
-    }
-  }
 
   successDialog() {
     showDialog(
@@ -172,6 +117,7 @@ class _SelectPreferencesScreenState extends State<SelectPreferencesScreen> {
   }
 
   SelectPreferencesBloc _selectPreferencesBloc;
+  NotificationModel _notificationModel;
 
   @override
   void initState() {
@@ -179,8 +125,8 @@ class _SelectPreferencesScreenState extends State<SelectPreferencesScreen> {
 
     _selectPreferencesBloc = SelectPreferencesBloc();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      _selectPreferencesBloc.getPreferencesCategories();
       _selectPreferencesBloc.getMallData();
+      _selectPreferencesBloc.getPreferencesCategories();
       _selectPreferencesBloc.getNotificationData(context);
     });
   }
@@ -221,7 +167,7 @@ class _SelectPreferencesScreenState extends State<SelectPreferencesScreen> {
               },
               children: [
                 SliverToBoxAdapter(
-                  child: StreamBuilder<List<PreferencesCategory>>(
+                  child: StreamBuilder<List<CategoryModel>>(
                       initialData: null,
                       stream: _selectPreferencesBloc.categoriesStream,
                       builder: (context, snapshot) {
@@ -245,6 +191,10 @@ class _SelectPreferencesScreenState extends State<SelectPreferencesScreen> {
                                 itemBuilder: (_, index) {
                                   return CategoryPreferences(
                                     preferencesCategory: snapshot.data[index],
+                                    onPressed: (categoriesId) {
+                                      _selectPreferencesBloc
+                                          .updateCategoriesList(categoriesId);
+                                    },
                                   );
                                 },
                               ),
@@ -259,6 +209,7 @@ class _SelectPreferencesScreenState extends State<SelectPreferencesScreen> {
                       stream: _selectPreferencesBloc.notificationStream,
                       builder: (context, snapshot) {
                         if (snapshot.data == null) return SizedBox();
+                        _notificationModel = snapshot.data;
                         return Container(
                           margin: EdgeInsets.only(top: 10),
                           padding: EdgeInsets.symmetric(horizontal: 15),
@@ -276,6 +227,7 @@ class _SelectPreferencesScreenState extends State<SelectPreferencesScreen> {
                                 value: snapshot.data,
                                 items: _selectPreferencesBloc.getDropDownItems,
                                 onChanged: (notificationData) {
+                                  _notificationModel = notificationData;
                                   changedDropDownItem(notificationData);
                                 },
                               ),
@@ -391,7 +343,9 @@ class _SelectPreferencesScreenState extends State<SelectPreferencesScreen> {
                         Expanded(
                           flex: 1,
                           child: InkWell(
-                            // onTap: () => successDialog(),
+                            onTap: () {
+                              _saveButtonPressed();
+                            },
                             child: Card(
                               shadowColor: Colors.grey[400],
                               child: Container(
@@ -399,7 +353,7 @@ class _SelectPreferencesScreenState extends State<SelectPreferencesScreen> {
                                 width: App.width(context) / 2.3,
                                 child: Center(
                                   child: Text(
-                                    'SAVE',
+                                    AppString.save.toUpperCase(),
                                     style: TextStyle(
                                       color: Colors.grey[600],
                                       fontSize: 17,
@@ -443,85 +397,137 @@ class _SelectPreferencesScreenState extends State<SelectPreferencesScreen> {
                 ),
               ],
             ),
-
-            // MALL OPTIONS
-            // Visibility(
-            //   visible: showMalls,
-            //   child: InkWell(
-            //     onTap: () {
-            //       setState(() {
-            //         showMalls = false;
-            //       });
-            //     },
-            //     child: Container(
-            //       height: App.height(context),
-            //       width: App.width(context),
-            //       color: Colors.black.withOpacity(0.45),
-            //       alignment: Alignment.center,
-            //       child: GridView.builder(
-            //         itemCount: 12,
-            //         shrinkWrap: true,
-            //         padding: EdgeInsets.symmetric(horizontal: 20),
-            //         physics: NeverScrollableScrollPhysics(),
-            //         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            //             crossAxisCount: 3, mainAxisSpacing: 10),
-            //         itemBuilder: (BuildContext context, int index) {
-            //           return InkWell(
-            //             onTap: () => print('Go to Mall'),
-            //             child: Container(
-            //               height: 150,
-            //               width: 100,
-            //               child: Column(
-            //                 mainAxisAlignment: MainAxisAlignment.center,
-            //                 children: [
-            //                   Container(
-            //                     decoration: BoxDecoration(
-            //                       shape: BoxShape.circle,
-            //                       boxShadow: [
-            //                         BoxShadow(
-            //                           blurRadius: 10,
-            //                           color: Colors.black38,
-            //                           spreadRadius: 5,
-            //                         ),
-            //                       ],
-            //                     ),
-            //                     child: CircleAvatar(
-            //                       backgroundColor: appLightColor,
-            //                       radius: 36,
-            //                       child: Image.asset(
-            //                         getMallLogo(index),
-            //                         height: 50,
-            //                       ),
-            //                     ),
-            //                   ),
-            //                   Container(
-            //                     height: 30,
-            //                     child: Center(
-            //                       child: Text(
-            //                         getMallName(index),
-            //                         style: TextStyle(
-            //                           color: white,
-            //                           fontSize: 12,
-            //                         ),
-            //                         overflow: TextOverflow.clip,
-            //                         textAlign: TextAlign.center,
-            //                         maxLines: 1,
-            //                       ),
-            //                     ),
-            //                   ),
-            //                 ],
-            //               ),
-            //             ),
-            //           );
-            //         },
-            //       ),
-            //     ),
-            //   ),
-            // ),
+            StreamBuilder<ApiResponse<ErrorResponse>>(
+              stream: _selectPreferencesBloc.selectPreferencesStream,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  switch (snapshot.data.status) {
+                    case Status.LOADING:
+                      Future.delayed(Duration(milliseconds: 200), () {
+                        Utils.commonProgressDialog(context);
+                      });
+                      return Container(
+                        width: MediaQuery.of(context).size.width,
+                        color: Colors.transparent,
+                        height: MediaQuery.of(context).size.height,
+                      );
+                      break;
+                    case Status.COMPLETED:
+                      {
+                        debugPrint("completed");
+                        Navigator.pop(context);
+                        Future.delayed(Duration(milliseconds: 100), () {
+                          _loginComplete();
+                        });
+                      }
+                      break;
+                    case Status.ERROR:
+                      {
+                        Navigator.pop(context);
+                        Future.delayed(Duration(milliseconds: 100), () {
+                          debugPrint(
+                              "Error error ${snapshot.data.data.message}");
+                          _showErrorDialog(
+                            icon: Icon(
+                              FontAwesomeIcons.exclamationCircle,
+                              color: AppColor.red_500,
+                            ),
+                            title: AppString.sorry,
+                            content: AppString.check_your_internet_connectivity,
+                            buttonText: AppString.ok.toUpperCase(),
+                            onPressed: () => Navigator.pop(context),
+                          );
+                        });
+                      }
+                      break;
+                  }
+                }
+                return SizedBox();
+              },
+            ),
           ],
         ),
       ),
     );
+  }
+
+  _loginComplete() {
+    _showPreferencesSavedDialog();
+  }
+
+  _saveButtonPressed() async {
+    bool isLogin = await SessionManager.isLogin();
+    if (isLogin != null && isLogin) {
+      Utils.checkConnectivity().then((value) {
+        if (value) {
+          // save preferences with login
+          _selectPreferencesBloc.updateUserInfoApi(
+              context: context, data: _getUploadPreferencesModel());
+        } else {
+          _showErrorDialog(
+            icon: Icon(
+              FontAwesomeIcons.exclamationTriangle,
+              color: AppColor.orange_500,
+            ),
+            title: AppString.login.toUpperCase(),
+            content: AppString.check_your_internet_connectivity,
+            buttonText: AppString.ok.toUpperCase(),
+            onPressed: () => Navigator.pop(context),
+          );
+        }
+      });
+    } else {
+      // save preferences without login
+      await _selectPreferencesBloc.putOfflineUserPreferenceData(
+          _getNotificationCount(),
+          _selectPreferencesBloc.getFavoriteMall,
+          _selectPreferencesBloc.selectedCurrency,
+          _selectPreferencesBloc.selectedLanguage);
+      // SessionManager.setDefaultMall(_selectPreferencesBloc.getFavoriteMall);
+      _showPreferencesSavedDialog();
+    }
+  }
+
+  UploadPreferencesModel _getUploadPreferencesModel() => UploadPreferencesModel(
+      preferences: UploadPreferencesModelData(
+          categories: _selectPreferencesBloc.categoriesList,
+          notification: _getNotificationCount(),
+          alternateCurrency: _selectPreferencesBloc.selectedCurrency,
+          defaultLanguage: _selectPreferencesBloc.selectedLanguage,
+          favoriteMalls: _selectPreferencesBloc.getFavoriteMall));
+
+  _showPreferencesSavedDialog() {
+    showGeneralDialog(
+        barrierColor: Colors.black.withOpacity(0.1),
+        transitionBuilder: (context, a1, a2, widget) {
+          final curvedValue = Curves.easeInOutBack.transform(a1.value) - 1.0;
+          return Transform(
+            transform: Matrix4.translationValues(0.0, curvedValue * 200, 0.0),
+            child: AnimatedOpacity(
+              duration: Duration(milliseconds: 100),
+              opacity: a1.value,
+              child: CommonPreferencesSavedDialog(),
+            ),
+          );
+        },
+        transitionDuration: Duration(milliseconds: 200),
+        barrierDismissible: false,
+        barrierLabel: '',
+        context: context,
+        pageBuilder: (context, animation1, animation2) {});
+  }
+
+  int _getNotificationCount() {
+    int finalN = 12;
+    try {
+      if (_notificationModel != null) {
+        dynamic notificationSplit = _notificationModel.title.trim().split(" ");
+        String patchNotify = notificationSplit[0];
+        finalN = int.parse(patchNotify);
+      }
+    } catch (e) {}
+
+    return finalN;
   }
 
   _cancelButtonPressed() async {
@@ -536,19 +542,11 @@ class _SelectPreferencesScreenState extends State<SelectPreferencesScreen> {
         ),
         title: AppString.login.toUpperCase(),
         content: AppString.currently_not_logged_in,
-        buttonText: AppString.login.toUpperCase(),
-        onPressed: () =>
-            Navigator.pushNamed(context, AppString.LOGIN_SCREEN_ROUTE),
       );
     }
   }
 
-  _showLoginDialog(
-      {Icon icon,
-      String title,
-      String content,
-      String buttonText,
-      VoidCallback onPressed}) {
+  _showLoginDialog({Icon icon, String title, String content}) {
     showGeneralDialog(
         barrierColor: Colors.black.withOpacity(0.1),
         transitionBuilder: (context, a1, a2, widget) {
@@ -574,6 +572,10 @@ class _SelectPreferencesScreenState extends State<SelectPreferencesScreen> {
   }
 
   Widget _itemCurrencyWidget(CurrencyModel _currencyModel) {
+    _selectPreferencesBloc.updateCurrentCurrency(
+        '${_currencyModel.code.toUpperCase()}, ${_currencyModel.countryCode}');
+    debugPrint(
+        'currency_code:-   ${_currencyModel.code}    ${_currencyModel.countryCode}');
     return Container(
       height: 50,
       width: MediaQuery.of(context).size.width,
@@ -614,21 +616,33 @@ class _SelectPreferencesScreenState extends State<SelectPreferencesScreen> {
   }
 
   Widget _itemLanguageWidget(LanguageModel _languageModel) {
+    _selectPreferencesBloc.updateCurrentLanguage(_languageModel.code);
     return Container(
       height: 60,
       margin: EdgeInsets.only(bottom: 4),
       child: Row(
         children: [
-          Container(
-            width: 20,
-            margin: EdgeInsets.only(right: 10),
-            child: Checkbox(
-              value: _lang,
-              onChanged: (bool value) {
-                _lang = value;
-              },
-            ),
-          ),
+          StreamBuilder<bool>(
+              initialData: true,
+              stream: _selectPreferencesBloc.languageCheckBoxStream,
+              builder: (context, snapshot) {
+                return Container(
+                  width: 20,
+                  margin: EdgeInsets.only(right: 10),
+                  child: Checkbox(
+                    value: snapshot.data,
+                    onChanged: (bool value) {
+                      _selectPreferencesBloc.languageCheckBoxSink.add(value);
+                      if (value) {
+                        _selectPreferencesBloc
+                            .updateCurrentLanguage(_languageModel.code);
+                      } else {
+                        _selectPreferencesBloc.updateCurrentLanguage('');
+                      }
+                    },
+                  ),
+                );
+              }),
           Text(
             _languageModel.name ?? "",
             style: TextStyle(
@@ -642,13 +656,6 @@ class _SelectPreferencesScreenState extends State<SelectPreferencesScreen> {
             width: 40,
             imageUrl: Utils.getFlagUrl(_languageModel.code ?? ""),
           ),
-          // Container(
-          //   height: 20,
-          //   width: 40,
-          //   child: Image.asset(
-          //     'assets/uk_flag.jpg',
-          //   ),
-          // ),
         ],
       ),
     );
@@ -656,6 +663,38 @@ class _SelectPreferencesScreenState extends State<SelectPreferencesScreen> {
 
   String _firstTwo(String str) {
     return str.length < 2 ? str : str.substring(0, 2);
+  }
+
+  _showErrorDialog(
+      {Icon icon,
+      String title,
+      String content,
+      String buttonText,
+      VoidCallback onPressed}) {
+    showGeneralDialog(
+        barrierColor: Colors.black.withOpacity(0.1),
+        transitionBuilder: (context, a1, a2, widget) {
+          final curvedValue = Curves.easeInOutBack.transform(a1.value) - 1.0;
+          return Transform(
+            transform: Matrix4.translationValues(0.0, curvedValue * 200, 0.0),
+            child: AnimatedOpacity(
+              duration: Duration(milliseconds: 100),
+              opacity: a1.value,
+              child: CommonErrorDialog(
+                icon: icon,
+                title: title,
+                content: content,
+                buttonText: buttonText,
+                onPressed: onPressed,
+              ),
+            ),
+          );
+        },
+        transitionDuration: Duration(milliseconds: 200),
+        barrierDismissible: false,
+        barrierLabel: '',
+        context: context,
+        pageBuilder: (context, animation1, animation2) {});
   }
 }
 

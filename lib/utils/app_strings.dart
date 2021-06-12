@@ -21,6 +21,11 @@ class AppString {
   static const USER_DATA = "USER_DATA";
   static const SMALL_DEFAULT_MALL_DATA = "SMALL_DEFAULT_MALL_DATA";
   static const IS_LOGIN = "IS_LOGIN";
+  static const String PREF_GUEST_USER_CATEGORIES = "PREF_GUEST_USER_CATEGORIES";
+  static const String PREF_GUEST_USER_NOTIFICATIONS = "PREF_GUEST_USER_NOTIFICATIONS";
+  static const String PREF_GUEST_USER_FAVOURITE_MALL = "PREF_GUEST_USER_FAVOURITE_MALL";
+  static const String PREF_GUEST_USER_CURRENCY = "PREF_GUEST_USER_CURRENCY";
+  static const String PREF_GUEST_USER_LANGUAGE = "PREF_GUEST_USER_LANGUAGE";
 
   static const String DEVICE_SEPARATOR = "~^";
   static const String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
@@ -123,6 +128,7 @@ class AppString {
   static const String event = "EVENT";
   static const String offer = "OFFER";
   static const String interested_categories = "Interested Categories";
+  static const String your_preferences_saved_successfully = "Your preferences saved successfully";
 
   // Routes
   static const LOGIN_SCREEN_ROUTE = "LOGIN_SCREEN_ROUTE";

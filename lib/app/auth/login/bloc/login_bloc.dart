@@ -14,7 +14,8 @@ import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/session_manager.dart';
 
 class LoginBloc {
-  StreamController _loginController = StreamController<ApiResponse<ErrorResponse>>();
+  StreamController _loginController =
+      StreamController<ApiResponse<ErrorResponse>>();
 
   StreamSink<ApiResponse<ErrorResponse>> get loginSink => _loginController.sink;
 
@@ -243,7 +244,7 @@ class LoginBloc {
             ? null
             : user.data['preferences']['categories'] == null
                 ? null
-                : user.data['preferences']['categories'].toString(),
+                : user.data['preferences']['categories'],
         notification: user.data['preferences'] == null
             ? null
             : user.data['preferences']['notification'] == null

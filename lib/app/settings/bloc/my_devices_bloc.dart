@@ -188,7 +188,7 @@ class MyDevicesBloc {
             ? null
             : user.data['preferences']['categories'] == null
                 ? null
-                : user.data['preferences']['categories'].toString(),
+                : user.data['preferences']['categories'],
         notification: user.data['preferences'] == null
             ? null
             : user.data['preferences']['notification'] == null

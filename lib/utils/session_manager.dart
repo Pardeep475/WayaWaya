@@ -28,8 +28,7 @@ class SessionManager {
   }
 
   static Future<bool> isLogin() {
-    return _pref
-        .then((value) => value.getBool(AppString.IS_LOGIN) ?? null);
+    return _pref.then((value) => value.getBool(AppString.IS_LOGIN) ?? null);
   }
 
   static void setAuthHeader(String authHeader) async {
@@ -103,6 +102,56 @@ class SessionManager {
   static Future<bool> getISLoginScreenVisible() {
     return _pref.then(
         (value) => value.getBool(AppString.IS_LOGIN_SCREEN_VISIBLE) ?? false);
+  }
+
+  static void setGuestUserLanguage(String language) async {
+    _pref.then((value) =>
+        value.setString(AppString.PREF_GUEST_USER_LANGUAGE, language));
+  }
+
+  static Future<String> getGuestUserLanguage() {
+    return _pref
+        .then((value) => value.getString(AppString.PREF_GUEST_USER_LANGUAGE));
+  }
+
+  static void setGuestUserCurrency(String currency) async {
+    _pref.then((value) =>
+        value.setString(AppString.PREF_GUEST_USER_CURRENCY, currency));
+  }
+
+  static Future<String> getGuestUserCurrency() {
+    return _pref
+        .then((value) => value.getString(AppString.PREF_GUEST_USER_CURRENCY));
+  }
+
+  static void setGuestUserFavouriteMall(String favouriteMall) async {
+    _pref.then((value) => value.setString(
+        AppString.PREF_GUEST_USER_FAVOURITE_MALL, favouriteMall));
+  }
+
+  static Future<String> getGuestUserFavouriteMall() {
+    return _pref.then(
+        (value) => value.getString(AppString.PREF_GUEST_USER_FAVOURITE_MALL));
+  }
+
+  static void setGuestUserNotification(int notification) async {
+    _pref.then((value) =>
+        value.setInt(AppString.PREF_GUEST_USER_NOTIFICATIONS, notification));
+  }
+
+  static Future<int> getGuestUserNotification() {
+    return _pref
+        .then((value) => value.getInt(AppString.PREF_GUEST_USER_NOTIFICATIONS));
+  }
+
+  static void setGuestUserCategory(String categories) async {
+    _pref.then((value) =>
+        value.setString(AppString.PREF_GUEST_USER_CATEGORIES, categories));
+  }
+
+  static Future<String> getGuestUserCategory() {
+    return _pref
+        .then((value) => value.getString(AppString.PREF_GUEST_USER_CATEGORIES));
   }
 
   void clearAllData() {
