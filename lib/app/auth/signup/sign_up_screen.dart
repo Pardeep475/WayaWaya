@@ -615,7 +615,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Widget _alreadyHaveAnAccountLabel() => InkWell(
         onTap: () {
           debugPrint('Already have an account');
-          Navigator.pop(context);
+          Navigator.pushNamedAndRemoveUntil(
+              context, AppString.LOGIN_SCREEN_ROUTE, (route) => false);
         },
         child: Container(
           width: MediaQuery.of(context).size.width,

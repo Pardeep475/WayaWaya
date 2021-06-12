@@ -3,7 +3,10 @@ import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:wayawaya/app/common/dialogs/common_login_dialog.dart';
+import 'package:wayawaya/app/common/dialogs/common_login_with_home_page.dart';
 import 'package:wayawaya/app/common/menu/animate_app_bar.dart';
 import 'package:wayawaya/app/preferences/bloc/select_preferences_bloc.dart';
 import 'package:wayawaya/app/preferences/model/currency_model.dart';
@@ -12,6 +15,7 @@ import 'package:wayawaya/app/preferences/model/notification_model.dart';
 import 'package:wayawaya/app/preferences/view/category_preferences.dart';
 import 'package:wayawaya/common/model/mall_profile_model.dart';
 import 'package:wayawaya/network/local/profile_database_helper.dart';
+import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/session_manager.dart';
 import 'package:wayawaya/utils/utils.dart';
@@ -202,46 +206,6 @@ class _SelectPreferencesScreenState extends State<SelectPreferencesScreen> {
         backgroundColor: bgColor,
         body: Stack(
           children: [
-            // Positioned.fill(
-            //   child: CustomScrollView(
-            //     slivers: [
-            //       SliverAppBar(
-            //         title: Text("MyAppBar"),
-            //       ),
-            //       SliverAppBar(
-            //         backgroundColor: Colors.amber,
-            //         title: Text('Kindacode.com'),
-            //         expandedHeight: 30,
-            //         collapsedHeight: 150,
-            //       ),
-            //       SliverAppBar(
-            //         backgroundColor: Colors.green,
-            //         title: Text('Have a nice day'),
-            //         floating: true,
-            //       ),
-            //       SliverList(
-            //         delegate: SliverChildBuilderDelegate(
-            //           (BuildContext context, int index) {
-            //             return Card(
-            //               margin: EdgeInsets.all(15),
-            //               child: Container(
-            //                 color: Colors.blue[100 * (index % 9 + 1)],
-            //                 height: 80,
-            //                 alignment: Alignment.center,
-            //                 child: Text(
-            //                   "Item $index",
-            //                   style: TextStyle(fontSize: 30),
-            //                 ),
-            //               ),
-            //             );
-            //           },
-            //           childCount: 1000, // 1000 list items
-            //         ),
-            //       )
-            //     ],
-            //   ),
-            // ),
-
             AnimateAppBar(
               title: AppString.preferences.toUpperCase(),
               isSliver: true,
@@ -256,54 +220,6 @@ class _SelectPreferencesScreenState extends State<SelectPreferencesScreen> {
                 });
               },
               children: [
-                // SliverToBoxAdapter(
-                //   child: Container(
-                //     padding: EdgeInsets.symmetric(horizontal: 15),
-                //     child: Text(
-                //       'Interested Categories',
-                //       style: _title,
-                //     ),
-                //   ),
-                // ),
-                // SliverFillRemaining(
-                //   hasScrollBody: false,
-                //   child: Column(
-                //     mainAxisSize: MainAxisSize.max,
-                //     crossAxisAlignment: CrossAxisAlignment.start,
-                //     children: [
-                //       Container(
-                //         height: 33 * 10.0 + 14,
-                //         width: App.width(context),
-                //         margin: EdgeInsets.only(top: 7),
-                //         padding: EdgeInsets.symmetric(horizontal: 15),
-                //         child: ListView.builder(
-                //             itemCount: 10,
-                //             physics: NeverScrollableScrollPhysics(),
-                //             shrinkWrap: true,
-                //             itemBuilder: (_, index) {
-                //               return InterestedCategories(
-                //                 index: index,
-                //               );
-                //             }),
-                //       ),
-                //       Padding(
-                //         padding: const EdgeInsets.symmetric(
-                //             vertical: 10, horizontal: 15),
-                //         child: Text(
-                //           '12 daily',
-                //           style: _content,
-                //         ),
-                //       ),
-                //     ],
-                //   ),
-                // ),
-                //Container(
-                //                 //     padding: EdgeInsets.symmetric(horizontal: 15),
-                //                 //     child: Text(
-                //                 //       'Interested Categories',
-                //                 //       style: _title,
-                //                 //     ),
-                //                 //   )
                 SliverToBoxAdapter(
                   child: StreamBuilder<List<PreferencesCategory>>(
                       initialData: null,
@@ -337,7 +253,6 @@ class _SelectPreferencesScreenState extends State<SelectPreferencesScreen> {
                         );
                       }),
                 ),
-
                 SliverToBoxAdapter(
                   child: StreamBuilder<NotificationModel>(
                       initialData: null,
@@ -369,7 +284,6 @@ class _SelectPreferencesScreenState extends State<SelectPreferencesScreen> {
                         );
                       }),
                 ),
-
                 SliverToBoxAdapter(
                   child: StreamBuilder<List<MallProfileModel>>(
                       initialData: [],
@@ -405,7 +319,6 @@ class _SelectPreferencesScreenState extends State<SelectPreferencesScreen> {
                         );
                       }),
                 ),
-
                 SliverToBoxAdapter(
                   child: StreamBuilder<List<CurrencyModel>>(
                       initialData: null,
@@ -437,7 +350,6 @@ class _SelectPreferencesScreenState extends State<SelectPreferencesScreen> {
                         );
                       }),
                 ),
-
                 SliverToBoxAdapter(
                   child: StreamBuilder<List<LanguageModel>>(
                       initialData: null,
@@ -469,7 +381,6 @@ class _SelectPreferencesScreenState extends State<SelectPreferencesScreen> {
                         );
                       }),
                 ),
-
                 SliverToBoxAdapter(
                   child: Container(
                     width: App.width(context),
@@ -505,7 +416,9 @@ class _SelectPreferencesScreenState extends State<SelectPreferencesScreen> {
                         Expanded(
                           flex: 1,
                           child: InkWell(
-                            // onTap: () => Navigator.pop(context),
+                            onTap: () {
+                              _cancelButtonPressed();
+                            },
                             child: Card(
                               shadowColor: Colors.grey[400],
                               child: Container(
@@ -513,7 +426,7 @@ class _SelectPreferencesScreenState extends State<SelectPreferencesScreen> {
                                 width: App.width(context) / 2.3,
                                 child: Center(
                                   child: Text(
-                                    'CANCEL',
+                                    AppString.cancel.toUpperCase(),
                                     style: TextStyle(
                                       color: Colors.grey[600],
                                       fontSize: 17,
@@ -609,6 +522,55 @@ class _SelectPreferencesScreenState extends State<SelectPreferencesScreen> {
         ),
       ),
     );
+  }
+
+  _cancelButtonPressed() async {
+    bool isLogin = await SessionManager.isLogin();
+    if (isLogin) {
+      Navigator.pop(context);
+    } else {
+      _showLoginDialog(
+        icon: Icon(
+          FontAwesomeIcons.exclamationTriangle,
+          color: AppColor.orange_500,
+        ),
+        title: AppString.login.toUpperCase(),
+        content: AppString.currently_not_logged_in,
+        buttonText: AppString.login.toUpperCase(),
+        onPressed: () =>
+            Navigator.pushNamed(context, AppString.LOGIN_SCREEN_ROUTE),
+      );
+    }
+  }
+
+  _showLoginDialog(
+      {Icon icon,
+      String title,
+      String content,
+      String buttonText,
+      VoidCallback onPressed}) {
+    showGeneralDialog(
+        barrierColor: Colors.black.withOpacity(0.1),
+        transitionBuilder: (context, a1, a2, widget) {
+          final curvedValue = Curves.easeInOutBack.transform(a1.value) - 1.0;
+          return Transform(
+            transform: Matrix4.translationValues(0.0, curvedValue * 200, 0.0),
+            child: AnimatedOpacity(
+              duration: Duration(milliseconds: 100),
+              opacity: a1.value,
+              child: CommonLoginWithHomePageDialog(
+                icon: icon,
+                title: title,
+                content: content,
+              ),
+            ),
+          );
+        },
+        transitionDuration: Duration(milliseconds: 200),
+        barrierDismissible: false,
+        barrierLabel: '',
+        context: context,
+        pageBuilder: (context, animation1, animation2) {});
   }
 
   Widget _itemCurrencyWidget(CurrencyModel _currencyModel) {

@@ -50,6 +50,7 @@ class AppString {
   static const confirm_password = "Confirm Password";
   static const submit = "Submit";
   static const cancel = "Cancel";
+  static const sign_up = "SIGN UP";
   static const success = "Success";
   static const error = "Error";
   static const password_reset = "Password Reset";
