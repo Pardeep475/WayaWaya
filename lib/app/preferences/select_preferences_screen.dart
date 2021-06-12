@@ -9,6 +9,7 @@ import 'package:wayawaya/app/preferences/bloc/select_preferences_bloc.dart';
 import 'package:wayawaya/app/preferences/model/currency_model.dart';
 import 'package:wayawaya/app/preferences/model/language_model.dart';
 import 'package:wayawaya/app/preferences/model/notification_model.dart';
+import 'package:wayawaya/app/preferences/view/category_preferences.dart';
 import 'package:wayawaya/common/model/mall_profile_model.dart';
 import 'package:wayawaya/network/local/profile_database_helper.dart';
 import 'package:wayawaya/utils/app_strings.dart';
@@ -174,6 +175,7 @@ class _SelectPreferencesScreenState extends State<SelectPreferencesScreen> {
 
     _selectPreferencesBloc = SelectPreferencesBloc();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      _selectPreferencesBloc.getPreferencesCategories();
       _selectPreferencesBloc.getMallData();
       _selectPreferencesBloc.getNotificationData(context);
     });
@@ -183,18 +185,6 @@ class _SelectPreferencesScreenState extends State<SelectPreferencesScreen> {
     print("Selected city $selectedCity, we are going to refresh the UI");
     _selectPreferencesBloc.notificationSink.add(selectedCity);
     _currentNotification = selectedCity.title;
-  }
-
-  _getPreferencesCategories() async {
-    try {
-      String databasePath = await SessionManager.getDefaultMall();
-      List<PreferencesCategory> preferencesCategoriesList =
-          await ProfileDatabaseHelper.getPreferencesCategories(
-              databasePath, '0', '10');
-      debugPrint('database_testing:-  ${preferencesCategoriesList.length}');
-    } catch (e) {
-      debugPrint('database_testing:-  $e');
-    }
   }
 
   _updateValues({int pos, MallProfileModel mallProfileModel, bool selected}) {
@@ -212,12 +202,53 @@ class _SelectPreferencesScreenState extends State<SelectPreferencesScreen> {
         backgroundColor: bgColor,
         body: Stack(
           children: [
+            // Positioned.fill(
+            //   child: CustomScrollView(
+            //     slivers: [
+            //       SliverAppBar(
+            //         title: Text("MyAppBar"),
+            //       ),
+            //       SliverAppBar(
+            //         backgroundColor: Colors.amber,
+            //         title: Text('Kindacode.com'),
+            //         expandedHeight: 30,
+            //         collapsedHeight: 150,
+            //       ),
+            //       SliverAppBar(
+            //         backgroundColor: Colors.green,
+            //         title: Text('Have a nice day'),
+            //         floating: true,
+            //       ),
+            //       SliverList(
+            //         delegate: SliverChildBuilderDelegate(
+            //           (BuildContext context, int index) {
+            //             return Card(
+            //               margin: EdgeInsets.all(15),
+            //               child: Container(
+            //                 color: Colors.blue[100 * (index % 9 + 1)],
+            //                 height: 80,
+            //                 alignment: Alignment.center,
+            //                 child: Text(
+            //                   "Item $index",
+            //                   style: TextStyle(fontSize: 30),
+            //                 ),
+            //               ),
+            //             );
+            //           },
+            //           childCount: 1000, // 1000 list items
+            //         ),
+            //       )
+            //     ],
+            //   ),
+            // ),
+
             AnimateAppBar(
               title: AppString.preferences.toUpperCase(),
               isSliver: true,
-              floating: false,
+              floating: true,
               pinned: true,
-              snap: false,
+              physics: RangeMaintainingScrollPhysics(),
+              snap: true,
               onSnowTap: () {
                 setState(() {
                   debugPrint('animation_click_testing:-   menu click');
@@ -225,6 +256,88 @@ class _SelectPreferencesScreenState extends State<SelectPreferencesScreen> {
                 });
               },
               children: [
+                // SliverToBoxAdapter(
+                //   child: Container(
+                //     padding: EdgeInsets.symmetric(horizontal: 15),
+                //     child: Text(
+                //       'Interested Categories',
+                //       style: _title,
+                //     ),
+                //   ),
+                // ),
+                // SliverFillRemaining(
+                //   hasScrollBody: false,
+                //   child: Column(
+                //     mainAxisSize: MainAxisSize.max,
+                //     crossAxisAlignment: CrossAxisAlignment.start,
+                //     children: [
+                //       Container(
+                //         height: 33 * 10.0 + 14,
+                //         width: App.width(context),
+                //         margin: EdgeInsets.only(top: 7),
+                //         padding: EdgeInsets.symmetric(horizontal: 15),
+                //         child: ListView.builder(
+                //             itemCount: 10,
+                //             physics: NeverScrollableScrollPhysics(),
+                //             shrinkWrap: true,
+                //             itemBuilder: (_, index) {
+                //               return InterestedCategories(
+                //                 index: index,
+                //               );
+                //             }),
+                //       ),
+                //       Padding(
+                //         padding: const EdgeInsets.symmetric(
+                //             vertical: 10, horizontal: 15),
+                //         child: Text(
+                //           '12 daily',
+                //           style: _content,
+                //         ),
+                //       ),
+                //     ],
+                //   ),
+                // ),
+                //Container(
+                //                 //     padding: EdgeInsets.symmetric(horizontal: 15),
+                //                 //     child: Text(
+                //                 //       'Interested Categories',
+                //                 //       style: _title,
+                //                 //     ),
+                //                 //   )
+                SliverToBoxAdapter(
+                  child: StreamBuilder<List<PreferencesCategory>>(
+                      initialData: null,
+                      stream: _selectPreferencesBloc.categoriesStream,
+                      builder: (context, snapshot) {
+                        if (snapshot.data == null) return SizedBox();
+                        return Container(
+                          margin: EdgeInsets.only(top: 10),
+                          padding: EdgeInsets.symmetric(horizontal: 15),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              Text(
+                                AppString.interested_categories,
+                                style: _title,
+                              ),
+                              ListView.builder(
+                                itemCount: snapshot.data.length,
+                                padding: EdgeInsets.only(top: 15),
+                                physics: NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                itemBuilder: (_, index) {
+                                  return CategoryPreferences(
+                                    preferencesCategory: snapshot.data[index],
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                        );
+                      }),
+                ),
+
                 SliverToBoxAdapter(
                   child: StreamBuilder<NotificationModel>(
                       initialData: null,
@@ -356,47 +469,6 @@ class _SelectPreferencesScreenState extends State<SelectPreferencesScreen> {
                         );
                       }),
                 ),
-                // SliverToBoxAdapter(
-                //   child: Container(
-                //     padding: EdgeInsets.symmetric(horizontal: 15),
-                //     child: Text(
-                //       'Interested Categories',
-                //       style: _title,
-                //     ),
-                //   ),
-                // ),
-                // SliverFillRemaining(
-                //   hasScrollBody: false,
-                //   child: Column(
-                //     mainAxisSize: MainAxisSize.max,
-                //     crossAxisAlignment: CrossAxisAlignment.start,
-                //     children: [
-                //       Container(
-                //         height: 33 * 10.0 + 14,
-                //         width: App.width(context),
-                //         margin: EdgeInsets.only(top: 7),
-                //         padding: EdgeInsets.symmetric(horizontal: 15),
-                //         child: ListView.builder(
-                //             itemCount: 10,
-                //             physics: NeverScrollableScrollPhysics(),
-                //             shrinkWrap: true,
-                //             itemBuilder: (_, index) {
-                //               return InterestedCategories(
-                //                 index: index,
-                //               );
-                //             }),
-                //       ),
-                //       Padding(
-                //         padding: const EdgeInsets.symmetric(
-                //             vertical: 10, horizontal: 15),
-                //         child: Text(
-                //           '12 daily',
-                //           style: _content,
-                //         ),
-                //       ),
-                //     ],
-                //   ),
-                // ),
 
                 SliverToBoxAdapter(
                   child: Container(
@@ -459,80 +531,80 @@ class _SelectPreferencesScreenState extends State<SelectPreferencesScreen> {
               ],
             ),
 
-            //MALL OPTIONS
-            Visibility(
-              visible: showMalls,
-              child: InkWell(
-                onTap: () {
-                  setState(() {
-                    showMalls = false;
-                  });
-                },
-                child: Container(
-                  height: App.height(context),
-                  width: App.width(context),
-                  color: Colors.black.withOpacity(0.45),
-                  alignment: Alignment.center,
-                  child: GridView.builder(
-                    itemCount: 12,
-                    shrinkWrap: true,
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    physics: NeverScrollableScrollPhysics(),
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3, mainAxisSpacing: 10),
-                    itemBuilder: (BuildContext context, int index) {
-                      return InkWell(
-                        onTap: () => print('Go to Mall'),
-                        child: Container(
-                          height: 150,
-                          width: 100,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      blurRadius: 10,
-                                      color: Colors.black38,
-                                      spreadRadius: 5,
-                                    ),
-                                  ],
-                                ),
-                                child: CircleAvatar(
-                                  backgroundColor: appLightColor,
-                                  radius: 36,
-                                  child: Image.asset(
-                                    getMallLogo(index),
-                                    height: 50,
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                height: 30,
-                                child: Center(
-                                  child: Text(
-                                    getMallName(index),
-                                    style: TextStyle(
-                                      color: white,
-                                      fontSize: 12,
-                                    ),
-                                    overflow: TextOverflow.clip,
-                                    textAlign: TextAlign.center,
-                                    maxLines: 1,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ),
-            ),
+            // MALL OPTIONS
+            // Visibility(
+            //   visible: showMalls,
+            //   child: InkWell(
+            //     onTap: () {
+            //       setState(() {
+            //         showMalls = false;
+            //       });
+            //     },
+            //     child: Container(
+            //       height: App.height(context),
+            //       width: App.width(context),
+            //       color: Colors.black.withOpacity(0.45),
+            //       alignment: Alignment.center,
+            //       child: GridView.builder(
+            //         itemCount: 12,
+            //         shrinkWrap: true,
+            //         padding: EdgeInsets.symmetric(horizontal: 20),
+            //         physics: NeverScrollableScrollPhysics(),
+            //         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            //             crossAxisCount: 3, mainAxisSpacing: 10),
+            //         itemBuilder: (BuildContext context, int index) {
+            //           return InkWell(
+            //             onTap: () => print('Go to Mall'),
+            //             child: Container(
+            //               height: 150,
+            //               width: 100,
+            //               child: Column(
+            //                 mainAxisAlignment: MainAxisAlignment.center,
+            //                 children: [
+            //                   Container(
+            //                     decoration: BoxDecoration(
+            //                       shape: BoxShape.circle,
+            //                       boxShadow: [
+            //                         BoxShadow(
+            //                           blurRadius: 10,
+            //                           color: Colors.black38,
+            //                           spreadRadius: 5,
+            //                         ),
+            //                       ],
+            //                     ),
+            //                     child: CircleAvatar(
+            //                       backgroundColor: appLightColor,
+            //                       radius: 36,
+            //                       child: Image.asset(
+            //                         getMallLogo(index),
+            //                         height: 50,
+            //                       ),
+            //                     ),
+            //                   ),
+            //                   Container(
+            //                     height: 30,
+            //                     child: Center(
+            //                       child: Text(
+            //                         getMallName(index),
+            //                         style: TextStyle(
+            //                           color: white,
+            //                           fontSize: 12,
+            //                         ),
+            //                         overflow: TextOverflow.clip,
+            //                         textAlign: TextAlign.center,
+            //                         maxLines: 1,
+            //                       ),
+            //                     ),
+            //                   ),
+            //                 ],
+            //               ),
+            //             ),
+            //           );
+            //         },
+            //       ),
+            //     ),
+            //   ),
+            // ),
           ],
         ),
       ),

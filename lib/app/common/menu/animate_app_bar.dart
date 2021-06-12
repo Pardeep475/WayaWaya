@@ -165,8 +165,7 @@ class _AnimateAppBarState extends State<AnimateAppBar> {
                           snap: widget.snap ?? false,
                           floating: widget.floating ?? false,
                           centerTitle: widget.centerTitle ?? false,
-                          padding: widget.padding ??
-                              EdgeInsets.only(left: 0, top: 16),
+                          padding: widget.padding ?? EdgeInsets.only(left: 0, top: 16),
                           titleSize: widget.titleSize ?? 16,
                           mainMenuPermissionList: widget.mainMenuPermissions,
                           onSnowTap: widget

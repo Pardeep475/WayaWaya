@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:wayawaya/app/common/menu/animate_app_bar.dart';
 import 'package:wayawaya/app/home/model/campaign_model.dart';
+import 'package:wayawaya/app/preferences/model/preferences_categories.dart';
 import 'package:wayawaya/app/settings/model/settings_model.dart';
 import 'package:wayawaya/network/local/profile_database_helper.dart';
 import 'package:wayawaya/utils/app_color.dart';
@@ -166,9 +167,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   _implementLocalDb() async {
     String defaultMall = await SessionManager.getDefaultMall();
-    List<Campaign> campaignList =
-        await ProfileDatabaseHelper.getAllCampaign(defaultMall);
-    debugPrint(
-        'campaignList:-  ${campaignList.length}   ${campaignList[0].offerQrCode}');
+    List<PreferencesCategory> campaignList =
+        await ProfileDatabaseHelper.getPreferencesCategories(
+            defaultMall, "10000", "10000");
+
+    campaignList.forEach((element) {
+      debugPrint('preference_categories:-  ${element.toJson()}');
+    });
   }
 }

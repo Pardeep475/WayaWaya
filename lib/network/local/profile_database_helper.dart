@@ -126,10 +126,11 @@ class ProfileDatabaseHelper {
             "SELECT * FROM menu_tree \n" +
             subscribed +
             " AND level >= 0 \n" +
-            "ORDER BY level DESC, name LIMIT " +
+            "ORDER BY level DESC";
+    /*, name LIMIT " +
             limit +
             " OFFSET " +
-            offset;
+            offset;*/
 
     debugPrint("profile_db_testing:-   $query");
 
@@ -160,10 +161,11 @@ class ProfileDatabaseHelper {
               "SELECT * FROM menu_tree \n" +
               subscribed +
               " AND level >= 0 \n" +
-              "ORDER BY level DESC, name LIMIT " +
+              "ORDER BY level DESC" /*, name LIMIT " +
               limit +
               " OFFSET " +
-              offset);
+              offset*/
+          );
     });
     // _db.close();
     debugPrint('database_testing:-  preferences  ${data.length}');
@@ -172,7 +174,7 @@ class ProfileDatabaseHelper {
     data.forEach((element) {
       _preferencesCategoriesList.add(PreferencesCategory.fromJson(element));
     });
-
+    _preferencesCategoriesList.sort((a, b) => a.name.compareTo(b.name));
     return _preferencesCategoriesList;
   }
 
@@ -198,6 +200,7 @@ class ProfileDatabaseHelper {
       _mallList.add(Campaign.fromJson(element));
     });
     data.map((e) => debugPrint('database_testing:-    $e'));
+    // _mallList.sort();
     return _mallList;
   }
 }

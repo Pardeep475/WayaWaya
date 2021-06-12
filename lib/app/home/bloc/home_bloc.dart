@@ -2,7 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:wayawaya/app/home/model/campaign_element.dart';
 import 'package:wayawaya/app/home/model/campaign_model.dart';
+import 'package:wayawaya/app/home/model/top_campaign_model.dart';
 import 'package:wayawaya/network/local/profile_database_helper.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/session_manager.dart';
@@ -22,10 +24,19 @@ class HomeBloc {
 
   Stream<List<String>> get activityStream => _activityController.stream;
 
+  // ignore: close_sinks
+  final _topCampaignController = StreamController<List<TopCampaignModel>>();
+
+  StreamSink<List<TopCampaignModel>> get topSink => _topCampaignController.sink;
+
+  Stream<List<TopCampaignModel>> get topStream => _topCampaignController.stream;
+
   List<Campaign> offersCampaignList = [];
   List<Campaign> eventsCampaignList = [];
   List<Campaign> whatsonCampaignList = [];
   List<String> activitiesCampaignList = [];
+
+  List<TopCampaignModel> topCampaignList = [];
 
   getAllCampaign() async {
     String defaultMall = await SessionManager.getDefaultMall();
@@ -47,12 +58,34 @@ class HomeBloc {
       switch (element.type) {
         case AppString.OFFER_CAMPAIGN:
           {
-            offersCampaignList.add(element);
+            CampaignElement campaignElement =
+                CampaignElement.fromJson(jsonDecode(element.campaignElement));
+            campaignElement.imageId.forEach((element) {
+              // ignore: unrelated_type_equality_checks
+              if (element.language == Language.EN_US) {
+                debugPrint(
+                    'home_screen_data_testing   :- OFFER_CAMPAIGN ${element.text}');
+                topCampaignList.add(TopCampaignModel(
+                    imgUrl: element.text, tag: AppString.offer));
+              }
+            });
+
             break;
           }
         case AppString.EVENT_CAMPAIGN:
           {
-            eventsCampaignList.add(element);
+            CampaignElement campaignElement =
+                CampaignElement.fromJson(jsonDecode(element.campaignElement));
+            campaignElement.imageId.forEach((element) {
+              // ignore: unrelated_type_equality_checks
+              if (element.language == Language.EN_US) {
+                debugPrint(
+                    'home_screen_data_testing   :- EVENT_CAMPAIGN ${element.text}');
+                topCampaignList.add(TopCampaignModel(
+                    imgUrl: element.text, tag: AppString.event));
+              }
+            });
+
             break;
           }
         case AppString.WHATSON_CAMPAIGN:
@@ -62,23 +95,14 @@ class HomeBloc {
           }
         case AppString.ACTIVITIES_CAMPAIGN:
           {
-            debugPrint(
-                'home_screen_data_testing   :- activity ${element.campaignElement}');
-            Map<String, dynamic> listActivity =
-                jsonDecode(element.campaignElement);
-            debugPrint(
-                'home_screen_data_testing   :- activity 2 ${listActivity['image_id']}');
-            List<dynamic> listImage = listActivity['image_id'];
-            debugPrint('home_screen_data_testing   :- activity 3 ${listImage}');
-            listImage.forEach((value) {
-              if (value['language'] == 'en_US') {
-                activitiesCampaignList.add(value['text']);
+            CampaignElement campaignElement =
+                CampaignElement.fromJson(jsonDecode(element.campaignElement));
+            campaignElement.imageId.forEach((element) {
+              // ignore: unrelated_type_equality_checks
+              if (element.language == Language.EN_US) {
+                activitiesCampaignList.add(element.text);
               }
-              debugPrint('home_screen_data_testing   :- value  $value');
-              debugPrint(
-                  'home_screen_data_testing   :- value 2 ${value['text']}');
             });
-            //
             break;
           }
       }
@@ -94,6 +118,7 @@ class HomeBloc {
         'home_screen_data_testing   :- activitiesCampaignList ${activitiesCampaignList.length}');
 
     activitySink.add(activitiesCampaignList);
+    topSink.add(topCampaignList);
   }
 
   List<Campaign> get getOffers => offersCampaignList;

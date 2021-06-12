@@ -119,6 +119,9 @@ class AppString {
   static const String your_account_updated_successfully =
       "Your account updated successfully.";
   static const String home_page = "HOMEPAGE";
+  static const String event = "EVENT";
+  static const String offer = "OFFER";
+  static const String interested_categories = "Interested Categories";
 
   // Routes
   static const LOGIN_SCREEN_ROUTE = "LOGIN_SCREEN_ROUTE";

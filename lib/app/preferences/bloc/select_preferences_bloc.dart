@@ -5,8 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:wayawaya/app/preferences/model/currency_model.dart';
 import 'package:wayawaya/app/preferences/model/language_model.dart';
 import 'package:wayawaya/app/preferences/model/notification_model.dart';
+import 'package:wayawaya/app/preferences/model/preferences_categories.dart';
 import 'package:wayawaya/common/model/language_store.dart';
 import 'package:wayawaya/common/model/mall_profile_model.dart';
+import 'package:wayawaya/network/local/profile_database_helper.dart';
 import 'package:wayawaya/network/local/super_admin_database_helper.dart';
 import 'package:wayawaya/utils/session_manager.dart';
 import 'package:wayawaya/utils/utils.dart';
@@ -23,6 +25,16 @@ class SelectPreferencesBloc {
 
   Stream<List<MallProfileModel>> get mallProfileStream =>
       _mallProfileController.stream;
+
+  // ignore: close_sinks
+  StreamController _categoriesController =
+      StreamController<List<PreferencesCategory>>();
+
+  StreamSink<List<PreferencesCategory>> get categoriesSink =>
+      _categoriesController.sink;
+
+  Stream<List<PreferencesCategory>> get categoriesStream =>
+      _categoriesController.stream;
 
   // ignore: close_sinks
   StreamController _notificationController =
@@ -206,5 +218,23 @@ class SelectPreferencesBloc {
     _allMallList = [];
     _allMallList.addAll(mallList);
     mallProfileSink.add(_allMallList);
+  }
+
+  getPreferencesCategories() async {
+    try {
+      String defaultMall = await SessionManager.getDefaultMall();
+      List<PreferencesCategory> categoriesList =
+          await ProfileDatabaseHelper.getPreferencesCategories(
+              defaultMall, "10000", "10000");
+
+      categoriesSink.add(categoriesList);
+
+      // campaignList.forEach((element) {
+      //   debugPrint(
+      //       'preference_categories:-  ${element.name.replaceAll('<>', '/')}');
+      // });
+    } catch (e) {
+      debugPrint('database_testing:-  $e');
+    }
   }
 }

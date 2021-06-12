@@ -3,16 +3,21 @@ import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:transformer_page_view/transformer_page_view.dart';
+import 'package:rotated_corner_decoration/rotated_corner_decoration.dart';
 import 'package:wayawaya/app/common/menu/animate_app_bar.dart';
-import 'package:wayawaya/app/home/model/campaign_model.dart';
+import 'package:wayawaya/app/home/view/whatson_widget.dart';
 import 'package:wayawaya/screens/login.dart';
+import 'package:wayawaya/utils/app_color.dart';
+import 'package:wayawaya/utils/app_images.dart';
 import 'package:wayawaya/utils/app_strings.dart';
-import 'package:wayawaya/widgets/slidable.dart';
 
 import '../../config.dart';
 import '../../constants.dart';
 import 'bloc/home_bloc.dart';
+import 'model/top_campaign_model.dart';
+import 'view/common_image_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -64,30 +69,95 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: Container(
                               width: MediaQuery.of(context).size.width,
                               height: MediaQuery.of(context).size.height,
-                              child: TransformerPageView(
-                                  loop: false,
-                                  // transformer: new AccordionTransformer(),
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    return new Container(
-                                      color: index == 0
-                                          ? Colors.teal
-                                          : index == 1
-                                              ? Colors.yellow
-                                              : index == 3
-                                                  ? Colors.red
-                                                  : Colors.blueGrey,
-                                      child: new Center(
-                                        child: new Text(
-                                          "$index",
-                                          style: new TextStyle(
-                                              fontSize: 80.0,
-                                              color: Colors.white),
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                  itemCount: 3),
+                              child: StreamBuilder<List<TopCampaignModel>>(
+                                  initialData: [],
+                                  stream: _homeBloc.topStream,
+                                  builder: (context, snapshot) {
+                                    if (snapshot.data.isEmpty) {
+                                      return Image.asset(
+                                        AppImages.icon_placeholder,
+                                        fit: BoxFit.cover,
+                                      );
+                                    }
+                                    int size = snapshot.data.length % 2 == 0
+                                        ? (snapshot.data.length / 2).round()
+                                        : ((snapshot.data.length / 2) + 1)
+                                            .round();
+                                    debugPrint(
+                                        "TransformerPageView_debugPrintSize  ${snapshot.data.length}  ${snapshot.data.length % 2 == 0}     ${(snapshot.data.length / 2).round()}    ${((snapshot.data.length / 2) + 1).round()}");
+
+                                    return TransformerPageView(
+                                        loop: false,
+                                        viewportFraction: 1.5,
+                                        itemBuilder:
+                                            (BuildContext context, int index) {
+                                          // if (index == 0) {
+                                          //   return WhatsonWidget(
+                                          //     topCampaignModelPositionOne:
+                                          //     snapshot.data.length >
+                                          //         (index + index + 1)
+                                          //         ? snapshot.data[
+                                          //     (index + index + 1)]
+                                          //         : null,
+                                          //     topCampaignModelPositionZero:
+                                          //     snapshot.data.length >
+                                          //         (index + index)
+                                          //         ? snapshot.data[
+                                          //     (index + index)]
+                                          //         : null,
+                                          //   );
+                                          // }
+                                          return Container(
+                                            width:200,
+                                            child: Column(
+                                              children: [
+                                                Expanded(
+                                                  child: CommonImageWidget(
+                                                    imgUrl: snapshot
+                                                                .data.length >
+                                                            (index + index)
+                                                        ? snapshot
+                                                            .data[
+                                                                (index + index)]
+                                                            .imgUrl
+                                                        : null,
+                                                    tag: snapshot.data.length >
+                                                            (index + index)
+                                                        ? snapshot
+                                                            .data[
+                                                                (index + index)]
+                                                            .tag
+                                                        : null,
+                                                  ),
+                                                ),
+                                                Expanded(
+                                                  child: CommonImageWidget(
+                                                    imgUrl: snapshot
+                                                                .data.length >
+                                                            (index + index + 1)
+                                                        ? snapshot
+                                                            .data[(index +
+                                                                index +
+                                                                1)]
+                                                            .imgUrl
+                                                        : null,
+                                                    tag: snapshot.data.length >
+                                                            (index + index + 1)
+                                                        ? snapshot
+                                                            .data[(index +
+                                                                index +
+                                                                1)]
+                                                            .tag
+                                                        : null,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                        },
+                                        itemCount:
+                                            (snapshot.data.length / 2).round());
+                                  }),
                             ),
                           ),
                           Expanded(
@@ -99,23 +169,19 @@ class _HomeScreenState extends State<HomeScreen> {
                                   initialData: [],
                                   stream: _homeBloc.activityStream,
                                   builder: (context, snapshot) {
+                                    if (snapshot.data.isEmpty) {
+                                      return Image.asset(
+                                        AppImages.icon_placeholder,
+                                        fit: BoxFit.cover,
+                                      );
+                                    }
                                     return TransformerPageView(
                                         loop: false,
                                         // transformer: new AccordionTransformer(),
                                         itemBuilder:
                                             (BuildContext context, int index) {
-                                          // debugPrint(
-                                          //     'Image_activity:-   ${imageData['image_id']}');
-                                          return CachedNetworkImage(
-                                            height: MediaQuery.of(context)
-                                                .size
-                                                .height,
-                                            width: MediaQuery.of(context)
-                                                .size
-                                                .width,
-                                            imageUrl: snapshot.data[index],
-                                            fit: BoxFit.fill,
-                                          );
+                                          return CommonImageWidget(
+                                              imgUrl: snapshot.data[index]);
                                         },
                                         itemCount: snapshot.data.length);
                                   }),

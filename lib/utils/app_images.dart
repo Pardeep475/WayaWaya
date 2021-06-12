@@ -8,6 +8,7 @@ class AppImages {
   AppImages._internal();
 
   static const icon_logo = "assets/image/dobsonville.png";
+  static const icon_placeholder = "assets/image/placeholder.png";
 
 
 }

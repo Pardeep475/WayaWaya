@@ -11,7 +11,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  bool gesturesVisible = true;
+  // bool gesturesVisible = true;
 
   @override
   Widget build(BuildContext context) {
@@ -54,12 +54,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
                 ///GESTURES GUIDE
                 Visibility(
-                  visible: App.prefs.getBool('homeGestures') ?? true,
+                  visible: false,
                   child: InkWell(
                     onTap: () {
-                      setState(() {
-                        App.prefs.setBool('homeGestures', false);
-                      });
+                      // setState(() {
+                      //   App.prefs.setBool('homeGestures', false);
+                      // });
                     },
                     child: Container(
                       height: App.height(context),
