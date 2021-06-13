@@ -1,8 +1,11 @@
+import 'package:community_material_icon/community_material_icon.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:wayawaya/app/common/menu/model/main_menu_permission.dart';
 import 'package:wayawaya/screens/map/mall_map.dart';
 import 'package:wayawaya/screens/rewards/qr_code_scanner.dart';
 import 'package:wayawaya/utils/app_color.dart';
+import 'package:wayawaya/utils/app_strings.dart';
 
 import '../../config.dart';
 import '../events_list.dart';
@@ -13,48 +16,71 @@ import '../shops_and_rest_list.dart';
 import 'rewards_new.dart';
 
 class MenuTile extends StatelessWidget {
-  List<MainMenuPermission> _itemList = [];
+  // final List<MainMenuPermission> itemList = [];
 
-  MenuTile({Key key, List<MainMenuPermission> itemList}) {
-    this._itemList = itemList;
-  }
+  //  const static MenuTile({Key key, List<MainMenuPermission> itemList});
+  //
+  final List<MainMenuPermission> itemList;
+
+  const MenuTile({Key key, this.itemList}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     debugPrint(
-        'main_menu_permission_testing:-----  MenuTile ${_itemList != null ? _itemList.length : 'null'}');
+        'main_menu_permission_testing:-----  MenuTile ${itemList != null ? itemList.length : 'null'}');
     return GestureDetector(
       onTap: () => Navigator.push(
-          context,
-          PageRouteBuilder(
-              transitionDuration: Duration(milliseconds: 600),
-              reverseTransitionDuration: Duration(milliseconds: 600),
-              opaque: false,
-              barrierDismissible: true,
-              fullscreenDialog: true,
-              barrierColor: Colors.black54,
-              pageBuilder: (
-                BuildContext context,
-                Animation<double> animation,
-                Animation<double> secondaryAnimation,
-              ) {
-                return RhombusMenu(
-                  enabled: true,
-                  menuPermissionList: _itemList,
-                );
-              })),
+        context,
+        PageRouteBuilder(
+            transitionDuration: Duration(milliseconds: 600),
+            reverseTransitionDuration: Duration(milliseconds: 600),
+            opaque: false,
+            barrierDismissible: true,
+            fullscreenDialog: true,
+            barrierColor: Colors.black54,
+            pageBuilder: (
+              BuildContext context,
+              Animation<double> animation,
+              Animation<double> secondaryAnimation,
+            ) {
+              return RhombusMenu(
+                enabled: true,
+                menuPermissionList: itemList,
+              );
+            }),
+      ).then((value) {
+        debugPrint('pardeep_testing_animation:-   $value');
+        _chooseScreens(context, value);
+      }),
       child: Container(
         margin: EdgeInsets.only(left: 4.0),
         height: 50,
         width: 50,
-        decoration:
-            BoxDecoration(shape: BoxShape.circle, color: AppColor.primary),
+        decoration: const BoxDecoration(
+            shape: BoxShape.circle, color: AppColor.primary),
         child: RhombusMenu(
           enabled: false,
-          menuPermissionList: _itemList,
+          menuPermissionList: itemList,
         ),
       ),
     );
+  }
+
+  _chooseScreens(BuildContext context, String title) {
+    switch (title) {
+      case 'Home':
+        {
+          _openFurtherScreens(context, AppString.HOME_SCREEN_ROUTE);
+        }
+        break;
+    }
+  }
+
+  _openFurtherScreens(BuildContext context, String title) {
+    Future.delayed(Duration(seconds: 1), () {
+      debugPrint('pardeep_testing_animation:-   $title');
+      Navigator.pushNamedAndRemoveUntil(context, title, (route) => false);
+    });
   }
 }
 
@@ -104,6 +130,63 @@ class RhombusMenu extends StatelessWidget {
     }
   }
 
+//   extension HexColor on Color {
+//   /// String is in the format "aabbcc" or "ffaabbcc" with an optional leading "#".
+//
+//
+//   /// Prefixes a hash sign if [leadingHashSign] is set to `true` (default is `true`).
+//   String toHex({bool leadingHashSign = true}) => '${leadingHashSign ? '#' : ''}'
+//       '${alpha.toRadixString(16).padLeft(2, '0')}'
+//       '${red.toRadixString(16).padLeft(2, '0')}'
+//       '${green.toRadixString(16).padLeft(2, '0')}'
+//       '${blue.toRadixString(16).padLeft(2, '0')}';
+// }
+
+  IconData fetchIcons(
+      MainMenuPermission mainMenuPermission, IconData iconData) {
+    if (mainMenuPermission.icon.name.toLowerCase().contains('home')) {
+      return Icons.home;
+    } else if (mainMenuPermission.icon.name
+        .toLowerCase()
+        .contains('local_offer')) {
+      return Icons.local_offer;
+    } else if (mainMenuPermission.icon.name.toLowerCase().contains('event')) {
+      return Icons.event;
+    } else if (mainMenuPermission.icon.name.toLowerCase().contains('shop')) {
+      return Icons.shop;
+    } else if (mainMenuPermission.icon.name
+        .toLowerCase()
+        .contains('local_dining')) {
+      return Icons.local_dining;
+    } else if (mainMenuPermission.icon.name.toLowerCase().contains('loyalty')) {
+      return Icons.loyalty_rounded;
+    } else if (mainMenuPermission.icon.name
+        .toLowerCase()
+        .contains('view_carousel')) {
+      return Icons.view_carousel;
+    } else if (mainMenuPermission.icon.name.toLowerCase().contains('map')) {
+      return Icons.map;
+    }
+
+    return iconData;
+  }
+
+  static Color fromHex(String hexString) {
+    final buffer = StringBuffer();
+    if (hexString.length == 6 || hexString.length == 7) buffer.write('ff');
+    buffer.write(hexString.replaceFirst('#', ''));
+    return Color(int.parse(buffer.toString(), radix: 16));
+  }
+
+  String getDisplayName(MainMenuPermission mainMenuPermission, String title) {
+    mainMenuPermission.displayName.forEach((element) {
+      if (element.language == 'en_US') {
+        return element.text;
+      }
+    });
+    return title;
+  }
+
   @override
   Widget build(BuildContext context) {
     debugPrint(
@@ -118,20 +201,26 @@ class RhombusMenu extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               MenuButton(
-                color: Colors.amber,
+                color:
+                    menuPermissionList == null || menuPermissionList.length < 1
+                        ? Colors.amber
+                        : fromHex(menuPermissionList[0].color),
                 icon: Icon(
-                  Icons.home,
+                  menuPermissionList == null || menuPermissionList.length < 1
+                      ? Icons.home
+                      : fetchIcons(menuPermissionList[0], Icons.home),
                   color: Colors.white,
                   size: 35,
                 ),
-                label: "Home",
+                label:
+                    menuPermissionList == null || menuPermissionList.length < 1
+                        ? AppString.home_menu
+                        : getDisplayName(
+                            menuPermissionList[0], AppString.home_menu),
                 enabled: enabled,
-                cubic: _getCubic("Home"),
+                cubic: _getCubic(AppString.home_menu),
                 onPressed: () {
-                  App.pushTo(
-                    context: context,
-                    screen: HomeScreen(),
-                  );
+                  Navigator.pop(context, AppString.home_menu);
                 },
               )
             ],
@@ -140,39 +229,57 @@ class RhombusMenu extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               MenuButton(
-                color: Colors.blue,
+                color:
+                    menuPermissionList == null || menuPermissionList.length < 2
+                        ? Colors.blue
+                        : fromHex(menuPermissionList[1].color),
                 icon: Icon(
-                  Icons.local_offer,
+                  menuPermissionList == null || menuPermissionList.length < 2
+                      ? Icons.local_offer
+                      : fetchIcons(menuPermissionList[1], Icons.local_offer),
                   color: Colors.white,
                   size: 35,
                 ),
-                label: "Offers",
+                label:
+                    menuPermissionList == null || menuPermissionList.length < 2
+                        ? AppString.offers_menu
+                        : getDisplayName(
+                            menuPermissionList[1], AppString.offers_menu),
                 enabled: enabled,
-                cubic: _getCubic("Offers"),
+                cubic: _getCubic(AppString.offers_menu),
                 onPressed: () {
                   Navigator.pop(context);
-                  App.pushTo(
-                    context: context,
-                    screen: OffersList(),
-                  );
+                  // App.pushTo(
+                  //   context: context,
+                  //   screen: OffersList(),
+                  // );
                 },
               ),
               MenuButton(
-                color: Colors.purple,
+                color:
+                    menuPermissionList == null || menuPermissionList.length < 3
+                        ? Colors.purple
+                        : fromHex(menuPermissionList[2].color),
                 icon: Icon(
-                  Icons.event,
+                  menuPermissionList == null || menuPermissionList.length < 3
+                      ? Icons.event
+                      : fetchIcons(menuPermissionList[2], Icons.event),
                   color: Colors.white,
                   size: 35,
                 ),
-                label: "Events",
+                label:
+                    menuPermissionList == null || menuPermissionList.length < 3
+                        ? AppString.events_menu
+                        : getDisplayName(
+                            menuPermissionList[2], AppString.events_menu),
                 enabled: enabled,
-                cubic: _getCubic("Events"),
+                cubic: _getCubic(AppString.events_menu),
                 onPressed: () {
                   Navigator.pop(context);
-                  App.pushTo(
-                    context: context,
-                    screen: EventsList(),
-                  );
+                  // App.pushTo(
+                  //   context: context,
+                  //   screen: EventsList(),
+                  // );
                 },
               )
             ],
@@ -181,25 +288,38 @@ class RhombusMenu extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               MenuButton(
-                color: Colors.green,
+                color:
+                    menuPermissionList == null || menuPermissionList.length < 4
+                        ? Colors.green
+                        : fromHex(menuPermissionList[3].color),
                 icon: Icon(
-                  Icons.shop,
+                  menuPermissionList == null || menuPermissionList.length < 4
+                      ? Icons.shop
+                      : fetchIcons(menuPermissionList[3], Icons.shop),
                   color: Colors.white,
                   size: 35,
                 ),
-                label: "Shops",
+                label:
+                    menuPermissionList == null || menuPermissionList.length < 4
+                        ? AppString.shops_menu
+                        : getDisplayName(
+                            menuPermissionList[3], AppString.shops_menu),
                 enabled: enabled,
-                cubic: _getCubic("Shops"),
+                cubic: _getCubic(AppString.shops_menu),
                 onPressed: () {
                   Navigator.pop(context);
-                  App.pushTo(
-                    context: context,
-                    screen: ShopRestList(title: "SHOPS"),
-                  );
+                  // App.pushTo(
+                  //   context: context,
+                  //   screen: ShopRestList(title: "SHOPS"),
+                  // );
                 },
               ),
               MenuButton(
-                color: Colors.white,
+                color:
+                    menuPermissionList == null || menuPermissionList.length < 5
+                        ? Colors.white
+                        : Colors.white,
+                //fromHex(menuPermissionList[4].color),
                 icon: Image.asset(
                   'assets/qr_scan.png',
                   height: 45,
@@ -210,29 +330,37 @@ class RhombusMenu extends StatelessWidget {
                 cubic: _getCubic("Connect"),
                 onPressed: () {
                   Navigator.pop(context);
-                  App.pushTo(
-                    context: context,
-                    screen: QRScanner(),
-                  );
+                  // App.pushTo(
+                  //   context: context,
+                  //   screen: QRScanner(),
+                  // );
                 },
               ),
               MenuButton(
-                color: Colors.yellow,
+                color:
+                    menuPermissionList == null || menuPermissionList.length < 6
+                        ? Colors.yellow
+                        : fromHex(menuPermissionList[5].color),
                 icon: Icon(
-                  Icons.restaurant,
-                  // getIconUsingPrefix(name: 'fa-cutlery'),
+                  menuPermissionList == null || menuPermissionList.length < 6
+                      ? Icons.local_dining
+                      : fetchIcons(menuPermissionList[5], Icons.local_dining),
                   color: Colors.white,
                   size: 35,
                 ),
-                label: "Restaurants",
+                label:
+                    menuPermissionList == null || menuPermissionList.length < 6
+                        ? AppString.restaurants_menu
+                        : getDisplayName(
+                            menuPermissionList[5], AppString.restaurants_menu),
                 enabled: enabled,
-                cubic: _getCubic("Restaurants"),
+                cubic: _getCubic(AppString.restaurants_menu),
                 onPressed: () {
                   Navigator.pop(context);
-                  App.pushTo(
-                    context: context,
-                    screen: ShopRestList(title: "My RESTAURANTS"),
-                  );
+                  // App.pushTo(
+                  //   context: context,
+                  //   screen: ShopRestList(title: "My RESTAURANTS"),
+                  // );
                 },
               )
             ],
@@ -241,39 +369,58 @@ class RhombusMenu extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               MenuButton(
-                color: Colors.red,
+                color:
+                    menuPermissionList == null || menuPermissionList.length < 7
+                        ? Colors.red
+                        : fromHex(menuPermissionList[6].color),
                 icon: Icon(
-                  Icons.local_offer_rounded,
+                  menuPermissionList == null || menuPermissionList.length < 7
+                      ? Icons.loyalty_rounded
+                      : fetchIcons(
+                          menuPermissionList[6], Icons.loyalty_rounded),
                   color: Colors.white,
                   size: 35,
                 ),
-                label: "Rewards",
+                label:
+                    menuPermissionList == null || menuPermissionList.length < 7
+                        ? AppString.rewards_menu
+                        : getDisplayName(
+                            menuPermissionList[6], AppString.rewards_menu),
                 enabled: enabled,
-                cubic: _getCubic("Rewards"),
+                cubic: _getCubic(AppString.rewards_menu),
                 onPressed: () {
                   Navigator.pop(context);
-                  App.pushTo(
-                    context: context,
-                    screen: RewardsBrowser(),
-                  );
+                  // App.pushTo(
+                  //   context: context,
+                  //   screen: RewardsBrowser(),
+                  // );
                 },
               ),
               MenuButton(
-                color: Colors.purple,
+                color:
+                    menuPermissionList == null || menuPermissionList.length < 8
+                        ? Colors.purple
+                        : fromHex(menuPermissionList[7].color),
                 icon: Icon(
-                  Icons.panorama_wide_angle,
+                  menuPermissionList == null || menuPermissionList.length < 8
+                      ? Icons.view_carousel
+                      : fetchIcons(menuPermissionList[7], Icons.view_carousel),
                   color: Colors.white,
                   size: 35,
                 ),
-                label: "The Mall",
+                label:
+                    menuPermissionList == null || menuPermissionList.length < 8
+                        ? AppString.the_mall_menu
+                        : getDisplayName(
+                            menuPermissionList[7], AppString.the_mall_menu),
                 enabled: enabled,
-                cubic: _getCubic("The Mall"),
+                cubic: _getCubic(AppString.the_mall_menu),
                 onPressed: () {
                   Navigator.pop(context);
-                  App.pushTo(
-                    context: context,
-                    screen: MallServices(),
-                  );
+                  // App.pushTo(
+                  //   context: context,
+                  //   screen: MallServices(),
+                  // );
                 },
               )
             ],
@@ -282,21 +429,30 @@ class RhombusMenu extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               MenuButton(
-                color: Colors.blue,
+                color:
+                    menuPermissionList == null || menuPermissionList.length < 9
+                        ? Colors.blue
+                        : fromHex(menuPermissionList[8].color),
                 icon: Icon(
-                  Icons.map,
+                  menuPermissionList == null || menuPermissionList.length < 9
+                      ? Icons.map
+                      : fetchIcons(menuPermissionList[8], Icons.map),
                   color: Colors.white,
                   size: 35,
                 ),
-                label: "Mall Map",
+                label:
+                    menuPermissionList == null || menuPermissionList.length < 8
+                        ? AppString.mall_map_menu
+                        : getDisplayName(
+                            menuPermissionList[8], AppString.mall_map_menu),
                 enabled: enabled,
-                cubic: _getCubic("Mall Map"),
+                cubic: _getCubic(AppString.mall_map_menu),
                 onPressed: () {
                   Navigator.pop(context);
-                  App.pushTo(
-                    context: context,
-                    screen: MapScreen(),
-                  );
+                  // App.pushTo(
+                  //   context: context,
+                  //   screen: MapScreen(),
+                  // );
                 },
               )
             ],

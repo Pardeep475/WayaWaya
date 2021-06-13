@@ -7,6 +7,15 @@ class AppString {
 
   AppString._internal();
 
+  static const home_menu = "Home";
+  static const offers_menu = "Offers";
+  static const events_menu = "Events";
+  static const shops_menu = "Shops";
+  static const restaurants_menu = "Restaurants";
+  static const rewards_menu = "Rewards";
+  static const the_mall_menu = "The Mall";
+  static const mall_map_menu = "Mall Map";
+
   static const DEFAULT_MALL_KEY =
       'twG0iiIbMw3IxS5MMw|R6f29ZKdAz7TaDA1cJFFSwtysP88doc_Vwq8EbJfPIN2I';
 

@@ -138,12 +138,8 @@ class SuperAdminDatabaseHelper {
 
     List<MainMenuPermission> _mainMenuPermissionList = [];
     data.forEach((element) {
+      debugPrint('database_testing_menu_permission:-   $element');
       _mainMenuPermissionList.add(MainMenuPermission.fromJson(element));
-    });
-
-    _mainMenuPermissionList.forEach((element) {
-      debugPrint(
-          'database_testing_menu_permission:-   ${element.displayName[0].text}');
     });
 
     return _mainMenuPermissionList;

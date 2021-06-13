@@ -26,7 +26,7 @@ class ShopItemView extends StatelessWidget {
                 width: 75,
                 child: Center(
                   child: Icon(
-                    CommunityMaterialIcons.shopping_music,
+                      Icons.shop,
                     size: 35,
                     color: Colors.black54,
                   ),
