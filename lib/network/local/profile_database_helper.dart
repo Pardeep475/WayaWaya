@@ -128,45 +128,10 @@ class ProfileDatabaseHelper {
             subscribed +
             " AND level >= 0 \n" +
             "ORDER BY level DESC";
-    /*, name LIMIT " +
-            limit +
-            " OFFSET " +
-            offset;*/
 
-    debugPrint("profile_db_testing:-   $query");
-
+    // debugPrint("profile_db_testing:-   $query");
     await _db.transaction((txn) async {
-      data = await txn.rawQuery(
-          "WITH RECURSIVE menu_tree (category_id, name, label, level, parent, subscription) \n" +
-              "AS ( \n" +
-              "  SELECT\n" +
-              "    category_id, \n" +
-              "    '' || name, \n" +
-              "    '' || label, \n" +
-              "    0, \n" +
-              "    parent,\n" +
-              "\tsubscription\n" +
-              "  FROM categories \n" +
-              "  WHERE parent = ''\n" +
-              "  UNION ALL\n" +
-              "  SELECT\n" +
-              "    mn.category_id, \n" +
-              "    mt.name || ' <> ' || mn.name, \n" +
-              "    mt.label || ' <> ' || mn.label, \n" +
-              "    mt.level + 0, \n" +
-              "    mt.category_id,\n" +
-              "\tmn.subscription\n" +
-              "  FROM categories mn, menu_tree mt \n" +
-              "  WHERE mn.parent = mt.category_id \n" +
-              ") \n" +
-              "SELECT * FROM menu_tree \n" +
-              subscribed +
-              " AND level >= 0 \n" +
-              "ORDER BY level DESC" /*, name LIMIT " +
-              limit +
-              " OFFSET " +
-              offset*/
-          );
+      data = await txn.rawQuery(query);
     });
     // _db.close();
     debugPrint('database_testing:-  preferences  ${data.length}');

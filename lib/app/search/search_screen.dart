@@ -52,7 +52,6 @@ class _SearchScreenState extends State<SearchScreen>
     WidgetsBinding.instance.addPostFrameCallback((_) {
       debugPrint('pardeep_testing: -  addPostFrameCallback  called');
       _initAnimation();
-
     });
   }
 
@@ -186,9 +185,7 @@ class _SearchScreenState extends State<SearchScreen>
                             indicator: BoxDecoration(
                               color: white,
                             ),
-                            onTap: (position) {
-
-                            },
+                            onTap: (position) {},
                             tabs: [
                               Text(AppString.all),
                               Text(AppString.offers),

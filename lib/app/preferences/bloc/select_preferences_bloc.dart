@@ -100,7 +100,9 @@ class SelectPreferencesBloc {
 
   getMallData() async {
     String userData = await SessionManager.getUserData();
-    _response = userDataResponseFromJson(userData);
+    if (userData != null) {
+      _response = userDataResponseFromJson(userData);
+    }
 
     List<MallProfileModel> _mallList =
         await SuperAdminDatabaseHelper.getAllVenueProfile();
@@ -285,25 +287,29 @@ class SelectPreferencesBloc {
           await ProfileDatabaseHelper.getPreferencesCategories(
               defaultMall, "10000", "10000");
 
-      debugPrint('preference_categories: -    ${_response.categories}');
+      if (_response != null) {
+        debugPrint('preference_categories: -    ${_response.categories}');
+        if (_response.categories != null) {
+          debugPrint(
+              'preference_categories: -  response.categories  ${_response.categories}');
+          _response.categories.forEach((element) {
+            debugPrint('preference_categories: -    $element');
+            _categoriesList.add(element as String);
+          });
 
-      if (_response.categories != null) {
-        debugPrint(
-            'preference_categories: -  response.categories  ${_response.categories}');
-        _response.categories.forEach((element) {
-          debugPrint('preference_categories: -    $element');
-          _categoriesList.add(element as String);
-        });
-
-        debugPrint(
-            'preference_categories:- _intrestedCategories   ${_categoriesList.length}');
+          debugPrint(
+              'preference_categories:- _intrestedCategories   ${_categoriesList.length}');
+        }
       }
+
       List<CategoryModel> _finalList = [];
       bool isLogin = await SessionManager.isLogin();
       categoriesList.forEach((element) {
         String categoryName = element.name.replaceAll('<>', '/');
         String categoryId = element.categoryId;
-        bool isSelected = isLogin ? _categoriesList.contains(categoryId) : true;
+        bool isSelected = isLogin != null && isLogin
+            ? _categoriesList.contains(categoryId)
+            : true;
 
         debugPrint(
             'preference_categories:-  CategoryName:-   $categoryName    CategoryId:-  $categoryId     IsSelected:-    $isSelected');
