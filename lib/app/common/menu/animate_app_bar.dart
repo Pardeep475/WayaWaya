@@ -3,6 +3,7 @@ import 'package:wayawaya/app/common/menu/bloc/animate_app_bar_widget_bloc.dart';
 import 'package:wayawaya/app/common/menu/custom_app_bar.dart';
 import 'package:wayawaya/app/common/menu/model/main_menu_permission.dart';
 import 'package:wayawaya/utils/app_color.dart';
+import 'package:wayawaya/utils/app_strings.dart';
 
 class AnimateAppBar extends StatefulWidget {
   @required
@@ -99,8 +100,13 @@ class _AnimateAppBarState extends State<AnimateAppBar> {
               child: TextField(
                 autofocus: true,
                 onSubmitted: (val) {
+                  if (_searchController.text.isEmpty) return;
                   _animateAppBarWidgetBloc.searchSink.add(false);
                   FocusScope.of(context).unfocus();
+                  Navigator.pushNamed(context, AppString.SEARCH_SCREEN_ROUTE,
+                          arguments: _searchController.text)
+                      .whenComplete(() => _searchController.clear());
+
                   // Navigator.of(context)
                   //     .push(
                   //       MaterialPageRoute(
@@ -165,7 +171,8 @@ class _AnimateAppBarState extends State<AnimateAppBar> {
                           snap: widget.snap ?? false,
                           floating: widget.floating ?? false,
                           centerTitle: widget.centerTitle ?? false,
-                          padding: widget.padding ?? EdgeInsets.only(left: 0, top: 16),
+                          padding: widget.padding ??
+                              EdgeInsets.only(left: 0, top: 16),
                           titleSize: widget.titleSize ?? 16,
                           mainMenuPermissionList: widget.mainMenuPermissions,
                           onSnowTap: widget

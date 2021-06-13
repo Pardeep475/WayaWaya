@@ -6,6 +6,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart' as path;
 import 'package:wayawaya/app/home/model/campaign_model.dart';
 import 'package:wayawaya/app/preferences/model/preferences_categories.dart';
+import 'package:wayawaya/app/search/model/global_app_search.dart';
 import 'package:wayawaya/common/model/categories_model.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 
@@ -202,5 +203,292 @@ class ProfileDatabaseHelper {
     data.map((e) => debugPrint('database_testing:-    $e'));
     // _mallList.sort();
     return _mallList;
+  }
+
+  static Future<List<GlobalAppSearch>> getAllSearchType(
+      {String databasePath, String searchQuery}) async {
+    debugPrint('database_testing:-  database path $databasePath');
+    if (_db == null) {
+      await initDataBase(databasePath);
+    }
+    List<Map> data;
+    String shop = " \"shop\" ";
+    String restaurant = " \"restaurant\" ";
+    String searchQuerytring = "";
+    if (searchQuery != "" && searchQuery != null) {
+      searchQuerytring = " \"%" + searchQuery + "%\" ";
+    }
+
+    String query = "WITH RECURSIVE menu_tree (category_id, category_name, level, parent,category_color) AS ( \n" +
+        "   SELECT\n" +
+        "     category_id, \n" +
+        "     '' || name, \n" +
+        "     0, \n" +
+        "     parent,\n" +
+        "    category_color\n" +
+        "   FROM categories \n" +
+        "   WHERE parent = ''\n" +
+        "   UNION ALL\n" +
+        "   SELECT\n" +
+        "     mn.category_id, \n" +
+        "     mt.category_name || ' <> ' || mn.name, \n" +
+        "     mt.level + 0, \n" +
+        "     mt.category_id,\n" +
+        "    mn.category_color\n" +
+        "   FROM categories mn, menu_tree mt \n" +
+        "   WHERE mn.parent = mt.category_id \n" +
+        " ) \n" +
+        " SELECT campaign_element as name, type as type, null as heading, null as description, end_date as end_date, start_date as start_date, start_time as start_time \n" +
+        " FROM campaign WHERE campaign_element LIKE " +
+        searchQuerytring +
+        " AND (type='offer' OR type='event') \n" +
+        "UNION SELECT DISTINCT rcmap.name as name, " +
+        shop +
+        " as type, rcmap.heading, rcmap.description, null as end_date, null as start_date, null as start_time FROM menu_tree mt\n" +
+        " INNER JOIN (Select DISTINCT cid, ret.sub_locations as name, " +
+        shop +
+        " as type, ret.name as heading, ret.description as description, null as end_date, null as start_date, null as start_time FROM retail_category_map rmap  INNER JOIN \n" +
+        " retail_units ret ON ret.rid = rmap.rid WHERE ret.name LIKE  " +
+        searchQuerytring +
+        " OR ret.sub_locations LIKE  " +
+        searchQuerytring +
+        " OR heading LIKE  " +
+        searchQuerytring +
+        " OR description LIKE  " +
+        searchQuerytring +
+        ") rcmap ON rcmap.cid = mt.category_id \n" +
+        " WHERE (category_name NOT LIKE '%Food & Dining%' AND category_name NOT LIKE '%Hide%')  AND level >= 0 \n" +
+        "UNION SELECT DISTINCT rcmap.name as name, " +
+        restaurant +
+        " as type, rcmap.heading, rcmap.description, null as end_date, null as start_date, null as start_time FROM menu_tree mt\n" +
+        " INNER JOIN (Select DISTINCT cid, ret.sub_locations as name, " +
+        restaurant +
+        " as type, ret.name as heading, ret.description as description, null as end_date, null as start_date, null as start_time FROM retail_category_map rmap  INNER JOIN \n" +
+        " retail_units ret ON ret.rid = rmap.rid WHERE name LIKE  " +
+        searchQuerytring +
+        " OR ret.sub_locations LIKE  " +
+        searchQuerytring +
+        " OR heading LIKE  " +
+        searchQuerytring +
+        " OR description LIKE  " +
+        searchQuerytring +
+        ") rcmap ON rcmap.cid = mt.category_id \n" +
+        " WHERE (category_name LIKE '%Food & Dining%' AND category_name NOT LIKE '%Hide%' )  AND level >= 0 \n" +
+        " GROUP BY heading ORDER BY heading ASC ";
+
+    // debugPrint("profile_db_testing:-   $query");
+
+    await _db.transaction((txn) async {
+      data = await txn.rawQuery(query);
+    });
+
+    // _db.close();
+    debugPrint('database_testing:-  all search  ${data.length}');
+    debugPrint('database_testing:-   $data');
+    List<GlobalAppSearch> _allSearchList = [];
+    data.forEach((element) {
+      _allSearchList.add(GlobalAppSearch.fromJson(element));
+    });
+    // _preferencesCategoriesList.sort((a, b) => a.name.compareTo(b.name));
+    return _allSearchList;
+  }
+
+  static Future<List<GlobalAppSearch>> getOfferSearchType(
+      {String databasePath, String searchQuery}) async {
+    debugPrint('database_testing:-  database path $databasePath');
+    if (_db == null) {
+      await initDataBase(databasePath);
+    }
+    List<Map> data;
+    String shop = " \"shop\" ";
+    String restaurant = " \"restaurant\" ";
+    String searchQuerytring = "";
+    if (searchQuery != "" && searchQuery != null) {
+      searchQuerytring = " \"%" + searchQuery + "%\" ";
+    }
+
+    String query = "SELECT campaign_element " +
+        "as name, type as type, null as heading, null as description, end_date as end_date, start_date as start_date, start_time as start_time " +
+        " FROM campaign WHERE campaign_element LIKE " +
+        searchQuerytring +
+        " AND (type='offer') ";
+    // debugPrint("profile_db_testing:-   $query");
+
+    await _db.transaction((txn) async {
+      data = await txn.rawQuery(query);
+    });
+
+    // _db.close();
+    debugPrint('database_testing:-  Offer search  ${data.length}');
+    debugPrint('database_testing:-   $data');
+    List<GlobalAppSearch> _allSearchList = [];
+    data.forEach((element) {
+      _allSearchList.add(GlobalAppSearch.fromJson(element));
+    });
+    // _preferencesCategoriesList.sort((a, b) => a.name.compareTo(b.name));
+    return _allSearchList;
+  }
+
+  static Future<List<GlobalAppSearch>> getEventsSearchType(
+      {String databasePath, String searchQuery}) async {
+    debugPrint('database_testing:-  database path $databasePath');
+    if (_db == null) {
+      await initDataBase(databasePath);
+    }
+    List<Map> data;
+    String shop = " \"shop\" ";
+    String restaurant = " \"restaurant\" ";
+    String searchQuerytring = "";
+    if (searchQuery != "" && searchQuery != null) {
+      searchQuerytring = " \"%" + searchQuery + "%\" ";
+    }
+
+    String query = "SELECT campaign_element " +
+        "as name, type as type, null as heading, null as description, end_date as end_date, start_date as start_date, start_time as start_time " +
+        " FROM campaign WHERE campaign_element LIKE " +
+        searchQuerytring +
+        " AND (type='event') ";
+
+    // debugPrint("profile_db_testing:-   $query");
+
+    await _db.transaction((txn) async {
+      data = await txn.rawQuery(query);
+    });
+
+    // _db.close();
+    debugPrint('database_testing:-  events search  ${data.length}');
+    debugPrint('database_testing:-   $data');
+    List<GlobalAppSearch> _allSearchList = [];
+    data.forEach((element) {
+      _allSearchList.add(GlobalAppSearch.fromJson(element));
+    });
+    // _preferencesCategoriesList.sort((a, b) => a.name.compareTo(b.name));
+    return _allSearchList;
+  }
+
+  static Future<List<GlobalAppSearch>> getShopSearchType(
+      {String databasePath, String searchQuery}) async {
+    debugPrint('database_testing:-  database path $databasePath');
+    if (_db == null) {
+      await initDataBase(databasePath);
+    }
+    List<Map> data;
+    String shop = " \"shop\" ";
+    String restaurant = " \"restaurant\" ";
+    String searchQuerytring = "";
+    if (searchQuery != "" && searchQuery != null) {
+      searchQuerytring = " \"%" + searchQuery + "%\" ";
+    }
+
+    String query =
+        "WITH RECURSIVE menu_tree (category_id, category_name, level, parent,category_color) AS ( \n" +
+            "   SELECT\n" +
+            "     category_id, \n" +
+            "     '' || name, \n" +
+            "     0, \n" +
+            "     parent,\n" +
+            "    category_color\n" +
+            "   FROM categories \n" +
+            "   WHERE parent = ''\n" +
+            "   UNION ALL\n" +
+            "   SELECT\n" +
+            "     mn.category_id, \n" +
+            "     mt.category_name || ' <> ' || mn.name, \n" +
+            "     mt.level + 0, \n" +
+            "     mt.category_id,\n" +
+            "    mn.category_color\n" +
+            "   FROM categories mn, menu_tree mt \n" +
+            "   WHERE mn.parent = mt.category_id \n" +
+            " ) \n" +
+            " SELECT DISTINCT category_id, rcmap.* FROM menu_tree mt\n" +
+            " INNER JOIN (Select DISTINCT cid, ret.sub_locations as name, " +
+            shop +
+            " as type, ret.name as heading, ret.description as description, null as end_date, null as start_date, null as start_time FROM retail_category_map rmap  INNER JOIN \n" +
+            " retail_units ret ON ret.rid = rmap.rid WHERE name LIKE " +
+            searchQuerytring +
+            " OR ret.sub_locations LIKE  " +
+            searchQuerytring +
+            " OR heading LIKE  " +
+            searchQuerytring +
+            " OR description LIKE  " +
+            searchQuerytring +
+            " ) rcmap ON rcmap.cid = mt.category_id \n" +
+            " WHERE (category_name NOT LIKE '%Food & Dining%' AND category_name NOT LIKE '%Hide%' )  AND level >= 0 \n" +
+            " GROUP BY heading ORDER BY heading ASC";
+
+    // debugPrint("profile_db_testing:-   $query");
+
+    await _db.transaction((txn) async {
+      data = await txn.rawQuery(query);
+    });
+
+    // _db.close();
+    debugPrint('database_testing:-  Shop search  ${data.length}');
+    debugPrint('database_testing:-   $data');
+    List<GlobalAppSearch> _allSearchList = [];
+    data.forEach((element) {
+      _allSearchList.add(GlobalAppSearch.fromJson(element));
+    });
+    // _preferencesCategoriesList.sort((a, b) => a.name.compareTo(b.name));
+    return _allSearchList;
+  }
+
+  static Future<List<GlobalAppSearch>> getRestaurantSearchType(
+      {String databasePath, String searchQuery}) async {
+    debugPrint('database_testing:-  database path $databasePath');
+    if (_db == null) {
+      await initDataBase(databasePath);
+    }
+    List<Map> data;
+    String shop = " \"shop\" ";
+    String restaurant = " \"restaurant\" ";
+    String searchQuerytring = "";
+    if (searchQuery != "" && searchQuery != null) {
+      searchQuerytring = " \"%" + searchQuery + "%\" ";
+    }
+
+    String query =
+        "WITH RECURSIVE menu_tree (category_id, category_name, level, parent,category_color) AS ( \n" +
+            "   SELECT\n" +
+            "     category_id, \n" +
+            "     '' || name, \n" +
+            "     0, \n" +
+            "     parent,\n" +
+            "    category_color\n" +
+            "   FROM categories \n" +
+            "   WHERE parent = ''\n" +
+            "   UNION ALL\n" +
+            "   SELECT\n" +
+            "     mn.category_id, \n" +
+            "     mt.category_name || ' <> ' || mn.name, \n" +
+            "     mt.level + 0, \n" +
+            "     mt.category_id,\n" +
+            "    mn.category_color\n" +
+            "   FROM categories mn, menu_tree mt \n" +
+            "   WHERE mn.parent = mt.category_id \n" +
+            " ) \n" +
+            " SELECT DISTINCT category_id,rcmap.* FROM menu_tree mt\n" +
+            " INNER JOIN (Select DISTINCT cid, ret.sub_locations as name, " + restaurant +
+            " as type, ret.name as heading, ret.description as description, null as end_date, null as start_date, null as start_time FROM retail_category_map rmap  INNER JOIN \n" +
+            " retail_units ret ON ret.rid = rmap.rid WHERE name LIKE " + searchQuerytring + " OR ret.sub_locations LIKE  " + searchQuerytring + " OR heading LIKE " + searchQuerytring + " OR description LIKE  " + searchQuerytring +
+            " ) rcmap ON rcmap.cid = mt.category_id \n" +
+            " WHERE (category_name  LIKE '%Food & Dining%' AND category_name NOT LIKE '%Hide%' )  AND level >= 0 \n" +
+            " GROUP BY heading ORDER BY heading ASC " ;
+
+    // debugPrint("profile_db_testing:-   $query");
+
+    await _db.transaction((txn) async {
+      data = await txn.rawQuery(query);
+    });
+
+    // _db.close();
+    debugPrint('database_testing:-  Restaurant search  ${data.length}');
+    debugPrint('database_testing:-   $data');
+    List<GlobalAppSearch> _allSearchList = [];
+    data.forEach((element) {
+      _allSearchList.add(GlobalAppSearch.fromJson(element));
+    });
+    // _preferencesCategoriesList.sort((a, b) => a.name.compareTo(b.name));
+    return _allSearchList;
   }
 }

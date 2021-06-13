@@ -4,6 +4,7 @@ import 'package:wayawaya/config.dart';
 import 'package:wayawaya/screens/rewards/menu_button.dart';
 import 'package:wayawaya/screens/select_def_mall.dart';
 import 'package:wayawaya/screens/settings.dart';
+import 'package:wayawaya/utils/app_strings.dart';
 import '../constants.dart';
 
 class MyAppBar extends StatefulWidget {
@@ -102,16 +103,19 @@ class _MyAppBarState extends State<MyAppBar> {
             leading: MenuTile(itemList: widget.mainMenuPermissionList),
             title: Container(
               height: 58,
-              child: Padding(
-                padding: widget.padding ??
-                    const EdgeInsets.only(
-                        left: 70, top: 20, bottom: 20, right: 20),
-                child: Text(
-                  widget.title,
-                  maxLines: 3,
-                  style: TextStyle(
-                    fontSize: widget.titleSize ?? 14,
-                    fontWeight: FontWeight.w400,
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding: widget.padding ??
+                      const EdgeInsets.only(
+                          left: 70, top: 20, bottom: 20, right: 20),
+                  child: Text(
+                    widget.title,
+                    maxLines: 3,
+                    style: TextStyle(
+                      fontSize: widget.titleSize ?? 14,
+                      fontWeight: FontWeight.w400,
+                    ),
                   ),
                 ),
               ),
@@ -122,6 +126,7 @@ class _MyAppBarState extends State<MyAppBar> {
                       child: Icon(
                         Icons.ac_unit_rounded,
                         color: appLightColor,
+                        size: 24,
                       ),
                       onTap: widget.onSnowTap ?? () {},
                     )
@@ -130,25 +135,25 @@ class _MyAppBarState extends State<MyAppBar> {
                 icon: Icon(
                   Icons.settings,
                   color: appLightColor,
+                  size: 34,
                 ),
                 onPressed: widget.onSettingsTap ??
-                    () => App.pushTo(context: context, screen: Settings()),
+                    () => Navigator.pushNamed(
+                        context, AppString.SETTINGS_SCREEN_ROUTE),
               ),
               widget.lastIcon ??
                   IconButton(
                     icon: Icon(
                       Icons.search,
                       color: appLightColor,
+                      size: 34,
                     ),
                     onPressed: widget.onSearchTap ?? () {},
                   ),
               _loggedIn != null
                   ? InkWell(
-                      onTap: () => App.pushTo(
-                          context: context,
-                          screen: SelectMall(
-                            onlyChangeMall: true,
-                          )),
+                      onTap: () => Navigator.pushNamed(
+                          context, AppString.MALL_SCREEN_ROUTE),
                       child: Padding(
                         padding: const EdgeInsets.only(right: 10, left: 5),
                         child: CircleAvatar(
@@ -170,15 +175,18 @@ class _MyAppBarState extends State<MyAppBar> {
             centerTitle: widget.centerTitle ?? false,
             title: Container(
               height: 58,
-              child: Padding(
-                padding: widget.padding ??
-                    EdgeInsets.only(left: 70, top: 20, bottom: 20, right: 20),
-                child: Text(
-                  widget.title,
-                  maxLines: 3,
-                  style: TextStyle(
-                    fontSize: widget.titleSize ?? 14,
-                    fontWeight: FontWeight.w400,
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding: widget.padding ??
+                      EdgeInsets.only(left: 70, top: 20, bottom: 20, right: 20),
+                  child: Text(
+                    widget.title,
+                    maxLines: 3,
+                    style: TextStyle(
+                      fontSize: widget.titleSize ?? 14,
+                      fontWeight: FontWeight.w400,
+                    ),
                   ),
                 ),
               ),
@@ -189,6 +197,7 @@ class _MyAppBarState extends State<MyAppBar> {
                       child: Icon(
                         Icons.ac_unit_rounded,
                         color: appLightColor,
+                        size: 24,
                       ),
                       onTap: widget.onSnowTap ?? () {},
                     )
@@ -197,21 +206,25 @@ class _MyAppBarState extends State<MyAppBar> {
                 icon: Icon(
                   Icons.settings,
                   color: appLightColor,
+                  size: 34,
                 ),
-                onPressed: widget.onSettingsTap ?? () {},
+                onPressed: widget.onSettingsTap ??
+                    () => Navigator.pushNamed(
+                        context, AppString.SETTINGS_SCREEN_ROUTE),
               ),
               widget.lastIcon ??
                   IconButton(
                     icon: Icon(
                       Icons.search,
                       color: appLightColor,
+                      size: 34,
                     ),
                     onPressed: widget.onSearchTap ?? () {},
                   ),
               _loggedIn != null
                   ? InkWell(
-                      onTap: () =>
-                          App.pushTo(context: context, screen: SelectMall()),
+                      onTap: () => Navigator.pushNamed(
+                          context, AppString.MALL_SCREEN_ROUTE),
                       child: Padding(
                         padding: const EdgeInsets.only(right: 10, left: 5),
                         child: CircleAvatar(

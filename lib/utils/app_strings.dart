@@ -22,8 +22,10 @@ class AppString {
   static const SMALL_DEFAULT_MALL_DATA = "SMALL_DEFAULT_MALL_DATA";
   static const IS_LOGIN = "IS_LOGIN";
   static const String PREF_GUEST_USER_CATEGORIES = "PREF_GUEST_USER_CATEGORIES";
-  static const String PREF_GUEST_USER_NOTIFICATIONS = "PREF_GUEST_USER_NOTIFICATIONS";
-  static const String PREF_GUEST_USER_FAVOURITE_MALL = "PREF_GUEST_USER_FAVOURITE_MALL";
+  static const String PREF_GUEST_USER_NOTIFICATIONS =
+      "PREF_GUEST_USER_NOTIFICATIONS";
+  static const String PREF_GUEST_USER_FAVOURITE_MALL =
+      "PREF_GUEST_USER_FAVOURITE_MALL";
   static const String PREF_GUEST_USER_CURRENCY = "PREF_GUEST_USER_CURRENCY";
   static const String PREF_GUEST_USER_LANGUAGE = "PREF_GUEST_USER_LANGUAGE";
 
@@ -128,7 +130,15 @@ class AppString {
   static const String event = "EVENT";
   static const String offer = "OFFER";
   static const String interested_categories = "Interested Categories";
-  static const String your_preferences_saved_successfully = "Your preferences saved successfully";
+  static const String your_preferences_saved_successfully =
+      "Your preferences saved successfully";
+  static const String all = "ALL";
+  static const String offers = "OFFERS";
+  static const String events = "EVENTS";
+  static const String shops = "SHOPS";
+  static const String restaurant = "RESTAURANT";
+  static const String no_result_to_show = "No Result To Show";
+  static const String go_to_home_page = "GO TO HOME PAGE";
 
   // Routes
   static const LOGIN_SCREEN_ROUTE = "LOGIN_SCREEN_ROUTE";
@@ -142,6 +152,7 @@ class AppString {
   static const SETTINGS_SCREEN_ROUTE = "SETTINGS_SCREEN_ROUTE";
   static const MY_DEVICES_SCREEN_ROUTE = "MY_DEVICES_SCREEN_ROUTE";
   static const MY_ACCOUNT_SCREEN_ROUTE = "MY_ACCOUNT_SCREEN_ROUTE";
+  static const SEARCH_SCREEN_ROUTE = "SEARCH_SCREEN_ROUTE";
 
 // db
   static const String ADMIN_DB_FILE = "admin.db";
