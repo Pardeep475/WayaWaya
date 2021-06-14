@@ -3,20 +3,29 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:wayawaya/app/auth/forgotpassword/model/error_response.dart';
 import 'package:wayawaya/app/auth/login/model/user_data_response.dart';
-import 'package:wayawaya/app/common/dialogs/common_error_dialog.dart';
+import 'package:wayawaya/app/common/menu/model/main_menu_permission.dart';
 import 'package:wayawaya/app/settings/model/update_user_model.dart';
 import 'package:wayawaya/network/live/exception_handling/exception_handling.dart';
 import 'package:wayawaya/network/live/model/api_response.dart';
 import 'package:wayawaya/network/live/repository/api_repository.dart';
-import 'package:wayawaya/utils/app_color.dart';
-import 'package:wayawaya/utils/app_strings.dart';
+import 'package:wayawaya/network/local/super_admin_database_helper.dart';
 import 'package:wayawaya/utils/session_manager.dart';
 import 'package:wayawaya/utils/utils.dart';
 
 class MyAccountBloc {
+
+  // ignore: close_sinks
+  StreamController _mainMenuPermissionsController =
+  StreamController<List<MainMenuPermission>>();
+
+  StreamSink<List<MainMenuPermission>> get mainMenuPermissionSink =>
+      _mainMenuPermissionsController.sink;
+
+  Stream<List<MainMenuPermission>> get mainMenuPermissionStream =>
+      _mainMenuPermissionsController.stream;
+
   // ignore: close_sinks
   StreamController _genderController = StreamController<int>();
 
@@ -212,6 +221,15 @@ class MyAccountBloc {
         ),
       );
     }
+  }
+
+  fetchMenuButtons() async {
+    String defaultMall = await SessionManager.getDefaultMall();
+    List<MainMenuPermission> itemList =
+    await SuperAdminDatabaseHelper.getMenuButtons(defaultMall);
+    debugPrint('main_menu_permission_testing:--   ${itemList.length}');
+    mainMenuPermissionSink.add(itemList);
+    return itemList;
   }
 
 }

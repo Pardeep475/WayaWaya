@@ -2,8 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:wayawaya/app/common/menu/animate_app_bar.dart';
-import 'package:wayawaya/app/home/model/campaign_model.dart';
-import 'package:wayawaya/app/preferences/model/preferences_categories.dart';
+import 'package:wayawaya/app/common/menu/model/main_menu_permission.dart';
 import 'package:wayawaya/app/search/model/global_app_search.dart';
 import 'package:wayawaya/app/settings/model/settings_model.dart';
 import 'package:wayawaya/network/local/profile_database_helper.dart';
@@ -29,6 +28,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     super.initState();
     _settingsBloc = SettingsBloc();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      _settingsBloc.fetchMenuButtons();
       _settingsBloc.setUpSettingsData();
     });
   }
@@ -37,33 +37,39 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: AnimateAppBar(
-          title: AppString.settings,
-          isSliver: true,
-          physics: const NeverScrollableScrollPhysics(),
-          children: [
-            StreamBuilder<List<SettingsModel>>(
-                initialData: [],
-                stream: _settingsBloc.settingsStream,
-                builder: (context, snapshot) {
-                  if (snapshot.data == null) return SliverToBoxAdapter();
+        body: StreamBuilder<List<MainMenuPermission>>(
+            initialData: [],
+            stream: _settingsBloc.mainMenuPermissionStream,
+            builder: (context, snapshot) {
+              return AnimateAppBar(
+                title: AppString.settings,
+                isSliver: true,
+                mainMenuPermissions: snapshot.data,
+                physics: const NeverScrollableScrollPhysics(),
+                children: [
+                  StreamBuilder<List<SettingsModel>>(
+                      initialData: [],
+                      stream: _settingsBloc.settingsStream,
+                      builder: (context, snapshot) {
+                        if (snapshot.data == null) return SliverToBoxAdapter();
 
-                  return SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (BuildContext context, int index) {
-                        return CustomSettingsCard(
-                          settingsModel: snapshot.data[index],
-                          onPressed: (value) {
-                            _onItemClick(value);
-                          },
+                        return SliverList(
+                          delegate: SliverChildBuilderDelegate(
+                            (BuildContext context, int index) {
+                              return CustomSettingsCard(
+                                settingsModel: snapshot.data[index],
+                                onPressed: (value) {
+                                  _onItemClick(value);
+                                },
+                              );
+                            },
+                            childCount: snapshot.data.length,
+                          ),
                         );
-                      },
-                      childCount: snapshot.data.length,
-                    ),
-                  );
-                }),
-          ],
-        ),
+                      }),
+                ],
+              );
+            }),
         bottomNavigationBar: Container(
           alignment: Alignment.bottomCenter,
           color: Colors.grey[100],

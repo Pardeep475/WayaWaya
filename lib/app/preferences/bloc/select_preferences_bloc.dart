@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:wayawaya/app/auth/forgotpassword/model/error_response.dart';
 import 'package:wayawaya/app/auth/login/model/user_data_response.dart';
+import 'package:wayawaya/app/common/menu/model/main_menu_permission.dart';
 import 'package:wayawaya/app/preferences/model/category_model.dart';
 import 'package:wayawaya/app/preferences/model/currency_model.dart';
 import 'package:wayawaya/app/preferences/model/language_model.dart';
@@ -24,6 +25,16 @@ import 'package:wayawaya/utils/utils.dart';
 // language, currency
 class SelectPreferencesBloc {
   List<DropdownMenuItem<NotificationModel>> items = [];
+  // ignore: close_sinks
+  StreamController _mainMenuPermissionsController =
+  StreamController<List<MainMenuPermission>>();
+
+  StreamSink<List<MainMenuPermission>> get mainMenuPermissionSink =>
+      _mainMenuPermissionsController.sink;
+
+  Stream<List<MainMenuPermission>> get mainMenuPermissionStream =>
+      _mainMenuPermissionsController.stream;
+
 
   // ignore: close_sinks
   StreamController _selectPreferencesController =
@@ -454,4 +465,16 @@ class SelectPreferencesBloc {
       );
     }
   }
+
+
+  fetchMenuButtons() async {
+    String defaultMall = await SessionManager.getDefaultMall();
+    List<MainMenuPermission> itemList =
+    await SuperAdminDatabaseHelper.getMenuButtons(defaultMall);
+    debugPrint('main_menu_permission_testing:--   ${itemList.length}');
+    mainMenuPermissionSink.add(itemList);
+    return itemList;
+  }
+
+
 }

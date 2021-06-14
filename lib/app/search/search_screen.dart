@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:wayawaya/app/common/menu/model/main_menu_permission.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/widgets/custom_app_bar.dart';
 import 'package:wayawaya/widgets/search_all.dart';
@@ -9,6 +10,7 @@ import 'package:wayawaya/widgets/search_restaurants.dart';
 import 'package:wayawaya/widgets/search_shops.dart';
 
 import '../../constants.dart';
+import 'bloc/search_bloc.dart';
 
 class SearchScreen extends StatefulWidget {
   @override
@@ -36,6 +38,7 @@ class _SearchScreenState extends State<SearchScreen>
       degTMTranslationAnimation,
       degMMTranslationAnimation;
   Animation rotationAnimation;
+  SearchBloc _searchBloc;
 
   double getRadiansFromDegree(double degree) {
     double unitRadian = 57.295779513;
@@ -48,9 +51,9 @@ class _SearchScreenState extends State<SearchScreen>
   void initState() {
     _scrollController = new ScrollController();
     super.initState();
-
+    _searchBloc = SearchBloc();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      debugPrint('pardeep_testing: -  addPostFrameCallback  called');
+      _searchBloc.fetchMenuButtons();
       _initAnimation();
     });
   }
@@ -140,64 +143,65 @@ class _SearchScreenState extends State<SearchScreen>
                 controller: _scrollController,
                 physics: NeverScrollableScrollPhysics(),
                 slivers: [
-                  MyAppBar(
-                    title: 'HOME /\nSEARCH-$searchQuery'.toUpperCase(),
-                    padding: EdgeInsets.only(left: 10, top: 0),
-                    pinned: true,
-                    centerTitle: false,
-                    onSnowTap: () {
-                      setState(() {
-                        showMalls = true;
-                      });
-                    },
-                    lastIcon: IconButton(
-                      icon: Icon(
-                        Icons.youtube_searched_for_outlined,
-                        size: 34,
-                        color: appLightColor,
-                      ),
-                      onPressed: () {},
-                    ),
-                    bottom: PreferredSize(
-                      preferredSize: Size.fromHeight(58),
-                      child: Container(
-                        color: white,
-                        padding: EdgeInsets.only(
-                          top: 1,
-                        ),
-                        height: 54,
-                        child: Container(
-                          color: Color(0xff57BABF),
-                          padding: EdgeInsets.only(
-                            bottom: 4,
-                          ),
-                          margin: EdgeInsets.only(top: 3),
-                          height: 53,
-                          child: TabBar(
-                            labelColor: Color(0xff57BABF),
-                            isScrollable: true,
-                            labelStyle: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
+                  StreamBuilder<List<MainMenuPermission>>(
+                      initialData: [],
+                      stream: _searchBloc.mainMenuPermissionStream,
+                      builder: (context, snapshot) {
+                        return MyAppBar(
+                          title: 'HOME /\nSEARCH-$searchQuery'.toUpperCase(),
+                          padding: EdgeInsets.only(left: 10, top: 0),
+                          pinned: true,
+                          mainMenuPermissionList: snapshot.data,
+                          centerTitle: false,
+                          lastIcon: IconButton(
+                            icon: Icon(
+                              Icons.youtube_searched_for_outlined,
+                              size: 34,
+                              color: appLightColor,
                             ),
-                            unselectedLabelColor: white,
-                            indicatorSize: TabBarIndicatorSize.tab,
-                            indicator: BoxDecoration(
+                            onPressed: () {},
+                          ),
+                          bottom: PreferredSize(
+                            preferredSize: Size.fromHeight(58),
+                            child: Container(
                               color: white,
+                              padding: EdgeInsets.only(
+                                top: 1,
+                              ),
+                              height: 54,
+                              child: Container(
+                                color: Color(0xff57BABF),
+                                padding: EdgeInsets.only(
+                                  bottom: 4,
+                                ),
+                                margin: EdgeInsets.only(top: 3),
+                                height: 53,
+                                child: TabBar(
+                                  labelColor: Color(0xff57BABF),
+                                  isScrollable: true,
+                                  labelStyle: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                  unselectedLabelColor: white,
+                                  indicatorSize: TabBarIndicatorSize.tab,
+                                  indicator: BoxDecoration(
+                                    color: white,
+                                  ),
+                                  onTap: (position) {},
+                                  tabs: [
+                                    Text(AppString.all),
+                                    Text(AppString.offers),
+                                    Text(AppString.events),
+                                    Text(AppString.shops),
+                                    Text(AppString.restaurant),
+                                  ],
+                                ),
+                              ),
                             ),
-                            onTap: (position) {},
-                            tabs: [
-                              Text(AppString.all),
-                              Text(AppString.offers),
-                              Text(AppString.events),
-                              Text(AppString.shops),
-                              Text(AppString.restaurant),
-                            ],
                           ),
-                        ),
-                      ),
-                    ),
-                  ),
+                        );
+                      }),
                   SliverFillRemaining(
                     hasScrollBody: true,
                     child: TabBarView(

@@ -6,6 +6,7 @@ import 'package:wayawaya/app/auth/forgotpassword/model/error_response.dart';
 import 'package:wayawaya/app/common/dialogs/common_error_dialog.dart';
 import 'package:wayawaya/app/common/menu/animate_app_bar.dart';
 import 'package:flutter_holo_date_picker/date_picker.dart';
+import 'package:wayawaya/app/common/menu/model/main_menu_permission.dart';
 import 'package:wayawaya/app/common/model/contact_number.dart';
 import 'package:wayawaya/app/settings/model/update_user_model.dart';
 import 'package:wayawaya/network/live/model/api_response.dart';
@@ -137,6 +138,7 @@ class _MyAccountScreenState extends State<MyAccountScreen> {
     _myAccountBloc = MyAccountBloc();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      _myAccountBloc.fetchMenuButtons();
       fetchUserData();
     });
   }
@@ -416,34 +418,42 @@ class _MyAccountScreenState extends State<MyAccountScreen> {
         children: [
           Scaffold(
             backgroundColor: bgColor,
-            body: AnimateAppBar(
-              title: AppString.my_profile.toUpperCase(),
-              isSliver: true,
-              children: [
-                SliverToBoxAdapter(
-                  child: Column(
+            body: StreamBuilder<List<MainMenuPermission>>(
+                initialData: [],
+                stream: _myAccountBloc.mainMenuPermissionStream,
+                builder: (context, snapshot) {
+                  return AnimateAppBar(
+                    title: AppString.my_profile.toUpperCase(),
+                    isSliver: true,
+                    mainMenuPermissions: snapshot.data,
+                    physics: NeverScrollableScrollPhysics(),
                     children: [
-                      _radioButtonWidget(),
-                      Container(
-                        margin: EdgeInsets.symmetric(horizontal: Dimens.ten),
-                        child: Form(
-                          key: _formKey,
-                          child: Column(
-                            children: [
-                              _emailWidget(),
-                              _firstNameWidget(),
-                              _lastNameWidget(),
-                              _dobWidget(),
-                              _phoneNumberWidget(),
-                            ],
-                          ),
+                      SliverToBoxAdapter(
+                        child: Column(
+                          children: [
+                            _radioButtonWidget(),
+                            Container(
+                              margin:
+                                  EdgeInsets.symmetric(horizontal: Dimens.ten),
+                              child: Form(
+                                key: _formKey,
+                                child: Column(
+                                  children: [
+                                    _emailWidget(),
+                                    _firstNameWidget(),
+                                    _lastNameWidget(),
+                                    _dobWidget(),
+                                    _phoneNumberWidget(),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],
-                  ),
-                ),
-              ],
-            ),
+                  );
+                }),
             bottomNavigationBar: Container(
               height: 200,
               child: Column(

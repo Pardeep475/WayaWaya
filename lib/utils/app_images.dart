@@ -9,6 +9,7 @@ class AppImages {
 
   static const icon_logo = "assets/image/dobsonville.png";
   static const icon_placeholder = "assets/image/placeholder.png";
+  static const icon_barcode = "assets/image/icon_barcode.png";
 
 
 }

@@ -10,6 +10,7 @@ import 'package:wayawaya/app/common/dialogs/common_error_dialog.dart';
 import 'package:wayawaya/app/common/dialogs/common_login_with_home_page.dart';
 import 'package:wayawaya/app/common/dialogs/common_preferences_saved_dialog.dart';
 import 'package:wayawaya/app/common/menu/animate_app_bar.dart';
+import 'package:wayawaya/app/common/menu/model/main_menu_permission.dart';
 import 'package:wayawaya/app/preferences/bloc/select_preferences_bloc.dart';
 import 'package:wayawaya/app/preferences/model/currency_model.dart';
 import 'package:wayawaya/app/preferences/model/language_model.dart';
@@ -125,6 +126,7 @@ class _SelectPreferencesScreenState extends State<SelectPreferencesScreen> {
 
     _selectPreferencesBloc = SelectPreferencesBloc();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      _selectPreferencesBloc.fetchMenuButtons();
       _selectPreferencesBloc.getMallData();
       _selectPreferencesBloc.getPreferencesCategories();
       _selectPreferencesBloc.getNotificationData(context);
@@ -152,251 +154,261 @@ class _SelectPreferencesScreenState extends State<SelectPreferencesScreen> {
         backgroundColor: bgColor,
         body: Stack(
           children: [
-            AnimateAppBar(
-              title: AppString.preferences.toUpperCase(),
-              isSliver: true,
-              floating: true,
-              pinned: true,
-              physics: RangeMaintainingScrollPhysics(),
-              snap: true,
-              onSnowTap: () {
-                setState(() {
-                  debugPrint('animation_click_testing:-   menu click');
-                  showMalls = true;
-                });
-              },
-              children: [
-                SliverToBoxAdapter(
-                  child: StreamBuilder<List<CategoryModel>>(
-                      initialData: null,
-                      stream: _selectPreferencesBloc.categoriesStream,
-                      builder: (context, snapshot) {
-                        if (snapshot.data == null) return SizedBox();
-                        return Container(
-                          margin: EdgeInsets.only(top: 10),
+            StreamBuilder<List<MainMenuPermission>>(
+                initialData: [],
+                stream: _selectPreferencesBloc.mainMenuPermissionStream,
+                builder: (context, snapshot) {
+                  return AnimateAppBar(
+                    title: AppString.preferences.toUpperCase(),
+                    isSliver: true,
+                    floating: true,
+                    pinned: true,
+                    mainMenuPermissions: snapshot.data,
+                    physics: RangeMaintainingScrollPhysics(),
+                    snap: true,
+                    onSnowTap: () {
+                      setState(() {
+                        debugPrint('animation_click_testing:-   menu click');
+                        showMalls = true;
+                      });
+                    },
+                    children: [
+                      SliverToBoxAdapter(
+                        child: StreamBuilder<List<CategoryModel>>(
+                            initialData: null,
+                            stream: _selectPreferencesBloc.categoriesStream,
+                            builder: (context, snapshot) {
+                              if (snapshot.data == null) return SizedBox();
+                              return Container(
+                                margin: EdgeInsets.only(top: 10),
+                                padding: EdgeInsets.symmetric(horizontal: 15),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: [
+                                    Text(
+                                      AppString.interested_categories,
+                                      style: _title,
+                                    ),
+                                    ListView.builder(
+                                      itemCount: snapshot.data.length,
+                                      padding: EdgeInsets.only(top: 15),
+                                      physics: NeverScrollableScrollPhysics(),
+                                      shrinkWrap: true,
+                                      itemBuilder: (_, index) {
+                                        return CategoryPreferences(
+                                          preferencesCategory:
+                                              snapshot.data[index],
+                                          onPressed: (categoriesId) {
+                                            _selectPreferencesBloc
+                                                .updateCategoriesList(
+                                                    categoriesId);
+                                          },
+                                        );
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }),
+                      ),
+                      SliverToBoxAdapter(
+                        child: StreamBuilder<NotificationModel>(
+                            initialData: null,
+                            stream: _selectPreferencesBloc.notificationStream,
+                            builder: (context, snapshot) {
+                              if (snapshot.data == null) return SizedBox();
+                              _notificationModel = snapshot.data;
+                              return Container(
+                                margin: EdgeInsets.only(top: 10),
+                                padding: EdgeInsets.symmetric(horizontal: 15),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: [
+                                    Text(
+                                      AppString.notification_frequency,
+                                      style: _title,
+                                    ),
+                                    DropdownButton(
+                                      underline: SizedBox(),
+                                      isExpanded: true,
+                                      value: snapshot.data,
+                                      items: _selectPreferencesBloc
+                                          .getDropDownItems,
+                                      onChanged: (notificationData) {
+                                        _notificationModel = notificationData;
+                                        changedDropDownItem(notificationData);
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }),
+                      ),
+                      SliverToBoxAdapter(
+                        child: StreamBuilder<List<MallProfileModel>>(
+                            initialData: [],
+                            stream: _selectPreferencesBloc.mallProfileStream,
+                            builder: (context, snapshot) {
+                              if (snapshot.data == null) return SizedBox();
+                              return Container(
+                                margin: EdgeInsets.only(top: 10),
+                                padding: EdgeInsets.symmetric(horizontal: 15),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: [
+                                    Text(
+                                      AppString.favourite_malls,
+                                      style: _title,
+                                    ),
+                                    ListView.builder(
+                                      itemCount: snapshot.data.length,
+                                      padding: EdgeInsets.only(top: 10),
+                                      physics: NeverScrollableScrollPhysics(),
+                                      shrinkWrap: true,
+                                      itemBuilder: (_, index) {
+                                        return FavMall(
+                                          index: index,
+                                          mallProfileModel:
+                                              snapshot.data[index],
+                                          onPressed: _updateValues,
+                                        );
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }),
+                      ),
+                      SliverToBoxAdapter(
+                        child: StreamBuilder<List<CurrencyModel>>(
+                            initialData: null,
+                            stream: _selectPreferencesBloc.currencyStream,
+                            builder: (context, snapshot) {
+                              if (snapshot.data == null) return SizedBox();
+                              return Container(
+                                margin: EdgeInsets.only(top: 10),
+                                padding: EdgeInsets.symmetric(horizontal: 15),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: [
+                                    Text(
+                                      AppString.alternate_currency,
+                                      style: _title,
+                                    ),
+                                    ListView.builder(
+                                      itemCount: snapshot.data.length,
+                                      physics: NeverScrollableScrollPhysics(),
+                                      shrinkWrap: true,
+                                      itemBuilder: (_, index) {
+                                        return _itemCurrencyWidget(
+                                            snapshot.data[index]);
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }),
+                      ),
+                      SliverToBoxAdapter(
+                        child: StreamBuilder<List<LanguageModel>>(
+                            initialData: null,
+                            stream: _selectPreferencesBloc.languageStream,
+                            builder: (context, snapshot) {
+                              if (snapshot.data == null) return SizedBox();
+                              return Container(
+                                margin: EdgeInsets.only(top: 10),
+                                padding: EdgeInsets.symmetric(horizontal: 15),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: [
+                                    Text(
+                                      AppString.default_language,
+                                      style: _title,
+                                    ),
+                                    ListView.builder(
+                                      itemCount: snapshot.data.length,
+                                      physics: NeverScrollableScrollPhysics(),
+                                      shrinkWrap: true,
+                                      itemBuilder: (_, index) {
+                                        return _itemLanguageWidget(
+                                            snapshot.data[index]);
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }),
+                      ),
+                      SliverToBoxAdapter(
+                        child: Container(
+                          width: App.width(context),
+                          margin: EdgeInsets.only(bottom: 3),
                           padding: EdgeInsets.symmetric(horizontal: 15),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.max,
+                          child: Row(
                             children: [
-                              Text(
-                                AppString.interested_categories,
-                                style: _title,
-                              ),
-                              ListView.builder(
-                                itemCount: snapshot.data.length,
-                                padding: EdgeInsets.only(top: 15),
-                                physics: NeverScrollableScrollPhysics(),
-                                shrinkWrap: true,
-                                itemBuilder: (_, index) {
-                                  return CategoryPreferences(
-                                    preferencesCategory: snapshot.data[index],
-                                    onPressed: (categoriesId) {
-                                      _selectPreferencesBloc
-                                          .updateCategoriesList(categoriesId);
-                                    },
-                                  );
-                                },
-                              ),
-                            ],
-                          ),
-                        );
-                      }),
-                ),
-                SliverToBoxAdapter(
-                  child: StreamBuilder<NotificationModel>(
-                      initialData: null,
-                      stream: _selectPreferencesBloc.notificationStream,
-                      builder: (context, snapshot) {
-                        if (snapshot.data == null) return SizedBox();
-                        _notificationModel = snapshot.data;
-                        return Container(
-                          margin: EdgeInsets.only(top: 10),
-                          padding: EdgeInsets.symmetric(horizontal: 15),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-                              Text(
-                                AppString.notification_frequency,
-                                style: _title,
-                              ),
-                              DropdownButton(
-                                underline: SizedBox(),
-                                isExpanded: true,
-                                value: snapshot.data,
-                                items: _selectPreferencesBloc.getDropDownItems,
-                                onChanged: (notificationData) {
-                                  _notificationModel = notificationData;
-                                  changedDropDownItem(notificationData);
-                                },
-                              ),
-                            ],
-                          ),
-                        );
-                      }),
-                ),
-                SliverToBoxAdapter(
-                  child: StreamBuilder<List<MallProfileModel>>(
-                      initialData: [],
-                      stream: _selectPreferencesBloc.mallProfileStream,
-                      builder: (context, snapshot) {
-                        if (snapshot.data == null) return SizedBox();
-                        return Container(
-                          margin: EdgeInsets.only(top: 10),
-                          padding: EdgeInsets.symmetric(horizontal: 15),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-                              Text(
-                                AppString.favourite_malls,
-                                style: _title,
-                              ),
-                              ListView.builder(
-                                itemCount: snapshot.data.length,
-                                padding: EdgeInsets.only(top: 10),
-                                physics: NeverScrollableScrollPhysics(),
-                                shrinkWrap: true,
-                                itemBuilder: (_, index) {
-                                  return FavMall(
-                                    index: index,
-                                    mallProfileModel: snapshot.data[index],
-                                    onPressed: _updateValues,
-                                  );
-                                },
-                              ),
-                            ],
-                          ),
-                        );
-                      }),
-                ),
-                SliverToBoxAdapter(
-                  child: StreamBuilder<List<CurrencyModel>>(
-                      initialData: null,
-                      stream: _selectPreferencesBloc.currencyStream,
-                      builder: (context, snapshot) {
-                        if (snapshot.data == null) return SizedBox();
-                        return Container(
-                          margin: EdgeInsets.only(top: 10),
-                          padding: EdgeInsets.symmetric(horizontal: 15),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-                              Text(
-                                AppString.alternate_currency,
-                                style: _title,
-                              ),
-                              ListView.builder(
-                                itemCount: snapshot.data.length,
-                                physics: NeverScrollableScrollPhysics(),
-                                shrinkWrap: true,
-                                itemBuilder: (_, index) {
-                                  return _itemCurrencyWidget(
-                                      snapshot.data[index]);
-                                },
-                              ),
-                            ],
-                          ),
-                        );
-                      }),
-                ),
-                SliverToBoxAdapter(
-                  child: StreamBuilder<List<LanguageModel>>(
-                      initialData: null,
-                      stream: _selectPreferencesBloc.languageStream,
-                      builder: (context, snapshot) {
-                        if (snapshot.data == null) return SizedBox();
-                        return Container(
-                          margin: EdgeInsets.only(top: 10),
-                          padding: EdgeInsets.symmetric(horizontal: 15),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-                              Text(
-                                AppString.default_language,
-                                style: _title,
-                              ),
-                              ListView.builder(
-                                itemCount: snapshot.data.length,
-                                physics: NeverScrollableScrollPhysics(),
-                                shrinkWrap: true,
-                                itemBuilder: (_, index) {
-                                  return _itemLanguageWidget(
-                                      snapshot.data[index]);
-                                },
-                              ),
-                            ],
-                          ),
-                        );
-                      }),
-                ),
-                SliverToBoxAdapter(
-                  child: Container(
-                    width: App.width(context),
-                    margin: EdgeInsets.only(bottom: 3),
-                    padding: EdgeInsets.symmetric(horizontal: 15),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          flex: 1,
-                          child: InkWell(
-                            onTap: () {
-                              _saveButtonPressed();
-                            },
-                            child: Card(
-                              shadowColor: Colors.grey[400],
-                              child: Container(
-                                height: 50,
-                                width: App.width(context) / 2.3,
-                                child: Center(
-                                  child: Text(
-                                    AppString.save.toUpperCase(),
-                                    style: TextStyle(
-                                      color: Colors.grey[600],
-                                      fontSize: 17,
+                              Expanded(
+                                flex: 1,
+                                child: InkWell(
+                                  onTap: () {
+                                    _saveButtonPressed();
+                                  },
+                                  child: Card(
+                                    shadowColor: Colors.grey[400],
+                                    child: Container(
+                                      height: 50,
+                                      width: App.width(context) / 2.3,
+                                      child: Center(
+                                        child: Text(
+                                          AppString.save.toUpperCase(),
+                                          style: TextStyle(
+                                            color: Colors.grey[600],
+                                            fontSize: 17,
+                                          ),
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Expanded(
-                          flex: 1,
-                          child: InkWell(
-                            onTap: () {
-                              _cancelButtonPressed();
-                            },
-                            child: Card(
-                              shadowColor: Colors.grey[400],
-                              child: Container(
-                                height: 50,
-                                width: App.width(context) / 2.3,
-                                child: Center(
-                                  child: Text(
-                                    AppString.cancel.toUpperCase(),
-                                    style: TextStyle(
-                                      color: Colors.grey[600],
-                                      fontSize: 17,
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Expanded(
+                                flex: 1,
+                                child: InkWell(
+                                  onTap: () {
+                                    _cancelButtonPressed();
+                                  },
+                                  child: Card(
+                                    shadowColor: Colors.grey[400],
+                                    child: Container(
+                                      height: 50,
+                                      width: App.width(context) / 2.3,
+                                      child: Center(
+                                        child: Text(
+                                          AppString.cancel.toUpperCase(),
+                                          style: TextStyle(
+                                            color: Colors.grey[600],
+                                            fontSize: 17,
+                                          ),
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
-                            ),
+                            ],
                           ),
                         ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
+                      ),
+                    ],
+                  );
+                }),
             StreamBuilder<ApiResponse<ErrorResponse>>(
               stream: _selectPreferencesBloc.selectPreferencesStream,
               builder: (context, snapshot) {

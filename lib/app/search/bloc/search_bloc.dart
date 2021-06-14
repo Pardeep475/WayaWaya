@@ -1,11 +1,25 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:wayawaya/app/common/menu/model/main_menu_permission.dart';
 import 'package:wayawaya/app/search/model/global_app_search.dart';
 import 'package:wayawaya/network/local/profile_database_helper.dart';
+import 'package:wayawaya/network/local/super_admin_database_helper.dart';
 import 'package:wayawaya/utils/session_manager.dart';
 
 class SearchBloc {
+
+  // ignore: close_sinks
+  StreamController _mainMenuPermissionsController =
+  StreamController<List<MainMenuPermission>>();
+
+  StreamSink<List<MainMenuPermission>> get mainMenuPermissionSink =>
+      _mainMenuPermissionsController.sink;
+
+  Stream<List<MainMenuPermission>> get mainMenuPermissionStream =>
+      _mainMenuPermissionsController.stream;
+
+
 // ignore: close_sinks
   final _noDataFoundController = StreamController<bool>();
 
@@ -119,4 +133,15 @@ class SearchBloc {
   List<GlobalAppSearch> get shopSearchList => _shopSearchList;
 
   List<GlobalAppSearch> get restaurantSearchList => _restaurantSearchList;
+
+
+  fetchMenuButtons() async {
+    String defaultMall = await SessionManager.getDefaultMall();
+    List<MainMenuPermission> itemList =
+    await SuperAdminDatabaseHelper.getMenuButtons(defaultMall);
+    debugPrint('main_menu_permission_testing:--   ${itemList.length}');
+    mainMenuPermissionSink.add(itemList);
+    return itemList;
+  }
+
 }

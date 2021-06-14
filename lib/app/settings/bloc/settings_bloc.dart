@@ -4,7 +4,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:wayawaya/app/common/full_screen_privacy_policy_dialog.dart';
+import 'package:wayawaya/app/common/menu/model/main_menu_permission.dart';
 import 'package:wayawaya/app/settings/model/settings_model.dart';
+import 'package:wayawaya/network/local/super_admin_database_helper.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/session_manager.dart';
 
@@ -16,6 +18,17 @@ class SettingsBloc {
   StreamSink<List<SettingsModel>> get settingsSink => _settingsController.sink;
 
   Stream<List<SettingsModel>> get settingsStream => _settingsController.stream;
+
+  // ignore: close_sinks
+  StreamController _mainMenuPermissionsController =
+  StreamController<List<MainMenuPermission>>();
+
+  StreamSink<List<MainMenuPermission>> get mainMenuPermissionSink =>
+      _mainMenuPermissionsController.sink;
+
+  Stream<List<MainMenuPermission>> get mainMenuPermissionStream =>
+      _mainMenuPermissionsController.stream;
+
 
   List<SettingsModel> _settingsItemList = [];
 
@@ -58,4 +71,14 @@ class SettingsBloc {
           title: AppString.privacy_policy, url: AppString.PRIVACY_POLICY_URL),
     ).then((value) {});
   }
+
+  fetchMenuButtons() async {
+    String defaultMall = await SessionManager.getDefaultMall();
+    List<MainMenuPermission> itemList =
+    await SuperAdminDatabaseHelper.getMenuButtons(defaultMall);
+    debugPrint('main_menu_permission_testing:--   ${itemList.length}');
+    mainMenuPermissionSink.add(itemList);
+    return itemList;
+  }
+
 }

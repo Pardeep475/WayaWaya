@@ -5,6 +5,7 @@ import 'package:wayawaya/app/common/menu/model/main_menu_permission.dart';
 import 'package:wayawaya/screens/map/mall_map.dart';
 import 'package:wayawaya/screens/rewards/qr_code_scanner.dart';
 import 'package:wayawaya/utils/app_color.dart';
+import 'package:wayawaya/utils/app_images.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 
 import '../../config.dart';
@@ -321,7 +322,7 @@ class RhombusMenu extends StatelessWidget {
                         : Colors.white,
                 //fromHex(menuPermissionList[4].color),
                 icon: Image.asset(
-                  'assets/qr_scan.png',
+                  AppImages.icon_barcode,
                   height: 45,
                   width: 45,
                 ),
@@ -514,23 +515,27 @@ class _MenuButtonState extends State<MenuButton> {
                       child: Wrap(
                         children: [
                           Center(child: widget.icon),
-                          const SizedBox(
-                            height: 4,
-                          ),
-                          Center(
-                            child: Material(
-                              color: Colors.transparent,
-                              child: Text(
-                                widget.label,
-                                textAlign: TextAlign.center,
-                                maxLines: 1,
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 12),
-                                overflow: TextOverflow.ellipsis,
-                                softWrap: false,
-                              ),
-                            ),
-                          ),
+                          widget.label.isEmpty
+                              ? const SizedBox()
+                              : const SizedBox(
+                                  height: 4,
+                                ),
+                          widget.label.isEmpty
+                              ? const SizedBox()
+                              : Center(
+                                  child: Material(
+                                    color: Colors.transparent,
+                                    child: Text(
+                                      widget.label,
+                                      textAlign: TextAlign.center,
+                                      maxLines: 1,
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 12),
+                                      overflow: TextOverflow.ellipsis,
+                                      softWrap: false,
+                                    ),
+                                  ),
+                                ),
                         ],
                       ),
                     )
