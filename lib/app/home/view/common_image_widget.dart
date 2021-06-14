@@ -15,12 +15,11 @@ class CommonImageWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint('common_image_widget_url:-   $imgUrl');
     return InkWell(
-      onTap: () {
-        Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => HomeScreen()));
-      },
       child: Container(
+        width: MediaQuery.of(context).size.width,
+        color: AppColor.primaryDark,
         foregroundDecoration: tag == null
             ? null
             : RotatedCornerDecoration(
@@ -41,36 +40,42 @@ class CommonImageWidget extends StatelessWidget {
                       fontSize: 14),
                 ),
               ),
-        child: CachedNetworkImage(
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-          imageUrl: imgUrl,
-          fit: BoxFit.fill,
-          imageBuilder: (context, imageProvider) => Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: imageProvider,
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-          placeholder: (context, url) {
-            return Container(
-              child: Center(
-                child: CircularProgressIndicator(
-                  valueColor:
-                      new AlwaysStoppedAnimation<Color>(AppColor.primaryDark),
+        child: this.imgUrl == null
+            ? SizedBox.expand(
+                child: Container(
+                  color: AppColor.primaryDark,
                 ),
+              )
+            : CachedNetworkImage(
+                height: MediaQuery.of(context).size.height,
+                width: MediaQuery.of(context).size.width,
+                imageUrl: imgUrl,
+                fit: BoxFit.fill,
+                imageBuilder: (context, imageProvider) => Container(
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: imageProvider,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+                placeholder: (context, url) {
+                  return Container(
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        valueColor: new AlwaysStoppedAnimation<Color>(
+                            AppColor.primaryDark),
+                      ),
+                    ),
+                  );
+                },
+                errorWidget: (context, url, error) {
+                  return Image.asset(
+                    AppImages.icon_placeholder,
+                    fit: BoxFit.cover,
+                  );
+                },
               ),
-            );
-          },
-          errorWidget: (context, url, error) {
-            return Image.asset(
-              AppImages.icon_placeholder,
-              fit: BoxFit.cover,
-            );
-          },
-        ),
       ),
     );
   }

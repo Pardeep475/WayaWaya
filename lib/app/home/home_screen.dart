@@ -4,7 +4,9 @@ import 'package:flutter/rendering.dart';
 import 'package:transformer_page_view/transformer_page_view.dart';
 import 'package:wayawaya/app/common/menu/animate_app_bar.dart';
 import 'package:wayawaya/app/common/menu/model/main_menu_permission.dart';
+import 'package:wayawaya/app/home/model/whatson_campaign.dart';
 import 'package:wayawaya/screens/login.dart';
+import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_images.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 
@@ -38,7 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
       onWillPop: () async => false,
       child: SafeArea(
         child: Scaffold(
-          backgroundColor: bgColor,
+          backgroundColor: AppColor.primaryDark,
           body: Container(
             height: App.height(context),
             width: App.width(context),
@@ -56,10 +58,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         snap: false,
                         mainMenuPermissions: snapshot.data,
                         physics: const NeverScrollableScrollPhysics(),
-                        onSnowTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (_) => Login()),
-                        ),
                         children: [
                           SliverFillRemaining(
                             child: Column(
@@ -71,115 +69,298 @@ class _HomeScreenState extends State<HomeScreen> {
                                   child: Container(
                                     width: MediaQuery.of(context).size.width,
                                     height: MediaQuery.of(context).size.height,
-                                    child:
-                                        StreamBuilder<List<TopCampaignModel>>(
-                                            initialData: [],
-                                            stream: _homeBloc.topStream,
-                                            builder: (context, snapshot) {
-                                              if (snapshot.data.isEmpty) {
-                                                return Image.asset(
-                                                  AppImages.icon_placeholder,
-                                                  fit: BoxFit.cover,
-                                                );
-                                              }
-                                              int size =
-                                                  snapshot.data.length % 2 == 0
-                                                      ? (snapshot.data.length /
-                                                              2)
-                                                          .round()
-                                                      : ((snapshot.data.length /
-                                                                  2) +
-                                                              1)
-                                                          .round();
-                                              debugPrint(
-                                                  "TransformerPageView_debugPrintSize  ${snapshot.data.length}  ${snapshot.data.length % 2 == 0}     ${(snapshot.data.length / 2).round()}    ${((snapshot.data.length / 2) + 1).round()}");
+                                    child: StreamBuilder<WhatsonCampaign>(
+                                        initialData: null,
+                                        stream: _homeBloc.topStream,
+                                        builder: (context, snapshot) {
+                                          if (snapshot.data == null ||
+                                              snapshot.data.itemList.isEmpty) {
+                                            return Image.asset(
+                                              AppImages.icon_placeholder,
+                                              fit: BoxFit.cover,
+                                            );
+                                          }
 
-                                              return TransformerPageView(
-                                                  loop: false,
-                                                  viewportFraction: 1.5,
-                                                  itemBuilder:
-                                                      (BuildContext context,
-                                                          int index) {
-                                                    // if (index == 0) {
-                                                    //   return WhatsonWidget(
-                                                    //     topCampaignModelPositionOne:
-                                                    //     snapshot.data.length >
-                                                    //         (index + index + 1)
-                                                    //         ? snapshot.data[
-                                                    //     (index + index + 1)]
-                                                    //         : null,
-                                                    //     topCampaignModelPositionZero:
-                                                    //     snapshot.data.length >
-                                                    //         (index + index)
-                                                    //         ? snapshot.data[
-                                                    //     (index + index)]
-                                                    //         : null,
-                                                    //   );
-                                                    // }
-                                                    return Container(
-                                                      width: 200,
+                                          return ListView.builder(
+                                              scrollDirection: Axis.horizontal,
+                                              itemCount: (snapshot.data.itemList
+                                                          .length /
+                                                      2)
+                                                  .round(),
+                                              itemBuilder: (context, index) {
+                                                if (index == 0) {
+                                                  return Row(children: [
+                                                    Container(
+                                                      padding: EdgeInsets.only(left: 20, right: 20),
+                                                      child: Column(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                        children: [
+                                                          Container(
+                                                            height: 130,
+                                                            child: Image.asset(
+                                                              'assets/menu_app_ic.png',
+                                                              fit: BoxFit.cover,
+                                                            ),
+                                                          ),
+                                                          SizedBox(
+                                                            height: 15,
+                                                          ),
+                                                          Container(
+                                                            height: 130,
+                                                            decoration: BoxDecoration(
+                                                              shape: BoxShape.circle,
+                                                              color: white,
+                                                            ),
+                                                            child: Image.asset(
+                                                              'assets/dobsonville.png',
+                                                              fit: BoxFit.cover,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    Container(
+                                                      height: MediaQuery.of(context)
+                                                          .size
+                                                          .height,
                                                       child: Column(
                                                         children: [
                                                           Expanded(
                                                             child:
-                                                                CommonImageWidget(
+                                                            CommonImageWidget(
                                                               imgUrl: snapshot
-                                                                          .data
-                                                                          .length >
-                                                                      (index +
-                                                                          index)
+                                                                  .data
+                                                                  .itemList
+                                                                  .length >
+                                                                  (index +
+                                                                      index)
                                                                   ? snapshot
-                                                                      .data[(index +
-                                                                          index)]
-                                                                      .imgUrl
+                                                                  .data
+                                                                  .itemList[
+                                                              (index +
+                                                                  index)]
+                                                                  .imgUrl
                                                                   : null,
-                                                              tag: snapshot.data
-                                                                          .length >
-                                                                      (index +
-                                                                          index)
+                                                              tag: snapshot
+                                                                  .data
+                                                                  .itemList
+                                                                  .length >
+                                                                  (index +
+                                                                      index)
                                                                   ? snapshot
-                                                                      .data[(index +
-                                                                          index)]
-                                                                      .tag
+                                                                  .data
+                                                                  .itemList[
+                                                              (index +
+                                                                  index)]
+                                                                  .tag
                                                                   : null,
                                                             ),
                                                           ),
                                                           Expanded(
                                                             child:
-                                                                CommonImageWidget(
+                                                            CommonImageWidget(
                                                               imgUrl: snapshot
-                                                                          .data
-                                                                          .length >
-                                                                      (index +
-                                                                          index +
-                                                                          1)
+                                                                  .data
+                                                                  .itemList
+                                                                  .length >
+                                                                  (index +
+                                                                      index +
+                                                                      1)
                                                                   ? snapshot
-                                                                      .data[(index +
-                                                                          index +
-                                                                          1)]
-                                                                      .imgUrl
+                                                                  .data
+                                                                  .itemList[
+                                                              (index +
+                                                                  index +
+                                                                  1)]
+                                                                  .imgUrl
                                                                   : null,
-                                                              tag: snapshot.data
-                                                                          .length >
-                                                                      (index +
-                                                                          index +
-                                                                          1)
+                                                              tag: snapshot
+                                                                  .data
+                                                                  .itemList
+                                                                  .length >
+                                                                  (index +
+                                                                      index +
+                                                                      1)
                                                                   ? snapshot
-                                                                      .data[(index +
-                                                                          index +
-                                                                          1)]
-                                                                      .tag
+                                                                  .data
+                                                                  .itemList[
+                                                              (index +
+                                                                  index +
+                                                                  1)]
+                                                                  .tag
                                                                   : null,
                                                             ),
                                                           ),
                                                         ],
                                                       ),
-                                                    );
-                                                  },
-                                                  itemCount:
-                                                      (snapshot.data.length / 2)
-                                                          .round());
-                                            }),
+                                                    )
+                                                  ],);
+                                                }
+
+
+
+                                                return Container(
+                                                  height: MediaQuery.of(context)
+                                                      .size
+                                                      .height,
+                                                  child: Column(
+                                                    children: [
+                                                      Expanded(
+                                                        child:
+                                                            CommonImageWidget(
+                                                          imgUrl: snapshot
+                                                                      .data
+                                                                      .itemList
+                                                                      .length >
+                                                                  (index +
+                                                                      index)
+                                                              ? snapshot
+                                                                  .data
+                                                                  .itemList[
+                                                                      (index +
+                                                                          index)]
+                                                                  .imgUrl
+                                                              : null,
+                                                          tag: snapshot
+                                                                      .data
+                                                                      .itemList
+                                                                      .length >
+                                                                  (index +
+                                                                      index)
+                                                              ? snapshot
+                                                                  .data
+                                                                  .itemList[
+                                                                      (index +
+                                                                          index)]
+                                                                  .tag
+                                                              : null,
+                                                        ),
+                                                      ),
+                                                      Expanded(
+                                                        child:
+                                                            CommonImageWidget(
+                                                          imgUrl: snapshot
+                                                                      .data
+                                                                      .itemList
+                                                                      .length >
+                                                                  (index +
+                                                                      index +
+                                                                      1)
+                                                              ? snapshot
+                                                                  .data
+                                                                  .itemList[
+                                                                      (index +
+                                                                          index +
+                                                                          1)]
+                                                                  .imgUrl
+                                                              : null,
+                                                          tag: snapshot
+                                                                      .data
+                                                                      .itemList
+                                                                      .length >
+                                                                  (index +
+                                                                      index +
+                                                                      1)
+                                                              ? snapshot
+                                                                  .data
+                                                                  .itemList[
+                                                                      (index +
+                                                                          index +
+                                                                          1)]
+                                                                  .tag
+                                                              : null,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                );
+                                              });
+
+                                          // return TransformerPageView(
+                                          //     loop: false,
+                                          //     viewportFraction: 1.5,
+                                          //     itemBuilder:
+                                          //         (BuildContext context,
+                                          //             int index) {
+                                          //       // if (index == 0) {
+                                          //       //   return WhatsonWidget(
+                                          //       //     topCampaignModelPositionOne:
+                                          //       //     snapshot.data.length >
+                                          //       //         (index + index + 1)
+                                          //       //         ? snapshot.data[
+                                          //       //     (index + index + 1)]
+                                          //       //         : null,
+                                          //       //     topCampaignModelPositionZero:
+                                          //       //     snapshot.data.length >
+                                          //       //         (index + index)
+                                          //       //         ? snapshot.data[
+                                          //       //     (index + index)]
+                                          //       //         : null,
+                                          //       //   );
+                                          //       // }
+                                          //       return Container(
+                                          //         width: 200,
+                                          //         child: Column(
+                                          //           children: [
+                                          //             Expanded(
+                                          //               child:
+                                          //                   CommonImageWidget(
+                                          //                 imgUrl: snapshot.data
+                                          //                             .length >
+                                          //                         (index +
+                                          //                             index)
+                                          //                     ? snapshot
+                                          //                         .data[(index +
+                                          //                             index)]
+                                          //                         .imgUrl
+                                          //                     : null,
+                                          //                 tag: snapshot.data
+                                          //                             .length >
+                                          //                         (index +
+                                          //                             index)
+                                          //                     ? snapshot
+                                          //                         .data[(index +
+                                          //                             index)]
+                                          //                         .tag
+                                          //                     : null,
+                                          //               ),
+                                          //             ),
+                                          //             Expanded(
+                                          //               child:
+                                          //                   CommonImageWidget(
+                                          //                 imgUrl: snapshot.data
+                                          //                             .length >
+                                          //                         (index +
+                                          //                             index +
+                                          //                             1)
+                                          //                     ? snapshot
+                                          //                         .data[(index +
+                                          //                             index +
+                                          //                             1)]
+                                          //                         .imgUrl
+                                          //                     : null,
+                                          //                 tag: snapshot.data
+                                          //                             .length >
+                                          //                         (index +
+                                          //                             index +
+                                          //                             1)
+                                          //                     ? snapshot
+                                          //                         .data[(index +
+                                          //                             index +
+                                          //                             1)]
+                                          //                         .tag
+                                          //                     : null,
+                                          //               ),
+                                          //             ),
+                                          //           ],
+                                          //         ),
+                                          //       );
+                                          //     },
+                                          //     itemCount:
+                                          //         (snapshot.data.length / 2)
+                                          //             .round());
+                                        }),
                                   ),
                                 ),
                                 Expanded(

@@ -6,16 +6,16 @@ import 'package:wayawaya/app/common/menu/model/main_menu_permission.dart';
 import 'package:wayawaya/app/home/model/campaign_element.dart';
 import 'package:wayawaya/app/home/model/campaign_model.dart';
 import 'package:wayawaya/app/home/model/top_campaign_model.dart';
+import 'package:wayawaya/app/home/model/whatson_campaign.dart';
 import 'package:wayawaya/network/local/profile_database_helper.dart';
 import 'package:wayawaya/network/local/super_admin_database_helper.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/session_manager.dart';
 
 class HomeBloc {
-
   // ignore: close_sinks
   StreamController _mainMenuPermissionsController =
-  StreamController<List<MainMenuPermission>>();
+      StreamController<List<MainMenuPermission>>();
 
   StreamSink<List<MainMenuPermission>> get mainMenuPermissionSink =>
       _mainMenuPermissionsController.sink;
@@ -38,15 +38,15 @@ class HomeBloc {
   Stream<List<String>> get activityStream => _activityController.stream;
 
   // ignore: close_sinks
-  final _topCampaignController = StreamController<List<TopCampaignModel>>();
+  final _topCampaignController = StreamController<WhatsonCampaign>();
 
-  StreamSink<List<TopCampaignModel>> get topSink => _topCampaignController.sink;
+  StreamSink<WhatsonCampaign> get topSink => _topCampaignController.sink;
 
-  Stream<List<TopCampaignModel>> get topStream => _topCampaignController.stream;
+  Stream<WhatsonCampaign> get topStream => _topCampaignController.stream;
 
   List<Campaign> offersCampaignList = [];
   List<Campaign> eventsCampaignList = [];
-  List<Campaign> whatsonCampaignList = [];
+  List<String> whatsonCampaignList = [];
   List<String> activitiesCampaignList = [];
 
   List<TopCampaignModel> topCampaignList = [];
@@ -103,7 +103,15 @@ class HomeBloc {
           }
         case AppString.WHATSON_CAMPAIGN:
           {
-            whatsonCampaignList.add(element);
+            CampaignElement campaignElement =
+                CampaignElement.fromJson(jsonDecode(element.campaignElement));
+            campaignElement.imageId.forEach((element) {
+              // ignore: unrelated_type_equality_checks
+              if (element.language == Language.EN_US) {
+                whatsonCampaignList.add(element.text);
+              }
+            });
+
             break;
           }
         case AppString.ACTIVITIES_CAMPAIGN:
@@ -131,25 +139,25 @@ class HomeBloc {
         'home_screen_data_testing   :- activitiesCampaignList ${activitiesCampaignList.length}');
 
     activitySink.add(activitiesCampaignList);
-    topSink.add(topCampaignList);
+    WhatsonCampaign _whatsonCampaign = WhatsonCampaign(
+        itemList: topCampaignList, whatsonList: whatsonCampaignList);
+    topSink.add(_whatsonCampaign);
   }
 
   List<Campaign> get getOffers => offersCampaignList;
 
   List<Campaign> get getEvents => eventsCampaignList;
 
-  List<Campaign> get getWhatsOn => whatsonCampaignList;
+  List<String> get getWhatsOn => whatsonCampaignList;
 
   List<String> get getActivity => activitiesCampaignList;
-
 
   fetchMenuButtons() async {
     String defaultMall = await SessionManager.getDefaultMall();
     List<MainMenuPermission> itemList =
-    await SuperAdminDatabaseHelper.getMenuButtons(defaultMall);
+        await SuperAdminDatabaseHelper.getMenuButtons(defaultMall);
     debugPrint('main_menu_permission_testing:--   ${itemList.length}');
     mainMenuPermissionSink.add(itemList);
     return itemList;
   }
-
 }
