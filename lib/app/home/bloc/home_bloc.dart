@@ -57,11 +57,7 @@ class HomeBloc {
         await ProfileDatabaseHelper.getAllCampaign(defaultMall);
 
     if (campaignList.isNotEmpty) {
-      debugPrint(
-          'campaignList:-  ${campaignList.length}   ${campaignList[0].offerQrCode}');
-
       _differnicateCatagories(campaignList);
-
       campaignSink.add(campaignList);
     }
   }
@@ -76,8 +72,6 @@ class HomeBloc {
             campaignElement.imageId.forEach((element) {
               // ignore: unrelated_type_equality_checks
               if (element.language == Language.EN_US) {
-                debugPrint(
-                    'home_screen_data_testing   :- OFFER_CAMPAIGN ${element.text}');
                 topCampaignList.add(TopCampaignModel(
                     imgUrl: element.text, tag: AppString.offer));
               }
@@ -92,8 +86,6 @@ class HomeBloc {
             campaignElement.imageId.forEach((element) {
               // ignore: unrelated_type_equality_checks
               if (element.language == Language.EN_US) {
-                debugPrint(
-                    'home_screen_data_testing   :- EVENT_CAMPAIGN ${element.text}');
                 topCampaignList.add(TopCampaignModel(
                     imgUrl: element.text, tag: AppString.event));
               }
@@ -129,14 +121,9 @@ class HomeBloc {
       }
     });
 
-    debugPrint(
-        'home_screen_data_testing   :- offersCampaignList ${offersCampaignList.length}');
-    debugPrint(
-        'home_screen_data_testing   :- eventsCampaignList ${eventsCampaignList.length}');
-    debugPrint(
-        'home_screen_data_testing   :- whatsonCampaignList ${whatsonCampaignList.length}');
-    debugPrint(
-        'home_screen_data_testing   :- activitiesCampaignList ${activitiesCampaignList.length}');
+    whatsonCampaignList.forEach((element) {
+      debugPrint('whatson_campaing_list:-  $element');
+    });
 
     activitySink.add(activitiesCampaignList);
     WhatsonCampaign _whatsonCampaign = WhatsonCampaign(
@@ -156,7 +143,6 @@ class HomeBloc {
     String defaultMall = await SessionManager.getDefaultMall();
     List<MainMenuPermission> itemList =
         await SuperAdminDatabaseHelper.getMenuButtons(defaultMall);
-    debugPrint('main_menu_permission_testing:--   ${itemList.length}');
     mainMenuPermissionSink.add(itemList);
     return itemList;
   }

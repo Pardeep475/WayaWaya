@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -9,7 +10,7 @@ import 'package:wayawaya/screens/login.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_images.dart';
 import 'package:wayawaya/utils/app_strings.dart';
-
+import 'dart:ui' as ui;
 import '../../config.dart';
 import '../../constants.dart';
 import 'bloc/home_bloc.dart';
@@ -89,116 +90,146 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   .round(),
                                               itemBuilder: (context, index) {
                                                 if (index == 0) {
-                                                  return Row(children: [
-                                                    Container(
-                                                      padding: EdgeInsets.only(left: 20, right: 20),
-                                                      child: Column(
-                                                        mainAxisAlignment: MainAxisAlignment.center,
-                                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                                        children: [
-                                                          Container(
-                                                            height: 130,
-                                                            child: Image.asset(
-                                                              'assets/menu_app_ic.png',
-                                                              fit: BoxFit.cover,
-                                                            ),
-                                                          ),
-                                                          SizedBox(
-                                                            height: 15,
-                                                          ),
-                                                          Container(
-                                                            height: 130,
-                                                            decoration: BoxDecoration(
-                                                              shape: BoxShape.circle,
-                                                              color: white,
-                                                            ),
-                                                            child: Image.asset(
-                                                              'assets/dobsonville.png',
-                                                              fit: BoxFit.cover,
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                    Container(
-                                                      height: MediaQuery.of(context)
-                                                          .size
-                                                          .height,
-                                                      child: Column(
-                                                        children: [
-                                                          Expanded(
-                                                            child:
-                                                            CommonImageWidget(
-                                                              imgUrl: snapshot
-                                                                  .data
-                                                                  .itemList
+                                                  debugPrint(
+                                                      'testing_whatson:-  ${snapshot.data.whatsonList[0]}');
+                                                  return Row(
+                                                    children: [
+                                                      snapshot.data.whatsonList
                                                                   .length >
-                                                                  (index +
-                                                                      index)
-                                                                  ? snapshot
-                                                                  .data
-                                                                  .itemList[
-                                                              (index +
-                                                                  index)]
-                                                                  .imgUrl
-                                                                  : null,
-                                                              tag: snapshot
-                                                                  .data
-                                                                  .itemList
-                                                                  .length >
-                                                                  (index +
-                                                                      index)
-                                                                  ? snapshot
-                                                                  .data
-                                                                  .itemList[
-                                                              (index +
-                                                                  index)]
-                                                                  .tag
-                                                                  : null,
+                                                              0
+                                                          ? SizedBox(
+                                                              width: 200,
+                                                              child:
+                                                                  CachedNetworkImage(
+                                                                imageUrl: snapshot
+                                                                    .data
+                                                                    .whatsonList[0],
+                                                                fit:
+                                                                    BoxFit.fill,
+                                                                imageBuilder:
+                                                                    (context,
+                                                                        imageProvider) {
+                                                                  // imageProvider
+                                                                  //     .resolve(
+                                                                  //     ImageConfiguration()).addListener((_) {});
+                                                                  return Container(
+                                                                    width: 200,
+                                                                    decoration:
+                                                                        BoxDecoration(
+                                                                      image:
+                                                                          DecorationImage(
+                                                                        image:
+                                                                            imageProvider,
+                                                                        fit: BoxFit
+                                                                            .cover,
+                                                                      ),
+                                                                    ),
+                                                                  );
+                                                                },
+                                                                placeholder:
+                                                                    (context,
+                                                                        url) {
+                                                                  return Container(
+                                                                    child:
+                                                                        Center(
+                                                                      child:
+                                                                          CircularProgressIndicator(
+                                                                        valueColor:
+                                                                            new AlwaysStoppedAnimation<Color>(AppColor.primaryDark),
+                                                                      ),
+                                                                    ),
+                                                                  );
+                                                                },
+                                                                errorWidget:
+                                                                    (context,
+                                                                        url,
+                                                                        error) {
+                                                                  return Image
+                                                                      .asset(
+                                                                    AppImages
+                                                                        .icon_placeholder,
+                                                                    fit: BoxFit
+                                                                        .cover,
+                                                                  );
+                                                                },
+                                                              ),
+                                                            )
+                                                          : SizedBox(),
+                                                      Container(
+                                                        height: MediaQuery.of(
+                                                                context)
+                                                            .size
+                                                            .height,
+                                                        child: Column(
+                                                          children: [
+                                                            Expanded(
+                                                              child:
+                                                                  CommonImageWidget(
+                                                                imgUrl: snapshot
+                                                                            .data
+                                                                            .itemList
+                                                                            .length >
+                                                                        (index +
+                                                                            index)
+                                                                    ? snapshot
+                                                                        .data
+                                                                        .itemList[(index +
+                                                                            index)]
+                                                                        .imgUrl
+                                                                    : null,
+                                                                tag: snapshot
+                                                                            .data
+                                                                            .itemList
+                                                                            .length >
+                                                                        (index +
+                                                                            index)
+                                                                    ? snapshot
+                                                                        .data
+                                                                        .itemList[(index +
+                                                                            index)]
+                                                                        .tag
+                                                                    : null,
+                                                              ),
                                                             ),
-                                                          ),
-                                                          Expanded(
-                                                            child:
-                                                            CommonImageWidget(
-                                                              imgUrl: snapshot
-                                                                  .data
-                                                                  .itemList
-                                                                  .length >
-                                                                  (index +
-                                                                      index +
-                                                                      1)
-                                                                  ? snapshot
-                                                                  .data
-                                                                  .itemList[
-                                                              (index +
-                                                                  index +
-                                                                  1)]
-                                                                  .imgUrl
-                                                                  : null,
-                                                              tag: snapshot
-                                                                  .data
-                                                                  .itemList
-                                                                  .length >
-                                                                  (index +
-                                                                      index +
-                                                                      1)
-                                                                  ? snapshot
-                                                                  .data
-                                                                  .itemList[
-                                                              (index +
-                                                                  index +
-                                                                  1)]
-                                                                  .tag
-                                                                  : null,
+                                                            Expanded(
+                                                              child:
+                                                                  CommonImageWidget(
+                                                                imgUrl: snapshot
+                                                                            .data
+                                                                            .itemList
+                                                                            .length >
+                                                                        (index +
+                                                                            index +
+                                                                            1)
+                                                                    ? snapshot
+                                                                        .data
+                                                                        .itemList[(index +
+                                                                            index +
+                                                                            1)]
+                                                                        .imgUrl
+                                                                    : null,
+                                                                tag: snapshot
+                                                                            .data
+                                                                            .itemList
+                                                                            .length >
+                                                                        (index +
+                                                                            index +
+                                                                            1)
+                                                                    ? snapshot
+                                                                        .data
+                                                                        .itemList[(index +
+                                                                            index +
+                                                                            1)]
+                                                                        .tag
+                                                                    : null,
+                                                              ),
                                                             ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    )
-                                                  ],);
+                                                          ],
+                                                        ),
+                                                      )
+                                                    ],
+                                                  );
                                                 }
-
-
 
                                                 return Container(
                                                   height: MediaQuery.of(context)

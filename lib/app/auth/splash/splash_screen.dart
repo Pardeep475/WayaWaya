@@ -3,6 +3,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:wayawaya/common/model/mall_profile_model.dart';
 import 'package:wayawaya/network/local/profile_database_helper.dart';
 import 'package:wayawaya/network/local/super_admin_database_helper.dart';
+import 'package:wayawaya/utils/app_images.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/session_manager.dart';
 
@@ -81,7 +82,7 @@ class _SplashScreenState extends State<SplashScreen> {
         decoration: const BoxDecoration(
           image: const DecorationImage(
             image: const AssetImage(
-              'assets/app_splashscreen.jpg',
+              AppImages.icon_splash,
             ),
             fit: BoxFit.cover,
           ),

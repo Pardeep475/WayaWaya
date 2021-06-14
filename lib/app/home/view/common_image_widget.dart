@@ -15,7 +15,6 @@ class CommonImageWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('common_image_widget_url:-   $imgUrl');
     return InkWell(
       child: Container(
         width: MediaQuery.of(context).size.width,
