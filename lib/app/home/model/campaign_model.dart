@@ -4,6 +4,8 @@
 
 import 'dart:convert';
 
+import 'package:wayawaya/app/home/model/campaign_element.dart';
+
 // List<Campaign> campaignFromJson(String str) => List<Campaign>.from(json.decode(str).map((x) => Campaign.fromJson(x)));
 //
 // String campaignToJson(List<Campaign> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
@@ -68,7 +70,7 @@ class Campaign {
   String assetId;
   String b2XDatabaseListId;
   String campaignChannels;
-  String campaignElement;
+  CampaignElement campaignElement;
   String costCentreCode;
   String couponCode;
   String couponValue;
@@ -109,7 +111,7 @@ class Campaign {
     assetId: json["asset_id"],
     b2XDatabaseListId: json["b2x_database_list_id"],
     campaignChannels: json["campaign_channels"],
-    campaignElement: json["campaign_element"],
+    campaignElement: json["campaign_element"] == null ? null : CampaignElement.fromJson(jsonDecode(json["campaign_element"])),
     costCentreCode: json["cost_centre_code"],
     couponCode: json["coupon_code"],
     couponValue: json["coupon_value"],
@@ -151,7 +153,7 @@ class Campaign {
     "asset_id": assetId,
     "b2x_database_list_id": b2XDatabaseListId,
     "campaign_channels": campaignChannels,
-    "campaign_element": campaignElement,
+    "campaign_element": campaignElement == null ? null: campaignElement.toString(),
     "cost_centre_code": costCentreCode,
     "coupon_code": couponCode,
     "coupon_value": couponValue,

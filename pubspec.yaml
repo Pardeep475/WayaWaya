@@ -56,6 +56,8 @@ dependencies:
   jwt_decoder: ^2.0.1
   community_material_icon:
   rotated_corner_decoration:
+  shape_of_view:
+  share:
 
 dev_dependencies:
   flutter_test:

@@ -289,6 +289,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.3.0"
+  mime:
+    dependency: transitive
+    description:
+      name: mime
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0"
   nested:
     dependency: transitive
     description:
@@ -450,6 +457,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.27.0"
+  shape_of_view:
+    dependency: "direct main"
+    description:
+      name: shape_of_view
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.2"
+  share:
+    dependency: "direct main"
+    description:
+      name: share
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.4"
   shared_preferences:
     dependency: "direct main"
     description:

@@ -148,6 +148,10 @@ class AppString {
   static const String restaurant = "RESTAURANT";
   static const String no_result_to_show = "No Result To Show";
   static const String go_to_home_page = "GO TO HOME PAGE";
+  static const String no_offer_found = "No Offers Found";
+  static const String share = "Share";
+  static const String locate = "Locate";
+  static const String redeem = "Redeem";
 
   // Routes
   static const LOGIN_SCREEN_ROUTE = "LOGIN_SCREEN_ROUTE";
@@ -162,6 +166,8 @@ class AppString {
   static const MY_DEVICES_SCREEN_ROUTE = "MY_DEVICES_SCREEN_ROUTE";
   static const MY_ACCOUNT_SCREEN_ROUTE = "MY_ACCOUNT_SCREEN_ROUTE";
   static const SEARCH_SCREEN_ROUTE = "SEARCH_SCREEN_ROUTE";
+  static const OFFER_SCREEN_ROUTE = "OFFER_SCREEN_ROUTE";
+  static const EVENT_SCREEN_ROUTE = "EVENT_SCREEN_ROUTE";
 
 // db
   static const String ADMIN_DB_FILE = "admin.db";

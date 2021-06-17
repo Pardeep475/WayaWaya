@@ -433,12 +433,20 @@ class ProfileDatabaseHelper {
             "   WHERE mn.parent = mt.category_id \n" +
             " ) \n" +
             " SELECT DISTINCT category_id,rcmap.* FROM menu_tree mt\n" +
-            " INNER JOIN (Select DISTINCT cid, ret.sub_locations as name, " + restaurant +
+            " INNER JOIN (Select DISTINCT cid, ret.sub_locations as name, " +
+            restaurant +
             " as type, ret.name as heading, ret.description as description, null as end_date, null as start_date, null as start_time FROM retail_category_map rmap  INNER JOIN \n" +
-            " retail_units ret ON ret.rid = rmap.rid WHERE name LIKE " + searchQuerytring + " OR ret.sub_locations LIKE  " + searchQuerytring + " OR heading LIKE " + searchQuerytring + " OR description LIKE  " + searchQuerytring +
+            " retail_units ret ON ret.rid = rmap.rid WHERE name LIKE " +
+            searchQuerytring +
+            " OR ret.sub_locations LIKE  " +
+            searchQuerytring +
+            " OR heading LIKE " +
+            searchQuerytring +
+            " OR description LIKE  " +
+            searchQuerytring +
             " ) rcmap ON rcmap.cid = mt.category_id \n" +
             " WHERE (category_name  LIKE '%Food & Dining%' AND category_name NOT LIKE '%Hide%' )  AND level >= 0 \n" +
-            " GROUP BY heading ORDER BY heading ASC " ;
+            " GROUP BY heading ORDER BY heading ASC ";
 
     // debugPrint("profile_db_testing:-   $query");
 
@@ -455,5 +463,67 @@ class ProfileDatabaseHelper {
     });
     // _preferencesCategoriesList.sort((a, b) => a.name.compareTo(b.name));
     return _allSearchList;
+  }
+
+  static Future<List<Campaign>> getCampaignByType(
+      {String databasePath,
+      final String campaignType,
+      final String searchText,
+      final String rid,
+      final String publishDate}) async {
+    debugPrint('database_testing:-  database path $databasePath');
+    if (_db == null) {
+      await initDataBase(databasePath);
+    }
+
+    // String whereClause = "";
+    // String searchQueryCondition = "";
+    // String offerForRetailUnitCondition = "";
+    //
+    // if (searchText != null && searchText.isNotEmpty) {
+    //   searchQueryCondition = " AND ( campaign_element LIKE '%$searchText%' ) ";
+    // }
+    // if (rid != null && rid.isNotEmpty) {
+    //   offerForRetailUnitCondition = " AND ( rid LIKE '%rid%') ";
+    // }
+    //
+    // if (campaignType.isNotEmpty) {
+    //   whereClause = " WHERE type='" + campaignType + "' AND status='approved' ";
+    // } else {
+    //   whereClause = " WHERE status='approved' ";
+    // }
+    //
+    // whereClause += " AND publish_date <= '" + publishDate + "'";
+    //
+    // String query = "SELECT *, '' as shop_name FROM campaign" +
+    //     whereClause +
+    //     searchQueryCondition +
+    //     offerForRetailUnitCondition +
+    //     " ORDER BY start_date ASC";
+
+    List<Map> data;
+    // await _db.transaction((txn) async {
+    //   data = await txn.rawQuery('SELECT *  FROM campaign  WHERE type= offer AND status= approved ORDER BY start_date ASC LIMIT 10 OFFSET 0');
+    // });
+
+    await _db.transaction((txn) async {
+      data = await txn.query(
+        AppString.CAMPAIGN_TABLE_NAME,
+        where: "status = ? and type = ?",
+        whereArgs: ['approved', campaignType],
+        orderBy: 'start_date ASC',
+      );
+    });
+
+    // _db.close();
+    debugPrint('database_testing:-   ${data.length}');
+    debugPrint('database_testing:-   $data');
+    List<Campaign> _mallList = [];
+    data.forEach((element) {
+      _mallList.add(Campaign.fromJson(element));
+    });
+    data.map((e) => debugPrint('database_testing:-    $e'));
+    // _mallList.sort();
+    return _mallList;
   }
 }

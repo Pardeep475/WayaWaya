@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:wayawaya/app/home/model/campaign_element.dart';
 import 'package:wayawaya/common/model/language_store.dart';
 import 'package:wayawaya/network/live/network_constants.dart';
 
@@ -198,6 +199,19 @@ class Utils {
     return text;
   }
 
+  static String getTranslatedCodeFromImageId(List<ImageId> translatedData) {
+    String text = "";
+    if (translatedData != null) {
+      translatedData.forEach((language) {
+        if (language.language == Language.EN_US) {
+          text = language.text;
+          return;
+        }
+      });
+    }
+    return text;
+  }
+
   static String getFlagUrl(String item) {
     switch (item) {
       case "en_US":
@@ -248,4 +262,34 @@ class Utils {
     }
   }
 
+  static String dateFormat(String value) {
+    try {
+      DateFormat originalFormat = new DateFormat("dd/MM/yyyy");
+      DateFormat targetFormat = new DateFormat(AppString.DATE_FORMAT);
+      DateTime date = originalFormat.parse(value);
+      String formattedDate = targetFormat.format(date.toLocal());
+      debugPrint("date_format_birthday---->    $formattedDate");
+      return formattedDate;
+    } catch (e) {
+      return "";
+    }
+  }
+
+  static String eventStatus({String startDate, String endDate}) {
+    try {
+      DateTime calendar = DateTime.now();
+
+      if (DateTime.parse(startDate).isBefore(calendar) &&
+          DateTime.parse(endDate).isAfter(calendar)) {
+        return "started";
+      } else if (calendar.isAfter(DateTime.parse(startDate))) {
+        return "starts";
+      } else {
+        return "ended";
+      }
+    } catch (e) {
+      debugPrint('date_format_tesing:-   $e');
+      return 'ended';
+    }
+  }
 }

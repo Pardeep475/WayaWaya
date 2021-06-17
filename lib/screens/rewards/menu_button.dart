@@ -68,10 +68,22 @@ class MenuTile extends StatelessWidget {
   }
 
   _chooseScreens(BuildContext context, String title) {
-    switch (title) {
-      case 'Home':
+    if (title == null )
+      return;
+    switch (title.toLowerCase()) {
+      case 'home':
         {
           _openFurtherScreens(context, AppString.HOME_SCREEN_ROUTE);
+        }
+        break;
+      case 'offers':
+        {
+          _openFurtherScreens(context, AppString.OFFER_SCREEN_ROUTE);
+        }
+        break;
+      case 'events':
+        {
+          _openFurtherScreens(context, AppString.EVENT_SCREEN_ROUTE);
         }
         break;
     }
@@ -249,7 +261,7 @@ class RhombusMenu extends StatelessWidget {
                 enabled: enabled,
                 cubic: _getCubic(AppString.offers_menu),
                 onPressed: () {
-                  Navigator.pop(context);
+                  Navigator.pop(context, AppString.offers_menu);
                   // App.pushTo(
                   //   context: context,
                   //   screen: OffersList(),
@@ -276,7 +288,7 @@ class RhombusMenu extends StatelessWidget {
                 enabled: enabled,
                 cubic: _getCubic(AppString.events_menu),
                 onPressed: () {
-                  Navigator.pop(context);
+                  Navigator.pop(context, AppString.events_menu);
                   // App.pushTo(
                   //   context: context,
                   //   screen: EventsList(),

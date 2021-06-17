@@ -67,8 +67,8 @@ class HomeBloc {
       switch (element.type) {
         case AppString.OFFER_CAMPAIGN:
           {
-            CampaignElement campaignElement =
-                CampaignElement.fromJson(jsonDecode(element.campaignElement));
+            CampaignElement campaignElement = element.campaignElement;
+                // CampaignElement.fromJson(jsonDecode(element.campaignElement));
             campaignElement.imageId.forEach((element) {
               // ignore: unrelated_type_equality_checks
               if (element.language == Language.EN_US) {
@@ -81,8 +81,8 @@ class HomeBloc {
           }
         case AppString.EVENT_CAMPAIGN:
           {
-            CampaignElement campaignElement =
-                CampaignElement.fromJson(jsonDecode(element.campaignElement));
+            CampaignElement campaignElement =  element.campaignElement;
+                // CampaignElement.fromJson(jsonDecode(element.campaignElement));
             campaignElement.imageId.forEach((element) {
               // ignore: unrelated_type_equality_checks
               if (element.language == Language.EN_US) {
@@ -95,8 +95,8 @@ class HomeBloc {
           }
         case AppString.WHATSON_CAMPAIGN:
           {
-            CampaignElement campaignElement =
-                CampaignElement.fromJson(jsonDecode(element.campaignElement));
+            CampaignElement campaignElement  = element.campaignElement;
+                // CampaignElement.fromJson(jsonDecode(element.campaignElement));
             campaignElement.imageId.forEach((element) {
               // ignore: unrelated_type_equality_checks
               if (element.language == Language.EN_US) {
@@ -108,8 +108,8 @@ class HomeBloc {
           }
         case AppString.ACTIVITIES_CAMPAIGN:
           {
-            CampaignElement campaignElement =
-                CampaignElement.fromJson(jsonDecode(element.campaignElement));
+            CampaignElement campaignElement  = element.campaignElement;
+                // CampaignElement.fromJson(jsonDecode(element.campaignElement));
             campaignElement.imageId.forEach((element) {
               // ignore: unrelated_type_equality_checks
               if (element.language == Language.EN_US) {
