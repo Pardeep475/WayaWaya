@@ -133,6 +133,7 @@ class _OfferScreenState extends State<OfferScreen> {
                                   (BuildContext context, int index) {
                                     return ItemOfferView(
                                       campaign: snapshot.data.data[index],
+                                      listOfCampaign: snapshot.data.data,
                                     );
                                   },
                                   childCount: snapshot.data.data.length,

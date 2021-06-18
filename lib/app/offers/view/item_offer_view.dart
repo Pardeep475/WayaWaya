@@ -18,8 +18,9 @@ import 'package:wayawaya/utils/utils.dart';
 
 class ItemOfferView extends StatelessWidget {
   final Campaign campaign;
+  final List<Campaign> listOfCampaign;
 
-  ItemOfferView({this.campaign});
+  ItemOfferView({this.campaign,this.listOfCampaign});
 
   String _getTitle(BuildContext context) {
     if (campaign == null) return '';
@@ -60,7 +61,7 @@ class ItemOfferView extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.pushNamed(context, AppString.OFFER_DETAILS_SCREEN_ROUTE);
+        Navigator.pushNamed(context, AppString.OFFER_DETAILS_SCREEN_ROUTE,arguments: this.listOfCampaign);
       },
       child: Container(
         margin: EdgeInsets.only(top: 5, left: 5, right: 5, bottom: 5),
