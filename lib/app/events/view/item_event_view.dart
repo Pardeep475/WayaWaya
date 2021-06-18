@@ -18,7 +18,9 @@ import 'package:wayawaya/utils/utils.dart';
 class ItemEventView extends StatelessWidget {
   final Campaign campaign;
 
-  ItemEventView({this.campaign});
+  final List<Campaign> listOfCampaign;
+
+  ItemEventView({this.campaign, this.listOfCampaign});
 
   String _getTitle(BuildContext context) {
     if (campaign == null) return '';
@@ -64,7 +66,10 @@ class ItemEventView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        Navigator.pushNamed(context, AppString.EVENT_DETAILS_ROUTE,
+            arguments: this.listOfCampaign);
+      },
       child: Container(
         margin: EdgeInsets.only(top: 5, left: 5, right: 5, bottom: 5),
         decoration: BoxDecoration(

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:wayawaya/app/auth/signup/sign_up_screen.dart';
 import 'package:wayawaya/app/auth/splash/splash_screen.dart';
+import 'package:wayawaya/app/events/event_detail_screen.dart';
 import 'package:wayawaya/app/events/event_screen.dart';
 import 'package:wayawaya/app/mall/mall_screen.dart';
 import 'package:wayawaya/app/offers/offer_details.dart';
@@ -180,6 +181,13 @@ class MyAppState extends State<MyApp> {
       case AppString.OFFER_DETAILS_SCREEN_ROUTE:
         return PageTransition(
           child: OfferDetails(),
+          type: PageTransitionType.rightToLeft,
+          settings: settings,
+        );
+        break;
+      case AppString.EVENT_DETAILS_ROUTE:
+        return PageTransition(
+          child: EventDetailScreen(),
           type: PageTransitionType.rightToLeft,
           settings: settings,
         );

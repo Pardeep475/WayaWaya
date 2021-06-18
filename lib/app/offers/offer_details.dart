@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:transformer_page_view/transformer_page_view.dart';
+import 'package:wayawaya/app/common/menu/animate_app_bar.dart';
+import 'package:wayawaya/app/common/menu/model/main_menu_permission.dart';
 import 'package:wayawaya/app/common/zoom_out_page_transformation.dart';
 import 'package:wayawaya/app/home/model/campaign_model.dart';
+import 'package:wayawaya/app/offers/bloc/offer_detail_bloc.dart';
 import 'package:wayawaya/app/offers/view/item_offer_view_detail.dart';
 import 'package:wayawaya/screens/map/mall_map.dart';
 import 'package:wayawaya/screens/rewards/menunew.dart';
@@ -13,8 +16,6 @@ import '../../config.dart';
 import '../../constants.dart';
 
 class OfferDetails extends StatefulWidget {
-
-
   const OfferDetails({Key key});
 
   @override
@@ -23,6 +24,18 @@ class OfferDetails extends StatefulWidget {
 
 class _OffersDetailsState extends State<OfferDetails> {
   bool _hasRewards = true;
+
+  OfferDetailBloc _offerDetailBloc;
+  String title = "";
+
+  @override
+  void initState() {
+    super.initState();
+    _offerDetailBloc = OfferDetailBloc();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _offerDetailBloc.fetchMenuButtons();
+    });
+  }
 
   // Widget detailCard(Campaign campaign) {
   //   return Container(
@@ -148,31 +161,12 @@ class _OffersDetailsState extends State<OfferDetails> {
     );
   }
 
-
-  String _getTitle(BuildContext context, Campaign campaign) {
+  _getTitle(BuildContext context, Campaign campaign) {
     if (campaign == null) return '';
     if (campaign.campaignElement == null) return '';
-    return Utils.getTranslatedCode(context, campaign.campaignElement.name);
+    title = Utils.getTranslatedCode(context, campaign.campaignElement.name);
+    _offerDetailBloc.mainMenuPermissionSink.add(_offerDetailBloc.mainMenuList);
   }
-
-  String _getImage(BuildContext context, Campaign campaign) {
-    if (campaign == null) return '';
-    if (campaign.campaignElement == null) return '';
-    return Utils.getTranslatedCodeFromImageId(campaign.campaignElement.imageId);
-  }
-
-  String _startDate(BuildContext context, Campaign campaign) {
-    if (campaign == null) return '';
-    if (campaign.startDate == null) return '';
-    return Utils.dateConvert(campaign.startDate, "dd-MMM");
-  }
-
-  String _endDate(BuildContext context, Campaign campaign) {
-    if (campaign == null) return '';
-    if (campaign.endDate == null) return '';
-    return Utils.dateConvert(campaign.endDate, "dd-MMM");
-  }
-
 
   @override
   Widget build(BuildContext context) {
@@ -181,29 +175,73 @@ class _OffersDetailsState extends State<OfferDetails> {
       child: Scaffold(
         body: Stack(
           children: [
-            MenuNew(
-              title: 'widget.offerName.toUpperCase()',
-              children: [
-                SliverFillRemaining(
-                  child: TransformerPageView(
-                      loop: false,
-                      transformer: new ZoomOutPageTransformer(),
-                      itemBuilder: (BuildContext context, int index) {
-                        return Column(
-                          children: [
-                            ItemOfferViewDetail(campaign: _listOfCampaign[index]),
-                            Expanded(child: SizedBox()),
-                            Container(
-                              height: 70,
-                              width: App.width(context),
-                              padding: EdgeInsets.symmetric(vertical: 10),
-                              child: Row(
+            StreamBuilder<List<MainMenuPermission>>(
+                initialData: [],
+                stream: _offerDetailBloc.mainMenuPermissionStream,
+                builder: (context, snapshot) {
+                  return AnimateAppBar(
+                    title: title,
+                    isSliver: true,
+                    mainMenuPermissions: snapshot.data,
+                    children: [
+                      SliverFillRemaining(
+                        child: TransformerPageView(
+                            loop: false,
+                            transformer: new ZoomOutPageTransformer(),
+                            itemBuilder: (BuildContext context, int index) {
+                              _getTitle(context, _listOfCampaign[index]);
+                              return Column(
                                 children: [
-                                  _hasRewards
-                                      ? Expanded(
+                                  ItemOfferViewDetail(
+                                      campaign: _listOfCampaign[index]),
+                                  Expanded(child: SizedBox()),
+                                  Container(
+                                    height: 70,
+                                    width: App.width(context),
+                                    padding: EdgeInsets.symmetric(vertical: 10),
+                                    child: Row(
+                                      children: [
+                                        _hasRewards
+                                            ? Expanded(
+                                                flex: 1,
+                                                child: InkWell(
+                                                  onTap: () => errorDialog(),
+                                                  child: Container(
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .center,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment.end,
+                                                      children: [
+                                                        Icon(
+                                                          FontAwesomeIcons.gift,
+                                                          color: black,
+                                                        ),
+                                                        SizedBox(
+                                                          height: 10,
+                                                        ),
+                                                        Text(
+                                                          'Redeem'
+                                                              .toUpperCase(),
+                                                          style: TextStyle(
+                                                            fontSize: 13,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              )
+                                            : Container(),
+                                        Expanded(
                                           flex: 1,
                                           child: InkWell(
-                                            onTap: () => errorDialog(),
+                                            onTap: () =>
+                                                Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                  builder: (_) => MapScreen()),
+                                            ),
                                             child: Container(
                                               child: Column(
                                                 crossAxisAlignment:
@@ -212,14 +250,15 @@ class _OffersDetailsState extends State<OfferDetails> {
                                                     MainAxisAlignment.end,
                                                 children: [
                                                   Icon(
-                                                    FontAwesomeIcons.gift,
+                                                    FontAwesomeIcons
+                                                        .mapMarkerAlt,
                                                     color: black,
                                                   ),
                                                   SizedBox(
                                                     height: 10,
                                                   ),
                                                   Text(
-                                                    'Redeem'.toUpperCase(),
+                                                    'Locate'.toUpperCase(),
                                                     style: TextStyle(
                                                       fontSize: 13,
                                                     ),
@@ -228,79 +267,47 @@ class _OffersDetailsState extends State<OfferDetails> {
                                               ),
                                             ),
                                           ),
-                                        )
-                                      : Container(),
-                                  Expanded(
-                                    flex: 1,
-                                    child: InkWell(
-                                      onTap: () => Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                            builder: (_) => MapScreen()),
-                                      ),
-                                      child: Container(
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.end,
-                                          children: [
-                                            Icon(
-                                              FontAwesomeIcons.mapMarkerAlt,
-                                              color: black,
-                                            ),
-                                            SizedBox(
-                                              height: 10,
-                                            ),
-                                            Text(
-                                              'Locate'.toUpperCase(),
-                                              style: TextStyle(
-                                                fontSize: 13,
+                                        ),
+                                        Expanded(
+                                          flex: 1,
+                                          child: InkWell(
+                                            onTap: () {},
+                                            child: Container(
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.end,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  Icon(
+                                                    Icons.share,
+                                                    color: black,
+                                                  ),
+                                                  SizedBox(
+                                                    height: 6,
+                                                  ),
+                                                  Text(
+                                                    'Share'.toUpperCase(),
+                                                    style: TextStyle(
+                                                      fontSize: 13,
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
                                             ),
-                                          ],
+                                          ),
                                         ),
-                                      ),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    flex: 1,
-                                    child: InkWell(
-                                      onTap: () {},
-                                      child: Container(
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.end,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            Icon(
-                                              Icons.share,
-                                              color: black,
-                                            ),
-                                            SizedBox(
-                                              height: 6,
-                                            ),
-                                            Text(
-                                              'Share'.toUpperCase(),
-                                              style: TextStyle(
-                                                fontSize: 13,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
+                                      ],
                                     ),
                                   ),
                                 ],
-                              ),
-                            ),
-                          ],
-                        );
-                      },
-                      itemCount: _listOfCampaign.length),
-                ),
-              ],
-            ),
+                              );
+                            },
+                            itemCount: _listOfCampaign.length),
+                      ),
+                    ],
+                  );
+                }),
           ],
         ),
       ),

@@ -133,6 +133,7 @@ class _EventScreenState extends State<EventScreen> {
                                   (BuildContext context, int index) {
                                     return ItemEventView(
                                       campaign: snapshot.data.data[index],
+                                      listOfCampaign: snapshot.data.data,
                                     );
                                   },
                                   childCount: snapshot.data.data.length,
