@@ -3,7 +3,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:transformer_page_view/transformer_page_view.dart';
 import 'package:wayawaya/screens/rewards/menunew.dart';
 import '../config.dart';
-import './rewards/menu.dart';
 import '../constants.dart';
 
 class ScaleAndFadeTransformer extends PageTransformer {

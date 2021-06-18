@@ -20,7 +20,7 @@ class ItemOfferView extends StatelessWidget {
   final Campaign campaign;
   final List<Campaign> listOfCampaign;
 
-  ItemOfferView({this.campaign,this.listOfCampaign});
+  ItemOfferView({this.campaign, this.listOfCampaign});
 
   String _getTitle(BuildContext context) {
     if (campaign == null) return '';
@@ -61,7 +61,8 @@ class ItemOfferView extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.pushNamed(context, AppString.OFFER_DETAILS_SCREEN_ROUTE,arguments: this.listOfCampaign);
+        Navigator.pushNamed(context, AppString.OFFER_DETAILS_SCREEN_ROUTE,
+            arguments: this.listOfCampaign);
       },
       child: Container(
         margin: EdgeInsets.only(top: 5, left: 5, right: 5, bottom: 5),
@@ -227,7 +228,9 @@ class ItemOfferView extends StatelessWidget {
                                       )
                                     : SizedBox(),
                                 InkWell(
-                                  onTap: () {},
+                                  onTap: () {
+                                    _locateOnMap(context);
+                                  },
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
@@ -293,6 +296,16 @@ class ItemOfferView extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  _locateOnMap(BuildContext context) {
+    if (campaign == null) return;
+    if (campaign.floorplanId == null && campaign.floorplanId.trim().isEmpty)
+      return;
+    debugPrint('Here_is_floor_plan_id:-   ${campaign.floorplanId}');
+
+    Navigator.pushNamedAndRemoveUntil(
+        context, AppString.TWO_D_MAP_SCREEN_ROUTE, (route) => false);
   }
 
   _shareFiles(BuildContext buildContext) {

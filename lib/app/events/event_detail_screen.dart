@@ -8,11 +8,8 @@ import 'package:wayawaya/app/common/zoom_out_page_transformation.dart';
 import 'package:wayawaya/app/events/bloc/event_detail_bloc.dart';
 import 'package:wayawaya/app/events/view/item_event_detail_view.dart';
 import 'package:wayawaya/app/home/model/campaign_model.dart';
-import 'package:wayawaya/app/offers/view/item_offer_view_detail.dart';
 import 'package:wayawaya/utils/utils.dart';
 
-import '../../config.dart';
-import '../../constants.dart';
 
 class EventDetailScreen extends StatefulWidget {
   const EventDetailScreen({Key key});
@@ -24,6 +21,7 @@ class EventDetailScreen extends StatefulWidget {
 class _EventDetailScreen extends State<EventDetailScreen> {
   EventDetailBloc _eventDetailBloc;
   String title = "";
+  String lastTitle = "";
 
   @override
   void initState() {
@@ -38,7 +36,10 @@ class _EventDetailScreen extends State<EventDetailScreen> {
     if (campaign == null) return '';
     if (campaign.campaignElement == null) return '';
     title = Utils.getTranslatedCode(context, campaign.campaignElement.name);
-    _eventDetailBloc.mainMenuPermissionSink.add(_eventDetailBloc.mainMenuList);
+    if(title != lastTitle){
+      lastTitle = title;
+      _eventDetailBloc.mainMenuPermissionSink.add(_eventDetailBloc.mainMenuList);
+    }
   }
 
   @override
@@ -62,7 +63,7 @@ class _EventDetailScreen extends State<EventDetailScreen> {
                             loop: false,
                             transformer: new ZoomOutPageTransformer(),
                             itemBuilder: (BuildContext context, int index) {
-                              _getTitle(context, _listOfCampaign[index]);
+                                _getTitle(context, _listOfCampaign[index]);
                               return Column(
                                 children: [
                                   ItemEventDetailView(

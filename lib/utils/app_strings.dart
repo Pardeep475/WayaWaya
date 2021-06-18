@@ -170,6 +170,7 @@ class AppString {
   static const OFFER_DETAILS_SCREEN_ROUTE = "OFFER_DETAILS_SCREEN_ROUTE";
   static const EVENT_SCREEN_ROUTE = "EVENT_SCREEN_ROUTE";
   static const EVENT_DETAILS_ROUTE = "EVENT_DETAILS_SCREEN_ROUTE";
+  static const TWO_D_MAP_SCREEN_ROUTE = "TWO_D_MAP_SCREEN_ROUTE";
 
 // db
   static const String ADMIN_DB_FILE = "admin.db";
@@ -201,4 +202,6 @@ class AppString {
   static const String WHATSON_CAMPAIGN = "whatson";
   static const String ACTIVITIES_CAMPAIGN = "activity";
   static const String CINEMA_CAMPAIGN = "cinema";
+
+  static const String MAP_STORE_KEY = 'storeId';
 }

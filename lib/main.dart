@@ -9,6 +9,7 @@ import 'package:wayawaya/app/auth/splash/splash_screen.dart';
 import 'package:wayawaya/app/events/event_detail_screen.dart';
 import 'package:wayawaya/app/events/event_screen.dart';
 import 'package:wayawaya/app/mall/mall_screen.dart';
+import 'package:wayawaya/app/map/two_d_map_screen.dart';
 import 'package:wayawaya/app/offers/offer_details.dart';
 import 'package:wayawaya/app/offers/offers_screen.dart';
 import 'package:wayawaya/app/preferences/select_preferences_screen.dart';
@@ -188,6 +189,13 @@ class MyAppState extends State<MyApp> {
       case AppString.EVENT_DETAILS_ROUTE:
         return PageTransition(
           child: EventDetailScreen(),
+          type: PageTransitionType.rightToLeft,
+          settings: settings,
+        );
+        break;
+      case AppString.TWO_D_MAP_SCREEN_ROUTE:
+        return PageTransition(
+          child: TwoDMapScreen(),
           type: PageTransitionType.rightToLeft,
           settings: settings,
         );

@@ -27,6 +27,7 @@ class _OffersDetailsState extends State<OfferDetails> {
 
   OfferDetailBloc _offerDetailBloc;
   String title = "";
+  String lastTitle = "";
 
   @override
   void initState() {
@@ -165,7 +166,11 @@ class _OffersDetailsState extends State<OfferDetails> {
     if (campaign == null) return '';
     if (campaign.campaignElement == null) return '';
     title = Utils.getTranslatedCode(context, campaign.campaignElement.name);
-    _offerDetailBloc.mainMenuPermissionSink.add(_offerDetailBloc.mainMenuList);
+    if (title != lastTitle) {
+      lastTitle = title;
+      _offerDetailBloc.mainMenuPermissionSink
+          .add(_offerDetailBloc.mainMenuList);
+    }
   }
 
   @override
