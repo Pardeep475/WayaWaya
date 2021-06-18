@@ -8,6 +8,7 @@ import 'package:wayawaya/app/auth/signup/sign_up_screen.dart';
 import 'package:wayawaya/app/auth/splash/splash_screen.dart';
 import 'package:wayawaya/app/events/event_screen.dart';
 import 'package:wayawaya/app/mall/mall_screen.dart';
+import 'package:wayawaya/app/offers/offer_details.dart';
 import 'package:wayawaya/app/offers/offers_screen.dart';
 import 'package:wayawaya/app/preferences/select_preferences_screen.dart';
 import 'package:wayawaya/app/search/search_screen.dart';
@@ -172,6 +173,13 @@ class MyAppState extends State<MyApp> {
       case AppString.SEARCH_SCREEN_ROUTE:
         return PageTransition(
           child: SearchScreen(),
+          type: PageTransitionType.rightToLeft,
+          settings: settings,
+        );
+        break;
+      case AppString.OFFER_DETAILS_SCREEN_ROUTE:
+        return PageTransition(
+          child: OfferDetails(),
           type: PageTransitionType.rightToLeft,
           settings: settings,
         );

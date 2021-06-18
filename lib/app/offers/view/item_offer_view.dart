@@ -10,7 +10,7 @@ import 'package:shape_of_view/shape_of_view.dart';
 import 'package:share/share.dart';
 import 'package:wayawaya/app/home/model/campaign_element.dart';
 import 'package:wayawaya/app/home/model/campaign_model.dart';
-import 'package:wayawaya/app/offers/voucher.dart';
+import 'package:wayawaya/app/offers/model/voucher.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_images.dart';
 import 'package:wayawaya/utils/app_strings.dart';
@@ -59,7 +59,9 @@ class ItemOfferView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        Navigator.pushNamed(context, AppString.OFFER_DETAILS_SCREEN_ROUTE);
+      },
       child: Container(
         margin: EdgeInsets.only(top: 5, left: 5, right: 5, bottom: 5),
         decoration: BoxDecoration(

@@ -6,7 +6,6 @@ import 'package:transformer_page_view/transformer_page_view.dart';
 import 'package:wayawaya/app/common/menu/animate_app_bar.dart';
 import 'package:wayawaya/app/common/menu/model/main_menu_permission.dart';
 import 'package:wayawaya/app/home/model/whatson_campaign.dart';
-import 'package:wayawaya/screens/login.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_images.dart';
 import 'package:wayawaya/utils/app_strings.dart';
@@ -14,7 +13,6 @@ import 'dart:ui' as ui;
 import '../../config.dart';
 import '../../constants.dart';
 import 'bloc/home_bloc.dart';
-import 'model/top_campaign_model.dart';
 import 'view/common_image_widget.dart';
 
 class HomeScreen extends StatefulWidget {
