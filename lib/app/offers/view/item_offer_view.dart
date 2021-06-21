@@ -136,21 +136,22 @@ class ItemOfferView extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    margin: EdgeInsets.fromLTRB(5, 8, 5, 0),
+                    margin: EdgeInsets.fromLTRB(Dimens.five, Dimens.eight, Dimens.five, 0),
                     color: AppColor.white,
                     child: Text(
                       _getTitle(context),
                       style: GoogleFonts.ubuntuCondensed().copyWith(
                         color: AppColor.black.withOpacity(0.7),
-                        fontSize: 19,
+                        fontSize: Dimens.nineteen,
                         fontWeight: FontWeight.w500,
                         letterSpacing: 0.8,
                       ),
                     ),
                   ),
                   SizedBox(
-                    height: 4,
+                    height: Dimens.four,
                   ),
+                  Divider(height: Dimens.one,color: Colors.grey,),
                   Container(
                     color: Color(0xFF60F2F2F2),
                     padding: EdgeInsets.only(right: Dimens.five),
@@ -197,7 +198,7 @@ class ItemOfferView extends StatelessWidget {
                                     child: Icon(
                                       Icons.circle,
                                       color: Colors.red,
-                                      size: Dimens.eighteen,
+                                      size: Dimens.forteen,
                                     ),
                                   ),
                                   SizedBox(

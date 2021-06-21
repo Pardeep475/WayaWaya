@@ -13,6 +13,7 @@ import 'package:wayawaya/app/offers/model/voucher.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_images.dart';
 import 'package:wayawaya/utils/app_strings.dart';
+import 'package:wayawaya/utils/dimens.dart';
 import 'package:wayawaya/utils/utils.dart';
 
 class ItemEventView extends StatelessWidget {
@@ -136,29 +137,35 @@ class ItemEventView extends StatelessWidget {
               ),
             ),
             Container(
-              padding: EdgeInsets.fromLTRB(5, 8, 5, 0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    _getTitle(context),
-                    style: GoogleFonts.ubuntuCondensed().copyWith(
-                      color: AppColor.black.withOpacity(0.7),
-                      fontSize: 19,
-                      fontWeight: FontWeight.w500,
-                      letterSpacing: 0.8,
+                  Container(
+                    margin: EdgeInsets.fromLTRB(
+                        Dimens.five, Dimens.eight, Dimens.five, 0),
+                    color: AppColor.white,
+                    child: Text(
+                      _getTitle(context),
+                      style: GoogleFonts.ubuntuCondensed().copyWith(
+                        color: AppColor.black.withOpacity(0.7),
+                        fontSize: Dimens.nineteen,
+                        fontWeight: FontWeight.w500,
+                        letterSpacing: 0.8,
+                      ),
                     ),
                   ),
                   SizedBox(
-                    height: 4,
+                    height: Dimens.four,
                   ),
+                  Divider(height: Dimens.one,color: Colors.grey,),
                   Container(
                     color: Color(0xFF60F2F2F2),
+                    padding: EdgeInsets.only(right: Dimens.five),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Container(
-                          width: 100,
+                          padding: EdgeInsets.symmetric(
+                              horizontal: Dimens.eight, vertical: Dimens.five),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -169,26 +176,39 @@ class ItemEventView extends StatelessWidget {
                                     color: Colors.green,
                                   ),
                                   SizedBox(
-                                    width: 3,
+                                    width: Dimens.five,
                                   ),
                                   Text(_startDate(context)),
                                 ],
                               ),
                               SizedBox(
-                                height: 5,
+                                height: Dimens.eight,
                               ),
                               Row(
                                 children: [
                                   SizedBox(
-                                    width: 2,
+                                    width: Dimens.two,
                                   ),
-                                  Icon(
-                                    Icons.circle,
-                                    color: Colors.red,
-                                    size: 18,
+                                  Container(
+                                    decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        border: Border.all(
+                                            color: Colors.red,
+                                            width: Dimens.one),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.grey[400],
+                                            blurRadius: 5.0,
+                                          ),
+                                        ]),
+                                    child: Icon(
+                                      Icons.circle,
+                                      color: Colors.red,
+                                      size: Dimens.forteen,
+                                    ),
                                   ),
                                   SizedBox(
-                                    width: 6,
+                                    width: Dimens.six,
                                   ),
                                   Text(_endDate(context)),
                                 ],
@@ -196,102 +216,68 @@ class ItemEventView extends StatelessWidget {
                             ],
                           ),
                         ),
+                        Expanded(child: SizedBox()),
 
-                        ///BUTTONS
-                        Expanded(
-                          child: Container(
-                            width: 100,
-                            margin: EdgeInsets.only(right: 5),
-                            child: Row(
+                        Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: () {
+                              // _shareFiles(context);
+                            },
+                            child: Column(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
-                                // InkWell(
-                                //   onTap: () {},
-                                //   child: Column(
-                                //     mainAxisAlignment: MainAxisAlignment.end,
-                                //     children: [
-                                //       Icon(
-                                //         FontAwesomeIcons.mapMarkerAlt,
-                                //         color: AppColor.black,
-                                //       ),
-                                //       SizedBox(
-                                //         height: 10,
-                                //       ),
-                                //       Text(
-                                //         AppString.locate.toUpperCase(),
-                                //         style: TextStyle(
-                                //           fontSize: 10,
-                                //         ),
-                                //       ),
-                                //     ],
-                                //   ),
-                                // ),
-                                // SizedBox(
-                                //   width: 11,
-                                // ),
-                                InkWell(
-                                  onTap: () {
-                                    _shareFiles(context);
-                                  },
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      SizedBox(
-                                        height: 1,
-                                      ),
-                                      Icon(
-                                        Icons.share,
-                                        color: AppColor.black,
-                                      ),
-                                      SizedBox(
-                                        height: 9,
-                                      ),
-                                      Text(
-                                        AppString.share.toUpperCase(),
-                                        style: TextStyle(
-                                          fontSize: 11,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                                Icon(
+                                  Icons.share,
+                                  color: AppColor.black,
                                 ),
                                 SizedBox(
-                                  width: 11,
+                                  height: Dimens.ten,
                                 ),
-                                InkWell(
-                                  onTap: () {},
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      Icon(
-                                        Icons.event,
-                                        color: AppColor.black,
-                                      ),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      Text(
-                                        AppString.events.toUpperCase(),
-                                        style: TextStyle(
-                                          fontSize: 10,
-                                        ),
-                                      ),
-                                    ],
+                                Text(
+                                  AppString.share.toUpperCase(),
+                                  style: TextStyle(
+                                    fontSize: Dimens.ten,
                                   ),
                                 ),
                               ],
                             ),
                           ),
                         ),
+                        SizedBox(width: Dimens.eleven),
+                        Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: () {},
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Icon(
+                                  Icons.event,
+                                  color: AppColor.black,
+                                ),
+                                SizedBox(
+                                  height: Dimens.ten,
+                                ),
+                                Text(
+                                  AppString.events.toUpperCase(),
+                                  style: TextStyle(
+                                    fontSize: Dimens.ten,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+
+                        ///BUTTONS
                       ],
                     ),
-                  ),
-                  SizedBox(
-                    height: 8,
                   ),
                 ],
               ),
             ),
+
           ],
         ),
       ),

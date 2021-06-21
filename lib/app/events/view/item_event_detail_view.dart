@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:wayawaya/app/home/model/campaign_model.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_images.dart';
+import 'package:wayawaya/utils/dimens.dart';
 import 'package:wayawaya/utils/utils.dart';
 
 class ItemEventDetailView extends StatelessWidget {
@@ -36,36 +37,26 @@ class ItemEventDetailView extends StatelessWidget {
     return Utils.dateConvert(campaign.endDate, "dd-MMM");
   }
 
-  _startText() {
-    if (campaign == null) return '';
-    if (campaign.couponValue == null) return '';
-    if (campaign.couponValue.contains(" ")) {
-      return campaign.couponValue
-          .substring(0, campaign.couponValue.indexOf(" "));
-    } else {
-      return campaign.couponValue;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: 5, left: 5, right: 5, bottom: 5),
-      decoration: BoxDecoration(
-        color: AppColor.white,
-        boxShadow: [
-          BoxShadow(blurRadius: 2, color: Colors.grey, spreadRadius: 2)
-        ],
-      ),
+      color: AppColor.white,
+      margin: EdgeInsets.all(Dimens.five),
       child: Wrap(
         children: [
-          SizedBox(
-            height: 220,
+          Container(
+            height: MediaQuery.of(context).size.height * 0.23,
+            decoration: BoxDecoration(
+              color: AppColor.white,
+              boxShadow: [
+                BoxShadow(blurRadius: 2, color: Colors.grey, spreadRadius: 2)
+              ],
+            ),
             child: Stack(
               children: [
                 Positioned.fill(
                   child: CachedNetworkImage(
-                    height: 220,
+                    height: MediaQuery.of(context).size.height * 0.23,
                     width: MediaQuery.of(context).size.width,
                     imageUrl: _getImage(context),
                     fit: BoxFit.fill,
@@ -99,7 +90,8 @@ class ItemEventDetailView extends StatelessWidget {
             ),
           ),
           Container(
-            padding: EdgeInsets.fromLTRB(5, 8, 5, 0),
+            padding: EdgeInsets.symmetric(
+                horizontal: Dimens.five, vertical: Dimens.eight),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -107,63 +99,48 @@ class ItemEventDetailView extends StatelessWidget {
                   _getTitle(context),
                   style: GoogleFonts.ubuntuCondensed().copyWith(
                     color: AppColor.black.withOpacity(0.7),
-                    fontSize: 19,
+                    fontSize: Dimens.nineteen,
                     fontWeight: FontWeight.w500,
                     letterSpacing: 0.8,
                   ),
                 ),
                 SizedBox(
-                  height: 4,
+                  height: Dimens.four,
                 ),
-                Container(
-                  color: Color(0xFF60F2F2F2),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        width: 100,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.arrow_forward,
-                                  color: Colors.green,
-                                ),
-                                SizedBox(
-                                  width: 3,
-                                ),
-                                Text(_startDate(context)),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Row(
-                              children: [
-                                SizedBox(
-                                  width: 2,
-                                ),
-                                Icon(
-                                  Icons.circle,
-                                  color: Colors.red,
-                                  size: 18,
-                                ),
-                                SizedBox(
-                                  width: 6,
-                                ),
-                                Text(_endDate(context)),
-                              ],
-                            ),
-                          ],
+                Row(
+                  children: [
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.arrow_forward,
+                          color: Colors.green,
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  height: 8,
+                        SizedBox(
+                          width: Dimens.three,
+                        ),
+                        Text(_startDate(context)),
+                      ],
+                    ),
+                    SizedBox(
+                      width: Dimens.twenty,
+                    ),
+                    Row(
+                      children: [
+                        SizedBox(
+                          width: Dimens.two,
+                        ),
+                        Icon(
+                          Icons.circle,
+                          color: Colors.red,
+                          size: Dimens.eighteen,
+                        ),
+                        SizedBox(
+                          width: Dimens.six,
+                        ),
+                        Text(_endDate(context)),
+                      ],
+                    ),
+                  ],
                 ),
               ],
             ),

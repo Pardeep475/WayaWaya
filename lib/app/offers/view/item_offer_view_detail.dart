@@ -52,7 +52,7 @@ class ItemOfferViewDetail extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: AppColor.white,
-      margin: EdgeInsets.only(top: 5, left: 5, right: 5, bottom: 5),
+      margin: EdgeInsets.all( Dimens.five),
       child: Wrap(
         children: [
           Container(
@@ -105,10 +105,10 @@ class ItemOfferViewDetail extends StatelessWidget {
                     shape: StarShape(noOfPoints: 5),
                     child: Container(
                       color: AppColor.yellow,
-                      padding: const EdgeInsets.all(20),
+                      padding:  EdgeInsets.all(Dimens.twenty),
                       child: Text(
                         _startText(),
-                        style: TextStyle(color: AppColor.white, fontSize: 14),
+                        style: TextStyle(color: AppColor.white, fontSize: Dimens.forteen),
                       ),
                     ),
                   ),

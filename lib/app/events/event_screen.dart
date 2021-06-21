@@ -6,7 +6,6 @@ import 'package:wayawaya/app/common/menu/animate_app_bar.dart';
 import 'package:wayawaya/app/common/menu/model/main_menu_permission.dart';
 import 'package:wayawaya/app/events/view/item_event_view.dart';
 import 'package:wayawaya/app/home/model/campaign_model.dart';
-import 'package:wayawaya/app/offers/view/item_offer_view.dart';
 import 'package:wayawaya/network/live/model/api_response.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_strings.dart';
@@ -22,7 +21,6 @@ class EventScreen extends StatefulWidget {
 }
 
 class _EventScreenState extends State<EventScreen> {
-  bool _hasRewards = true;
 
   Widget offerCard(int index) {
     return SizedBox();
@@ -81,7 +79,7 @@ class _EventScreenState extends State<EventScreen> {
           stream: _eventBloc.mainMenuPermissionStream,
           builder: (context, snapshot) {
             return AnimateAppBar(
-              title: AppString.offers.toUpperCase(),
+              title: AppString.events.toUpperCase(),
               isSliver: true,
               mainMenuPermissions: snapshot.data,
               children: [
