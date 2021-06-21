@@ -5,7 +5,6 @@ import 'package:wayawaya/config.dart';
 import 'package:wayawaya/providers/auth.dart';
 import 'package:wayawaya/screens/my_account.dart';
 import 'package:wayawaya/screens/my_device.dart';
-import 'package:wayawaya/screens/rewards/menu.dart';
 import 'package:wayawaya/screens/rewards/menunew.dart';
 import 'package:wayawaya/screens/select_preferences.dart';
 import 'package:wayawaya/screens/shops_rest_fav.dart';

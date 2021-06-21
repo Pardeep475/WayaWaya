@@ -14,6 +14,8 @@ import 'package:wayawaya/app/offers/model/voucher.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_images.dart';
 import 'package:wayawaya/utils/app_strings.dart';
+import 'package:wayawaya/utils/dimens.dart';
+import 'package:wayawaya/utils/session_manager.dart';
 import 'package:wayawaya/utils/utils.dart';
 
 class ItemOfferView extends StatelessWidget {
@@ -46,7 +48,7 @@ class ItemOfferView extends StatelessWidget {
     return Utils.dateConvert(campaign.endDate, "dd-MMM");
   }
 
-  _startText() {
+  String _startText() {
     if (campaign == null) return '';
     if (campaign.couponValue == null) return '';
     if (campaign.couponValue.contains(" ")) {
@@ -65,7 +67,7 @@ class ItemOfferView extends StatelessWidget {
             arguments: this.listOfCampaign);
       },
       child: Container(
-        margin: EdgeInsets.only(top: 5, left: 5, right: 5, bottom: 5),
+        margin: EdgeInsets.all(Dimens.five),
         decoration: BoxDecoration(
           color: AppColor.white,
           boxShadow: [
@@ -75,12 +77,12 @@ class ItemOfferView extends StatelessWidget {
         child: Wrap(
           children: [
             SizedBox(
-              height: 220,
+              height: MediaQuery.of(context).size.height * 0.23,
               child: Stack(
                 children: [
                   Positioned.fill(
                     child: CachedNetworkImage(
-                      height: 220,
+                      height: MediaQuery.of(context).size.height * 0.23,
                       width: MediaQuery.of(context).size.width,
                       imageUrl: _getImage(context),
                       fit: BoxFit.fill,
@@ -111,14 +113,14 @@ class ItemOfferView extends StatelessWidget {
                     ),
                   ),
                   Positioned(
-                    left: 10,
-                    top: 10,
+                    left: Dimens.ten,
+                    top: Dimens.five,
                     child: ShapeOfView(
-                      elevation: 3,
+                      elevation: Dimens.three,
                       shape: StarShape(noOfPoints: 5),
                       child: Container(
                         color: AppColor.yellow,
-                        padding: const EdgeInsets.all(20),
+                        padding: EdgeInsets.all(Dimens.twenty),
                         child: Text(
                           _startText(),
                           style: TextStyle(color: AppColor.white, fontSize: 14),
@@ -130,17 +132,20 @@ class ItemOfferView extends StatelessWidget {
               ),
             ),
             Container(
-              padding: EdgeInsets.fromLTRB(5, 8, 5, 0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    _getTitle(context),
-                    style: GoogleFonts.ubuntuCondensed().copyWith(
-                      color: AppColor.black.withOpacity(0.7),
-                      fontSize: 19,
-                      fontWeight: FontWeight.w500,
-                      letterSpacing: 0.8,
+                  Container(
+                    margin: EdgeInsets.fromLTRB(5, 8, 5, 0),
+                    color: AppColor.white,
+                    child: Text(
+                      _getTitle(context),
+                      style: GoogleFonts.ubuntuCondensed().copyWith(
+                        color: AppColor.black.withOpacity(0.7),
+                        fontSize: 19,
+                        fontWeight: FontWeight.w500,
+                        letterSpacing: 0.8,
+                      ),
                     ),
                   ),
                   SizedBox(
@@ -148,11 +153,12 @@ class ItemOfferView extends StatelessWidget {
                   ),
                   Container(
                     color: Color(0xFF60F2F2F2),
+                    padding: EdgeInsets.only(right: Dimens.five),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Container(
-                          width: 100,
+                          padding: EdgeInsets.symmetric(
+                              horizontal: Dimens.eight, vertical: Dimens.five),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -163,26 +169,39 @@ class ItemOfferView extends StatelessWidget {
                                     color: Colors.green,
                                   ),
                                   SizedBox(
-                                    width: 3,
+                                    width: Dimens.five,
                                   ),
                                   Text(_startDate(context)),
                                 ],
                               ),
                               SizedBox(
-                                height: 5,
+                                height: Dimens.eight,
                               ),
                               Row(
                                 children: [
                                   SizedBox(
-                                    width: 2,
+                                    width: Dimens.two,
                                   ),
-                                  Icon(
-                                    Icons.circle,
-                                    color: Colors.red,
-                                    size: 18,
+                                  Container(
+                                    decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        border: Border.all(
+                                            color: Colors.red,
+                                            width: Dimens.one),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.grey[400],
+                                            blurRadius: 5.0,
+                                          ),
+                                        ]),
+                                    child: Icon(
+                                      Icons.circle,
+                                      color: Colors.red,
+                                      size: Dimens.eighteen,
+                                    ),
                                   ),
                                   SizedBox(
-                                    width: 6,
+                                    width: Dimens.six,
                                   ),
                                   Text(_endDate(context)),
                                 ],
@@ -190,104 +209,108 @@ class ItemOfferView extends StatelessWidget {
                             ],
                           ),
                         ),
+                        Expanded(child: SizedBox()),
 
-                        ///BUTTONS
-                        Expanded(
-                          child: Container(
-                            width: 100,
-                            margin: EdgeInsets.only(right: 5),
-                            child: Row(
+                        FutureBuilder(
+                          future: _redeemLayout(),
+                          builder: (context,snapshot){
+                            if(snapshot.hasData && snapshot.data){
+                              return Row(
+                                children: [
+                                  Material(
+                                    color: Colors.transparent,
+                                    child: InkWell(
+                                      onTap: () {},
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisSize: MainAxisSize.max,
+                                        children: [
+                                          Icon(
+                                            FontAwesomeIcons.gift,
+                                            color: AppColor.black,
+                                          ),
+                                          SizedBox(
+                                            height: Dimens.ten,
+                                          ),
+                                          Text(
+                                            AppString.redeem.toUpperCase(),
+                                            style: TextStyle(
+                                              fontSize: Dimens.ten,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width:Dimens.eleven,
+                                  ),
+                                ],
+                              );
+                            }
+                            return SizedBox();
+                          },
+                        ),
+
+                        Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: () {
+                              // _locateOnMap(context);
+                            },
+                            child: Column(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
-                                campaign != null
-                                    ? InkWell(
-                                        onTap: () {},
-                                        child: Padding(
-                                          padding:
-                                              const EdgeInsets.only(right: 11),
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.end,
-                                            children: [
-                                              Icon(
-                                                FontAwesomeIcons.gift,
-                                                color: AppColor.black,
-                                              ),
-                                              SizedBox(
-                                                height: 10,
-                                              ),
-                                              Text(
-                                                AppString.redeem.toUpperCase(),
-                                                style: TextStyle(
-                                                  fontSize: 10,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      )
-                                    : SizedBox(),
-                                InkWell(
-                                  onTap: () {
-                                    _locateOnMap(context);
-                                  },
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      Icon(
-                                        FontAwesomeIcons.mapMarkerAlt,
-                                        color: AppColor.black,
-                                      ),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      Text(
-                                        AppString.locate.toUpperCase(),
-                                        style: TextStyle(
-                                          fontSize: 10,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                                Icon(
+                                  FontAwesomeIcons.mapMarkerAlt,
+                                  color: AppColor.black,
                                 ),
                                 SizedBox(
-                                  width: 11,
+                                  height: Dimens.ten,
                                 ),
-                                InkWell(
-                                  onTap: () {
-                                    _shareFiles(context);
-                                  },
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      SizedBox(
-                                        height: 1,
-                                      ),
-                                      Icon(
-                                        Icons.share,
-                                        color: AppColor.black,
-                                      ),
-                                      SizedBox(
-                                        height: 9,
-                                      ),
-                                      Text(
-                                        AppString.share.toUpperCase(),
-                                        style: TextStyle(
-                                          fontSize: 11,
-                                        ),
-                                      ),
-                                    ],
+                                Text(
+                                  AppString.locate.toUpperCase(),
+                                  style: TextStyle(
+                                    fontSize: Dimens.ten,
                                   ),
                                 ),
                               ],
                             ),
                           ),
                         ),
+                        SizedBox(
+                          width: Dimens.eleven,
+                        ),
+                        Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: () {
+                              // _shareFiles(context);
+                            },
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Icon(
+                                  Icons.share,
+                                  color: AppColor.black,
+                                ),
+                                SizedBox(
+                                  height: Dimens.ten,
+                                ),
+                                Text(
+                                  AppString.share.toUpperCase(),
+                                  style: TextStyle(
+                                    fontSize: Dimens.ten,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+
+                        ///BUTTONS
                       ],
                     ),
-                  ),
-                  SizedBox(
-                    height: 8,
                   ),
                 ],
               ),
@@ -296,6 +319,17 @@ class ItemOfferView extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<bool> _redeemLayout() async {
+    try {
+      bool isLogin = await SessionManager.isLogin();
+
+      if (isLogin && int.parse(_startText()) > 0) return true;
+    } catch (e) {
+      return false;
+    }
+    return false;
   }
 
   _locateOnMap(BuildContext context) {
