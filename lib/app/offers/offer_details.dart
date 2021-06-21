@@ -10,6 +10,10 @@ import 'package:wayawaya/app/offers/bloc/offer_detail_bloc.dart';
 import 'package:wayawaya/app/offers/view/item_offer_view_detail.dart';
 import 'package:wayawaya/screens/map/mall_map.dart';
 import 'package:wayawaya/screens/rewards/menunew.dart';
+import 'package:wayawaya/utils/app_color.dart';
+import 'package:wayawaya/utils/app_strings.dart';
+import 'package:wayawaya/utils/dimens.dart';
+import 'package:wayawaya/utils/session_manager.dart';
 import 'package:wayawaya/utils/utils.dart';
 
 import '../../config.dart';
@@ -195,117 +199,143 @@ class _OffersDetailsState extends State<OfferDetails> {
                             transformer: new ZoomOutPageTransformer(),
                             itemBuilder: (BuildContext context, int index) {
                               _getTitle(context, _listOfCampaign[index]);
-                              return Column(
-                                children: [
-                                  ItemOfferViewDetail(
-                                      campaign: _listOfCampaign[index]),
-                                  Expanded(child: SizedBox()),
-                                  Container(
-                                    height: 70,
-                                    width: App.width(context),
-                                    padding: EdgeInsets.symmetric(vertical: 10),
-                                    child: Row(
-                                      children: [
-                                        _hasRewards
-                                            ? Expanded(
-                                                flex: 1,
-                                                child: InkWell(
-                                                  onTap: () => errorDialog(),
-                                                  child: Container(
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .center,
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment.end,
-                                                      children: [
-                                                        Icon(
-                                                          FontAwesomeIcons.gift,
-                                                          color: black,
-                                                        ),
-                                                        SizedBox(
-                                                          height: 10,
-                                                        ),
-                                                        Text(
-                                                          'Redeem'
-                                                              .toUpperCase(),
-                                                          style: TextStyle(
-                                                            fontSize: 13,
+                              return Container(
+                                color: AppColor.white,
+                                child: Column(
+                                  children: [
+                                    ItemOfferViewDetail(
+                                        campaign: _listOfCampaign[index]),
+                                    Expanded(child: SizedBox()),
+                                    Card(
+                                      elevation: Dimens.ten,
+                                      margin: const EdgeInsets.all(0),
+                                      child: Row(
+                                        children: [
+                                          FutureBuilder(
+                                            future: _redeemLayout(
+                                                _listOfCampaign[index]),
+                                            builder: (context, snapshot) {
+                                              if (snapshot.hasData &&
+                                                  snapshot.data) {
+                                                return Expanded(
+                                                  child: Material(
+                                                    color: Colors.transparent,
+                                                    child: InkWell(
+                                                      onTap: () {},
+                                                      child: Column(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        mainAxisSize:
+                                                            MainAxisSize.max,
+                                                        children: [
+                                                          SizedBox(
+                                                            height:
+                                                                Dimens.fifteen,
                                                           ),
-                                                        ),
-                                                      ],
+                                                          Icon(
+                                                            FontAwesomeIcons.gift,
+                                                            color: AppColor.black,
+                                                          ),
+                                                          SizedBox(
+                                                            height: Dimens.ten,
+                                                          ),
+                                                          Text(
+                                                            AppString.redeem
+                                                                .toUpperCase(),
+                                                            style: TextStyle(
+                                                              fontSize:
+                                                                  Dimens.ten,
+                                                            ),
+                                                          ),
+                                                          SizedBox(
+                                                            height: Dimens.ten,
+                                                          ),
+                                                        ],
+                                                      ),
                                                     ),
                                                   ),
+                                                );
+                                              }
+                                              return SizedBox();
+                                            },
+                                          ),
+                                          Expanded(
+                                            flex: 1,
+                                            child: InkWell(
+                                              onTap: () {},
+                                              child: Container(
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.end,
+                                                  children: [
+                                                    SizedBox(
+                                                      height: Dimens.fifteen,
+                                                    ),
+                                                    Icon(
+                                                      FontAwesomeIcons
+                                                          .mapMarkerAlt,
+                                                      color: black,
+                                                    ),
+                                                    SizedBox(
+                                                      height: Dimens.ten,
+                                                    ),
+                                                    Text(
+                                                      'Locate'.toUpperCase(),
+                                                      style: TextStyle(
+                                                        fontSize: Dimens.forteen,
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      height: Dimens.ten,
+                                                    ),
+                                                  ],
                                                 ),
-                                              )
-                                            : Container(),
-                                        Expanded(
-                                          flex: 1,
-                                          child: InkWell(
-                                            onTap: () =>
-                                                Navigator.of(context).push(
-                                              MaterialPageRoute(
-                                                  builder: (_) => MapScreen()),
-                                            ),
-                                            child: Container(
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.end,
-                                                children: [
-                                                  Icon(
-                                                    FontAwesomeIcons
-                                                        .mapMarkerAlt,
-                                                    color: black,
-                                                  ),
-                                                  SizedBox(
-                                                    height: 10,
-                                                  ),
-                                                  Text(
-                                                    'Locate'.toUpperCase(),
-                                                    style: TextStyle(
-                                                      fontSize: 13,
-                                                    ),
-                                                  ),
-                                                ],
                                               ),
                                             ),
                                           ),
-                                        ),
-                                        Expanded(
-                                          flex: 1,
-                                          child: InkWell(
-                                            onTap: () {},
-                                            child: Container(
-                                              child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.end,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                children: [
-                                                  Icon(
-                                                    Icons.share,
-                                                    color: black,
-                                                  ),
-                                                  SizedBox(
-                                                    height: 6,
-                                                  ),
-                                                  Text(
-                                                    'Share'.toUpperCase(),
-                                                    style: TextStyle(
-                                                      fontSize: 13,
+                                          Expanded(
+                                            flex: 1,
+                                            child: InkWell(
+                                              onTap: () {},
+                                              child: Container(
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.end,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  children: [
+                                                    SizedBox(
+                                                      height: Dimens.fifteen,
                                                     ),
-                                                  ),
-                                                ],
+                                                    Icon(
+                                                      Icons.share,
+                                                      color: black,
+                                                    ),
+                                                    SizedBox(
+                                                      height: Dimens.ten,
+                                                    ),
+                                                    Text(
+                                                      'Share'.toUpperCase(),
+                                                      style: TextStyle(
+                                                        fontSize: Dimens.forteen,
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      height: Dimens.ten,
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
                                             ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               );
                             },
                             itemCount: _listOfCampaign.length),
@@ -317,5 +347,27 @@ class _OffersDetailsState extends State<OfferDetails> {
         ),
       ),
     );
+  }
+
+  Future<bool> _redeemLayout(Campaign campaign) async {
+    try {
+      bool isLogin = await SessionManager.isLogin();
+
+      if (isLogin && int.parse(_startText(campaign)) > 0) return true;
+    } catch (e) {
+      return false;
+    }
+    return false;
+  }
+
+  String _startText(Campaign campaign) {
+    if (campaign == null) return '';
+    if (campaign.couponValue == null) return '';
+    if (campaign.couponValue.contains(" ")) {
+      return campaign.couponValue
+          .substring(0, campaign.couponValue.indexOf(" "));
+    } else {
+      return campaign.couponValue;
+    }
   }
 }
