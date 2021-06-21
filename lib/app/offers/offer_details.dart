@@ -1,10 +1,15 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
+import 'package:share/share.dart';
 import 'package:transformer_page_view/transformer_page_view.dart';
 import 'package:wayawaya/app/common/menu/animate_app_bar.dart';
 import 'package:wayawaya/app/common/menu/model/main_menu_permission.dart';
 import 'package:wayawaya/app/common/zoom_out_page_transformation.dart';
+import 'package:wayawaya/app/home/model/campaign_element.dart';
 import 'package:wayawaya/app/home/model/campaign_model.dart';
 import 'package:wayawaya/app/offers/bloc/offer_detail_bloc.dart';
 import 'package:wayawaya/app/offers/view/item_offer_view_detail.dart';
@@ -18,6 +23,7 @@ import 'package:wayawaya/utils/utils.dart';
 
 import '../../config.dart';
 import '../../constants.dart';
+import 'model/voucher.dart';
 
 class OfferDetails extends StatefulWidget {
   const OfferDetails({Key key});
@@ -234,8 +240,10 @@ class _OffersDetailsState extends State<OfferDetails> {
                                                                 Dimens.fifteen,
                                                           ),
                                                           Icon(
-                                                            FontAwesomeIcons.gift,
-                                                            color: AppColor.black,
+                                                            FontAwesomeIcons
+                                                                .gift,
+                                                            color:
+                                                                AppColor.black,
                                                           ),
                                                           SizedBox(
                                                             height: Dimens.ten,
@@ -285,7 +293,8 @@ class _OffersDetailsState extends State<OfferDetails> {
                                                     Text(
                                                       'Locate'.toUpperCase(),
                                                       style: TextStyle(
-                                                        fontSize: Dimens.forteen,
+                                                        fontSize:
+                                                            Dimens.forteen,
                                                       ),
                                                     ),
                                                     SizedBox(
@@ -299,7 +308,10 @@ class _OffersDetailsState extends State<OfferDetails> {
                                           Expanded(
                                             flex: 1,
                                             child: InkWell(
-                                              onTap: () {},
+                                              onTap: () {
+                                                _shareFiles(context,
+                                                    _listOfCampaign[index]);
+                                              },
                                               child: Container(
                                                 child: Column(
                                                   mainAxisAlignment:
@@ -320,7 +332,8 @@ class _OffersDetailsState extends State<OfferDetails> {
                                                     Text(
                                                       'Share'.toUpperCase(),
                                                       style: TextStyle(
-                                                        fontSize: Dimens.forteen,
+                                                        fontSize:
+                                                            Dimens.forteen,
                                                       ),
                                                     ),
                                                     SizedBox(
@@ -369,5 +382,45 @@ class _OffersDetailsState extends State<OfferDetails> {
     } else {
       return campaign.couponValue;
     }
+  }
+
+  _shareFiles(BuildContext buildContext, Campaign campaign) {
+    try {
+      String subject = _getTitle(buildContext, campaign);
+      if (campaign.voucher != null) {
+        Voucher _voucher = Voucher.fromJson(jsonDecode(campaign.voucher));
+        NumberFormat nf = NumberFormat.decimalPattern();
+        String discount = nf.format(_voucher.discount);
+        if (discount.isNotEmpty) {
+          subject = subject + "Discount (" + discount + "%" + ")";
+        }
+        debugPrint('share_files:-   ${nf.format(_voucher.discount)}');
+      }
+
+      String description = '';
+      if (campaign.campaignElement != null &&
+          campaign.campaignElement.description != null) {
+        campaign.campaignElement.description.forEach((element) {
+          if (element.language == Language.EN_US) {
+            description = element.text;
+          }
+        });
+      }
+
+      Share.share(description + "\n" + _getImage(buildContext, campaign),
+          subject: subject);
+
+      // Share.shareFiles([_getImage(buildContext)],
+      //     subject: subject, text: description);
+      // final String discount = nf.format(campaign.voucher.);
+    } catch (e) {
+      debugPrint('$e');
+    }
+  }
+
+  String _getImage(BuildContext context, Campaign campaign) {
+    if (campaign == null) return '';
+    if (campaign.campaignElement == null) return '';
+    return Utils.getTranslatedCodeFromImageId(campaign.campaignElement.imageId);
   }
 }

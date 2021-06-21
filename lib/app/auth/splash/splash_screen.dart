@@ -49,7 +49,7 @@ class _SplashScreenState extends State<SplashScreen> {
     if (defaultMall == null || defaultMall.isEmpty) {
       List<MallProfileModel> _mallList =
           await SuperAdminDatabaseHelper.getDefaultVenueProfile(
-              AppString.DEFAULT_MALL_KEY);
+              defaultMall);
       debugPrint('database_testing:-   ${_mallList.length}');
       if (_mallList.length > 0) {
         SessionManager.setDefaultMall(_mallList[0].identifier);

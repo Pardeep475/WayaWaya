@@ -1,3 +1,4 @@
+import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:transformer_page_view/transformer_page_view.dart';
@@ -6,9 +7,13 @@ import 'package:wayawaya/app/common/menu/model/main_menu_permission.dart';
 import 'package:wayawaya/app/common/zoom_out_page_transformation.dart';
 import 'package:wayawaya/app/events/bloc/event_detail_bloc.dart';
 import 'package:wayawaya/app/events/view/item_event_detail_view.dart';
+import 'package:wayawaya/app/home/model/campaign_element.dart';
 import 'package:wayawaya/app/home/model/campaign_model.dart';
+import 'package:wayawaya/common/model/mall_profile_model.dart';
+import 'package:wayawaya/network/local/super_admin_database_helper.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/dimens.dart';
+import 'package:wayawaya/utils/session_manager.dart';
 import 'package:wayawaya/utils/utils.dart';
 
 class EventDetailScreen extends StatefulWidget {
@@ -82,26 +87,34 @@ class _EventDetailScreen extends State<EventDetailScreen> {
                                             CrossAxisAlignment.end,
                                         children: [
                                           Expanded(
-                                              child: bottomButton(
-                                                  icon: Icons.remove_red_eye,
-                                                  index: 0,
-                                                  contentText: '0')),
+                                            child: bottomButton(
+                                                icon: Icons.remove_red_eye,
+                                                index: 0,
+                                                contentText: '0'),
+                                          ),
                                           Expanded(
-                                              child: bottomButton(
-                                                  icon: Icons
-                                                      .watch_later_outlined,
-                                                  index: 1,
-                                                  contentText: '06:00')),
+                                            child: bottomButton(
+                                                icon:
+                                                    Icons.watch_later_outlined,
+                                                index: 1,
+                                                contentText: '06:00'),
+                                          ),
                                           Expanded(
-                                              child: bottomButton(
-                                                  icon: Icons.share,
-                                                  index: 2,
-                                                  contentText: '0')),
+                                            child: bottomButton(
+                                                icon: Icons.share,
+                                                index: 2,
+                                                contentText: '0'),
+                                          ),
                                           Expanded(
-                                              child: bottomButton(
-                                                  icon: Icons.event,
-                                                  index: 3,
-                                                  contentText: 'Add')),
+                                            child: bottomButton(
+                                                onPressed: () {
+                                                  _addEventToCalender(context,
+                                                      _listOfCampaign[index]);
+                                                },
+                                                icon: Icons.event,
+                                                index: 3,
+                                                contentText: 'Add'),
+                                          ),
                                         ],
                                       ),
                                     ),
@@ -120,9 +133,10 @@ class _EventDetailScreen extends State<EventDetailScreen> {
     );
   }
 
-  Widget bottomButton({int index, String contentText, IconData icon}) {
+  Widget bottomButton(
+      {int index, String contentText, IconData icon, VoidCallback onPressed}) {
     return InkWell(
-      onTap: () {},
+      onTap: onPressed,
       child: Column(
         children: [
           SizedBox(height: Dimens.ten),
@@ -144,5 +158,65 @@ class _EventDetailScreen extends State<EventDetailScreen> {
         ],
       ),
     );
+  }
+
+  String _getDescription(BuildContext context, Campaign campaign) {
+    if (campaign == null) return '';
+    if (campaign.campaignElement == null) return '';
+    if (campaign.campaignElement.description == null) return '';
+    String description = '';
+    campaign.campaignElement.description.forEach((element) {
+      if (element.language == Language.EN_US) {
+        description = element.text;
+      }
+    });
+
+    return description;
+  }
+
+  _addEventToCalender(BuildContext context, Campaign campaign) async {
+    try {
+      String title = _getTitleForCalender(context, campaign);
+      String description = _getDescription(context, campaign);
+      String location = '';
+
+      String defaultMall = await SessionManager.getDefaultMall();
+      List<MallProfileModel> mallProfileModelList =
+          await SuperAdminDatabaseHelper.getDefaultVenueProfile(defaultMall);
+      mallProfileModelList.forEach((element) {
+        location = element.name;
+      });
+
+      String startDate = campaign.startDate;
+      String endDate = campaign.endDate;
+      debugPrint('location_add_to_calender:- Location  $location');
+      debugPrint('location_add_to_calender:- title  $title');
+      debugPrint('location_add_to_calender:- description  $description');
+      debugPrint('location_add_to_calender:- startDate  $startDate');
+      debugPrint('location_add_to_calender:- endDate  $endDate');
+
+      final Event event = Event(
+        title: title ?? '',
+        description: description ?? "",
+        location: location ?? "",
+        startDate:
+            startDate == null ? DateTime.now() : DateTime.parse(startDate),
+        allDay: true,
+        endDate: endDate == null ? DateTime.now() : DateTime.parse(endDate),
+        iosParams: IOSParams(reminder: Duration()),
+        androidParams: AndroidParams(
+          emailInvites: [],
+        ),
+      );
+      Add2Calendar.addEvent2Cal(event);
+    } catch (e) {
+      debugPrint("event_calender_issue:-  $e");
+    }
+  }
+
+  _getTitleForCalender(BuildContext context, Campaign campaign) {
+    if (campaign == null) return '';
+    if (campaign.campaignElement == null) return '';
+    return Utils.getTranslatedCode(context, campaign.campaignElement.name);
   }
 }

@@ -7,7 +7,7 @@ class MallProfileModel {
   String db_name;
   String logo_base64;
   String ibeacon_uuid;
-  String venue_data;
+  dynamic venue_data;
   int active;
 
   MallProfileModel(

@@ -106,7 +106,7 @@ class SuperAdminDatabaseHelper {
           "venue_data",
           "active",
         ],
-        where: "key = ?",
+        where: "identifier = ?",
         whereArgs: ['$tableKey'],
         limit: 1,
       );

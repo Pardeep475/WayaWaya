@@ -136,7 +136,8 @@ class ItemOfferView extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    margin: EdgeInsets.fromLTRB(Dimens.five, Dimens.eight, Dimens.five, 0),
+                    margin: EdgeInsets.fromLTRB(
+                        Dimens.five, Dimens.eight, Dimens.five, 0),
                     color: AppColor.white,
                     child: Text(
                       _getTitle(context),
@@ -151,7 +152,10 @@ class ItemOfferView extends StatelessWidget {
                   SizedBox(
                     height: Dimens.four,
                   ),
-                  Divider(height: Dimens.one,color: Colors.grey,),
+                  Divider(
+                    height: Dimens.one,
+                    color: Colors.grey,
+                  ),
                   Container(
                     color: Color(0xFF60F2F2F2),
                     padding: EdgeInsets.only(right: Dimens.five),
@@ -214,8 +218,8 @@ class ItemOfferView extends StatelessWidget {
 
                         FutureBuilder(
                           future: _redeemLayout(),
-                          builder: (context,snapshot){
-                            if(snapshot.hasData && snapshot.data){
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData && snapshot.data) {
                               return Row(
                                 children: [
                                   Material(
@@ -223,7 +227,8 @@ class ItemOfferView extends StatelessWidget {
                                     child: InkWell(
                                       onTap: () {},
                                       child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         mainAxisSize: MainAxisSize.max,
                                         children: [
                                           Icon(
@@ -244,7 +249,7 @@ class ItemOfferView extends StatelessWidget {
                                     ),
                                   ),
                                   SizedBox(
-                                    width:Dimens.eleven,
+                                    width: Dimens.eleven,
                                   ),
                                 ],
                               );
@@ -286,7 +291,7 @@ class ItemOfferView extends StatelessWidget {
                           color: Colors.transparent,
                           child: InkWell(
                             onTap: () {
-                              // _shareFiles(context);
+                              _shareFiles(context);
                             },
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.end,
@@ -345,25 +350,31 @@ class ItemOfferView extends StatelessWidget {
 
   _shareFiles(BuildContext buildContext) {
     try {
-      Voucher _voucher = Voucher.fromJson(jsonDecode(campaign.voucher));
-      // NumberFormat nf = DecimalFormat.getInstance();
-      // nf.setMaximumFractionDigits(0);
-      NumberFormat nf = NumberFormat.decimalPattern();
       String subject = _getTitle(buildContext);
-      String discount = nf.format(_voucher.discount);
-      if (discount.isNotEmpty) {
-        subject = subject + "Discount (" + discount + "%" + ")";
-      }
-      debugPrint('share_files:-   ${nf.format(_voucher.discount)}');
-      String description = '';
-      campaign.campaignElement.description.forEach((element) {
-        if (element.language == Language.EN_US) {
-          description = element.text;
+      if(campaign.voucher != null){
+        Voucher _voucher = Voucher.fromJson(jsonDecode(campaign.voucher));
+        NumberFormat nf = NumberFormat.decimalPattern();
+        String discount = nf.format(_voucher.discount);
+        if (discount.isNotEmpty) {
+          subject = subject + "Discount (" + discount + "%" + ")";
         }
-      });
+        debugPrint('share_files:-   ${nf.format(_voucher.discount)}');
+      }
 
-      Share.shareFiles([_getImage(buildContext)],
-          subject: subject, text: description);
+      String description = '';
+      if(campaign.campaignElement != null && campaign.campaignElement.description != null){
+        campaign.campaignElement.description.forEach((element) {
+          if (element.language == Language.EN_US) {
+            description = element.text;
+          }
+        });
+      }
+
+      Share.share(description + "\n" + _getImage(buildContext),
+          subject: subject);
+
+      // Share.shareFiles([_getImage(buildContext)],
+      //     subject: subject, text: description);
       // final String discount = nf.format(campaign.voucher.);
     } catch (e) {
       debugPrint('$e');

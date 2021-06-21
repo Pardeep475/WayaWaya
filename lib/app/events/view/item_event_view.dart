@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -10,10 +11,14 @@ import 'package:share/share.dart';
 import 'package:wayawaya/app/home/model/campaign_element.dart';
 import 'package:wayawaya/app/home/model/campaign_model.dart';
 import 'package:wayawaya/app/offers/model/voucher.dart';
+import 'package:wayawaya/common/model/language_store.dart';
+import 'package:wayawaya/common/model/mall_profile_model.dart';
+import 'package:wayawaya/network/local/super_admin_database_helper.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_images.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/dimens.dart';
+import 'package:wayawaya/utils/session_manager.dart';
 import 'package:wayawaya/utils/utils.dart';
 
 class ItemEventView extends StatelessWidget {
@@ -45,17 +50,6 @@ class ItemEventView extends StatelessWidget {
     if (campaign == null) return '';
     if (campaign.endDate == null) return '';
     return Utils.dateConvert(campaign.endDate, "dd-MMM");
-  }
-
-  _startText() {
-    if (campaign == null) return '';
-    if (campaign.couponValue == null) return '';
-    if (campaign.couponValue.contains(" ")) {
-      return campaign.couponValue
-          .substring(0, campaign.couponValue.indexOf(" "));
-    } else {
-      return campaign.couponValue;
-    }
   }
 
   String _getFlag(BuildContext context) {
@@ -157,7 +151,10 @@ class ItemEventView extends StatelessWidget {
                   SizedBox(
                     height: Dimens.four,
                   ),
-                  Divider(height: Dimens.one,color: Colors.grey,),
+                  Divider(
+                    height: Dimens.one,
+                    color: Colors.grey,
+                  ),
                   Container(
                     color: Color(0xFF60F2F2F2),
                     padding: EdgeInsets.only(right: Dimens.five),
@@ -222,7 +219,7 @@ class ItemEventView extends StatelessWidget {
                           color: Colors.transparent,
                           child: InkWell(
                             onTap: () {
-                              // _shareFiles(context);
+                              _shareFiles(context);
                             },
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.end,
@@ -248,7 +245,9 @@ class ItemEventView extends StatelessWidget {
                         Material(
                           color: Colors.transparent,
                           child: InkWell(
-                            onTap: () {},
+                            onTap: () {
+                              _addEventToCalender(context);
+                            },
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
@@ -277,34 +276,91 @@ class ItemEventView extends StatelessWidget {
                 ],
               ),
             ),
-
           ],
         ),
       ),
     );
   }
 
-  _shareFiles(BuildContext buildContext) {
-    try {
-      Voucher _voucher = Voucher.fromJson(jsonDecode(campaign.voucher));
-      // NumberFormat nf = DecimalFormat.getInstance();
-      // nf.setMaximumFractionDigits(0);
-      NumberFormat nf = NumberFormat.decimalPattern();
-      String subject = _getTitle(buildContext);
-      String discount = nf.format(_voucher.discount);
-      if (discount.isNotEmpty) {
-        subject = subject + "Discount (" + discount + "%" + ")";
+  String _getDescription(BuildContext context) {
+    if (campaign == null) return '';
+    if (campaign.campaignElement == null) return '';
+    if (campaign.campaignElement.description == null) return '';
+    String description = '';
+    campaign.campaignElement.description.forEach((element) {
+      if (element.language == Language.EN_US) {
+        description = element.text;
       }
-      debugPrint('share_files:-   ${nf.format(_voucher.discount)}');
-      String description = '';
-      campaign.campaignElement.description.forEach((element) {
-        if (element.language == Language.EN_US) {
-          description = element.text;
-        }
+    });
+
+    return description;
+  }
+
+  _addEventToCalender(BuildContext context) async {
+    try {
+      String title = _getTitle(context);
+      String description = _getDescription(context);
+      String location = '';
+
+      String defaultMall = await SessionManager.getDefaultMall();
+      List<MallProfileModel> mallProfileModelList =
+          await SuperAdminDatabaseHelper.getDefaultVenueProfile(defaultMall);
+      debugPrint('location_add_to_calender:-   ${mallProfileModelList.length}');
+      mallProfileModelList.forEach((element) {
+        location = element.name;
+        debugPrint('location_add_to_calender:-   $location');
       });
 
-      Share.shareFiles([_getImage(buildContext)],
-          subject: subject, text: description);
+      String startDate = campaign.startDate;
+      String endDate = campaign.endDate;
+      debugPrint('location_add_to_calender:-   $location');
+      final Event event = Event(
+        title: title ?? '',
+        description: description ?? "",
+        location: location ?? "",
+        startDate:
+        startDate == null ? DateTime.now() : DateTime.parse(startDate),
+        allDay: true,
+        endDate: endDate == null ? DateTime.now() : DateTime.parse(endDate),
+        iosParams: IOSParams(reminder: Duration()),
+        androidParams: AndroidParams(
+          emailInvites: [],
+        ),
+      );
+      Add2Calendar.addEvent2Cal(event);
+    } catch (e) {
+      debugPrint("event_calender_issue:-  $e");
+    }
+  }
+
+  _shareFiles(BuildContext buildContext) {
+    try {
+      String subject = _getTitle(buildContext);
+      if (campaign.voucher != null) {
+        Voucher _voucher = Voucher.fromJson(jsonDecode(campaign.voucher));
+        NumberFormat nf = NumberFormat.decimalPattern();
+        String discount = nf.format(_voucher.discount);
+        if (discount.isNotEmpty) {
+          subject = subject + "Discount (" + discount + "%" + ")";
+        }
+        debugPrint('share_files:-   ${nf.format(_voucher.discount)}');
+      }
+
+      String description = '';
+      if (campaign.campaignElement != null &&
+          campaign.campaignElement.description != null) {
+        campaign.campaignElement.description.forEach((element) {
+          if (element.language == Language.EN_US) {
+            description = element.text;
+          }
+        });
+      }
+
+      Share.share(description + "\n" + _getImage(buildContext),
+          subject: subject);
+
+      // Share.shareFiles([_getImage(buildContext)],
+      //     subject: subject, text: description);
       // final String discount = nf.format(campaign.voucher.);
     } catch (e) {
       debugPrint('$e');
