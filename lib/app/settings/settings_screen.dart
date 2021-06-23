@@ -6,6 +6,8 @@ import 'package:wayawaya/app/common/menu/model/main_menu_permission.dart';
 import 'package:wayawaya/app/home/model/campaign_model.dart';
 import 'package:wayawaya/app/search/model/global_app_search.dart';
 import 'package:wayawaya/app/settings/model/settings_model.dart';
+import 'package:wayawaya/app/shop/model/retail_unit_category.dart';
+import 'package:wayawaya/app/shop/model/retail_with_category.dart';
 import 'package:wayawaya/network/local/profile_database_helper.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_strings.dart';
@@ -177,12 +179,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   _implementLocalDb() async {
     String defaultMall = await SessionManager.getDefaultMall();
-    List<Campaign> _allSearchList =
-        await ProfileDatabaseHelper.getCampaignByType(
-            databasePath: defaultMall, campaignType: 'offer');
+    List<RetailWithCategory> _allSearchList =
+        await ProfileDatabaseHelper.getRetailWithCategory(
+            databasePath: defaultMall,
+            isShop: true,
+            searchQuery: '',
+            categoryId: '',
+            favourite: 0);
     _allSearchList.forEach((element) {
-      // dynamic value = jsonDecode(element.description);
-      debugPrint("All Search heading :-       ${element.type}");
+      debugPrint("All Search heading :-       ${element.description[0].text}");
     });
   }
 }

@@ -262,7 +262,7 @@ class ItemOfferView extends StatelessWidget {
                           color: Colors.transparent,
                           child: InkWell(
                             onTap: () {
-                              // _locateOnMap(context);
+                              _locateOnMap(context);
                             },
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.end,

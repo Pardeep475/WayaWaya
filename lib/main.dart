@@ -13,8 +13,10 @@ import 'package:wayawaya/app/map/two_d_map_screen.dart';
 import 'package:wayawaya/app/offers/offer_details.dart';
 import 'package:wayawaya/app/offers/offers_screen.dart';
 import 'package:wayawaya/app/preferences/select_preferences_screen.dart';
+import 'package:wayawaya/app/restaurant/restaurant_screen.dart';
 import 'package:wayawaya/app/search/search_screen.dart';
 import 'package:wayawaya/app/settings/settings_screen.dart';
+import 'package:wayawaya/app/shop/shop_screen.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/session_manager.dart';
 import 'package:wayawaya/utils/size_config.dart';
@@ -196,6 +198,20 @@ class MyAppState extends State<MyApp> {
       case AppString.TWO_D_MAP_SCREEN_ROUTE:
         return PageTransition(
           child: TwoDMapScreen(),
+          type: PageTransitionType.rightToLeft,
+          settings: settings,
+        );
+        break;
+      case AppString.SHOP_SCREEN_ROUTE:
+        return PageTransition(
+          child: ShopScreen(),
+          type: PageTransitionType.rightToLeft,
+          settings: settings,
+        );
+        break;
+      case AppString.RESTAURANT_SCREEN_ROUTE:
+        return PageTransition(
+          child: RestaurantScreen(),
           type: PageTransitionType.rightToLeft,
           settings: settings,
         );

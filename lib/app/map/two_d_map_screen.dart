@@ -4,6 +4,7 @@ import 'package:photo_view/photo_view.dart';
 import 'package:wayawaya/app/common/menu/animate_app_bar.dart';
 import 'package:wayawaya/screens/rewards/menunew.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:webview_flutter_plus/webview_flutter_plus.dart';
 
 import '../../config.dart';
 import '../../constants.dart';
@@ -20,6 +21,9 @@ class _TwoDMapScreen extends State<TwoDMapScreen> {
   bool showBLO = false;
 
   TwoDMapBloc _twoDMapBloc;
+
+  WebViewPlusController _controller;
+  double _height = 1;
 
   @override
   void initState() {
@@ -42,9 +46,31 @@ class _TwoDMapScreen extends State<TwoDMapScreen> {
               physics: NeverScrollableScrollPhysics(),
               children: [
                 SliverFillRemaining(
-                  child: WebView(
-                    initialUrl:
-                        'assets/map/twodmap/vectormap/mod.html',
+                  child: WebViewPlus(
+                    javascriptMode: JavascriptMode.unrestricted,
+                    onWebViewCreated: (controller) {
+                      this._controller = controller;
+                      controller
+                          .loadUrl('assets/map/twodmap/vectormap/mod.html');
+                    },
+                    onProgress: (value){
+
+                    },
+                    onWebResourceError: (error){
+                      debugPrint('error_web_view_is    ${error.errorType}');
+                      debugPrint('error_web_view_is    ${error.errorCode}');
+                      debugPrint('error_web_view_is    ${error.description}');
+                    },
+                    onPageFinished: (url) {
+                      _controller.getHeight().then((double height) {
+                        print("Height:  " + height.toString());
+                        setState(() {
+                          _height = height;
+                        });
+                      });
+                    },
+                    // initialUrl:
+                    //     'assets/map/twodmap/vectormap/mod.html',
                   ),
                 )
 

@@ -7,6 +7,8 @@ import 'package:path/path.dart' as path;
 import 'package:wayawaya/app/home/model/campaign_model.dart';
 import 'package:wayawaya/app/preferences/model/preferences_categories.dart';
 import 'package:wayawaya/app/search/model/global_app_search.dart';
+import 'package:wayawaya/app/shop/model/retail_unit_category.dart';
+import 'package:wayawaya/app/shop/model/retail_with_category.dart';
 import 'package:wayawaya/common/model/categories_model.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 
@@ -525,5 +527,185 @@ class ProfileDatabaseHelper {
     data.map((e) => debugPrint('database_testing:-    $e'));
     // _mallList.sort();
     return _mallList;
+  }
+
+  static Future<List<RetailUnitCategory>> getRestaurantAndStopData({
+    String databasePath,
+    String searchQuery,
+    bool isShop,
+  }) async {
+    debugPrint('database_testing:-  database path $databasePath');
+    if (_db == null) {
+      await initDataBase(databasePath);
+    }
+    List<Map> data;
+
+    String searchQueryCondition = "";
+    String shopsWhereClause = "";
+
+    if (isShop) {
+      shopsWhereClause =
+          " WHERE name NOT LIKE '%Food & Dining%' AND name NOT LIKE '%Restaurants%' AND name NOT LIKE '%Hide%' AND display='1' ";
+    } else {
+      shopsWhereClause =
+          " WHERE name LIKE '%Food & Dining%' OR name LIKE '%Restaurants%' AND name NOT LIKE '%Hide%' AND display='1'  ";
+    }
+
+    if (searchQuery != null && searchQuery != "") {
+      searchQueryCondition = "  AND (name LIKE '%" + searchQuery + "%') ";
+    }
+
+    String query =
+        "WITH RECURSIVE menu_tree (category_id, name, level, parent,category_color, display) \n" +
+            "AS ( \n" +
+            "  SELECT\n" +
+            "    category_id, \n" +
+            "    '' || name, \n" +
+            "    0, \n" +
+            "    parent,\n" +
+            "\tcategory_color,\n" +
+            "\tdisplay\n" +
+            "  FROM categories \n" +
+            "  WHERE parent = ''\n" +
+            "  UNION ALL\n" +
+            "  SELECT\n" +
+            "    mn.category_id, \n" +
+            "    mt.name || ' <> ' || mn.name, \n" +
+            "    mt.level + 0, \n" +
+            "    mt.category_id,\n" +
+            "\tmn.category_color,\n" +
+            "\tmn.display\n" +
+            "  FROM categories mn, menu_tree mt \n" +
+            "  WHERE mn.parent = mt.category_id \n" +
+            ") \n" +
+            "SELECT DISTINCT category_id, * FROM menu_tree mt\n" +
+            "INNER JOIN (Select DISTINCT cid FROM retail_category_map  \n" +
+            ") rcmap ON rcmap.cid = mt.category_id" +
+            shopsWhereClause +
+            " AND level >= 0 \n" +
+            searchQueryCondition +
+            "GROUP BY name ORDER BY name ASC";
+
+    await _db.transaction((txn) async {
+      data = await txn.rawQuery(query);
+    });
+
+    debugPrint('database_testing:-  all search  ${data.length}');
+    debugPrint('database_testing:-   $data');
+    List<RetailUnitCategory> _allSearchList = [];
+    data.forEach((element) {
+      _allSearchList.add(RetailUnitCategory.fromJson(element));
+    });
+    // _preferencesCategoriesList.sort((a, b) => a.name.compareTo(b.name));
+    return _allSearchList;
+  }
+
+  static Future<List<RetailWithCategory>> getRetailWithCategory({
+    String databasePath,
+    String searchQuery,
+    String categoryId,
+    bool isShop,
+    final int favourite,
+  }) async {
+    if (_db == null) {
+      await initDataBase(databasePath);
+    }
+
+    try {
+      List<Map> data = [];
+
+      String shopsWhereClause = "";
+      String groupBy = "";
+      String orderBy = "";
+
+      if (isShop) {
+        if (categoryId != "") {
+          shopsWhereClause =
+              " WHERE (category_name NOT LIKE '%Food & Dining%' AND category_name NOT LIKE '%Restaurants%') AND category_name NOT LIKE '%Hide%' AND rcmap.name NOT LIKE '%Vacant%' AND display = 1 AND category_id = '" +
+                  categoryId +
+                  "' ";
+        } else {
+          shopsWhereClause =
+              " WHERE (category_name NOT LIKE '%Food & Dining%' AND category_name NOT LIKE '%Restaurants%') AND category_name NOT LIKE '%Hide%' AND rcmap.name NOT LIKE '%Vacant%' AND display = 1";
+        }
+      } else {
+        if (categoryId != "") {
+          shopsWhereClause =
+              " WHERE (category_name LIKE '%Food & Dining%' OR category_name LIKE '%Restaurants%') AND category_name NOT LIKE '%Hide%' AND rcmap.name NOT LIKE '%Vacant%' AND display = 1 AND category_id = '" +
+                  categoryId +
+                  "' ";
+        } else {
+          shopsWhereClause =
+              " WHERE (category_name LIKE '%Food & Dining%' OR category_name LIKE '%Restaurants%') AND category_name NOT LIKE '%Hide%' AND rcmap.name NOT LIKE '%Vacant%' AND display = 1 ";
+        }
+      }
+
+      groupBy = " GROUP BY rcmap.rid  ";
+      orderBy = " ORDER BY name COLLATE NOCASE ASC ";
+
+      if (favourite == 1) {
+        shopsWhereClause =
+            " WHERE rcmap.favourite=" + favourite.toString() + " ";
+      }
+
+      String searchQueryCondition = "";
+
+      if (searchQuery != null && searchQuery != "") {
+        searchQueryCondition = "  AND (rcmap.name LIKE '%" +
+            searchQuery +
+            "%' OR rcmap.sub_locations LIKE '^" +
+            searchQuery +
+            "%' OR category_name LIKE '%" +
+            searchQuery +
+            "%') ";
+      }
+
+      String query = "WITH RECURSIVE menu_tree (category_id, category_name, level, parent,category_color, display) AS ( \n" +
+          "SELECT\n" +
+          " category_id, \n" +
+          " '' || name, \n" +
+          " 0, \n" +
+          " parent,\n" +
+          " category_color,\n" +
+          " display \n" +
+          " FROM categories \n" +
+          " WHERE parent = ''\n" +
+          " UNION ALL\n" +
+          " SELECT\n" +
+          " mn.category_id, \n" +
+          " mt.category_name || ' <> ' || mn.name, \n" +
+          " mt.level + 0, \n" +
+          " mt.category_id,\n" +
+          " mn.category_color,\n" +
+          " mn.display \n" +
+          " FROM categories mn, menu_tree mt \n" +
+          " WHERE mn.parent = mt.category_id \n" +
+          " ) \n" +
+          " SELECT DISTINCT category_id, category_name as category,display, * FROM menu_tree mt\n" +
+          " INNER JOIN (Select DISTINCT * FROM retail_category_map rmap INNER JOIN \n" +
+          " retail_units ret ON ret.rid = rmap.rid) rcmap ON rcmap.cid = mt.category_id \n" +
+          searchQueryCondition +
+          shopsWhereClause +
+          groupBy +
+          orderBy;
+
+      debugPrint('query_is :-    $query');
+
+      await _db.transaction((txn) async {
+        data = await txn.rawQuery(query);
+      });
+
+      debugPrint('database_testing:-  all search  ${data.length}');
+      debugPrint('database_testing:-   $data');
+      List<RetailWithCategory> _allSearchList = [];
+      data.forEach((element) {
+        _allSearchList.add(RetailWithCategory.fromJson(element));
+      });
+      _allSearchList.sort((a, b) => a.name.compareTo(b.name));
+      return _allSearchList;
+    } catch (e) {
+      debugPrint('error:- database :-  $e');
+    }
+    return [];
   }
 }

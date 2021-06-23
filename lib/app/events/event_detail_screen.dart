@@ -12,6 +12,7 @@ import 'package:wayawaya/app/home/model/campaign_model.dart';
 import 'package:wayawaya/common/model/mall_profile_model.dart';
 import 'package:wayawaya/network/local/super_admin_database_helper.dart';
 import 'package:wayawaya/utils/app_color.dart';
+import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/dimens.dart';
 import 'package:wayawaya/utils/session_manager.dart';
 import 'package:wayawaya/utils/utils.dart';
@@ -97,7 +98,7 @@ class _EventDetailScreen extends State<EventDetailScreen> {
                                                 icon:
                                                     Icons.watch_later_outlined,
                                                 index: 1,
-                                                contentText: '06:00'),
+                                                contentText: _getTimingText(context,_listOfCampaign[index])),
                                           ),
                                           Expanded(
                                             child: bottomButton(
@@ -189,11 +190,6 @@ class _EventDetailScreen extends State<EventDetailScreen> {
 
       String startDate = campaign.startDate;
       String endDate = campaign.endDate;
-      debugPrint('location_add_to_calender:- Location  $location');
-      debugPrint('location_add_to_calender:- title  $title');
-      debugPrint('location_add_to_calender:- description  $description');
-      debugPrint('location_add_to_calender:- startDate  $startDate');
-      debugPrint('location_add_to_calender:- endDate  $endDate');
 
       final Event event = Event(
         title: title ?? '',
@@ -218,5 +214,12 @@ class _EventDetailScreen extends State<EventDetailScreen> {
     if (campaign == null) return '';
     if (campaign.campaignElement == null) return '';
     return Utils.getTranslatedCode(context, campaign.campaignElement.name);
+  }
+
+  String _getTimingText(BuildContext context, Campaign campaign) {
+    if (campaign == null) return '';
+    if (campaign.startTime == null) return '';
+   return Utils.dateConvert(
+        Utils.dateConvert(campaign.startTime, AppString.DATE_FORMAT), 'hh:ss');
   }
 }

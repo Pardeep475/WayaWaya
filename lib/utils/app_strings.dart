@@ -171,6 +171,8 @@ class AppString {
   static const EVENT_SCREEN_ROUTE = "EVENT_SCREEN_ROUTE";
   static const EVENT_DETAILS_ROUTE = "EVENT_DETAILS_SCREEN_ROUTE";
   static const TWO_D_MAP_SCREEN_ROUTE = "TWO_D_MAP_SCREEN_ROUTE";
+  static const SHOP_SCREEN_ROUTE = "SHOP_SCREEN_ROUTE";
+  static const RESTAURANT_SCREEN_ROUTE = "RESTAURANT_SCREEN_ROUTE";
 
 // db
   static const String ADMIN_DB_FILE = "admin.db";

@@ -36,8 +36,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   _initViews() {
     debugPrint('performance_testing:-   login screen initState ');
-    _emailController = TextEditingController();
-    _passwordController = TextEditingController();
+    _emailController = TextEditingController(text: 'pardeepsharma475@gmail.com');
+    _passwordController = TextEditingController(text: 'qwerty');
     _formKey = GlobalKey<FormState>();
     _loginBloc = LoginBloc();
   }
@@ -466,3 +466,5 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 }
+
+
