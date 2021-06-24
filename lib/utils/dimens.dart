@@ -123,6 +123,7 @@ class Dimens {
   static final ninetyNine = 11.05 * SizeConfig.heightMultiplier;
   static final hundred = 11.16 * SizeConfig.heightMultiplier;
 
+  static final oneTwenty = 13.392 * SizeConfig.heightMultiplier;
   static final oneThirty = 14.508 * SizeConfig.heightMultiplier;
   static final oneThirtyOne = 14.62 * SizeConfig.heightMultiplier;
   static final oneForty = 15.625 * SizeConfig.heightMultiplier;

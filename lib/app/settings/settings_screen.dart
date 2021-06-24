@@ -182,7 +182,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     List<RetailWithCategory> _allSearchList =
         await ProfileDatabaseHelper.getRetailWithCategory(
             databasePath: defaultMall,
-            isShop: true,
+            isShop: false,
             searchQuery: '',
             categoryId: '',
             favourite: 0);

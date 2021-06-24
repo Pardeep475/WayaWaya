@@ -292,4 +292,29 @@ class Utils {
       return 'ended';
     }
   }
+
+  static Color fromHex(String hexString) {
+    final buffer = StringBuffer();
+    if (hexString.length == 6 || hexString.length == 7) buffer.write('ff');
+    buffer.write(hexString.replaceFirst('#', ''));
+    return Color(int.parse(buffer.toString(), radix: 16));
+  }
+
+  static bool storeStatus({String startDate, String endDate}) {
+    try {
+      DateTime calendar = DateTime.now();
+
+      if (DateTime.parse(startDate).isBefore(calendar) &&
+          DateTime.parse(endDate).isAfter(calendar)) {
+        return true;
+      } else if (calendar.isAfter(DateTime.parse(startDate))) {
+        return false;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      debugPrint('date_format_tesing:-   $e');
+      return false;
+    }
+  }
 }

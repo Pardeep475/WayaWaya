@@ -7,6 +7,7 @@ import 'package:wayawaya/screens/rewards/qr_code_scanner.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_images.dart';
 import 'package:wayawaya/utils/app_strings.dart';
+import 'package:wayawaya/utils/utils.dart';
 
 import '../../config.dart';
 import '../events_list.dart';
@@ -193,13 +194,6 @@ class RhombusMenu extends StatelessWidget {
     return iconData;
   }
 
-  static Color fromHex(String hexString) {
-    final buffer = StringBuffer();
-    if (hexString.length == 6 || hexString.length == 7) buffer.write('ff');
-    buffer.write(hexString.replaceFirst('#', ''));
-    return Color(int.parse(buffer.toString(), radix: 16));
-  }
-
   String getDisplayName(MainMenuPermission mainMenuPermission, String title) {
     mainMenuPermission.displayName.forEach((element) {
       if (element.language == 'en_US') {
@@ -226,7 +220,7 @@ class RhombusMenu extends StatelessWidget {
                 color:
                     menuPermissionList == null || menuPermissionList.length < 1
                         ? Colors.amber
-                        : fromHex(menuPermissionList[0].color),
+                        : Utils.fromHex(menuPermissionList[0].color),
                 icon: Icon(
                   menuPermissionList == null || menuPermissionList.length < 1
                       ? Icons.home
@@ -254,7 +248,7 @@ class RhombusMenu extends StatelessWidget {
                 color:
                     menuPermissionList == null || menuPermissionList.length < 2
                         ? Colors.blue
-                        : fromHex(menuPermissionList[1].color),
+                        : Utils.fromHex(menuPermissionList[1].color),
                 icon: Icon(
                   menuPermissionList == null || menuPermissionList.length < 2
                       ? Icons.local_offer
@@ -281,7 +275,7 @@ class RhombusMenu extends StatelessWidget {
                 color:
                     menuPermissionList == null || menuPermissionList.length < 3
                         ? Colors.purple
-                        : fromHex(menuPermissionList[2].color),
+                        : Utils.fromHex(menuPermissionList[2].color),
                 icon: Icon(
                   menuPermissionList == null || menuPermissionList.length < 3
                       ? Icons.event
@@ -313,7 +307,7 @@ class RhombusMenu extends StatelessWidget {
                 color:
                     menuPermissionList == null || menuPermissionList.length < 4
                         ? Colors.green
-                        : fromHex(menuPermissionList[3].color),
+                        : Utils.fromHex(menuPermissionList[3].color),
                 icon: Icon(
                   menuPermissionList == null || menuPermissionList.length < 4
                       ? Icons.shop
@@ -362,7 +356,7 @@ class RhombusMenu extends StatelessWidget {
                 color:
                     menuPermissionList == null || menuPermissionList.length < 6
                         ? Colors.yellow
-                        : fromHex(menuPermissionList[5].color),
+                        : Utils.fromHex(menuPermissionList[5].color),
                 icon: Icon(
                   menuPermissionList == null || menuPermissionList.length < 6
                       ? Icons.local_dining
@@ -394,7 +388,7 @@ class RhombusMenu extends StatelessWidget {
                 color:
                     menuPermissionList == null || menuPermissionList.length < 7
                         ? Colors.red
-                        : fromHex(menuPermissionList[6].color),
+                        : Utils.fromHex(menuPermissionList[6].color),
                 icon: Icon(
                   menuPermissionList == null || menuPermissionList.length < 7
                       ? Icons.loyalty_rounded
@@ -422,7 +416,7 @@ class RhombusMenu extends StatelessWidget {
                 color:
                     menuPermissionList == null || menuPermissionList.length < 8
                         ? Colors.purple
-                        : fromHex(menuPermissionList[7].color),
+                        : Utils.fromHex(menuPermissionList[7].color),
                 icon: Icon(
                   menuPermissionList == null || menuPermissionList.length < 8
                       ? Icons.view_carousel
@@ -454,7 +448,7 @@ class RhombusMenu extends StatelessWidget {
                 color:
                     menuPermissionList == null || menuPermissionList.length < 9
                         ? Colors.blue
-                        : fromHex(menuPermissionList[8].color),
+                        : Utils.fromHex(menuPermissionList[8].color),
                 icon: Icon(
                   menuPermissionList == null || menuPermissionList.length < 9
                       ? Icons.map

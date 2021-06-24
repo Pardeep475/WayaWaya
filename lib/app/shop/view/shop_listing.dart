@@ -1,9 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:wayawaya/widgets/scroll_bar.dart';
+import 'package:wayawaya/app/shop/bloc/shop_bloc.dart';
+import 'package:wayawaya/app/shop/model/retail_with_category.dart';
+import 'package:wayawaya/utils/app_color.dart';
+import 'package:wayawaya/utils/dimens.dart';
 
-import '../../../constants.dart';
+import 'item_retail_unit_listing.dart';
 
 class ShopListingScreen extends StatefulWidget {
   @override
@@ -11,109 +14,19 @@ class ShopListingScreen extends StatefulWidget {
 }
 
 class _ShopListingScreenState extends State<ShopListingScreen> {
-  bool showDiamond = false;
-  bool showSearch = false;
-  bool _fab = false;
-  List<String> alphabet = [];
-  List<bool> _isLiked;
-  ScrollController _alphaController;
-  List<Widget> _favs = [];
-  List exampleList = [];
+  ShopBloc _shopBloc;
 
   @override
   void initState() {
-    exampleList = [
-      'Anya Ostrem',
-      'Burt Hutchison',
-      'Chana Sobolik',
-      'Chasity Nutt',
-      'Deana Tenenbaum',
-      'Denae Cornelius',
-      'Elisabeth Saner',
-      'Eloise Rocca',
-      'Eloy Kallas',
-      'Esther Hobby',
-      'Euna Sulser',
-      'Florinda Convery',
-      'Franklin Nottage',
-      'Gale Nordeen',
-      'Garth Vanderlinden',
-      'Gracie Schulte',
-      'Inocencia Eaglin',
-      'Jillian Germano',
-      'Jimmy Friddle',
-      'Juliann Bigley',
-      'Kia Gallaway',
-      'Larhonda Ariza',
-      'Larissa Reichel',
-      'Lavone Beltz',
-      'Lazaro Bauder',
-      'Len Northup',
-      'Leonora Castiglione',
-      'Lynell Hanna',
-      'Madonna Heisey',
-      'Marcie Borel',
-      'Margit Krupp',
-      'Marvin Papineau',
-      'Mckinley Yocom',
-      'Melita Briones',
-      'Moses Strassburg',
-      'Nena Recalde',
-      'Norbert Modlin',
-      'Onita Sobotka',
-      'Raven Ecklund',
-      'Robert Waldow',
-      'Roxy Lovelace',
-      'Rufina Chamness',
-      'Saturnina Hux',
-      'Shelli Perine',
-      'Sherryl Routt',
-      'Soila Phegley',
-      'Tamera Strelow',
-      'Tammy Beringer',
-      'Vesta Kidd',
-      'Yan Welling'
-    ];
-    alphabet = [
-      'A',
-      'B',
-      'C',
-      'D',
-      'E',
-      'F',
-      'G',
-      'H',
-      'I',
-      'J',
-      'K',
-      'L',
-      'M',
-      'N',
-      'O',
-      'P',
-      'Q',
-      'R',
-      'S',
-      'T',
-      'U',
-      'V',
-      'W',
-      'X',
-      'Y',
-      'Z'
-    ];
-    _isLiked = List.filled(exampleList.length, true, growable: true);
-    for (int i = 0; i < 3; i++) {
-      setState(() {
-        _favs.add(customCard(i));
-      });
-    }
-    printY('FAVS ${_favs.length}');
-
+    _shopBloc = ShopBloc();
     super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _shopBloc.fetchOrderedCategoryListing();
+    });
   }
 
-  Widget customCard(int index) {
+  Widget customCard(int index, RetailWithCategory retailWithCategory) {
     return InkWell(
       onTap: () {
         // Navigator.of(context).push(
@@ -128,26 +41,26 @@ class _ShopListingScreenState extends State<ShopListingScreen> {
         // );
       },
       child: Container(
-        height: 180,
-        margin: EdgeInsets.only(top: 6, left: 2),
+        height: Dimens.oneEightyFive,
+        margin: EdgeInsets.only(top: Dimens.six, left: Dimens.two),
         child: Card(
-          margin: EdgeInsets.only(left: 4),
+          margin: EdgeInsets.only(left: Dimens.four),
           color: Color(0xffFAFAFA),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(
-              Radius.circular(4),
+              Radius.circular(Dimens.four),
             ),
           ),
           child: Row(
             children: [
               Container(
-                height: 240,
-                width: 6,
+                height: Dimens.twoForty,
+                width: Dimens.six,
                 decoration: BoxDecoration(
                   color: index % 2 == 0 ? Colors.orange : Colors.blue[200],
                   borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(4),
-                    bottomLeft: Radius.circular(4),
+                    topLeft: Radius.circular(Dimens.four),
+                    bottomLeft: Radius.circular(Dimens.four),
                   ),
                 ),
               ),
@@ -159,33 +72,35 @@ class _ShopListingScreenState extends State<ShopListingScreen> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Container(
-                            height: 120,
-                            width: 120,
-                            color: white,
-                            margin: EdgeInsets.only(right: 4),
+                            height: Dimens.oneTwenty,
+                            width: Dimens.oneTwenty,
+                            color: AppColor.white,
+                            margin: EdgeInsets.only(right: Dimens.four),
                             child: Image.network(
                               index % 2 == 0
                                   ? 'https://www.cbia.com/wp-content/uploads/2020/05/Social-Distancing.png'
                                   : 'https://www.cdc.gov/handwashing/images/twitter-cards/poster-handwashing.jpg',
-                              fit: BoxFit.contain,
+                              fit: BoxFit.cover,
                             ),
                           ),
                           Expanded(
                             child: Container(
-                              height: 120,
-                              color: white,
-                              padding:
-                                  EdgeInsets.only(left: 5, top: 8, right: 4),
+                              height: Dimens.oneTwenty,
+                              color: AppColor.white,
+                              padding: EdgeInsets.only(
+                                  left: Dimens.five,
+                                  top: Dimens.eight,
+                                  right: Dimens.four),
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    exampleList[index],
+                                    'exampleList[index]',
                                     style:
                                         GoogleFonts.ubuntuCondensed().copyWith(
-                                      color: black.withOpacity(0.7),
-                                      fontSize: 19,
+                                      color: AppColor.black.withOpacity(0.7),
+                                      fontSize: Dimens.nineteen,
                                       fontWeight: FontWeight.w500,
                                       letterSpacing: 0.8,
                                     ),
@@ -193,13 +108,13 @@ class _ShopListingScreenState extends State<ShopListingScreen> {
                                     maxLines: 1,
                                   ),
                                   SizedBox(
-                                    height: 7,
+                                    height: Dimens.seven,
                                   ),
                                   Text(
                                     'ABSA is one of South Africa\'s largest banks, serving personal, commercial and corporate.',
                                     style: GoogleFonts.ubuntu().copyWith(
-                                      color: black.withOpacity(0.8),
-                                      fontSize: 13,
+                                      color: AppColor.black.withOpacity(0.8),
+                                      fontSize: Dimens.thrteen,
                                       fontWeight: FontWeight.w500,
                                       letterSpacing: 0.8,
                                     ),
@@ -213,19 +128,19 @@ class _ShopListingScreenState extends State<ShopListingScreen> {
                         ],
                       ),
                       Container(
-                        height: 60,
-                        padding: EdgeInsets.only(bottom: 2),
+                        height: Dimens.sixty,
+                        padding: EdgeInsets.only(bottom: Dimens.two),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(4),
-                            bottomRight: Radius.circular(4),
+                            bottomLeft: Radius.circular(Dimens.four),
+                            bottomRight: Radius.circular(Dimens.four),
                           ),
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Container(
-                              width: 120,
+                              width: Dimens.oneTwenty,
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -235,12 +150,12 @@ class _ShopListingScreenState extends State<ShopListingScreen> {
                                     color: Colors.green,
                                   ),
                                   SizedBox(
-                                    height: 3,
+                                    height: Dimens.three,
                                   ),
                                   Text(
                                     'OPEN',
                                     style: TextStyle(
-                                      fontSize: 10,
+                                      fontSize: Dimens.ten,
                                       color: Colors.green,
                                     ),
                                   ),
@@ -248,11 +163,11 @@ class _ShopListingScreenState extends State<ShopListingScreen> {
                               ),
                             ),
 
-                            ///BUTTONS
+                            //BUTTONS
                             Expanded(
                               child: Container(
-                                width: 150,
-                                margin: EdgeInsets.only(right: 20),
+                                width: Dimens.oneFifty,
+                                margin: EdgeInsets.only(right: Dimens.twenty),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
@@ -267,22 +182,22 @@ class _ShopListingScreenState extends State<ShopListingScreen> {
                                         children: [
                                           Icon(
                                             Icons.local_offer,
-                                            color: black,
+                                            color: AppColor.black,
                                           ),
                                           SizedBox(
-                                            height: 6,
+                                            height: Dimens.six,
                                           ),
                                           Text(
                                             'Offers'.toUpperCase(),
                                             style: TextStyle(
-                                              fontSize: 11,
+                                              fontSize: Dimens.eleven,
                                             ),
                                           ),
                                         ],
                                       ),
                                     ),
                                     SizedBox(
-                                      width: 10,
+                                      width: Dimens.ten,
                                     ),
                                     InkWell(
                                       // onTap: () => Navigator.of(context).push(
@@ -295,29 +210,29 @@ class _ShopListingScreenState extends State<ShopListingScreen> {
                                         children: [
                                           Icon(
                                             Icons.location_on,
-                                            color: black,
+                                            color: AppColor.black,
                                           ),
                                           SizedBox(
-                                            height: 6,
+                                            height: Dimens.six,
                                           ),
                                           Text(
                                             'Locate'.toUpperCase(),
                                             style: TextStyle(
-                                              fontSize: 11,
+                                              fontSize: Dimens.eleven,
                                             ),
                                           ),
                                         ],
                                       ),
                                     ),
                                     SizedBox(
-                                      width: 10,
+                                      width: Dimens.ten,
                                     ),
                                     InkWell(
                                       onTap: () {
-                                        setState(() {
-                                          _isLiked[index] = !_isLiked[index];
-                                          _favs.removeAt(index);
-                                        });
+                                        // setState(() {
+                                        //   _isLiked[index] = !_isLiked[index];
+                                        //   _favs.removeAt(index);
+                                        // });
                                       },
                                       child: Column(
                                         mainAxisAlignment:
@@ -325,24 +240,22 @@ class _ShopListingScreenState extends State<ShopListingScreen> {
                                         children: [
                                           Icon(
                                             Icons.thumb_up,
-                                            color: _isLiked[index]
-                                                ? appLightColor
-                                                : black,
+                                            color: AppColor.black,
                                           ),
                                           SizedBox(
-                                            height: 6,
+                                            height: Dimens.six,
                                           ),
                                           Text(
                                             'Like'.toUpperCase(),
                                             style: TextStyle(
-                                              fontSize: 10,
+                                              fontSize: Dimens.ten,
                                             ),
                                           ),
                                         ],
                                       ),
                                     ),
                                     SizedBox(
-                                      width: 10,
+                                      width: Dimens.ten,
                                     ),
                                   ],
                                 ),
@@ -364,30 +277,33 @@ class _ShopListingScreenState extends State<ShopListingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        IgnorePointer(
-          ignoring: _fab,
-          child: CustomScrollView(
-            controller: _alphaController,
-            slivers: [
-              SliverList(
+    return CustomScrollView(
+      slivers: [
+        StreamBuilder<List<RetailWithCategory>>(
+            initialData: [],
+            stream: _shopBloc.orderListingStream,
+            builder: (context, snapshot) {
+              return SliverList(
                 delegate: SliverChildBuilderDelegate(
                   (BuildContext context, int index) {
-                    return _favs[index];
+                    return ItemRetailUnitListing(
+                      index: index,
+                      retailWithCategory: snapshot.data[index],
+                      onLikePressed: () {
+                        debugPrint('onLikePressed');
+                      },
+                      onLocationPressed: () {
+                        debugPrint('onLocationPressed');
+                      },
+                      onOfferPressed: () {
+                        debugPrint('onOfferPressed');
+                      },
+                    );
                   },
-                  childCount: _favs.length,
+                  childCount: snapshot.data.length,
                 ),
-              ),
-            ],
-          ),
-        ),
-        Container(
-          child: QuickScrollBar(
-            nameList: exampleList,
-            scrollController: _alphaController,
-          ),
-        ),
+              );
+            }),
       ],
     );
   }
