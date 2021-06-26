@@ -167,13 +167,21 @@ class _CustomAppBarState extends State<CustomAppBar> {
                         onTap: () => _onMallSelection(),
                         child: Padding(
                           padding: const EdgeInsets.only(right: 5, left: 5),
-                          child: CircleAvatar(
-                            radius: 20,
-                            backgroundColor: appLightColor,
-                            foregroundImage: AssetImage(
-                              getMallLogo().toString(),
-                            ),
-                          ),
+                          child: StreamBuilder<String>(
+                              initialData: null,
+                              stream: _customAppBarBloc
+                                  .identifierCategoryStream,
+                              builder: (context, snapshot) {
+                                return CircleAvatar(
+                                  radius: 20,
+                                  backgroundColor: appLightColor,
+                                  child: snapshot.data == null
+                                      ? Image.asset(
+                                      'assets/image/ic_launcher_bdd45df0be5d4891bcfa25eddf44aa86.png')
+                                      : Image.asset(
+                                      'assets/image/ic_launcher_${snapshot.data}.png'),
+                                );
+                              }),
                         ),
                       )
                     : SizedBox.shrink(),
@@ -309,13 +317,21 @@ class _CustomAppBarState extends State<CustomAppBar> {
                               child: Padding(
                                 padding:
                                     const EdgeInsets.only(right: 5, left: 5),
-                                child: CircleAvatar(
-                                  radius: 20,
-                                  backgroundColor: appLightColor,
-                                  foregroundImage: AssetImage(
-                                    getMallLogo().toString(),
-                                  ),
-                                ),
+                                child: StreamBuilder<String>(
+                                    initialData: null,
+                                    stream: _customAppBarBloc
+                                        .identifierCategoryStream,
+                                    builder: (context, snapshot) {
+                                      return CircleAvatar(
+                                        radius: 20,
+                                        backgroundColor: appLightColor,
+                                        child: snapshot.data == null
+                                            ? Image.asset(
+                                            'assets/image/ic_launcher_bdd45df0be5d4891bcfa25eddf44aa86.png')
+                                            : Image.asset(
+                                            'assets/image/ic_launcher_${snapshot.data}.png'),
+                                      );
+                                    }),
                               ),
                             )
                           : Container(),

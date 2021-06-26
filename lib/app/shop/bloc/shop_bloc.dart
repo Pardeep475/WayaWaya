@@ -48,6 +48,16 @@ class ShopBloc {
   Stream<List<CategoryBasedModel>> get categoryBasedStream =>
       _categoryBasedController.stream;
 
+  // ignore: close_sinks
+  StreamController _favouriteListingController =
+      StreamController<List<RetailWithCategory>>();
+
+  StreamSink<List<RetailWithCategory>> get favouriteListingSink =>
+      _favouriteListingController.sink;
+
+  Stream<List<RetailWithCategory>> get favouriteListingStream =>
+      _favouriteListingController.stream;
+
   fetchMenuButtons() async {
     String defaultMall = await SessionManager.getDefaultMall();
     List<MainMenuPermission> itemList =
@@ -125,5 +135,18 @@ class ShopBloc {
   String _getCategoryName(String categoryName) {
     List<String> listCategoryName = categoryName.split("<>");
     return listCategoryName[listCategoryName.length - 1];
+  }
+
+  fetchFavouriteListing() async {
+    String defaultMall = await SessionManager.getDefaultMall();
+    List<RetailWithCategory> _retailWithCategoryList =
+        await ProfileDatabaseHelper.getRetailWithCategory(
+            databasePath: defaultMall,
+            isShop: true,
+            searchQuery: '',
+            categoryId: '',
+            favourite: 1);
+
+    favouriteListingSink.add(_retailWithCategoryList);
   }
 }

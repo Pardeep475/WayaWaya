@@ -11,6 +11,7 @@ import 'package:wayawaya/app/shop/view/shop_listing.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/dimens.dart';
+import 'package:wayawaya/utils/session_manager.dart';
 import 'package:wayawaya/widgets/expandable_fab.dart';
 
 import '../../constants.dart';
@@ -22,11 +23,20 @@ class ShopScreen extends StatefulWidget {
 
 class _ShopScreenState extends State<ShopScreen> {
   ShopBloc _shopBloc;
+  bool isLogin = false;
 
   @override
   void initState() {
+    _checkIfLogin();
     _shopBloc = ShopBloc();
     super.initState();
+  }
+
+  _checkIfLogin() async {
+    isLogin = await SessionManager.isLogin();
+    setState(() {
+
+    });
   }
 
   @override
@@ -60,7 +70,7 @@ class _ShopScreenState extends State<ShopScreen> {
                           return PageView.builder(
                             controller: _pageController,
                             scrollDirection: Axis.horizontal,
-                            itemCount: 3,
+                            itemCount: isLogin != null && isLogin ? 3 : 2,
                             onPageChanged: (index) {},
                             itemBuilder: (BuildContext context, int index) {
                               if (index == 0) {
@@ -166,7 +176,4 @@ class _ShopScreenState extends State<ShopScreen> {
   }
 }
 
-/*
-*
-*
-* */
+

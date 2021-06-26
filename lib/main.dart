@@ -16,7 +16,9 @@ import 'package:wayawaya/app/preferences/select_preferences_screen.dart';
 import 'package:wayawaya/app/restaurant/restaurant_screen.dart';
 import 'package:wayawaya/app/search/search_screen.dart';
 import 'package:wayawaya/app/settings/settings_screen.dart';
+import 'package:wayawaya/app/shop/shop_detail_screen.dart';
 import 'package:wayawaya/app/shop/shop_screen.dart';
+import 'package:wayawaya/screens/shops_and_rest_details.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/session_manager.dart';
 import 'package:wayawaya/utils/size_config.dart';
@@ -212,6 +214,13 @@ class MyAppState extends State<MyApp> {
       case AppString.RESTAURANT_SCREEN_ROUTE:
         return PageTransition(
           child: RestaurantScreen(),
+          type: PageTransitionType.rightToLeft,
+          settings: settings,
+        );
+        break;
+      case AppString.SHOP_DETAIL_SCREEN_ROUTE:
+        return PageTransition(
+          child: ShopDetailScreen(),
           type: PageTransitionType.rightToLeft,
           settings: settings,
         );

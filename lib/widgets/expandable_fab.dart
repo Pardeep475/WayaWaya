@@ -1,7 +1,11 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:wayawaya/app/common/dialogs/common_login_dialog.dart';
 import 'package:wayawaya/constants.dart';
 import 'package:wayawaya/utils/app_color.dart';
+import 'package:wayawaya/utils/app_strings.dart';
+import 'package:wayawaya/utils/session_manager.dart';
 
 class CircularMenuItem extends StatelessWidget {
   /// if icon and animatedIcon are passed, icon will be ignored
@@ -451,7 +455,7 @@ class CircularMenuState extends State<CircularMenu>
                           : CircularMenuItem(
                               padding: 18,
                               icon: Icons.thumb_up,
-                              onTap: () {
+                              onTap: () async {
                                 debugPrint('click on favourte ');
                                 _animationController.status ==
                                         AnimationStatus.dismissed
@@ -459,21 +463,27 @@ class CircularMenuState extends State<CircularMenu>
                                     : (_animationController).reverse();
                                 if (widget.pageController == null) return;
 
+                                bool isLogin = await SessionManager.isLogin();
+                                if(isLogin != null && isLogin){
+                                  widget.pageController.animateToPage(
+                                    2,
+                                    duration: Duration(microseconds: 100),
+                                    curve: Curves.easeInOut,
+                                  );
+                                }else{
+                                  _showErrorDialog(
+                                    icon: Icon(
+                                      FontAwesomeIcons.exclamationTriangle,
+                                      color: AppColor.orange_500,
+                                    ),
+                                    title: AppString.login.toUpperCase(),
+                                    content: AppString.currently_not_logged_in,
+                                    buttonText: AppString.login.toUpperCase(),
+                                    onPressed: () =>
+                                        Navigator.pushNamed(context, AppString.LOGIN_SCREEN_ROUTE),
+                                  );
+                                }
 
-
-                                widget.pageController.animateToPage(
-                                  2,
-                                  duration: Duration(microseconds: 100),
-                                  curve: Curves.easeInOut,
-                                );
-                                // _shopBloc.listTypeSink.add(2);
-                                // Navigator.of(context).pushReplacement(
-                                //   MaterialPageRoute(
-                                //     builder: (_) => ShopRestFav(
-                                //       title: 'Restaurant',
-                                //     ),
-                                //   ),
-                                // );
                               },
                               color: appLightColor,
                               iconColor: Colors.white,
@@ -487,6 +497,39 @@ class CircularMenuState extends State<CircularMenu>
     });
     return items;
   }
+
+  _showErrorDialog(
+      {Icon icon,
+        String title,
+        String content,
+        String buttonText,
+        VoidCallback onPressed}) {
+    showGeneralDialog(
+        barrierColor: Colors.black.withOpacity(0.1),
+        transitionBuilder: (context, a1, a2, widget) {
+          final curvedValue = Curves.easeInOutBack.transform(a1.value) - 1.0;
+          return Transform(
+            transform: Matrix4.translationValues(0.0, curvedValue * 200, 0.0),
+            child: AnimatedOpacity(
+              duration: Duration(milliseconds: 100),
+              opacity: a1.value,
+              child: CommonLoginDialog(
+                icon: icon,
+                title: title,
+                content: content,
+                buttonText: buttonText,
+                onPressed: onPressed,
+              ),
+            ),
+          );
+        },
+        transitionDuration: Duration(milliseconds: 200),
+        barrierDismissible: false,
+        barrierLabel: '',
+        context: context,
+        pageBuilder: (context, animation1, animation2) {});
+  }
+
 
   Widget _buildMenuButton(BuildContext context) {
     return Positioned.fill(

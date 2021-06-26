@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:wayawaya/app/shop/model/retail_with_category.dart';
 import 'package:wayawaya/app/shop/model/shop_status.dart';
+import 'package:wayawaya/screens/shops_and_rest_details.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_images.dart';
+import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/dimens.dart';
 import 'package:wayawaya/utils/utils.dart';
 
@@ -26,16 +28,9 @@ class ItemRetailUnitListing extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        // Navigator.of(context).push(
-        //   MaterialPageRoute(
-        //     builder: (_) => ShopRestDetails(
-        //       title: exampleList[index],
-        //       subtitle:
-        //       'ABSA is one of South Africa\'s largest banks, serving personal, commercial and corporate.',
-        //       liked: _isLiked[index],
-        //     ),
-        //   ),
-        // );
+        Navigator.pushNamedAndRemoveUntil(
+            context, AppString.SHOP_DETAIL_SCREEN_ROUTE, (route) => false,
+            arguments: retailWithCategory);
       },
       child: Container(
         height: Dimens.oneEightyFive,
@@ -262,7 +257,11 @@ class ItemRetailUnitListing extends StatelessWidget {
                                               children: [
                                                 Icon(
                                                   Icons.thumb_up,
-                                                  color: AppColor.black,
+                                                  color: retailWithCategory
+                                                              .favourite ==
+                                                          '1'
+                                                      ? AppColor.primary
+                                                      : AppColor.black,
                                                 ),
                                                 SizedBox(
                                                   height: Dimens.six,
@@ -271,6 +270,11 @@ class ItemRetailUnitListing extends StatelessWidget {
                                                   'Like'.toUpperCase(),
                                                   style: TextStyle(
                                                     fontSize: Dimens.ten,
+                                                    color: retailWithCategory
+                                                                .favourite ==
+                                                            '1'
+                                                        ? AppColor.primary
+                                                        : AppColor.black,
                                                   ),
                                                 ),
                                               ],
