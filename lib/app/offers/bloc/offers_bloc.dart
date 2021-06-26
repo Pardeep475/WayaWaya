@@ -28,13 +28,13 @@ class OffersBloc {
   Stream<ApiResponse<List<Campaign>>> get offerCampaignStream =>
       _offerCampaignController.stream;
 
-  getOfferCampaign() async {
+  getOfferCampaign({String rid}) async {
     offerCampaignSink.add(ApiResponse.loading(null));
     try {
       String defaultMall = await SessionManager.getDefaultMall();
       List<Campaign> campaignList =
           await ProfileDatabaseHelper.getCampaignByType(
-              databasePath: defaultMall, campaignType: 'offer');
+              databasePath: defaultMall, campaignType: 'offer',rid: rid);
       offerCampaignSink.add(ApiResponse.completed(campaignList));
     } catch (e) {
       offerCampaignSink.add(ApiResponse.error(e));

@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:rotated_corner_decoration/rotated_corner_decoration.dart';
-import 'package:wayawaya/screens/home.dart';
+import 'package:wayawaya/app/home/model/campaign_model.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_images.dart';
 import 'package:wayawaya/utils/app_strings.dart';
@@ -10,12 +10,30 @@ import 'package:wayawaya/utils/app_strings.dart';
 class CommonImageWidget extends StatelessWidget {
   final String imgUrl;
   final String tag;
+  final Campaign campaign;
 
-  CommonImageWidget({this.imgUrl, this.tag});
+  CommonImageWidget({this.imgUrl, this.tag, this.campaign});
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
+      onTap: () {
+        if (campaign == null) return;
+
+        if (tag.toUpperCase() == 'OFFER') {
+          List<Campaign> _listOfCampaign = [];
+          _listOfCampaign.add(campaign);
+          Navigator.pushNamedAndRemoveUntil(
+              context, AppString.OFFER_DETAILS_SCREEN_ROUTE, (route) => false,
+              arguments: _listOfCampaign);
+        } else if (tag.toUpperCase() == 'EVENT') {
+          List<Campaign> _listOfCampaign = [];
+          _listOfCampaign.add(campaign);
+          Navigator.pushNamedAndRemoveUntil(
+              context, AppString.EVENT_DETAILS_ROUTE, (route) => false,
+              arguments: _listOfCampaign);
+        }
+      },
       child: Container(
         width: MediaQuery.of(context).size.width,
         color: AppColor.primaryDark,

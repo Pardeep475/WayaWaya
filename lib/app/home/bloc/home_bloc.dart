@@ -68,12 +68,14 @@ class HomeBloc {
         case AppString.OFFER_CAMPAIGN:
           {
             CampaignElement campaignElement = element.campaignElement;
-                // CampaignElement.fromJson(jsonDecode(element.campaignElement));
-            campaignElement.imageId.forEach((element) {
+            // CampaignElement.fromJson(jsonDecode(element.campaignElement));
+            campaignElement.imageId.forEach((campaignModel) {
               // ignore: unrelated_type_equality_checks
-              if (element.language == Language.EN_US) {
+              if (campaignModel.language == Language.EN_US) {
                 topCampaignList.add(TopCampaignModel(
-                    imgUrl: element.text, tag: AppString.offer));
+                    imgUrl: campaignModel.text,
+                    tag: AppString.offer,
+                    campaign: element));
               }
             });
 
@@ -81,13 +83,15 @@ class HomeBloc {
           }
         case AppString.EVENT_CAMPAIGN:
           {
-            CampaignElement campaignElement =  element.campaignElement;
-                // CampaignElement.fromJson(jsonDecode(element.campaignElement));
-            campaignElement.imageId.forEach((element) {
+            CampaignElement campaignElement = element.campaignElement;
+            // CampaignElement.fromJson(jsonDecode(element.campaignElement));
+            campaignElement.imageId.forEach((campaignModel) {
               // ignore: unrelated_type_equality_checks
-              if (element.language == Language.EN_US) {
+              if (campaignModel.language == Language.EN_US) {
                 topCampaignList.add(TopCampaignModel(
-                    imgUrl: element.text, tag: AppString.event));
+                    imgUrl: campaignModel.text,
+                    tag: AppString.event,
+                    campaign: element));
               }
             });
 
@@ -95,8 +99,8 @@ class HomeBloc {
           }
         case AppString.WHATSON_CAMPAIGN:
           {
-            CampaignElement campaignElement  = element.campaignElement;
-                // CampaignElement.fromJson(jsonDecode(element.campaignElement));
+            CampaignElement campaignElement = element.campaignElement;
+            // CampaignElement.fromJson(jsonDecode(element.campaignElement));
             campaignElement.imageId.forEach((element) {
               // ignore: unrelated_type_equality_checks
               if (element.language == Language.EN_US) {
@@ -108,8 +112,8 @@ class HomeBloc {
           }
         case AppString.ACTIVITIES_CAMPAIGN:
           {
-            CampaignElement campaignElement  = element.campaignElement;
-                // CampaignElement.fromJson(jsonDecode(element.campaignElement));
+            CampaignElement campaignElement = element.campaignElement;
+            // CampaignElement.fromJson(jsonDecode(element.campaignElement));
             campaignElement.imageId.forEach((element) {
               // ignore: unrelated_type_equality_checks
               if (element.language == Language.EN_US) {

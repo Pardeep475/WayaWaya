@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:wayawaya/app/shop/bloc/shop_bloc.dart';
 import 'package:wayawaya/app/shop/model/retail_with_category.dart';
 import 'package:wayawaya/utils/app_color.dart';
+import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/dimens.dart';
 
 import 'item_retail_unit_listing.dart';
@@ -297,6 +298,14 @@ class _ShopListingScreenState extends State<ShopListingScreen> {
                       },
                       onOfferPressed: () {
                         debugPrint('onOfferPressed');
+                        try {
+                          Navigator.pushNamedAndRemoveUntil(context,
+                              AppString.OFFER_SCREEN_ROUTE, (route) => false,
+                              arguments: snapshot.data[index].id);
+                        } catch (e) {
+                          Navigator.pushNamedAndRemoveUntil(context,
+                              AppString.OFFER_SCREEN_ROUTE, (route) => false);
+                        }
                       },
                     );
                   },

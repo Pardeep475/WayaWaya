@@ -22,45 +22,8 @@ class OfferScreen extends StatefulWidget {
 }
 
 class _OfferScreenState extends State<OfferScreen> {
-  bool _hasRewards = true;
-
-  Widget offerCard(int index) {
-    return SizedBox();
-  }
-
-  errorDialog() {
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: Text('Error'),
-        content: Container(
-          child: Text(
-            'You need to visit the mall to earn points.',
-            style: TextStyle(
-              color: Colors.grey[600],
-              fontSize: 16,
-            ),
-          ),
-        ),
-        actions: <Widget>[
-          TextButton(
-            child: Text(
-              'OK',
-              style: TextStyle(
-                color: black,
-                fontSize: 15,
-              ),
-            ),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
   OffersBloc _offersBloc;
+  String rid;
 
   @override
   void initState() {
@@ -68,12 +31,13 @@ class _OfferScreenState extends State<OfferScreen> {
     _offersBloc = OffersBloc();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _offersBloc.fetchMenuButtons();
-      _offersBloc.getOfferCampaign();
+      _offersBloc.getOfferCampaign(rid: rid);
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    rid = ModalRoute.of(context).settings.arguments;
     return SafeArea(
         child: Scaffold(
       body: StreamBuilder<List<MainMenuPermission>>(

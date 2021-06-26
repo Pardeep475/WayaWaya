@@ -477,45 +477,49 @@ class ProfileDatabaseHelper {
     if (_db == null) {
       await initDataBase(databasePath);
     }
+    String whereClause = "";
+    String searchQueryCondition = "";
+    String offerForRetailUnitCondition = "";
+    if (searchText != null && searchText != "") {
+      searchQueryCondition =
+          " AND ( campaign_element LIKE '%" + searchText + "%' ) ";
+    }
+    if (rid != null && rid != "") {
+      offerForRetailUnitCondition = " AND ( rid LIKE '%" + rid + "%') ";
+    }
 
-    // String whereClause = "";
-    // String searchQueryCondition = "";
-    // String offerForRetailUnitCondition = "";
-    //
-    // if (searchText != null && searchText.isNotEmpty) {
-    //   searchQueryCondition = " AND ( campaign_element LIKE '%$searchText%' ) ";
-    // }
-    // if (rid != null && rid.isNotEmpty) {
-    //   offerForRetailUnitCondition = " AND ( rid LIKE '%rid%') ";
-    // }
-    //
-    // if (campaignType.isNotEmpty) {
-    //   whereClause = " WHERE type='" + campaignType + "' AND status='approved' ";
-    // } else {
-    //   whereClause = " WHERE status='approved' ";
-    // }
-    //
-    // whereClause += " AND publish_date <= '" + publishDate + "'";
-    //
-    // String query = "SELECT *, '' as shop_name FROM campaign" +
-    //     whereClause +
-    //     searchQueryCondition +
-    //     offerForRetailUnitCondition +
-    //     " ORDER BY start_date ASC";
+    if (campaignType != "") {
+      whereClause =
+          " WHERE type='" + campaignType + "' AND " + 'status' + "='approved' ";
+    } else {
+      whereClause = " WHERE " + 'status' + "='approved' ";
+    }
+
+    // whereClause += " AND publish_date <= '" + publish_date + "'";
+
+    String query = "SELECT *, '' as shop_name FROM " +
+        AppString.CAMPAIGN_TABLE_NAME +
+        " " +
+        whereClause +
+        searchQueryCondition +
+        offerForRetailUnitCondition +
+        " ORDER BY " +
+        'start_date' +
+        " ASC";
 
     List<Map> data;
-    // await _db.transaction((txn) async {
-    //   data = await txn.rawQuery('SELECT *  FROM campaign  WHERE type= offer AND status= approved ORDER BY start_date ASC LIMIT 10 OFFSET 0');
-    // });
 
     await _db.transaction((txn) async {
-      data = await txn.query(
-        AppString.CAMPAIGN_TABLE_NAME,
-        where: "status = ? and type = ?",
-        whereArgs: ['approved', campaignType],
-        orderBy: 'start_date ASC',
-      );
+      data = await txn.rawQuery(query);
     });
+    // await _db.transaction((txn) async {
+    //   data = await txn.query(
+    //     AppString.CAMPAIGN_TABLE_NAME,
+    //     where: "status = ? and type = ?",
+    //     whereArgs: ['approved', campaignType],
+    //     orderBy: 'start_date ASC',
+    //   );
+    // });
 
     // _db.close();
     debugPrint('database_testing:-   ${data.length}');

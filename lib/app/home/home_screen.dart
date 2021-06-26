@@ -187,6 +187,18 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                             index)]
                                                                         .tag
                                                                     : null,
+                                                                campaign: snapshot
+                                                                            .data
+                                                                            .itemList
+                                                                            .length >
+                                                                        (index +
+                                                                            index)
+                                                                    ? snapshot
+                                                                        .data
+                                                                        .itemList[(index +
+                                                                            index)]
+                                                                        .campaign
+                                                                    : null,
                                                               ),
                                                             ),
                                                             Expanded(
@@ -219,6 +231,20 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                             index +
                                                                             1)]
                                                                         .tag
+                                                                    : null,
+                                                                campaign: snapshot
+                                                                            .data
+                                                                            .itemList
+                                                                            .length >
+                                                                        (index +
+                                                                            index +
+                                                                            1)
+                                                                    ? snapshot
+                                                                        .data
+                                                                        .itemList[(index +
+                                                                            index +
+                                                                            1)]
+                                                                        .campaign
                                                                     : null,
                                                               ),
                                                             ),
@@ -264,6 +290,19 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                           index)]
                                                                   .tag
                                                               : null,
+                                                          campaign: snapshot
+                                                                      .data
+                                                                      .itemList
+                                                                      .length >
+                                                                  (index +
+                                                                      index)
+                                                              ? snapshot
+                                                                  .data
+                                                                  .itemList[
+                                                                      (index +
+                                                                          index)]
+                                                                  .campaign
+                                                              : null,
                                                         ),
                                                       ),
                                                       Expanded(
@@ -298,6 +337,21 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                           index +
                                                                           1)]
                                                                   .tag
+                                                              : null,
+                                                          campaign: snapshot
+                                                                      .data
+                                                                      .itemList
+                                                                      .length >
+                                                                  (index +
+                                                                      index +
+                                                                      1)
+                                                              ? snapshot
+                                                                  .data
+                                                                  .itemList[
+                                                                      (index +
+                                                                          index +
+                                                                          1)]
+                                                                  .campaign
                                                               : null,
                                                         ),
                                                       ),

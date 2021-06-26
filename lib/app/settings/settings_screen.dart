@@ -179,15 +179,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   _implementLocalDb() async {
     String defaultMall = await SessionManager.getDefaultMall();
-    List<RetailWithCategory> _allSearchList =
-        await ProfileDatabaseHelper.getRetailWithCategory(
-            databasePath: defaultMall,
-            isShop: false,
-            searchQuery: '',
-            categoryId: '',
-            favourite: 0);
+    List<RetailUnitCategory> _allSearchList =
+        await ProfileDatabaseHelper.getRestaurantAndStopData(
+      databasePath: defaultMall,
+      isShop: true,
+      searchQuery: '',
+    );
     _allSearchList.forEach((element) {
-      debugPrint("All Search heading :-       ${element.description[0].text}");
+      debugPrint("All Search heading :-       ${element.name}");
     });
   }
 }
