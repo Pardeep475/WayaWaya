@@ -149,6 +149,7 @@ class AppString {
   static const String no_result_to_show = "No Result To Show";
   static const String go_to_home_page = "GO TO HOME PAGE";
   static const String no_offer_found = "No Offers Found";
+  static const String no_record_found = "No Record Found";
   static const String share = "Share";
   static const String locate = "Locate";
   static const String redeem = "Redeem";

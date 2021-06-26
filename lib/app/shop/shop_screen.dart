@@ -8,7 +8,9 @@ import 'package:wayawaya/app/shop/bloc/shop_bloc.dart';
 import 'package:wayawaya/app/shop/view/shop_category.dart';
 import 'package:wayawaya/app/shop/view/shop_favourate.dart';
 import 'package:wayawaya/app/shop/view/shop_listing.dart';
+import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_strings.dart';
+import 'package:wayawaya/utils/dimens.dart';
 import 'package:wayawaya/widgets/expandable_fab.dart';
 
 import '../../constants.dart';
@@ -32,7 +34,6 @@ class _ShopScreenState extends State<ShopScreen> {
     super.dispose();
   }
 
-  // Outside build method
   PageController _pageController = PageController();
 
   @override
@@ -63,70 +64,11 @@ class _ShopScreenState extends State<ShopScreen> {
                             onPageChanged: (index) {},
                             itemBuilder: (BuildContext context, int index) {
                               if (index == 0) {
-                                debugPrint('testing_index:-  zero');
                                 return ShopListingScreen();
                               } else if (index == 1) {
-                                debugPrint('testing_index:-  first');
                                 return ShopCategoryScreen();
-                                // return Stack(
-                                //   children: [
-                                //     IgnorePointer(
-                                //       ignoring: _fab,
-                                //       child: CustomScrollView(
-                                //         controller: _alphaController,
-                                //         slivers: [
-                                //           SliverList(
-                                //             delegate:
-                                //                 SliverChildBuilderDelegate(
-                                //               (BuildContext context,
-                                //                   int index) {
-                                //                 return _favs[index];
-                                //               },
-                                //               childCount: _favs.length,
-                                //             ),
-                                //           ),
-                                //         ],
-                                //       ),
-                                //     ),
-                                //     Container(
-                                //       child: QuickScrollBar(
-                                //         nameList: exampleList,
-                                //         scrollController: _alphaController,
-                                //       ),
-                                //     ),
-                                //   ],
-                                // );
                               } else {
-                                debugPrint('testing_index:-  else');
                                 return ShopFavouriteScreen();
-                                // return Stack(
-                                //   children: [
-                                //     IgnorePointer(
-                                //       ignoring: _fab,
-                                //       child: CustomScrollView(
-                                //         controller: _alphaController,
-                                //         slivers: [
-                                //           SliverList(
-                                //             delegate:
-                                //                 SliverChildBuilderDelegate(
-                                //               (BuildContext context,
-                                //                   int index) {
-                                //                 return _favs[index];
-                                //               },
-                                //               childCount: _favs.length,
-                                //             ),
-                                //           ),
-                                //         ],
-                                //       ),
-                                //     ),
-                                //     Container(
-                                //       child: QuickScrollBar(
-                                //         nameList: exampleList,
-                                //         scrollController: _alphaController,
-                                //       ),
-                                //     ),
-                                //   ],
-                                // );
                               }
                             },
                           );
@@ -141,16 +83,20 @@ class _ShopScreenState extends State<ShopScreen> {
           startingAngleInRadian: 1.05 * pi,
           endingAngleInRadian: 1.96 * pi,
           reverseCurve: Curves.bounceIn,
-          toggleButtonColor: appLightColor,
+          toggleButtonColor: AppColor.primary,
           toggleButtonMargin: 0,
-          toggleButtonPadding: 12,
-          toggleButtonSize: 40,
+          pageController: _pageController,
+          toggleButtonAnimatedIconData: AnimatedIcons.menu_close,
+          toggleButtonPadding: Dimens.twelve,
+          toggleButtonSize: Dimens.forty,
           radius: 95,
           items: [
             CircularMenuItem(
               padding: 18,
               icon: Icons.sort_by_alpha,
               onTap: () {
+                debugPrint('click on short by alpha');
+
                 _pageController.animateToPage(
                   0,
                   duration: Duration(microseconds: 100),
@@ -172,6 +118,7 @@ class _ShopScreenState extends State<ShopScreen> {
               padding: 18,
               icon: Icons.list,
               onTap: () {
+                debugPrint('click on icon list ');
                 _pageController.animateToPage(
                   1,
                   duration: Duration(microseconds: 500),
@@ -194,6 +141,7 @@ class _ShopScreenState extends State<ShopScreen> {
               padding: 18,
               icon: Icons.thumb_up,
               onTap: () {
+                debugPrint('click on favourte ');
                 _pageController.animateToPage(
                   2,
                   duration: Duration(microseconds: 100),
@@ -217,3 +165,8 @@ class _ShopScreenState extends State<ShopScreen> {
     );
   }
 }
+
+/*
+*
+*
+* */

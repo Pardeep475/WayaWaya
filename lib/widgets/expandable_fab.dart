@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:wayawaya/constants.dart';
+import 'package:wayawaya/utils/app_color.dart';
 
 class CircularMenuItem extends StatelessWidget {
   /// if icon and animatedIcon are passed, icon will be ignored
@@ -220,6 +221,8 @@ class CircularMenu extends StatefulWidget {
   /// ending angle in clockwise radian
   final double endingAngleInRadian;
 
+  final PageController pageController;
+
   /// creates a circular menu with specific [radius] and [alignment] .
   /// [toggleButtonElevation] ,[toggleButtonPadding] and [toggleButtonMargin] must be
   /// equal or greater than zero.
@@ -239,6 +242,7 @@ class CircularMenu extends StatefulWidget {
     this.toggleButtonPadding = 10,
     this.toggleButtonSize = 40,
     this.toggleButtonIconColor,
+    this.pageController,
     this.toggleButtonAnimatedIconData = AnimatedIcons.menu_close,
     this.key,
     this.startingAngleInRadian,
@@ -367,6 +371,7 @@ class CircularMenuState extends State<CircularMenu>
 
   List<Widget> _buildMenuItems() {
     List<Widget> items = [];
+    debugPrint('list_of_menu_items:-   ${widget.items.length}');
     widget.items.asMap().forEach((index, item) {
       items.add(
         Positioned.fill(
@@ -384,7 +389,95 @@ class CircularMenuState extends State<CircularMenu>
                 scale: _animation.value,
                 child: Transform.rotate(
                   angle: _animation.value * (math.pi * 2),
-                  child: item,
+                  child: index == 0
+                      ? CircularMenuItem(
+                          padding: 18,
+                          icon: Icons.sort_by_alpha,
+                          onTap: () {
+                            debugPrint('click on short by alpha');
+                            _animationController.status ==
+                                    AnimationStatus.dismissed
+                                ? (_animationController).forward()
+                                : (_animationController).reverse();
+                            if (widget.pageController == null) return;
+                            widget.pageController.animateToPage(
+                              0,
+                              duration: Duration(microseconds: 100),
+                              curve: Curves.easeInOut,
+                            );
+                            // _shopBloc.listTypeSink.add(0);
+                            // Navigator.of(context).pushReplacement(
+                            //   MaterialPageRoute(
+                            //     builder: (_) => ShopRestList(
+                            //       title: 'Restaurant',
+                            //     ),
+                            //   ),
+                            // );
+                          },
+                          color: appLightColor,
+                          iconColor: Colors.white,
+                        )
+                      : index == 1
+                          ? CircularMenuItem(
+                              padding: 18,
+                              icon: Icons.list,
+                              onTap: () {
+                                debugPrint('click on icon list ');
+                                _animationController.status ==
+                                        AnimationStatus.dismissed
+                                    ? (_animationController).forward()
+                                    : (_animationController).reverse();
+
+                                if (widget.pageController == null) return;
+
+                                widget.pageController.animateToPage(
+                                  1,
+                                  duration: Duration(microseconds: 500),
+                                  curve: Curves.easeInOut,
+                                );
+
+                                // _shopBloc.listTypeSink.add(1);
+                                // Navigator.of(context).pushReplacement(
+                                //   MaterialPageRoute(
+                                //     builder: (_) => ShopRestCategory(
+                                //       title: 'Restaurant',
+                                //     ),
+                                //   ),
+                                // );
+                              },
+                              color: appLightColor,
+                              iconColor: Colors.white,
+                            )
+                          : CircularMenuItem(
+                              padding: 18,
+                              icon: Icons.thumb_up,
+                              onTap: () {
+                                debugPrint('click on favourte ');
+                                _animationController.status ==
+                                        AnimationStatus.dismissed
+                                    ? (_animationController).forward()
+                                    : (_animationController).reverse();
+                                if (widget.pageController == null) return;
+
+
+
+                                widget.pageController.animateToPage(
+                                  2,
+                                  duration: Duration(microseconds: 100),
+                                  curve: Curves.easeInOut,
+                                );
+                                // _shopBloc.listTypeSink.add(2);
+                                // Navigator.of(context).pushReplacement(
+                                //   MaterialPageRoute(
+                                //     builder: (_) => ShopRestFav(
+                                //       title: 'Restaurant',
+                                //     ),
+                                //   ),
+                                // );
+                              },
+                              color: appLightColor,
+                              iconColor: Colors.white,
+                            ),
                 ),
               ),
             ),
@@ -402,7 +495,7 @@ class CircularMenuState extends State<CircularMenu>
         child: CircularMenuItem(
           margin: widget.toggleButtonMargin,
           color: _animationController.status == AnimationStatus.dismissed
-              ? appLightColor
+              ? AppColor.primary
               : Colors.black45,
           padding: (-_animation.value * widget.toggleButtonPadding * 0.5) +
               widget.toggleButtonPadding,

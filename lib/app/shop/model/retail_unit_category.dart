@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'color_codes.dart';
 
 class RetailUnitCategory {
@@ -11,14 +13,18 @@ class RetailUnitCategory {
 
   factory RetailUnitCategory.fromJson(Map<String, dynamic> json) =>
       RetailUnitCategory(
-          categoryId: json["category_id"],
-          parent: json["parent"],
-          name: json["name"],
-          categoryColor:
-              json["color_category"] == null ? null : json["color_category"]);
+        categoryId: json["category_id"],
+        parent: json["parent"],
+        name: json["name"],
+        categoryColor: json["category_color"] == null
+            ? null
+            : ColorCodes.fromJson(
+                jsonDecode(json["category_color"]),
+              ),
+      );
 
   Map<String, dynamic> toJson() => {
-        "color_category": categoryColor == null ? null : categoryColor.toJson(),
+        "category_color": categoryColor == null ? null : categoryColor.toJson(),
         "category_id": categoryId,
         "parent": parent,
         "name": name,
