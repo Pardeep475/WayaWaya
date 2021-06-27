@@ -39,100 +39,102 @@ class _OfferScreenState extends State<OfferScreen> {
   Widget build(BuildContext context) {
     rid = ModalRoute.of(context).settings.arguments;
     return SafeArea(
-        child: Scaffold(
-      body: StreamBuilder<List<MainMenuPermission>>(
-          initialData: [],
-          stream: _offersBloc.mainMenuPermissionStream,
-          builder: (context, snapshot) {
-            return AnimateAppBar(
-              title: AppString.offers.toUpperCase(),
-              isSliver: true,
-              mainMenuPermissions: snapshot.data,
-              children: [
-                StreamBuilder<ApiResponse<List<Campaign>>>(
-                  stream: _offersBloc.offerCampaignStream,
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      switch (snapshot.data.status) {
-                        case Status.LOADING:
-                          // Future.delayed(Duration(milliseconds: 200), () {
-                          //   Utils.commonProgressDialog(context);
-                          // });
-                          return SliverFillRemaining(
-                            child: Container(
-                              width: MediaQuery.of(context).size.width,
-                              color: Colors.transparent,
-                              height: MediaQuery.of(context).size.height,
-                            ),
-                          );
-                          break;
-                        case Status.COMPLETED:
-                          {
-                            debugPrint("completed");
-                            // Navigator.pop(context);
-                            if (snapshot.data.data.isEmpty) {
-                              return SliverToBoxAdapter(
-                                child: Card(
-                                  color: AppColor.white,
-                                  elevation: 2,
-                                  child: Container(
-                                    padding: EdgeInsets.symmetric(vertical: 30),
-                                    child: Text(
-                                      AppString.no_offer_found,
-                                      textAlign: TextAlign.center,
-                                      style: GoogleFonts.ubuntuCondensed()
-                                          .copyWith(
-                                        color: black.withOpacity(0.7),
-                                        fontSize: 19,
-                                        fontWeight: FontWeight.w500,
-                                        letterSpacing: 0.8,
+      child: Scaffold(
+        body: StreamBuilder<List<MainMenuPermission>>(
+            initialData: [],
+            stream: _offersBloc.mainMenuPermissionStream,
+            builder: (context, snapshot) {
+              return AnimateAppBar(
+                title: AppString.offers.toUpperCase(),
+                isSliver: true,
+                mainMenuPermissions: snapshot.data,
+                children: [
+                  StreamBuilder<ApiResponse<List<Campaign>>>(
+                    stream: _offersBloc.offerCampaignStream,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        switch (snapshot.data.status) {
+                          case Status.LOADING:
+                            // Future.delayed(Duration(milliseconds: 200), () {
+                            //   Utils.commonProgressDialog(context);
+                            // });
+                            return SliverFillRemaining(
+                              child: Container(
+                                width: MediaQuery.of(context).size.width,
+                                color: Colors.transparent,
+                                height: MediaQuery.of(context).size.height,
+                              ),
+                            );
+                            break;
+                          case Status.COMPLETED:
+                            {
+                              debugPrint("completed");
+                              // Navigator.pop(context);
+                              if (snapshot.data.data.isEmpty) {
+                                return SliverToBoxAdapter(
+                                  child: Card(
+                                    color: AppColor.white,
+                                    elevation: 2,
+                                    child: Container(
+                                      padding:
+                                          EdgeInsets.symmetric(vertical: 30),
+                                      child: Text(
+                                        AppString.no_offer_found,
+                                        textAlign: TextAlign.center,
+                                        style: GoogleFonts.ubuntuCondensed()
+                                            .copyWith(
+                                          color: black.withOpacity(0.7),
+                                          fontSize: 19,
+                                          fontWeight: FontWeight.w500,
+                                          letterSpacing: 0.8,
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              );
-                            } else {
-                              return SliverList(
-                                delegate: SliverChildBuilderDelegate(
-                                  (BuildContext context, int index) {
-                                    return ItemOfferView(
-                                      campaign: snapshot.data.data[index],
-                                      listOfCampaign: snapshot.data.data,
-                                    );
-                                  },
-                                  childCount: snapshot.data.data.length,
-                                ),
-                              );
+                                );
+                              } else {
+                                return SliverList(
+                                  delegate: SliverChildBuilderDelegate(
+                                    (BuildContext context, int index) {
+                                      return ItemOfferView(
+                                        campaign: snapshot.data.data[index],
+                                        listOfCampaign: snapshot.data.data,
+                                      );
+                                    },
+                                    childCount: snapshot.data.data.length,
+                                  ),
+                                );
+                              }
                             }
-                          }
-                          break;
-                        case Status.ERROR:
-                          {
-                            // Navigator.pop(context);
-                            Future.delayed(Duration(milliseconds: 100), () {
-                              _showErrorDialog(
-                                icon: Icon(
-                                  FontAwesomeIcons.exclamationTriangle,
-                                  color: AppColor.orange_500,
-                                ),
-                                title: AppString.login.toUpperCase(),
-                                content:
-                                    AppString.check_your_internet_connectivity,
-                                buttonText: AppString.ok.toUpperCase(),
-                                onPressed: () => Navigator.pop(context),
-                              );
-                            });
-                          }
-                          break;
+                            break;
+                          case Status.ERROR:
+                            {
+                              // Navigator.pop(context);
+                              Future.delayed(Duration(milliseconds: 100), () {
+                                _showErrorDialog(
+                                  icon: Icon(
+                                    FontAwesomeIcons.exclamationTriangle,
+                                    color: AppColor.orange_500,
+                                  ),
+                                  title: AppString.login.toUpperCase(),
+                                  content: AppString
+                                      .check_your_internet_connectivity,
+                                  buttonText: AppString.ok.toUpperCase(),
+                                  onPressed: () => Navigator.pop(context),
+                                );
+                              });
+                            }
+                            break;
+                        }
                       }
-                    }
-                    return SliverToBoxAdapter();
-                  },
-                ),
-              ],
-            );
-          }),
-    ));
+                      return SliverToBoxAdapter();
+                    },
+                  ),
+                ],
+              );
+            }),
+      ),
+    );
   }
 
   _showErrorDialog(

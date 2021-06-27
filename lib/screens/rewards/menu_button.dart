@@ -2,11 +2,13 @@ import 'package:community_material_icon/community_material_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:wayawaya/app/common/menu/model/main_menu_permission.dart';
+import 'package:wayawaya/app/common/webview/model/custom_web_view_model.dart';
 import 'package:wayawaya/screens/map/mall_map.dart';
 import 'package:wayawaya/screens/rewards/qr_code_scanner.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_images.dart';
 import 'package:wayawaya/utils/app_strings.dart';
+import 'package:wayawaya/utils/session_manager.dart';
 import 'package:wayawaya/utils/utils.dart';
 
 import '../../config.dart';
@@ -68,7 +70,7 @@ class MenuTile extends StatelessWidget {
     );
   }
 
-  _chooseScreens(BuildContext context, String title) {
+  _chooseScreens(BuildContext context, String title) async {
     if (title == null) return;
     switch (title.toLowerCase()) {
       case 'home':
@@ -88,12 +90,22 @@ class MenuTile extends StatelessWidget {
         break;
       case 'shops':
         {
-          _openFurtherScreens(context, AppString.SHOP_SCREEN_ROUTE);
+          Future.delayed(Duration(seconds: 1), () {
+            debugPrint('pardeep_testing_animation:-   $title');
+            Navigator.pushNamedAndRemoveUntil(
+                context, AppString.SHOP_SCREEN_ROUTE, (route) => false,
+                arguments: true);
+          });
         }
         break;
       case 'restaurants':
         {
-          _openFurtherScreens(context, AppString.RESTAURANT_SCREEN_ROUTE);
+          Future.delayed(Duration(seconds: 1), () {
+            debugPrint('pardeep_testing_animation:-   $title');
+            Navigator.pushNamedAndRemoveUntil(
+                context, AppString.SHOP_SCREEN_ROUTE, (route) => false,
+                arguments: false);
+          });
         }
         break;
       case 'the mall':
@@ -103,7 +115,14 @@ class MenuTile extends StatelessWidget {
         break;
       case 'mall map':
         {
-          _openFurtherScreens(context, AppString.TWO_D_MAP_SCREEN_ROUTE);
+          String defaultMap = await SessionManager.getDefaultMall();
+          String mapUrl = '${AppString.MAP_URL_LIVE}?map_data_url=$defaultMap';
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            AppString.CUSTOM_WEB_VIEW_SCREEN_ROUTE,
+            (route) => false,
+            arguments: CustomWebViewModel(title: title, webViewUrl: mapUrl),
+          );
         }
         break;
     }

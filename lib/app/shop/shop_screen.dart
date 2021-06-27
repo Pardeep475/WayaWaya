@@ -24,6 +24,7 @@ class ShopScreen extends StatefulWidget {
 class _ShopScreenState extends State<ShopScreen> {
   ShopBloc _shopBloc;
   bool isLogin = false;
+  bool isRestaurant = false;
 
   @override
   void initState() {
@@ -34,9 +35,7 @@ class _ShopScreenState extends State<ShopScreen> {
 
   _checkIfLogin() async {
     isLogin = await SessionManager.isLogin();
-    setState(() {
-
-    });
+    setState(() {});
   }
 
   @override
@@ -48,6 +47,12 @@ class _ShopScreenState extends State<ShopScreen> {
 
   @override
   Widget build(BuildContext context) {
+    dynamic value = ModalRoute.of(context).settings.arguments;
+    debugPrint('IsRestaurant:-   $value');
+    if (value != null) {
+      isRestaurant = value;
+    }
+
     return SafeArea(
       child: Scaffold(
         backgroundColor: Color(0xffF0F0F0),
@@ -56,7 +61,7 @@ class _ShopScreenState extends State<ShopScreen> {
             stream: _shopBloc.mainMenuPermissionStream,
             builder: (context, snapshot) {
               return AnimateAppBar(
-                title: AppString.shops,
+                title: isRestaurant ? AppString.shops : AppString.restaurant,
                 isSliver: true,
                 mainMenuPermissions: snapshot.data,
                 physics: const NeverScrollableScrollPhysics(),
@@ -74,11 +79,14 @@ class _ShopScreenState extends State<ShopScreen> {
                             onPageChanged: (index) {},
                             itemBuilder: (BuildContext context, int index) {
                               if (index == 0) {
-                                return ShopListingScreen();
+                                return ShopListingScreen(
+                                    isRestaurant: isRestaurant);
                               } else if (index == 1) {
-                                return ShopCategoryScreen();
+                                return ShopCategoryScreen(
+                                    isRestaurant: isRestaurant);
                               } else {
-                                return ShopFavouriteScreen();
+                                return ShopFavouriteScreen(
+                                    isRestaurant: isRestaurant);
                               }
                             },
                           );
@@ -175,5 +183,3 @@ class _ShopScreenState extends State<ShopScreen> {
     );
   }
 }
-
-

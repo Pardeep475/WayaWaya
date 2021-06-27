@@ -19,6 +19,8 @@ class AppString {
   static const DEFAULT_MALL_KEY =
       'twG0iiIbMw3IxS5MMw|R6f29ZKdAz7TaDA1cJFFSwtysP88doc_Vwq8EbJfPIN2I';
 
+  static const MAP_URL_LIVE = "https://acbash.com/orioncepheid/mapfolder/map/twodmap/vectormap/mod.html";
+
   // session Manager
   static const IS_FIRST_TIME = "IS_FIRST_TIME";
   static const DEFAULT_MALL = "DEFAULT_MALL";

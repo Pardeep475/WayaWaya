@@ -8,6 +8,7 @@ import 'package:share/share.dart';
 import 'package:transformer_page_view/transformer_page_view.dart';
 import 'package:wayawaya/app/common/menu/animate_app_bar.dart';
 import 'package:wayawaya/app/common/menu/model/main_menu_permission.dart';
+import 'package:wayawaya/app/common/webview/model/custom_web_view_model.dart';
 import 'package:wayawaya/app/common/zoom_out_page_transformation.dart';
 import 'package:wayawaya/app/home/model/campaign_element.dart';
 import 'package:wayawaya/app/home/model/campaign_model.dart';
@@ -271,7 +272,10 @@ class _OffersDetailsState extends State<OfferDetails> {
                                           Expanded(
                                             flex: 1,
                                             child: InkWell(
-                                              onTap: () {},
+                                              onTap: () {
+                                                _locateOnMap(context,
+                                                    _listOfCampaign[index]);
+                                              },
                                               child: Container(
                                                 child: Column(
                                                   crossAxisAlignment:
@@ -422,5 +426,22 @@ class _OffersDetailsState extends State<OfferDetails> {
     if (campaign == null) return '';
     if (campaign.campaignElement == null) return '';
     return Utils.getTranslatedCodeFromImageId(campaign.campaignElement.imageId);
+  }
+
+  _locateOnMap(BuildContext context, Campaign campaign) async {
+    if (campaign == null) return;
+    if (campaign.floorplanId == null && campaign.floorplanId.trim().isEmpty)
+      return;
+    debugPrint('Here_is_floor_plan_id:-   ${campaign.floorplanId}');
+    String defaultMap = await SessionManager.getDefaultMall();
+    String mapUrl =
+        '${AppString.MAP_URL_LIVE}?retail_unit=${campaign.floorplanId}&map_data_url=$defaultMap';
+    Navigator.pushNamedAndRemoveUntil(
+      context,
+      AppString.CUSTOM_WEB_VIEW_SCREEN_ROUTE,
+      (route) => false,
+      arguments: CustomWebViewModel(
+          title: _getTitle(context, campaign), webViewUrl: mapUrl),
+    );
   }
 }

@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:wayawaya/app/common/webview/model/custom_web_view_model.dart';
 import 'package:wayawaya/app/shop/model/retail_with_category.dart';
 import 'package:wayawaya/app/shop/model/shop_status.dart';
 import 'package:wayawaya/screens/shops_and_rest_details.dart';
@@ -8,6 +9,7 @@ import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_images.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/dimens.dart';
+import 'package:wayawaya/utils/session_manager.dart';
 import 'package:wayawaya/utils/utils.dart';
 
 class ItemRetailUnitListing extends StatelessWidget {
@@ -225,7 +227,9 @@ class ItemRetailUnitListing extends StatelessWidget {
                                             width: Dimens.ten,
                                           ),
                                           InkWell(
-                                            onTap: onLocationPressed,
+                                            onTap: () {
+                                              _locateOnMap(context);
+                                            },
                                             child: Column(
                                               mainAxisAlignment:
                                                   MainAxisAlignment.end,
@@ -310,6 +314,23 @@ class ItemRetailUnitListing extends StatelessWidget {
     if (retailWithCategory == null) return "";
     if (retailWithCategory.name == null) return "";
     return retailWithCategory.name;
+  }
+
+  _locateOnMap(BuildContext context) async {
+    if (retailWithCategory == null) return;
+    if (retailWithCategory.subLocations == null) return;
+    if (retailWithCategory.subLocations.floorplanId == null) return;
+    debugPrint(
+        'Here_is_floor_plan_id:-   ${retailWithCategory.subLocations.floorplanId}');
+    String defaultMap = await SessionManager.getDefaultMall();
+    String mapUrl =
+        '${AppString.MAP_URL_LIVE}?retail_unit=${retailWithCategory.subLocations.floorplanId}&map_data_url=$defaultMap';
+    Navigator.pushNamedAndRemoveUntil(
+      context,
+      AppString.CUSTOM_WEB_VIEW_SCREEN_ROUTE,
+      (route) => false,
+      arguments: CustomWebViewModel(title: _getName(), webViewUrl: mapUrl),
+    );
   }
 
   String _getDescription(BuildContext context) {

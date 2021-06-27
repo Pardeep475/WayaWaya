@@ -60,6 +60,7 @@ dependencies:
   path_provider: ^2.0.2
   alphabet_list_scroll_view: ^2.0.0
   url_launcher: ^6.0.7
+  scrollable_positioned_list:
 
 dev_dependencies:
   flutter_test:
@@ -80,11 +81,8 @@ flutter:
     - assets/image/
     - assets/database/
     - assets/map/
-    - assets/map/twodmap/vectormap/mod.html
-    - assets/map/twodmap/vectormap/jquery-jvectormap-2.0.3.min.js
-    - assets/map/twodmap/vectormap/jquery-jvectormap-2.0.3.css
-    - assets/map/twodmap/vectormap/jquery-jvectormap.min.js
     - assets/mapJson/
+    - assets/font/testing.html
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
   # For details regarding adding assets from package dependencies, see

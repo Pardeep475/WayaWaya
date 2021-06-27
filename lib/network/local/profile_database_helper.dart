@@ -594,7 +594,7 @@ class ProfileDatabaseHelper {
       data = await txn.rawQuery(query);
     });
 
-    debugPrint('database_testing:-  all search  ${data.length}');
+    debugPrint('database_testing:- Restaurant all search  ${data.length}');
     debugPrint('database_testing:-   $data');
     List<RetailUnitCategory> _allSearchList = [];
     data.forEach((element) {

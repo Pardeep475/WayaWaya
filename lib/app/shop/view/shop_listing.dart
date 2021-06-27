@@ -10,6 +10,10 @@ import 'package:wayawaya/utils/dimens.dart';
 import 'item_retail_unit_listing.dart';
 
 class ShopListingScreen extends StatefulWidget {
+  final bool isRestaurant;
+
+  ShopListingScreen({this.isRestaurant});
+
   @override
   State<StatefulWidget> createState() => _ShopListingScreenState();
 }
@@ -26,12 +30,11 @@ class _ShopListingScreenState extends State<ShopListingScreen> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _shopBloc.fetchOrderedCategoryListing();
+      _shopBloc.fetchOrderedCategoryListing(isRestaurant: widget.isRestaurant);
     });
   }
 
-
-  setUpAlphabetList(){
+  setUpAlphabetList() {
     alphabet = [
       'A',
       'B',

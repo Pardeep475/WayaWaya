@@ -9,6 +9,10 @@ import 'package:wayawaya/utils/app_strings.dart';
 import 'expandable_card.dart';
 
 class ShopCategoryScreen extends StatefulWidget {
+  final bool isRestaurant;
+
+  ShopCategoryScreen({this.isRestaurant});
+
   @override
   State<StatefulWidget> createState() => _ShopCategoryScreenState();
 }
@@ -22,7 +26,7 @@ class _ShopCategoryScreenState extends State<ShopCategoryScreen> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _shopBloc.fetchCategoryBasedListing();
+      _shopBloc.fetchCategoryBasedListing(isRestaurant: widget.isRestaurant);
     });
   }
 

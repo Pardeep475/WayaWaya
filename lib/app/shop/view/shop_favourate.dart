@@ -8,6 +8,10 @@ import 'package:wayawaya/utils/app_strings.dart';
 import 'item_retail_unit_listing.dart';
 
 class ShopFavouriteScreen extends StatefulWidget {
+  final bool isRestaurant;
+
+  ShopFavouriteScreen({this.isRestaurant});
+
   @override
   State<StatefulWidget> createState() => _ShopFavouriteScreenState();
 }
@@ -21,7 +25,7 @@ class _ShopFavouriteScreenState extends State<ShopFavouriteScreen> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _shopBloc.fetchFavouriteListing();
+      _shopBloc.fetchFavouriteListing(isRestaurant: widget.isRestaurant);
     });
   }
 

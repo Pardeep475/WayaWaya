@@ -8,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:shape_of_view/shape_of_view.dart';
 import 'package:share/share.dart';
+import 'package:wayawaya/app/common/webview/model/custom_web_view_model.dart';
 import 'package:wayawaya/app/home/model/campaign_element.dart';
 import 'package:wayawaya/app/home/model/campaign_model.dart';
 import 'package:wayawaya/app/offers/model/voucher.dart';
@@ -225,9 +226,7 @@ class ItemOfferView extends StatelessWidget {
                                   Material(
                                     color: Colors.transparent,
                                     child: InkWell(
-                                      onTap: () {
-
-                                      },
+                                      onTap: () {},
                                       child: Column(
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
@@ -340,20 +339,26 @@ class ItemOfferView extends StatelessWidget {
     return false;
   }
 
-  _locateOnMap(BuildContext context) {
+  _locateOnMap(BuildContext context) async {
     if (campaign == null) return;
     if (campaign.floorplanId == null && campaign.floorplanId.trim().isEmpty)
       return;
     debugPrint('Here_is_floor_plan_id:-   ${campaign.floorplanId}');
-
+    String defaultMap = await SessionManager.getDefaultMall();
+    String mapUrl =
+        '${AppString.MAP_URL_LIVE}?retail_unit=${campaign.floorplanId}&map_data_url=$defaultMap';
     Navigator.pushNamedAndRemoveUntil(
-        context, AppString.TWO_D_MAP_SCREEN_ROUTE, (route) => false);
+      context,
+      AppString.CUSTOM_WEB_VIEW_SCREEN_ROUTE,
+      (route) => false,
+      arguments: CustomWebViewModel(title: _getTitle(context), webViewUrl: mapUrl),
+    );
   }
 
   _shareFiles(BuildContext buildContext) {
     try {
       String subject = _getTitle(buildContext);
-      if(campaign.voucher != null){
+      if (campaign.voucher != null) {
         Voucher _voucher = Voucher.fromJson(jsonDecode(campaign.voucher));
         NumberFormat nf = NumberFormat.decimalPattern();
         String discount = nf.format(_voucher.discount);
@@ -364,7 +369,8 @@ class ItemOfferView extends StatelessWidget {
       }
 
       String description = '';
-      if(campaign.campaignElement != null && campaign.campaignElement.description != null){
+      if (campaign.campaignElement != null &&
+          campaign.campaignElement.description != null) {
         campaign.campaignElement.description.forEach((element) {
           if (element.language == Language.EN_US) {
             description = element.text;

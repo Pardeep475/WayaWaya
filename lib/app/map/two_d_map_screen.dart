@@ -36,30 +36,48 @@ class _TwoDMapScreen extends State<TwoDMapScreen> {
 
   _loadHtmlFileFromAssets() async {
     String defaultMall = await SessionManager.getDefaultMall();
-    String mapDataJson =
-        "assets/mapJson/mall_map_data_" + defaultMall + ".json";
+    // String mapDataJson =
+    //     "assets/mapJson/mall_map_data_" + defaultMall + ".json";
+    //
+    // String mShopId = 'B1-F1-S34';
+    // String fileHtmlContents =
+    //     await rootBundle.loadString('assets/map/twodmap/vectormap/mod.html');
+    // // debugPrint('fileHtmlContents     $fileHtmlContents');
+    //
+    // String mapDataUrl = await rootBundle.loadString(mapDataJson);
+    // // debugPrint('mapDataUrl     $mapDataUrl');
+    // String finalUrl = '$fileHtmlContents?retail_unit=' +
+    //     mShopId +
+    //     "&map_data_url=" +
+    //     Uri.dataFromString(mapDataUrl,
+    //             mimeType: 'text/html', encoding: Encoding.getByName('utf-8'))
+    //         .toString() +
+    //     "&reload=" +
+    //     '1';
 
-    String mShopId = 'B1-F1-S34';
-    String fileHtmlContents =
-        await rootBundle.loadString('assets/map/twodmap/vectormap/mod.html');
-    String mapDataUrl = await rootBundle.loadString(mapDataJson);
-    String finalUrl = '$fileHtmlContents?retail_unit=' +
-        mShopId +
-        "&map_data_url=" +
-        Uri.dataFromString(mapDataUrl,
-                mimeType: 'text/html', encoding: Encoding.getByName('utf-8'))
-            .toString() +
-        "&reload=" +
-        '1';
-    debugPrint('final_url:-   $finalUrl');
-    dynamic uriWebView = Uri.dataFromString(finalUrl,
-            mimeType: 'text/html', encoding: Encoding.getByName('utf-8'))
-        .toString();
-    debugPrint('final_url:-   $uriWebView');
+    // debugPrint('final_url:-   $uriWebView');
 
-    _webViewController.loadUrl(finalUrl);
+    // String one = await rootBundle
+    //     .loadString('assets/mapJson/mall_map_data_$defaultMall.json');
+    // String two =
+    //     await rootBundle.loadString('assets/map/twodmap/vectormap/mod.html');
+// ?map_data_url=/assets/mapJson/mall_map_data_$defaultMall.json
+//     String url = '$two';
+    // "assets/map/twodmap/vectormap/mod.html?map_data_url=/assets/mapJson/mall_map_data_$defaultMall.json";
+    String testingFile =
+        await rootBundle.loadString('assets/font/testing.html');
+    dynamic uriWebView = Uri.dataFromString(
+      testingFile,
+      mimeType: 'text/html',
+      // parameters: {
+      //   "map_data_url": "assets/mapJson/mall_map_data_$defaultMall.json"
+      // },
+      encoding: Encoding.getByName('utf-8'),
+    ).toString();
+    _webViewController.loadUrl(uriWebView);
   }
 
+// https://acbash.com/orioncepheid/mapfolder/map/twodmap/vectormap/mod.html?map_data_url=mall_map_data.json
   @override
   Widget build(BuildContext context) {
     String floorId = ModalRoute.of(context).settings.arguments;
@@ -75,15 +93,30 @@ class _TwoDMapScreen extends State<TwoDMapScreen> {
               children: [
                 SliverFillRemaining(
                   child: WebView(
-                    initialUrl: '',
+                    initialUrl: 'https://acbash.com/orioncepheid/mapfolder/map/twodmap/vectormap/mod.html?map_data_url=bdd45df0be5d4891bcfa25eddf44aa86',
                     javascriptMode: JavascriptMode.unrestricted,
+
                     onWebViewCreated: (WebViewController webViewController) {
                       _webViewController = webViewController;
-                      _loadHtmlFileFromAssets();
+                      // _loadHtmlFileFromAssets();
                     },
-                    onWebResourceError: (webResourceError) {
-                      debugPrint('error :-  $webResourceError');
+                    debuggingEnabled: true,
+                    onProgress: (int progress) {
+                      debugPrint(
+                          "WebView is loading (progress : $progress%)");
                     },
+                    onPageStarted: (String url) {
+                      debugPrint('Page started loading: $url');
+
+                    },
+                    onPageFinished: (String url) {
+                      debugPrint('Page finished loading: $url');
+                    },
+                    onWebResourceError: (error) {
+                      debugPrint(
+                          'Page_error: ${error.description}  \n ${error.errorType}  \n ${error.errorCode} \n ${error.domain}  \n ${error.failingUrl}');
+                    },
+                    gestureNavigationEnabled: false,
                   ),
                 )
 

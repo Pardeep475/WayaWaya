@@ -176,4 +176,5 @@ class ItemOfferViewDetail extends StatelessWidget {
       ),
     );
   }
+
 }

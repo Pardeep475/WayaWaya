@@ -67,12 +67,12 @@ class ShopBloc {
     return itemList;
   }
 
-  fetchOrderedCategoryListing() async {
+  fetchOrderedCategoryListing({bool isRestaurant}) async {
     String defaultMall = await SessionManager.getDefaultMall();
     List<RetailWithCategory> _retailWithCategoryList =
         await ProfileDatabaseHelper.getRetailWithCategory(
             databasePath: defaultMall,
-            isShop: true,
+            isShop: isRestaurant,
             searchQuery: '',
             categoryId: '',
             favourite: 0);
@@ -80,12 +80,12 @@ class ShopBloc {
     orderListingSink.add(_retailWithCategoryList);
   }
 
-  fetchCategoryBasedListing() async {
+  fetchCategoryBasedListing({bool isRestaurant}) async {
     String defaultMall = await SessionManager.getDefaultMall();
     List<RetailUnitCategory> _retailUnitCategoryList =
         await ProfileDatabaseHelper.getRestaurantAndStopData(
       databasePath: defaultMall,
-      isShop: true,
+      isShop: isRestaurant,
       searchQuery: '',
     );
     List<CategoryBasedModel> _categoryBasedModelList = [];
@@ -98,7 +98,7 @@ class ShopBloc {
           List<RetailWithCategory> _retailWithCategoryList =
               await ProfileDatabaseHelper.getRetailWithCategory(
                   databasePath: defaultMall,
-                  isShop: true,
+                  isShop: isRestaurant,
                   searchQuery: '',
                   categoryId: categoryName.categoryId,
                   favourite: 0);
@@ -137,12 +137,12 @@ class ShopBloc {
     return listCategoryName[listCategoryName.length - 1];
   }
 
-  fetchFavouriteListing() async {
+  fetchFavouriteListing({bool isRestaurant}) async {
     String defaultMall = await SessionManager.getDefaultMall();
     List<RetailWithCategory> _retailWithCategoryList =
         await ProfileDatabaseHelper.getRetailWithCategory(
             databasePath: defaultMall,
-            isShop: true,
+            isShop: isRestaurant,
             searchQuery: '',
             categoryId: '',
             favourite: 1);

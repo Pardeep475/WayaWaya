@@ -15,6 +15,7 @@ import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_images.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/dimens.dart';
+import 'package:wayawaya/utils/session_manager.dart';
 import 'package:wayawaya/utils/utils.dart';
 import 'model/retail_with_category.dart';
 
@@ -162,7 +163,9 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
                                 size: Dimens.thirty,
                                 color: AppColor.white,
                               ),
-                              onPressed: () {},
+                              onPressed: () {
+                                _onLocationPressed(retailWithCategory);
+                              },
                             ),
                             IconButton(
                                 icon: Icon(
@@ -520,7 +523,7 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
       } else {
         if (await canLaunch(url)) {
           await launch('tel:$url');
-        }else{
+        } else {
           debugPrint('telephone_click:-   can not lanuch');
         }
       }
@@ -639,5 +642,23 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
     } catch (e) {
       debugPrint('$e');
     }
+  }
+
+  void _onLocationPressed(RetailWithCategory retailWithCategory) async {
+    if (retailWithCategory == null) return;
+    if (retailWithCategory.subLocations == null) return;
+    if (retailWithCategory.subLocations.floorplanId == null) return;
+    debugPrint(
+        'Here_is_floor_plan_id:-   ${retailWithCategory.subLocations.floorplanId}');
+    String defaultMap = await SessionManager.getDefaultMall();
+    String mapUrl =
+        '${AppString.MAP_URL_LIVE}?retail_unit=${retailWithCategory.subLocations.floorplanId}&map_data_url=$defaultMap';
+    Navigator.pushNamedAndRemoveUntil(
+      context,
+      AppString.CUSTOM_WEB_VIEW_SCREEN_ROUTE,
+      (route) => false,
+      arguments: CustomWebViewModel(
+          title: _getName(retailWithCategory), webViewUrl: mapUrl),
+    );
   }
 }
