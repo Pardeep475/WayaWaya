@@ -50,7 +50,7 @@ dependencies:
   flutter_svg:
   sqflite: ^2.0.0+3
   dio: ^4.0.0
-  webview_flutter: ^2.0.7
+  webview_flutter:
   device_info: ^2.0.1
   jwt_decoder: ^2.0.1
   community_material_icon:
@@ -58,7 +58,8 @@ dependencies:
   shape_of_view:
   share:
   path_provider: ^2.0.2
-  webview_flutter_plus: ^0.2.2
+  alphabet_list_scroll_view: ^2.0.0
+  url_launcher: ^6.0.7
 
 dev_dependencies:
   flutter_test:
@@ -79,6 +80,11 @@ flutter:
     - assets/image/
     - assets/database/
     - assets/map/
+    - assets/map/twodmap/vectormap/mod.html
+    - assets/map/twodmap/vectormap/jquery-jvectormap-2.0.3.min.js
+    - assets/map/twodmap/vectormap/jquery-jvectormap-2.0.3.css
+    - assets/map/twodmap/vectormap/jquery-jvectormap.min.js
+    - assets/mapJson/
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
   # For details regarding adding assets from package dependencies, see

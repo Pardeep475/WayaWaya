@@ -1,12 +1,15 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:photo_view/photo_view.dart';
+import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:wayawaya/app/common/menu/animate_app_bar.dart';
-import 'package:wayawaya/screens/rewards/menunew.dart';
+import 'package:wayawaya/utils/session_manager.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import 'package:webview_flutter_plus/webview_flutter_plus.dart';
 
-import '../../config.dart';
 import '../../constants.dart';
 import 'bloc/two_d_map_bloc.dart';
 
@@ -22,19 +25,44 @@ class _TwoDMapScreen extends State<TwoDMapScreen> {
 
   TwoDMapBloc _twoDMapBloc;
 
-  WebViewPlusController _controller;
-  double _height = 1;
-
   @override
   void initState() {
     super.initState();
     _twoDMapBloc = TwoDMapBloc();
   }
 
+  String filePath = 'assets/map/twodmap/vectormap/mod.html';
+  WebViewController _webViewController;
+
+  _loadHtmlFileFromAssets() async {
+    String defaultMall = await SessionManager.getDefaultMall();
+    String mapDataJson =
+        "assets/mapJson/mall_map_data_" + defaultMall + ".json";
+
+    String mShopId = 'B1-F1-S34';
+    String fileHtmlContents =
+        await rootBundle.loadString('assets/map/twodmap/vectormap/mod.html');
+    String mapDataUrl = await rootBundle.loadString(mapDataJson);
+    String finalUrl = '$fileHtmlContents?retail_unit=' +
+        mShopId +
+        "&map_data_url=" +
+        Uri.dataFromString(mapDataUrl,
+                mimeType: 'text/html', encoding: Encoding.getByName('utf-8'))
+            .toString() +
+        "&reload=" +
+        '1';
+    debugPrint('final_url:-   $finalUrl');
+    dynamic uriWebView = Uri.dataFromString(finalUrl,
+            mimeType: 'text/html', encoding: Encoding.getByName('utf-8'))
+        .toString();
+    debugPrint('final_url:-   $uriWebView');
+
+    _webViewController.loadUrl(finalUrl);
+  }
+
   @override
   Widget build(BuildContext context) {
     String floorId = ModalRoute.of(context).settings.arguments;
-    _twoDMapBloc.getMapUrl(floorId);
     return SafeArea(
       child: Scaffold(
         backgroundColor: bgColor,
@@ -46,31 +74,16 @@ class _TwoDMapScreen extends State<TwoDMapScreen> {
               physics: NeverScrollableScrollPhysics(),
               children: [
                 SliverFillRemaining(
-                  child: WebViewPlus(
+                  child: WebView(
+                    initialUrl: '',
                     javascriptMode: JavascriptMode.unrestricted,
-                    onWebViewCreated: (controller) {
-                      this._controller = controller;
-                      controller
-                          .loadUrl('assets/map/twodmap/vectormap/mod.html');
+                    onWebViewCreated: (WebViewController webViewController) {
+                      _webViewController = webViewController;
+                      _loadHtmlFileFromAssets();
                     },
-                    onProgress: (value){
-
+                    onWebResourceError: (webResourceError) {
+                      debugPrint('error :-  $webResourceError');
                     },
-                    onWebResourceError: (error){
-                      debugPrint('error_web_view_is    ${error.errorType}');
-                      debugPrint('error_web_view_is    ${error.errorCode}');
-                      debugPrint('error_web_view_is    ${error.description}');
-                    },
-                    onPageFinished: (url) {
-                      _controller.getHeight().then((double height) {
-                        print("Height:  " + height.toString());
-                        setState(() {
-                          _height = height;
-                        });
-                      });
-                    },
-                    // initialUrl:
-                    //     'assets/map/twodmap/vectormap/mod.html',
                   ),
                 )
 

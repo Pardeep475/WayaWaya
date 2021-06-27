@@ -16,15 +16,50 @@ class ShopListingScreen extends StatefulWidget {
 
 class _ShopListingScreenState extends State<ShopListingScreen> {
   ShopBloc _shopBloc;
+  List<String> alphabet = [];
+  ScrollController _alphaController;
 
   @override
   void initState() {
+    setUpAlphabetList();
     _shopBloc = ShopBloc();
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _shopBloc.fetchOrderedCategoryListing();
     });
+  }
+
+
+  setUpAlphabetList(){
+    alphabet = [
+      'A',
+      'B',
+      'C',
+      'D',
+      'E',
+      'F',
+      'G',
+      'H',
+      'I',
+      'J',
+      'K',
+      'L',
+      'M',
+      'N',
+      'O',
+      'P',
+      'Q',
+      'R',
+      'S',
+      'T',
+      'U',
+      'V',
+      'W',
+      'X',
+      'Y',
+      'Z'
+    ];
   }
 
   @override

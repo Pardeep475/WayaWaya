@@ -96,6 +96,16 @@ class MenuTile extends StatelessWidget {
           _openFurtherScreens(context, AppString.RESTAURANT_SCREEN_ROUTE);
         }
         break;
+      case 'the mall':
+        {
+          _openFurtherScreens(context, AppString.TWO_D_MAP_SCREEN_ROUTE);
+        }
+        break;
+      case 'mall map':
+        {
+          _openFurtherScreens(context, AppString.TWO_D_MAP_SCREEN_ROUTE);
+        }
+        break;
     }
   }
 
@@ -432,7 +442,7 @@ class RhombusMenu extends StatelessWidget {
                 enabled: enabled,
                 cubic: _getCubic(AppString.the_mall_menu),
                 onPressed: () {
-                  Navigator.pop(context);
+                  Navigator.pop(context, AppString.the_mall_menu);
                   // App.pushTo(
                   //   context: context,
                   //   screen: MallServices(),
@@ -464,7 +474,7 @@ class RhombusMenu extends StatelessWidget {
                 enabled: enabled,
                 cubic: _getCubic(AppString.mall_map_menu),
                 onPressed: () {
-                  Navigator.pop(context);
+                  Navigator.pop(context, AppString.the_mall_menu);
                   // App.pushTo(
                   //   context: context,
                   //   screen: MapScreen(),

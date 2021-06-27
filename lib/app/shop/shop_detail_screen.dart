@@ -5,11 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:share/share.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:wayawaya/app/common/dialogs/common_error_dialog.dart';
 import 'package:wayawaya/app/common/menu/animate_app_bar.dart';
 import 'package:wayawaya/app/common/menu/model/main_menu_permission.dart';
+import 'package:wayawaya/app/common/webview/model/custom_web_view_model.dart';
 import 'package:wayawaya/app/shop/bloc/shop_detail_bloc.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_images.dart';
+import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/dimens.dart';
 import 'package:wayawaya/utils/utils.dart';
 import 'model/retail_with_category.dart';
@@ -328,7 +332,10 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
               0,
               customIconWidget(
                 FontAwesomeIcons.globe,
-                _websiteOnPressed(retailWithCategory),
+                () {
+                  _websiteOnPressed(
+                      _getName(retailWithCategory), element.itemData);
+                },
               ),
             );
           }
@@ -339,7 +346,9 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
               retailWithCategory.subLocations.contactItem.length > 1 ? 1 : 0,
               customIconWidget(
                 Icons.phone,
-                _telephoneOnPressed(retailWithCategory),
+                () {
+                  _telephoneOnPressed(element.itemData);
+                },
               ),
             );
           }
@@ -349,7 +358,9 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
             _iconsList.add(
               customIconWidget(
                 Icons.phone_android,
-                _mobileOnPressed(retailWithCategory),
+                () {
+                  _telephoneOnPressed(element.itemData);
+                },
               ),
             );
           }
@@ -369,7 +380,10 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
             _iconsList.add(
               customIconWidget(
                 FontAwesomeIcons.facebookF,
-                _faceBookOnPressed(retailWithCategory),
+                () {
+                  _websiteOnPressed(
+                      _getName(retailWithCategory), element.itemData);
+                },
               ),
             );
           }
@@ -379,7 +393,10 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
             _iconsList.add(
               customIconWidget(
                 FontAwesomeIcons.twitter,
-                _twitterOnPressed(retailWithCategory),
+                () {
+                  _websiteOnPressed(
+                      _getName(retailWithCategory), element.itemData);
+                },
               ),
             );
           }
@@ -389,7 +406,10 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
             _iconsList.add(
               customIconWidget(
                 FontAwesomeIcons.instagram,
-                _instaOnPressed(retailWithCategory),
+                () {
+                  _websiteOnPressed(
+                      _getName(retailWithCategory), element.itemData);
+                },
               ),
             );
           }
@@ -399,7 +419,10 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
             _iconsList.add(
               customIconWidget(
                 FontAwesomeIcons.youtube,
-                _youtubeOnPressed(retailWithCategory),
+                () {
+                  _websiteOnPressed(
+                      _getName(retailWithCategory), element.itemData);
+                },
               ),
             );
           }
@@ -409,7 +432,10 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
             _iconsList.add(
               customIconWidget(
                 FontAwesomeIcons.skype,
-                _skypeOnPressed(retailWithCategory),
+                () {
+                  _websiteOnPressed(
+                      _getName(retailWithCategory), element.itemData);
+                },
               ),
             );
           }
@@ -419,7 +445,10 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
             _iconsList.add(
               customIconWidget(
                 FontAwesomeIcons.googlePlus,
-                _googlePlusOnPressed(retailWithCategory),
+                () {
+                  _websiteOnPressed(
+                      _getName(retailWithCategory), element.itemData);
+                },
               ),
             );
           }
@@ -429,7 +458,9 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
             _iconsList.add(
               customIconWidget(
                 FontAwesomeIcons.fax,
-                _faxOnPressed(retailWithCategory),
+                () {
+                  _telephoneOnPressed(element.itemData);
+                },
               ),
             );
           }
@@ -439,7 +470,10 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
             _iconsList.add(
               customIconWidget(
                 FontAwesomeIcons.shoppingCart,
-                _cartOnPressed(retailWithCategory),
+                () {
+                  _websiteOnPressed(
+                      _getName(retailWithCategory), element.itemData);
+                },
               ),
             );
           }
@@ -469,9 +503,97 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
 
   _mobileOnPressed(RetailWithCategory retailWithCategory) {}
 
-  _telephoneOnPressed(RetailWithCategory retailWithCategory) {}
+  _telephoneOnPressed(String url) async {
+    debugPrint('telephone_click:-   $url');
+    try {
+      if (url == null || url.trim() == '') {
+        _showErrorDialog(
+          icon: Icon(
+            FontAwesomeIcons.exclamationTriangle,
+            color: AppColor.orange_500,
+          ),
+          title: AppString.error.toUpperCase(),
+          content: AppString.no_number,
+          buttonText: AppString.ok.toUpperCase(),
+          onPressed: () => Navigator.pop(context),
+        );
+      } else {
+        if (await canLaunch(url)) {
+          await launch('tel:$url');
+        }else{
+          debugPrint('telephone_click:-   can not lanuch');
+        }
+      }
+    } catch (e) {
+      _showErrorDialog(
+        icon: Icon(
+          FontAwesomeIcons.exclamationTriangle,
+          color: AppColor.orange_500,
+        ),
+        title: AppString.error.toUpperCase(),
+        content: AppString.no_number,
+        buttonText: AppString.ok.toUpperCase(),
+        onPressed: () => Navigator.pop(context),
+      );
+    }
+  }
 
-  _websiteOnPressed(RetailWithCategory retailWithCategory) {}
+  _websiteOnPressed(String name, String url) {
+    debugPrint('custom_web_view_model:-   title:- $name   \n   url:-  $url');
+
+    if (url == null || url.trim() == '' || url.trim() == '0') {
+      // Some thing went wrong
+      _showErrorDialog(
+        icon: Icon(
+          FontAwesomeIcons.exclamationTriangle,
+          color: AppColor.orange_500,
+        ),
+        title: AppString.error.toUpperCase(),
+        content: AppString.no_website,
+        buttonText: AppString.ok.toUpperCase(),
+        onPressed: () => Navigator.pop(context),
+      );
+    } else {
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        AppString.CUSTOM_WEB_VIEW_SCREEN_ROUTE,
+        (route) => false,
+        arguments: CustomWebViewModel(title: name, webViewUrl: url),
+      );
+    }
+  }
+
+  _showErrorDialog(
+      {Icon icon,
+      String title,
+      String content,
+      String buttonText,
+      VoidCallback onPressed}) {
+    showGeneralDialog(
+        barrierColor: Colors.black.withOpacity(0.1),
+        transitionBuilder: (context, a1, a2, widget) {
+          final curvedValue = Curves.easeInOutBack.transform(a1.value) - 1.0;
+          return Transform(
+            transform: Matrix4.translationValues(0.0, curvedValue * 200, 0.0),
+            child: AnimatedOpacity(
+              duration: Duration(milliseconds: 100),
+              opacity: a1.value,
+              child: CommonErrorDialog(
+                icon: icon,
+                title: title,
+                content: content,
+                buttonText: buttonText,
+                onPressed: onPressed,
+              ),
+            ),
+          );
+        },
+        transitionDuration: Duration(milliseconds: 200),
+        barrierDismissible: false,
+        barrierLabel: '',
+        context: context,
+        pageBuilder: (context, animation1, animation2) {});
+  }
 
   Widget customIconWidget(IconData iconData, Function() onPressed) {
     return IconButton(
