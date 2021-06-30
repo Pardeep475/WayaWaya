@@ -21,7 +21,6 @@ class EventScreen extends StatefulWidget {
 }
 
 class _EventScreenState extends State<EventScreen> {
-
   Widget offerCard(int index) {
     return SizedBox();
   }
@@ -81,6 +80,10 @@ class _EventScreenState extends State<EventScreen> {
             return AnimateAppBar(
               title: AppString.events.toUpperCase(),
               isSliver: true,
+              physics: ClampingScrollPhysics(),
+              pinned: false,
+              snap: true,
+              floating: true,
               mainMenuPermissions: snapshot.data,
               children: [
                 StreamBuilder<ApiResponse<List<Campaign>>>(
@@ -132,6 +135,7 @@ class _EventScreenState extends State<EventScreen> {
                                     return ItemEventView(
                                       campaign: snapshot.data.data[index],
                                       listOfCampaign: snapshot.data.data,
+                                      index: index,
                                     );
                                   },
                                   childCount: snapshot.data.data.length,

@@ -80,7 +80,7 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
                             decoration: BoxDecoration(
                               image: DecorationImage(
                                 image: imageProvider,
-                                fit: BoxFit.cover,
+                                fit: BoxFit.fill,
                               ),
                             ),
                           ),
@@ -245,7 +245,7 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
                                   decoration: BoxDecoration(
                                     image: DecorationImage(
                                       image: imageProvider,
-                                      fit: BoxFit.cover,
+                                      fit: BoxFit.fill,
                                     ),
                                   ),
                                 ),

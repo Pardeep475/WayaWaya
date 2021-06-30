@@ -16,7 +16,7 @@ String subLocationsToJson(SubLocations data) => json.encode(data.toJson());
 class SubLocations {
   final String qrCodeId2;
   final ImageProperties logoId;
-  final int shopOriginOrientation;
+  final dynamic shopOriginOrientation;
   final String buildingId;
   final OpeningTimes openingTimes;
 

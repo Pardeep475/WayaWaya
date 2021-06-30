@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:share/share.dart';
 import 'package:transformer_page_view/transformer_page_view.dart';
@@ -13,16 +12,14 @@ import 'package:wayawaya/app/common/zoom_out_page_transformation.dart';
 import 'package:wayawaya/app/home/model/campaign_element.dart';
 import 'package:wayawaya/app/home/model/campaign_model.dart';
 import 'package:wayawaya/app/offers/bloc/offer_detail_bloc.dart';
+import 'package:wayawaya/app/offers/model/detail_model.dart';
 import 'package:wayawaya/app/offers/view/item_offer_view_detail.dart';
-import 'package:wayawaya/screens/map/mall_map.dart';
-import 'package:wayawaya/screens/rewards/menunew.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/dimens.dart';
 import 'package:wayawaya/utils/session_manager.dart';
 import 'package:wayawaya/utils/utils.dart';
 
-import '../../config.dart';
 import '../../constants.dart';
 import 'model/voucher.dart';
 
@@ -34,8 +31,6 @@ class OfferDetails extends StatefulWidget {
 }
 
 class _OffersDetailsState extends State<OfferDetails> {
-  bool _hasRewards = true;
-
   OfferDetailBloc _offerDetailBloc;
   String title = "";
   String lastTitle = "";
@@ -49,130 +44,6 @@ class _OffersDetailsState extends State<OfferDetails> {
     });
   }
 
-  // Widget detailCard(Campaign campaign) {
-  //   return Container(
-  //     margin: EdgeInsets.only(top: 5),
-  //     color: white,
-  //     child: Wrap(
-  //       children: [
-  //         Container(
-  //           height: 220,
-  //           width: double.infinity,
-  //           child: Image.network(
-  //             'https://www.cbia.com/wp-content/uploads/2020/05/Social-Distancing.png',
-  //             fit: BoxFit.fill,
-  //           ),
-  //         ),
-  //         Container(
-  //           padding: EdgeInsets.fromLTRB(5, 8, 5, 0),
-  //           child: Column(
-  //             crossAxisAlignment: CrossAxisAlignment.start,
-  //             children: [
-  //               Text(
-  //                 widget.offerName,
-  //                 style: GoogleFonts.ubuntuCondensed().copyWith(
-  //                   color: black.withOpacity(0.7),
-  //                   fontSize: 19,
-  //                   fontWeight: FontWeight.w500,
-  //                   letterSpacing: 0.8,
-  //                 ),
-  //               ),
-  //               SizedBox(
-  //                 height: 8,
-  //               ),
-  //               Container(
-  //                 child: Row(
-  //                   mainAxisAlignment: MainAxisAlignment.start,
-  //                   children: [
-  //                     Row(
-  //                       children: [
-  //                         Icon(
-  //                           Icons.arrow_forward,
-  //                           color: Colors.green,
-  //                         ),
-  //                         SizedBox(
-  //                           width: 3,
-  //                         ),
-  //                         Text('27-Nov'),
-  //                       ],
-  //                     ),
-  //                     SizedBox(
-  //                       width: 30,
-  //                     ),
-  //                     Row(
-  //                       children: [
-  //                         SizedBox(
-  //                           width: 2,
-  //                         ),
-  //                         Icon(
-  //                           Icons.circle,
-  //                           color: Colors.red,
-  //                           size: 18,
-  //                         ),
-  //                         SizedBox(
-  //                           width: 6,
-  //                         ),
-  //                         Text('04-Oct'),
-  //                       ],
-  //                     ),
-  //                   ],
-  //                 ),
-  //               ),
-  //               _hasRewards
-  //                   ? Container(
-  //                       height: 35,
-  //                       padding: EdgeInsets.only(top: 8),
-  //                       child: Text(
-  //                         'Win your share of R5 Million.',
-  //                         style: TextStyle(
-  //                           color: Colors.grey[500],
-  //                           fontSize: 16,
-  //                         ),
-  //                       ),
-  //                     )
-  //                   : Container(
-  //                       height: 0,
-  //                     ),
-  //             ],
-  //           ),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
-
-  errorDialog() {
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: Text('Error'),
-        content: Container(
-          child: Text(
-            'You need to visit the mall to earn points.',
-            style: TextStyle(
-              color: Colors.grey[600],
-              fontSize: 16,
-            ),
-          ),
-        ),
-        actions: <Widget>[
-          TextButton(
-            child: Text(
-              'OK',
-              style: TextStyle(
-                color: black,
-                fontSize: 15,
-              ),
-            ),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
   _getTitle(BuildContext context, Campaign campaign) {
     if (campaign == null) return '';
     if (campaign.campaignElement == null) return '';
@@ -182,11 +53,14 @@ class _OffersDetailsState extends State<OfferDetails> {
       _offerDetailBloc.mainMenuPermissionSink
           .add(_offerDetailBloc.mainMenuList);
     }
+    return title;
   }
 
   @override
   Widget build(BuildContext context) {
-    List<Campaign> _listOfCampaign = ModalRoute.of(context).settings.arguments;
+    DetailModel _detailModel = ModalRoute.of(context).settings.arguments;
+    List<Campaign> _listOfCampaign = _detailModel.listOfCampaign;
+
     return SafeArea(
       child: Scaffold(
         body: Stack(
@@ -198,12 +72,14 @@ class _OffersDetailsState extends State<OfferDetails> {
                   return AnimateAppBar(
                     title: title,
                     isSliver: true,
+                    physics: NeverScrollableScrollPhysics(),
                     mainMenuPermissions: snapshot.data,
                     children: [
                       SliverFillRemaining(
                         child: TransformerPageView(
                             loop: false,
                             transformer: new ZoomOutPageTransformer(),
+                            index: _detailModel.position,
                             itemBuilder: (BuildContext context, int index) {
                               _getTitle(context, _listOfCampaign[index]);
                               return Container(
@@ -218,57 +94,57 @@ class _OffersDetailsState extends State<OfferDetails> {
                                       margin: const EdgeInsets.all(0),
                                       child: Row(
                                         children: [
-                                          FutureBuilder(
-                                            future: _redeemLayout(
-                                                _listOfCampaign[index]),
-                                            builder: (context, snapshot) {
-                                              if (snapshot.hasData &&
-                                                  snapshot.data) {
-                                                return Expanded(
-                                                  child: Material(
-                                                    color: Colors.transparent,
-                                                    child: InkWell(
-                                                      onTap: () {},
-                                                      child: Column(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .center,
-                                                        mainAxisSize:
-                                                            MainAxisSize.max,
-                                                        children: [
-                                                          SizedBox(
-                                                            height:
-                                                                Dimens.fifteen,
-                                                          ),
-                                                          Icon(
-                                                            FontAwesomeIcons
-                                                                .gift,
-                                                            color:
-                                                                AppColor.black,
-                                                          ),
-                                                          SizedBox(
-                                                            height: Dimens.ten,
-                                                          ),
-                                                          Text(
-                                                            AppString.redeem
-                                                                .toUpperCase(),
-                                                            style: TextStyle(
-                                                              fontSize:
-                                                                  Dimens.ten,
-                                                            ),
-                                                          ),
-                                                          SizedBox(
-                                                            height: Dimens.ten,
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ),
-                                                );
-                                              }
-                                              return SizedBox();
-                                            },
-                                          ),
+                                          // FutureBuilder(
+                                          //   future: _redeemLayout(
+                                          //       _listOfCampaign[index]),
+                                          //   builder: (context, snapshot) {
+                                          //     if (snapshot.hasData &&
+                                          //         snapshot.data) {
+                                          //       return Expanded(
+                                          //         child: Material(
+                                          //           color: Colors.transparent,
+                                          //           child: InkWell(
+                                          //             onTap: () {},
+                                          //             child: Column(
+                                          //               mainAxisAlignment:
+                                          //                   MainAxisAlignment
+                                          //                       .center,
+                                          //               mainAxisSize:
+                                          //                   MainAxisSize.max,
+                                          //               children: [
+                                          //                 SizedBox(
+                                          //                   height:
+                                          //                       Dimens.fifteen,
+                                          //                 ),
+                                          //                 Icon(
+                                          //                   FontAwesomeIcons
+                                          //                       .gift,
+                                          //                   color:
+                                          //                       AppColor.black,
+                                          //                 ),
+                                          //                 SizedBox(
+                                          //                   height: Dimens.ten,
+                                          //                 ),
+                                          //                 Text(
+                                          //                   AppString.redeem
+                                          //                       .toUpperCase(),
+                                          //                   style: TextStyle(
+                                          //                     fontSize:
+                                          //                         Dimens.ten,
+                                          //                   ),
+                                          //                 ),
+                                          //                 SizedBox(
+                                          //                   height: Dimens.ten,
+                                          //                 ),
+                                          //               ],
+                                          //             ),
+                                          //           ),
+                                          //         ),
+                                          //       );
+                                          //     }
+                                          //     return SizedBox();
+                                          //   },
+                                          // ),
                                           Expanded(
                                             flex: 1,
                                             child: InkWell(
@@ -429,19 +305,23 @@ class _OffersDetailsState extends State<OfferDetails> {
   }
 
   _locateOnMap(BuildContext context, Campaign campaign) async {
-    if (campaign == null) return;
-    if (campaign.floorplanId == null && campaign.floorplanId.trim().isEmpty)
-      return;
-    debugPrint('Here_is_floor_plan_id:-   ${campaign.floorplanId}');
-    String defaultMap = await SessionManager.getDefaultMall();
-    String mapUrl =
-        '${AppString.MAP_URL_LIVE}?retail_unit=${campaign.floorplanId}&map_data_url=$defaultMap';
-    Navigator.pushNamedAndRemoveUntil(
-      context,
-      AppString.CUSTOM_WEB_VIEW_SCREEN_ROUTE,
-      (route) => false,
-      arguments: CustomWebViewModel(
-          title: _getTitle(context, campaign), webViewUrl: mapUrl),
-    );
+    try {
+      if (campaign == null) return;
+      if (campaign.floorplanId == null && campaign.floorplanId.trim().isEmpty)
+        return;
+      debugPrint('Here_is_floor_plan_id:-   ${campaign.floorplanId}');
+      String defaultMap = await SessionManager.getDefaultMall();
+      String mapUrl =
+          '${AppString.MAP_URL_LIVE}?retail_unit=${campaign.floorplanId}&map_data_url=$defaultMap';
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        AppString.CUSTOM_WEB_VIEW_SCREEN_ROUTE,
+        (route) => false,
+        arguments: CustomWebViewModel(
+            title: _getTitle(context, campaign), webViewUrl: mapUrl),
+      );
+    } catch (e) {
+      debugPrint('offers_details_error:-   $e');
+    }
   }
 }

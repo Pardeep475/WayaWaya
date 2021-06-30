@@ -47,6 +47,10 @@ class _OfferScreenState extends State<OfferScreen> {
               return AnimateAppBar(
                 title: AppString.offers.toUpperCase(),
                 isSliver: true,
+                physics: ClampingScrollPhysics(),
+                pinned: false,
+                snap: true,
+                floating: true,
                 mainMenuPermissions: snapshot.data,
                 children: [
                   StreamBuilder<ApiResponse<List<Campaign>>>(
@@ -99,6 +103,7 @@ class _OfferScreenState extends State<OfferScreen> {
                                       return ItemOfferView(
                                         campaign: snapshot.data.data[index],
                                         listOfCampaign: snapshot.data.data,
+                                        index: index,
                                       );
                                     },
                                     childCount: snapshot.data.data.length,

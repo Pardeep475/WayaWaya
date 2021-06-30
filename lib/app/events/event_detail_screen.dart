@@ -9,6 +9,7 @@ import 'package:wayawaya/app/events/bloc/event_detail_bloc.dart';
 import 'package:wayawaya/app/events/view/item_event_detail_view.dart';
 import 'package:wayawaya/app/home/model/campaign_element.dart';
 import 'package:wayawaya/app/home/model/campaign_model.dart';
+import 'package:wayawaya/app/offers/model/detail_model.dart';
 import 'package:wayawaya/common/model/mall_profile_model.dart';
 import 'package:wayawaya/network/local/super_admin_database_helper.dart';
 import 'package:wayawaya/utils/app_color.dart';
@@ -51,7 +52,9 @@ class _EventDetailScreen extends State<EventDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    List<Campaign> _listOfCampaign = ModalRoute.of(context).settings.arguments;
+    DetailModel _detailModel = ModalRoute.of(context).settings.arguments;
+    List<Campaign> _listOfCampaign = _detailModel.listOfCampaign;
+
     return SafeArea(
       child: Scaffold(
         body: Stack(
@@ -63,11 +66,13 @@ class _EventDetailScreen extends State<EventDetailScreen> {
                   return AnimateAppBar(
                     title: title,
                     isSliver: true,
+                    physics: NeverScrollableScrollPhysics(),
                     mainMenuPermissions: snapshot.data,
                     children: [
                       SliverFillRemaining(
                         child: TransformerPageView(
                             loop: false,
+                            index: _detailModel.position,
                             transformer: new ZoomOutPageTransformer(),
                             itemBuilder: (BuildContext context, int index) {
                               _getTitle(context, _listOfCampaign[index]);
@@ -98,7 +103,9 @@ class _EventDetailScreen extends State<EventDetailScreen> {
                                                 icon:
                                                     Icons.watch_later_outlined,
                                                 index: 1,
-                                                contentText: _getTimingText(context,_listOfCampaign[index])),
+                                                contentText: _getTimingText(
+                                                    context,
+                                                    _listOfCampaign[index])),
                                           ),
                                           Expanded(
                                             child: bottomButton(
@@ -219,7 +226,7 @@ class _EventDetailScreen extends State<EventDetailScreen> {
   String _getTimingText(BuildContext context, Campaign campaign) {
     if (campaign == null) return '';
     if (campaign.startTime == null) return '';
-   return Utils.dateConvert(
+    return Utils.dateConvert(
         Utils.dateConvert(campaign.startTime, AppString.DATE_FORMAT), 'hh:ss');
   }
 }

@@ -16,6 +16,7 @@ class CommonImageWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint('img_url_home:-  $imgUrl');
     return InkWell(
       onTap: () {
         if (campaign == null) return;
@@ -67,12 +68,12 @@ class CommonImageWidget extends StatelessWidget {
                 height: MediaQuery.of(context).size.height,
                 width: MediaQuery.of(context).size.width,
                 imageUrl: imgUrl,
-                fit: BoxFit.fill,
+                fit: BoxFit.none,
                 imageBuilder: (context, imageProvider) => Container(
                   decoration: BoxDecoration(
                     image: DecorationImage(
                       image: imageProvider,
-                      fit: BoxFit.cover,
+                      fit: BoxFit.fill,
                     ),
                   ),
                 ),

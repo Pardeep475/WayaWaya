@@ -10,6 +10,7 @@ import 'package:rotated_corner_decoration/rotated_corner_decoration.dart';
 import 'package:share/share.dart';
 import 'package:wayawaya/app/home/model/campaign_element.dart';
 import 'package:wayawaya/app/home/model/campaign_model.dart';
+import 'package:wayawaya/app/offers/model/detail_model.dart';
 import 'package:wayawaya/app/offers/model/voucher.dart';
 import 'package:wayawaya/common/model/language_store.dart';
 import 'package:wayawaya/common/model/mall_profile_model.dart';
@@ -26,7 +27,9 @@ class ItemEventView extends StatelessWidget {
 
   final List<Campaign> listOfCampaign;
 
-  ItemEventView({this.campaign, this.listOfCampaign});
+  final int index;
+
+  ItemEventView({this.campaign, this.listOfCampaign, this.index});
 
   String _getTitle(BuildContext context) {
     if (campaign == null) return '';
@@ -62,8 +65,10 @@ class ItemEventView extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
+        DetailModel _detailModel =
+            DetailModel(listOfCampaign: this.listOfCampaign, position: index);
         Navigator.pushNamed(context, AppString.EVENT_DETAILS_ROUTE,
-            arguments: this.listOfCampaign);
+            arguments: _detailModel);
       },
       child: Container(
         margin: EdgeInsets.only(top: 5, left: 5, right: 5, bottom: 5),
@@ -319,7 +324,7 @@ class ItemEventView extends StatelessWidget {
         description: description ?? "",
         location: location ?? "",
         startDate:
-        startDate == null ? DateTime.now() : DateTime.parse(startDate),
+            startDate == null ? DateTime.now() : DateTime.parse(startDate),
         allDay: true,
         endDate: endDate == null ? DateTime.now() : DateTime.parse(endDate),
         iosParams: IOSParams(reminder: Duration()),

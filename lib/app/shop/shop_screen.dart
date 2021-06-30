@@ -64,7 +64,10 @@ class _ShopScreenState extends State<ShopScreen> {
                 title: isRestaurant ? AppString.shops : AppString.restaurant,
                 isSliver: true,
                 mainMenuPermissions: snapshot.data,
-                physics: const NeverScrollableScrollPhysics(),
+                physics: ClampingScrollPhysics(),
+                pinned: false,
+                snap: true,
+                floating: true,
                 children: [
                   SliverFillRemaining(
                     child: StreamBuilder<int>(

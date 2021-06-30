@@ -11,7 +11,7 @@ class ContactItem {
   final String itemData;
   final String iconId;
   final List<LanguageStore> displayLabel;
-  final int order;
+  final dynamic order;
   final String type;
 
   ContactItem(

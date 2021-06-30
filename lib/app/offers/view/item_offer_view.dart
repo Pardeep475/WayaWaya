@@ -11,6 +11,7 @@ import 'package:share/share.dart';
 import 'package:wayawaya/app/common/webview/model/custom_web_view_model.dart';
 import 'package:wayawaya/app/home/model/campaign_element.dart';
 import 'package:wayawaya/app/home/model/campaign_model.dart';
+import 'package:wayawaya/app/offers/model/detail_model.dart';
 import 'package:wayawaya/app/offers/model/voucher.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_images.dart';
@@ -22,8 +23,9 @@ import 'package:wayawaya/utils/utils.dart';
 class ItemOfferView extends StatelessWidget {
   final Campaign campaign;
   final List<Campaign> listOfCampaign;
+  final int index;
 
-  ItemOfferView({this.campaign, this.listOfCampaign});
+  ItemOfferView({this.campaign, this.listOfCampaign, this.index});
 
   String _getTitle(BuildContext context) {
     if (campaign == null) return '';
@@ -64,8 +66,10 @@ class ItemOfferView extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
+        DetailModel _detailModel = DetailModel(
+            listOfCampaign: this.listOfCampaign, position: this.index);
         Navigator.pushNamed(context, AppString.OFFER_DETAILS_SCREEN_ROUTE,
-            arguments: this.listOfCampaign);
+            arguments: _detailModel);
       },
       child: Container(
         margin: EdgeInsets.all(Dimens.five),
@@ -91,7 +95,7 @@ class ItemOfferView extends StatelessWidget {
                         decoration: BoxDecoration(
                           image: DecorationImage(
                             image: imageProvider,
-                            fit: BoxFit.cover,
+                            fit: BoxFit.fill,
                           ),
                         ),
                       ),
@@ -217,47 +221,47 @@ class ItemOfferView extends StatelessWidget {
                         ),
                         Expanded(child: SizedBox()),
 
-                        FutureBuilder(
-                          future: _redeemLayout(),
-                          builder: (context, snapshot) {
-                            if (snapshot.hasData && snapshot.data) {
-                              return Row(
-                                children: [
-                                  Material(
-                                    color: Colors.transparent,
-                                    child: InkWell(
-                                      onTap: () {},
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        mainAxisSize: MainAxisSize.max,
-                                        children: [
-                                          Icon(
-                                            FontAwesomeIcons.gift,
-                                            color: AppColor.black,
-                                          ),
-                                          SizedBox(
-                                            height: Dimens.ten,
-                                          ),
-                                          Text(
-                                            AppString.redeem.toUpperCase(),
-                                            style: TextStyle(
-                                              fontSize: Dimens.ten,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: Dimens.eleven,
-                                  ),
-                                ],
-                              );
-                            }
-                            return SizedBox();
-                          },
-                        ),
+                        // FutureBuilder(
+                        //   future: _redeemLayout(),
+                        //   builder: (context, snapshot) {
+                        //     if (snapshot.hasData && snapshot.data) {
+                        //       return Row(
+                        //         children: [
+                        //           Material(
+                        //             color: Colors.transparent,
+                        //             child: InkWell(
+                        //               onTap: () {},
+                        //               child: Column(
+                        //                 mainAxisAlignment:
+                        //                     MainAxisAlignment.center,
+                        //                 mainAxisSize: MainAxisSize.max,
+                        //                 children: [
+                        //                   Icon(
+                        //                     FontAwesomeIcons.gift,
+                        //                     color: AppColor.black,
+                        //                   ),
+                        //                   SizedBox(
+                        //                     height: Dimens.ten,
+                        //                   ),
+                        //                   Text(
+                        //                     AppString.redeem.toUpperCase(),
+                        //                     style: TextStyle(
+                        //                       fontSize: Dimens.ten,
+                        //                     ),
+                        //                   ),
+                        //                 ],
+                        //               ),
+                        //             ),
+                        //           ),
+                        //           SizedBox(
+                        //             width: Dimens.eleven,
+                        //           ),
+                        //         ],
+                        //       );
+                        //     }
+                        //     return SizedBox();
+                        //   },
+                        // ),
 
                         Material(
                           color: Colors.transparent,
@@ -340,19 +344,24 @@ class ItemOfferView extends StatelessWidget {
   }
 
   _locateOnMap(BuildContext context) async {
-    if (campaign == null) return;
-    if (campaign.floorplanId == null && campaign.floorplanId.trim().isEmpty)
-      return;
-    debugPrint('Here_is_floor_plan_id:-   ${campaign.floorplanId}');
-    String defaultMap = await SessionManager.getDefaultMall();
-    String mapUrl =
-        '${AppString.MAP_URL_LIVE}?retail_unit=${campaign.floorplanId}&map_data_url=$defaultMap';
-    Navigator.pushNamedAndRemoveUntil(
-      context,
-      AppString.CUSTOM_WEB_VIEW_SCREEN_ROUTE,
-      (route) => false,
-      arguments: CustomWebViewModel(title: _getTitle(context), webViewUrl: mapUrl),
-    );
+    try {
+      if (campaign == null) return;
+      if (campaign.floorplanId == null && campaign.floorplanId.trim().isEmpty)
+        return;
+      debugPrint('Here_is_floor_plan_id:-   ${campaign.floorplanId}');
+      String defaultMap = await SessionManager.getDefaultMall();
+      String mapUrl =
+          '${AppString.MAP_URL_LIVE}?retail_unit=${campaign.floorplanId}&map_data_url=$defaultMap';
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        AppString.CUSTOM_WEB_VIEW_SCREEN_ROUTE,
+        (route) => false,
+        arguments:
+            CustomWebViewModel(title: _getTitle(context), webViewUrl: mapUrl),
+      );
+    } catch (e) {
+      debugPrint('offers_error:-   $e');
+    }
   }
 
   _shareFiles(BuildContext buildContext) {

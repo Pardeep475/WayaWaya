@@ -170,8 +170,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
       case AppString.term_and_conditions:
         {
           debugPrint('settings_click_testing:-  ${settingsModel.title}');
-          // _settingsBloc.termAndConditionOnClick(context);
-          _implementLocalDb();
+          _settingsBloc.termAndConditionOnClick(context);
+          // _implementLocalDb();
           break;
         }
     }
