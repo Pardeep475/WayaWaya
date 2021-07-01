@@ -8,6 +8,12 @@ import 'package:wayawaya/network/local/super_admin_database_helper.dart';
 import 'package:wayawaya/utils/session_manager.dart';
 
 class SearchBloc {
+// ignore: close_sinks
+  StreamController _searchController = StreamController<bool>();
+
+  StreamSink<bool> get searchSink => _searchController.sink;
+
+  Stream<bool> get searchStream => _searchController.stream;
 
   // ignore: close_sinks
   StreamController _mainMenuPermissionsController =

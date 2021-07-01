@@ -3,6 +3,7 @@ import 'package:wayawaya/app/common/menu/bloc/animate_app_bar_widget_bloc.dart';
 import 'package:wayawaya/app/common/menu/custom_app_bar.dart';
 import 'package:wayawaya/app/common/menu/model/main_menu_permission.dart';
 import 'package:wayawaya/utils/app_color.dart';
+import 'package:wayawaya/utils/app_images.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 
 class AnimateAppBar extends StatefulWidget {
@@ -87,7 +88,7 @@ class _AnimateAppBarState extends State<AnimateAppBar> {
                     backgroundColor: AppColor.white,
                     radius: 20,
                     foregroundImage: AssetImage(
-                      'assets/menu_app_ic.png',
+                      AppImages.menu_app_ic,
                     ),
                   ),
                 ],
@@ -151,6 +152,8 @@ class _AnimateAppBarState extends State<AnimateAppBar> {
   Widget build(BuildContext context) {
     debugPrint('animate_app_bar_testing:-  ${widget.isSliver}');
     return SafeArea(
+      // top: false,
+      // bottom: false,
       child: Scaffold(
         backgroundColor: Colors.grey[100],
         body: Container(

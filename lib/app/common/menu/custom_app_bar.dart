@@ -10,6 +10,7 @@ import 'package:wayawaya/screens/select_def_mall.dart';
 import 'package:wayawaya/screens/settings.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_strings.dart';
+import 'package:wayawaya/utils/dimens.dart';
 import 'package:wayawaya/utils/session_manager.dart';
 
 import '../../../config.dart';
@@ -61,37 +62,6 @@ class _CustomAppBarState extends State<CustomAppBar> {
   String _selectedMall;
   CustomAppBarBloc _customAppBarBloc;
 
-  getMallLogo() {
-    _selectedMall = 'Dobsonville Mall';
-    print(_selectedMall);
-    switch (_selectedMall) {
-      case 'Dobsonville Mall':
-        return 'assets/dobsonville.png';
-      case 'Hillfox Value Centre':
-        return 'assets/hillfox.png';
-      case 'Durban Workshop':
-        return 'assets/durban.png';
-      case 'Randburg Square Centre':
-        return 'assets/randburg.png';
-      case 'Atlantis City':
-        return 'assets/atlantis.png';
-      case 'Hammarsdale Junction':
-        return 'assets/hammarsdale.png';
-      case 'Kolonnade Retail Park':
-        return 'assets/kolonnade.png';
-      case 'Bloemfontein Plaza':
-        return 'assets/bloemfontein.png';
-      case 'Gugulethu Square':
-        return 'assets/gugulethu.png';
-      case 'Mdantsane City Shopping Centre':
-        return 'assets/mdantsane.png';
-      case 'Pine Crest Centre':
-        return 'assets/pinecrest.png';
-      case 'Nonesi Mall':
-        return 'assets/nonesi.png';
-    }
-  }
-
   @override
   void initState() {
     _customAppBarBloc = CustomAppBarBloc();
@@ -118,7 +88,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
             return SliverAppBar(
               backgroundColor: Colors.grey[800],
               automaticallyImplyLeading: false,
-              expandedHeight: 58,
+              expandedHeight: Dimens.fiftyEight,
               floating: widget.floating ?? false,
               pinned: widget.pinned ?? false,
               snap: widget.snap ?? false,
@@ -126,10 +96,10 @@ class _CustomAppBarState extends State<CustomAppBar> {
               leading: MenuTile(itemList: widget.mainMenuPermissionList),
               title: Text(
                 widget.title,
-                maxLines: 1,
+                maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
-                  fontSize: widget.titleSize ?? 16,
+                  fontSize: widget.titleSize ?? Dimens.sixteen,
                   fontWeight: FontWeight.w400,
                 ),
               ),
@@ -139,7 +109,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                         child: Icon(
                           Icons.ac_unit_rounded,
                           color: appLightColor,
-                          size: 24,
+                          size: Dimens.twentyFour,
                         ),
                         onTap: widget.onSnowTap ?? () {},
                       )
@@ -148,7 +118,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                   icon: Icon(
                     Icons.settings,
                     color: appLightColor,
-                    size: 34,
+                    size: Dimens.thirtyFour,
                   ),
                   onPressed: widget.onSettingsTap ?? _onSettingsButtonClick,
                 ),
@@ -158,7 +128,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                       icon: Icon(
                         Icons.search,
                         color: appLightColor,
-                        size: 34,
+                        size: Dimens.thirtyFour,
                       ),
                       onPressed: widget.onSearchTap ?? () {},
                     ),
@@ -166,20 +136,21 @@ class _CustomAppBarState extends State<CustomAppBar> {
                     ? InkWell(
                         onTap: () => _onMallSelection(),
                         child: Padding(
-                          padding: const EdgeInsets.only(right: 5, left: 5),
+                          padding: EdgeInsets.only(
+                              right: Dimens.five, left: Dimens.five),
                           child: StreamBuilder<String>(
                               initialData: null,
-                              stream: _customAppBarBloc
-                                  .identifierCategoryStream,
+                              stream:
+                                  _customAppBarBloc.identifierCategoryStream,
                               builder: (context, snapshot) {
                                 return CircleAvatar(
-                                  radius: 20,
+                                  radius: Dimens.twenty,
                                   backgroundColor: appLightColor,
                                   child: snapshot.data == null
                                       ? Image.asset(
-                                      'assets/image/ic_launcher_bdd45df0be5d4891bcfa25eddf44aa86.png')
+                                          'assets/image/ic_launcher_bdd45df0be5d4891bcfa25eddf44aa86.png')
                                       : Image.asset(
-                                      'assets/image/ic_launcher_${snapshot.data}.png'),
+                                          'assets/image/ic_launcher_${snapshot.data}.png'),
                                 );
                               }),
                         ),
@@ -193,7 +164,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                 ? SliverAppBar(
                     backgroundColor: Colors.grey[800],
                     automaticallyImplyLeading: false,
-                    expandedHeight: 58,
+                    expandedHeight: Dimens.fiftyEight,
                     floating: widget.floating ?? false,
                     pinned: widget.pinned ?? false,
                     snap: widget.snap ?? false,
@@ -201,10 +172,10 @@ class _CustomAppBarState extends State<CustomAppBar> {
                     leading: MenuTile(itemList: widget.mainMenuPermissionList),
                     title: Text(
                       widget.title,
-                      maxLines: 1,
+                      maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                        fontSize: widget.titleSize ?? 16,
+                        fontSize: widget.titleSize ?? Dimens.sixteen,
                         fontWeight: FontWeight.w400,
                       ),
                     ),
@@ -214,7 +185,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                               child: Icon(
                                 Icons.ac_unit_rounded,
                                 color: appLightColor,
-                                size: 24,
+                                size: Dimens.twentyFour,
                               ),
                               onTap: widget.onSnowTap ?? () {},
                             )
@@ -223,18 +194,19 @@ class _CustomAppBarState extends State<CustomAppBar> {
                         icon: Icon(
                           Icons.settings,
                           color: appLightColor,
-                          size: 34,
+                          size: Dimens.thirtyFour,
                         ),
                         onPressed:
                             widget.onSettingsTap ?? _onSettingsButtonClick,
                       ),
                       widget.lastIcon ??
                           IconButton(
-                            padding: EdgeInsets.only(left: 25, right: 20),
+                            padding: EdgeInsets.only(
+                                left: Dimens.twentyFive, right: Dimens.twenty),
                             icon: Icon(
                               Icons.search,
                               color: appLightColor,
-                              size: 34,
+                              size: Dimens.thirtyFour,
                             ),
                             onPressed: widget.onSearchTap ?? () {},
                           ),
@@ -242,15 +214,15 @@ class _CustomAppBarState extends State<CustomAppBar> {
                           ? InkWell(
                               onTap: () => _onMallSelection(),
                               child: Padding(
-                                padding:
-                                    const EdgeInsets.only(right: 5, left: 5),
+                                padding: EdgeInsets.only(
+                                    right: Dimens.five, left: Dimens.five),
                                 child: StreamBuilder<String>(
                                     initialData: null,
                                     stream: _customAppBarBloc
                                         .identifierCategoryStream,
                                     builder: (context, snapshot) {
                                       return CircleAvatar(
-                                        radius: 20,
+                                        radius: Dimens.twenty,
                                         backgroundColor: appLightColor,
                                         child: snapshot.data == null
                                             ? Image.asset(
@@ -270,16 +242,19 @@ class _CustomAppBarState extends State<CustomAppBar> {
                     automaticallyImplyLeading: false,
                     centerTitle: widget.centerTitle ?? false,
                     title: Container(
-                      height: 58,
+                      height: Dimens.fiftyEight,
                       child: Padding(
                         padding: widget.padding ??
                             EdgeInsets.only(
-                                left: 70, top: 20, bottom: 20, right: 20),
+                                left: Dimens.seventy,
+                                top: Dimens.twenty,
+                                bottom: Dimens.twenty,
+                                right: Dimens.twenty),
                         child: Text(
                           widget.title,
-                          maxLines: 3,
+                          maxLines: 2,
                           style: TextStyle(
-                            fontSize: widget.titleSize ?? 14,
+                            fontSize: widget.titleSize ?? Dimens.sixteen,
                             fontWeight: FontWeight.w400,
                           ),
                         ),
@@ -315,21 +290,21 @@ class _CustomAppBarState extends State<CustomAppBar> {
                           ? InkWell(
                               onTap: () => _onMallSelection(),
                               child: Padding(
-                                padding:
-                                    const EdgeInsets.only(right: 5, left: 5),
+                                padding: EdgeInsets.only(
+                                    right: Dimens.five, left: Dimens.five),
                                 child: StreamBuilder<String>(
                                     initialData: null,
                                     stream: _customAppBarBloc
                                         .identifierCategoryStream,
                                     builder: (context, snapshot) {
                                       return CircleAvatar(
-                                        radius: 20,
+                                        radius: Dimens.twenty,
                                         backgroundColor: appLightColor,
                                         child: snapshot.data == null
                                             ? Image.asset(
-                                            'assets/image/ic_launcher_bdd45df0be5d4891bcfa25eddf44aa86.png')
+                                                'assets/image/ic_launcher_bdd45df0be5d4891bcfa25eddf44aa86.png')
                                             : Image.asset(
-                                            'assets/image/ic_launcher_${snapshot.data}.png'),
+                                                'assets/image/ic_launcher_${snapshot.data}.png'),
                                       );
                                     }),
                               ),

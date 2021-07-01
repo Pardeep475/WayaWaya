@@ -486,25 +486,7 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
     });
   }
 
-  _cartOnPressed(RetailWithCategory retailWithCategory) {}
-
-  _faxOnPressed(RetailWithCategory retailWithCategory) {}
-
-  _googlePlusOnPressed(RetailWithCategory retailWithCategory) {}
-
-  _skypeOnPressed(RetailWithCategory retailWithCategory) {}
-
-  _youtubeOnPressed(RetailWithCategory retailWithCategory) {}
-
-  _instaOnPressed(RetailWithCategory retailWithCategory) {}
-
-  _twitterOnPressed(RetailWithCategory retailWithCategory) {}
-
-  _faceBookOnPressed(RetailWithCategory retailWithCategory) {}
-
   _emailOnPressed(RetailWithCategory retailWithCategory) {}
-
-  _mobileOnPressed(RetailWithCategory retailWithCategory) {}
 
   _telephoneOnPressed(String url) async {
     debugPrint('telephone_click:-   $url');

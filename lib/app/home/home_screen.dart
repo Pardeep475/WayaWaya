@@ -38,6 +38,8 @@ class _HomeScreenState extends State<HomeScreen> {
     return WillPopScope(
       onWillPop: () async => false,
       child: SafeArea(
+        // top: false,
+        // bottom: false,
         child: Scaffold(
           backgroundColor: AppColor.primaryDark,
           body: Container(

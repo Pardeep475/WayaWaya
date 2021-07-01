@@ -5,6 +5,7 @@ import 'package:wayawaya/screens/rewards/menu_button.dart';
 import 'package:wayawaya/screens/select_def_mall.dart';
 import 'package:wayawaya/screens/settings.dart';
 import 'package:wayawaya/utils/app_strings.dart';
+import 'package:wayawaya/utils/dimens.dart';
 import '../constants.dart';
 
 class MyAppBar extends StatefulWidget {
@@ -174,17 +175,17 @@ class _MyAppBarState extends State<MyAppBar> {
             automaticallyImplyLeading: false,
             centerTitle: widget.centerTitle ?? false,
             title: Container(
-              height: 58,
+              height: Dimens.fiftyEight,
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Padding(
                   padding: widget.padding ??
-                      EdgeInsets.only(left: 70, top: 20, bottom: 20, right: 20),
+                      EdgeInsets.only(left: Dimens.seventy, top: Dimens.twenty, bottom: Dimens.twenty, right: Dimens.twenty),
                   child: Text(
                     widget.title,
                     maxLines: 3,
                     style: TextStyle(
-                      fontSize: widget.titleSize ?? 14,
+                      fontSize: widget.titleSize ?? Dimens.forteen,
                       fontWeight: FontWeight.w400,
                     ),
                   ),
@@ -241,4 +242,62 @@ class _MyAppBarState extends State<MyAppBar> {
             bottom: widget.bottom ?? null,
           );
   }
+
+  // _onMallSelection() {
+  //   debugPrint('mall_selection_screen:-  _onMallSelection ');
+  //   Navigator.pushNamed(context, AppString.MALL_SCREEN_ROUTE);
+  // }
+  //
+  // _onSettingsButtonClick() async {
+  //   bool isLogin = await SessionManager.isLogin();
+  //   if (isLogin != null && isLogin) {
+  //     Navigator.pushNamed(context, AppString.SETTINGS_SCREEN_ROUTE);
+  //   } else {
+  //     _showErrorDialog(
+  //       icon: Icon(
+  //         FontAwesomeIcons.exclamationTriangle,
+  //         color: AppColor.orange_500,
+  //       ),
+  //       title: AppString.login.toUpperCase(),
+  //       content: AppString.currently_not_logged_in,
+  //       buttonText: AppString.login.toUpperCase(),
+  //       onPressed: () =>
+  //           Navigator.pushNamed(context, AppString.LOGIN_SCREEN_ROUTE),
+  //     );
+  //   }
+  // }
+  //
+  // _showErrorDialog(
+  //     {Icon icon,
+  //       String title,
+  //       String content,
+  //       String buttonText,
+  //       VoidCallback onPressed}) {
+  //   showGeneralDialog(
+  //       barrierColor: Colors.black.withOpacity(0.1),
+  //       transitionBuilder: (context, a1, a2, widget) {
+  //         final curvedValue = Curves.easeInOutBack.transform(a1.value) - 1.0;
+  //         return Transform(
+  //           transform: Matrix4.translationValues(0.0, curvedValue * 200, 0.0),
+  //           child: AnimatedOpacity(
+  //             duration: Duration(milliseconds: 100),
+  //             opacity: a1.value,
+  //             child: CommonLoginDialog(
+  //               icon: icon,
+  //               title: title,
+  //               content: content,
+  //               buttonText: buttonText,
+  //               onPressed: onPressed,
+  //             ),
+  //           ),
+  //         );
+  //       },
+  //       transitionDuration: Duration(milliseconds: 200),
+  //       barrierDismissible: false,
+  //       barrierLabel: '',
+  //       context: context,
+  //       pageBuilder: (context, animation1, animation2) {});
+  // }
+
+
 }

@@ -1,8 +1,11 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:wayawaya/app/common/menu/custom_app_bar.dart';
 import 'package:wayawaya/app/common/menu/model/main_menu_permission.dart';
+import 'package:wayawaya/utils/app_color.dart';
+import 'package:wayawaya/utils/app_images.dart';
 import 'package:wayawaya/utils/app_strings.dart';
-import 'package:wayawaya/widgets/custom_app_bar.dart';
+import 'package:wayawaya/utils/dimens.dart';
 import 'package:wayawaya/widgets/search_all.dart';
 import 'package:wayawaya/widgets/search_events.dart';
 import 'package:wayawaya/widgets/search_offers.dart';
@@ -19,12 +22,7 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen>
     with SingleTickerProviderStateMixin {
-  bool showMenuIcon = true;
-  bool showMalls = false;
-  bool backDrop = false;
-  bool showDiamond = false;
-  bool menuVisible = true;
-  bool showSearch = false;
+  TextEditingController _searchController = TextEditingController();
 
   ScrollController _scrollController;
   AnimationController animationController;
@@ -147,40 +145,43 @@ class _SearchScreenState extends State<SearchScreen>
                       initialData: [],
                       stream: _searchBloc.mainMenuPermissionStream,
                       builder: (context, snapshot) {
-                        return MyAppBar(
+                        return CustomAppBar(
                           title: 'HOME /\nSEARCH-$searchQuery'.toUpperCase(),
-                          padding: EdgeInsets.only(left: 10, top: 0),
+                          padding: EdgeInsets.only(left: Dimens.ten, top: 0),
                           pinned: true,
+                          isSliver: false,
                           mainMenuPermissionList: snapshot.data,
                           centerTitle: false,
                           lastIcon: IconButton(
                             icon: Icon(
                               Icons.youtube_searched_for_outlined,
-                              size: 34,
+                              size: Dimens.thirtyFour,
                               color: appLightColor,
                             ),
-                            onPressed: () {},
+                            onPressed: () {
+                              _searchBloc.searchSink.add(true);
+                            },
                           ),
                           bottom: PreferredSize(
-                            preferredSize: Size.fromHeight(58),
+                            preferredSize: Size.fromHeight(Dimens.fiftyEight),
                             child: Container(
                               color: white,
                               padding: EdgeInsets.only(
-                                top: 1,
+                                top: Dimens.one,
                               ),
-                              height: 54,
+                              height: Dimens.fiftyFour,
                               child: Container(
                                 color: Color(0xff57BABF),
                                 padding: EdgeInsets.only(
-                                  bottom: 4,
+                                  bottom: Dimens.four,
                                 ),
-                                margin: EdgeInsets.only(top: 3),
-                                height: 53,
+                                margin: EdgeInsets.only(top: Dimens.three),
+                                height: Dimens.fiftyThree,
                                 child: TabBar(
                                   labelColor: Color(0xff57BABF),
                                   isScrollable: true,
                                   labelStyle: TextStyle(
-                                    fontSize: 16,
+                                    fontSize: Dimens.sixteen,
                                     fontWeight: FontWeight.w500,
                                   ),
                                   unselectedLabelColor: white,
@@ -227,8 +228,103 @@ class _SearchScreenState extends State<SearchScreen>
                 ],
               ),
             ),
+            StreamBuilder<bool>(
+                initialData: false,
+                stream: _searchBloc.searchStream,
+                builder: (context, snapshot) {
+                  if (snapshot.data) {
+                    return searchBar();
+                  } else {
+                    return SizedBox();
+                  }
+                }),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget searchBar() {
+    return Container(
+      height: Dimens.fifty,
+      color: AppColor.white,
+      width: MediaQuery.of(context).size.width,
+      child: Row(
+        children: [
+          ///Back Button
+          InkWell(
+            onTap: () {
+              _searchBloc.searchSink.add(false);
+              FocusScope.of(context).unfocus();
+              _searchController.clear();
+            },
+            child: Container(
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.arrow_back,
+                    color: Colors.grey[700],
+                  ),
+                  CircleAvatar(
+                    backgroundColor: AppColor.white,
+                    radius: 20,
+                    foregroundImage: AssetImage(
+                      AppImages.menu_app_ic,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Expanded(
+            child: Container(
+              width: 100,
+              child: TextField(
+                autofocus: true,
+                onSubmitted: (val) {
+                  if (_searchController.text.isEmpty) return;
+                  _searchBloc.searchSink.add(false);
+                  FocusScope.of(context).unfocus();
+                  Navigator.pushNamed(context, AppString.SEARCH_SCREEN_ROUTE,
+                          arguments: _searchController.text)
+                      .whenComplete(() => _searchController.clear());
+
+                  // Navigator.of(context)
+                  //     .push(
+                  //       MaterialPageRoute(
+                  //         builder: (_) => SearchPage(
+                  //           searchTerm: _searchController.text,
+                  //         ),
+                  //       ),
+                  //     )
+                  //     .whenComplete(() => _searchController.clear());
+                },
+                controller: _searchController,
+                cursorHeight: 25,
+                decoration: InputDecoration(
+                  prefixIcon: Padding(
+                    padding: const EdgeInsets.only(bottom: 2),
+                    child: Icon(
+                      Icons.search,
+                      color: Colors.grey,
+                    ),
+                  ),
+                  hintText: 'Search',
+                  hintStyle: TextStyle(
+                    fontSize: 18,
+                  ),
+                  suffixIcon: IconButton(
+                    onPressed: () => _searchController.clear(),
+                    icon: Icon(
+                      Icons.clear,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
