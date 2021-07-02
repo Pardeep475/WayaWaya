@@ -21,5 +21,8 @@ class NetworkConstants {
   static const new_password_end_point = "newPassword";
   static const register_user_end_point = "register/users";
   static const update_user_end_point = "guests/";
+  static const campaigns_end_point = "campaigns";
+  static const venue_me_end_point = "venues/me";
+  static const retail_unit_end_point = "retailUnits";
 
 }

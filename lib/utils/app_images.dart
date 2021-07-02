@@ -13,6 +13,7 @@ class AppImages {
   static const icon_splash_small = "assets/image/icon_splash_small.jpg";
   static const icon_splash = "assets/image/icon_splash.jpg";
   static const menu_app_ic = "assets/image/menu_app_ic.png";
+  static const splash_screen_bg = "assets/image/splash_screen_bg.jpg";
 
 
 }

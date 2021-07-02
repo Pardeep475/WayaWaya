@@ -1,13 +1,8 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:wayawaya/app/common/menu/animate_app_bar.dart';
 import 'package:wayawaya/app/common/menu/model/main_menu_permission.dart';
-import 'package:wayawaya/app/home/model/campaign_model.dart';
-import 'package:wayawaya/app/search/model/global_app_search.dart';
 import 'package:wayawaya/app/settings/model/settings_model.dart';
-import 'package:wayawaya/app/shop/model/retail_unit_category.dart';
-import 'package:wayawaya/app/shop/model/retail_with_category.dart';
+import 'package:wayawaya/models/omni_channel_item_model/omni_channel_item_model.dart';
 import 'package:wayawaya/network/local/profile_database_helper.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_strings.dart';
@@ -170,23 +165,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
       case AppString.term_and_conditions:
         {
           debugPrint('settings_click_testing:-  ${settingsModel.title}');
-          _settingsBloc.termAndConditionOnClick(context);
-          // _implementLocalDb();
+          // _settingsBloc.termAndConditionOnClick(context);
+          _implementLocalDb();
           break;
         }
     }
   }
 
   _implementLocalDb() async {
-    String defaultMall = await SessionManager.getDefaultMall();
-    List<RetailUnitCategory> _allSearchList =
-        await ProfileDatabaseHelper.getRestaurantAndStopData(
-      databasePath: defaultMall,
-      isShop: true,
-      searchQuery: '',
-    );
-    _allSearchList.forEach((element) {
-      debugPrint("All Search heading :-       ${element.name}");
-    });
+    // String defaultMall = await SessionManager.getDefaultMall();
+    // OmniChannelItemModel _omniChannelItemModel =
+    //     await ProfileDatabaseHelper.getActiveOmniChannel(
+    //   databasePath: defaultMall,
+    // );
+    //
+    // debugPrint("omni_channel_item_model :-       ${_omniChannelItemModel.oid}");
+
+    _settingsBloc.syncCampaign(1);
+
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:wayawaya/utils/app_images.dart';
 import '../screens/offers_list.dart';
 import '../constants.dart';
 import '../screens/events_list.dart';
@@ -22,7 +23,7 @@ class _SlideState extends State<Slide> {
           color: Colors.transparent,
           image: DecorationImage(
             image: AssetImage(
-              'assets/SplashScreen_BG.jpg',
+              AppImages.splash_screen_bg,
             ),
             fit: BoxFit.cover,
           ),

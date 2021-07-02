@@ -10,6 +10,7 @@ import 'package:wayawaya/app/search/model/global_app_search.dart';
 import 'package:wayawaya/app/shop/model/retail_unit_category.dart';
 import 'package:wayawaya/app/shop/model/retail_with_category.dart';
 import 'package:wayawaya/common/model/categories_model.dart';
+import 'package:wayawaya/models/omni_channel_item_model/omni_channel_item_model.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 
 class ProfileDatabaseHelper {
@@ -53,6 +54,39 @@ class ProfileDatabaseHelper {
       debugPrint('database_testing:-  $e');
     }
   }
+
+
+  static Future<OmniChannelItemModel> getActiveOmniChannel({String databasePath}) async {
+    if (_db == null) {
+      await initDataBase(databasePath);
+    }
+    List<Map> data;
+
+
+    await _db.transaction((txn) async {
+      data = await txn.query(
+        'omni_channel',
+        where: "type = ?",
+        whereArgs: ['app_android',],
+        limit: 1
+      );
+    });
+
+    debugPrint('database_testing:-   ${data.length}');
+    List<OmniChannelItemModel> _mallList = [];
+    data.forEach((element) {
+      _mallList.add(OmniChannelItemModel.fromJson(element));
+    });
+
+    data.map((e) => debugPrint('database_testing:-    $e'));
+    if(_mallList.length > 0){
+      return _mallList[0];
+    }else{
+      return null;
+    }
+
+  }
+
 
   static Future<List<Category>> getAllCategories(String databasePath) async {
     debugPrint('database_testing:-  database path $databasePath');

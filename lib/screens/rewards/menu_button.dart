@@ -110,13 +110,26 @@ class MenuTile extends StatelessWidget {
         break;
       case 'the mall':
         {
-          _openFurtherScreens(context, AppString.TWO_D_MAP_SCREEN_ROUTE);
+          String defaultMap = await SessionManager.getDefaultMall();
+          String mapUrl = '${AppString.MAP_URL_LIVE}?map_data_url=$defaultMap';
+
+          debugPrint('mapUrl_testing:-    $mapUrl');
+
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            AppString.CUSTOM_WEB_VIEW_SCREEN_ROUTE,
+                (route) => false,
+            arguments: CustomWebViewModel(title: title, webViewUrl: mapUrl),
+          );
         }
         break;
       case 'mall map':
         {
           String defaultMap = await SessionManager.getDefaultMall();
           String mapUrl = '${AppString.MAP_URL_LIVE}?map_data_url=$defaultMap';
+
+          debugPrint('mapUrl_testing:-    $mapUrl');
+
           Navigator.pushNamedAndRemoveUntil(
             context,
             AppString.CUSTOM_WEB_VIEW_SCREEN_ROUTE,

@@ -1,11 +1,9 @@
 import 'dart:io';
-
-import 'package:flutter/cupertino.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
-class DataBaseHelper {
+class DataBaseHelperCommon {
   static final _dbName = 'wayawayadatabase.db';
   static final _dbVersion = 1;
 
@@ -99,10 +97,22 @@ class DataBaseHelper {
   static final otherPdfPath = 'OTHER_PDF_PATH';
   static final isEmailSent = 'IS_EMAIL_SENT';
 
-  // make it singleton class
-  DataBaseHelper._privateConstructor();
+  // preference category
+  static final _retailUnitTableName = 'retail_unit_table_name';
+  static final retailUnitId = 'retail_unit_id';
+  static final retailUnitName = 'retail_unit_name';
+  static final retailUnitDescription = 'retail_unit_description';
+  static final retailUnitCategoryName = 'retail_unit_category_name';
+  static final retailUnitCategories = 'retail_unit_categories';
+  static final retailUnitColor = 'retail_unit_color';
+  static final retailUnitFavourite = 'retail_unit_favourite';
+  static final retailUnitSubLocation = 'retail_unit_sub_location';
 
-  static final DataBaseHelper instance = DataBaseHelper._privateConstructor();
+  // make it singleton class
+  DataBaseHelperCommon._privateConstructor();
+
+  static final DataBaseHelperCommon instance =
+      DataBaseHelperCommon._privateConstructor();
 
   static Database _database;
 
@@ -120,9 +130,10 @@ class DataBaseHelper {
   }
 
   Future _onCreate(Database db, int version) async {
-    mainMenuPermissionCreateTable(db, version);
-    allMallCreateTable(db, version);
-    preferenceCategoryCreateTable(db, version);
+    retailUnitCreateTable(db, version);
+    // mainMenuPermissionCreateTable(db, version);
+    // allMallCreateTable(db, version);
+    // preferenceCategoryCreateTable(db, version);
   }
 
   // create table for menu permission
@@ -170,77 +181,93 @@ class DataBaseHelper {
     ''');
   }
 
-  // create table for campaign
-  // Future campaignCreateTable(Database db, int version) async {
-  //   db.execute('''
-  //   CREATE TABLE $_campaignTableName(
-  //  $_id INTEGER PRIMARY KEY AUTOINCREMENT,
-  //  $campaignAddBudget  TEXT DEFAULT \'\',
-  //  $campaignAddBudgetRemaining TEXT DEFAULT \'\',
-  //  $campaignAddClickLimit INT DEFAULT 0,
-  //  $campaignAddConversionLimit INT DEFAULT 0,
-  //  $campaignAddImpressionLimit INT DEFAULT 0,
-  //  $campaignAddPriority INT DEFAULT 0,
-  //  $campaignAddServerScript TEXT DEFAULT \'\',
-  //  $campaignAddServerUrl TEXT DEFAULT \'\',
-  //  $campaignAssetId TEXT DEFAULT \'\',
-  //  $campaignB2XDatabaseListId TEXT DEFAULT \'\',
-  //  $campaignCampaignChannels TEXT DEFAULT \'\',
-  //  $campaignCampaignElement TEXT DEFAULT \'\',
-  //  $campaignCostCenterCode TEXT DEFAULT \'\',
-  //  $campaignCouponCode TEXT DEFAULT \'\',
-  //  $campaignCouponValue TEXT DEFAULT \'\',
-  //  $campaignEndDate TEXT DEFAULT \'\',
-  //  $campaignEndTime TEXT DEFAULT \'\',
-  //  $campaignFloorPlanId TEXT DEFAULT \'\',
-  //  $campaignUDID TEXT DEFAULT \'\',
-  //  $campaignImageSizeId TEXT DEFAULT \'\',
-  //  $campaignLimitViewsPerSession INT DEFAULT 0,
-  //  $campaignLoyaltyOfferThreshold INT DEFAULT 0,
-  //  $campaignLoyaltyOfferTimeout TEXT DEFAULT \'\',
-  //  $campaignLoyaltyPoints INT DEFAULT 0,
-  //  $campaignOfferQrCode TEXT DEFAULT \'\',
-  //  $campaignPriceModel TEXT DEFAULT \'\',
-  //  $campaignPublishDate TEXT DEFAULT \'\',
-  //  $campaignRatePrice TEXT DEFAULT \'\',
-  //  $campaignReviewerUserId TEXT DEFAULT \'\',
-  //  $campaignRId TEXT DEFAULT \'\',
-  //  $campaignStartDate TEXT DEFAULT \'\',
-  //  $campaignStartTime TEXT DEFAULT \'\',
-  //  $campaignStatus TEXT DEFAULT \'\',
-  //  $campaignTargetList TEXT DEFAULT \'\',
-  //  $campaignTimePeriod TEXT DEFAULT \'\',
-  //  $campaignTriggerZoneList TEXT DEFAULT \'\',
-  //  $campaignType TEXT DEFAULT \'\',
-  //  $campaignViewResetCounter INT DEFAULT 0,
-  //  $campaignVoucher TEXT DEFAULT \'\',
-  //  )
-  //   ''');
-  // }
-  //
-  // Future<int> insert(Map<String, dynamic> row) async {
-  //   Database _db = await instance.database;
-  //   return await _db.insert(_tableName, row);
-  // }
-  //
-  // Future<List<Map<String, dynamic>>> queryItem(int loadNumber) async {
-  //   debugPrint('database_testing:-  loadNumber :-   $loadNumber');
-  //   Database _db = await instance.database;
-  //   // return await _db.query(_tableName, where: '$loadNumber = ?', whereArgs: [loadNumber]);
-  //   return await _db
-  //       .rawQuery('SELECT * FROM $_tableName WHERE LOAD_NUMBER = $loadNumber');
-  // }
-  //
-  // Future<int> update(Map<String, dynamic> row) async {
-  //   Database _db = await instance.database;
-  //   int loadNumberValue = row[loadNumber];
-  //   return await _db.update(_tableName, row,
-  //       where: '$loadNumber = ?', whereArgs: [loadNumberValue]);
-  // }
-  //
-  // Future<int> delete(int loadNumber) async {
-  //   Database _db = await instance.database;
-  //   return await _db
-  //       .delete(_tableName, where: '$loadNumber = ?', whereArgs: [loadNumber]);
-  // }
+  Future retailUnitCreateTable(Database db, int version) async {
+    db.execute('''
+    CREATE TABLE $_retailUnitTableName(
+   $_id INTEGER PRIMARY KEY AUTOINCREMENT,
+   $retailUnitId  TEXT DEFAULT \'\',
+   $retailUnitName TEXT DEFAULT \'\',
+   $retailUnitDescription TEXT DEFAULT \'\',
+   $retailUnitCategoryName TEXT DEFAULT \'\',
+   $retailUnitCategories  TEXT DEFAULT \'\',
+   $retailUnitColor  TEXT DEFAULT \'\',
+   $retailUnitFavourite  TEXT DEFAULT \'\',
+   $retailUnitSubLocation  TEXT DEFAULT \'\',
+   )
+    ''');
+  }
+
+// create table for campaign
+// Future campaignCreateTable(Database db, int version) async {
+//   db.execute('''
+//   CREATE TABLE $_campaignTableName(
+//  $_id INTEGER PRIMARY KEY AUTOINCREMENT,
+//  $campaignAddBudget  TEXT DEFAULT \'\',
+//  $campaignAddBudgetRemaining TEXT DEFAULT \'\',
+//  $campaignAddClickLimit INT DEFAULT 0,
+//  $campaignAddConversionLimit INT DEFAULT 0,
+//  $campaignAddImpressionLimit INT DEFAULT 0,
+//  $campaignAddPriority INT DEFAULT 0,
+//  $campaignAddServerScript TEXT DEFAULT \'\',
+//  $campaignAddServerUrl TEXT DEFAULT \'\',
+//  $campaignAssetId TEXT DEFAULT \'\',
+//  $campaignB2XDatabaseListId TEXT DEFAULT \'\',
+//  $campaignCampaignChannels TEXT DEFAULT \'\',
+//  $campaignCampaignElement TEXT DEFAULT \'\',
+//  $campaignCostCenterCode TEXT DEFAULT \'\',
+//  $campaignCouponCode TEXT DEFAULT \'\',
+//  $campaignCouponValue TEXT DEFAULT \'\',
+//  $campaignEndDate TEXT DEFAULT \'\',
+//  $campaignEndTime TEXT DEFAULT \'\',
+//  $campaignFloorPlanId TEXT DEFAULT \'\',
+//  $campaignUDID TEXT DEFAULT \'\',
+//  $campaignImageSizeId TEXT DEFAULT \'\',
+//  $campaignLimitViewsPerSession INT DEFAULT 0,
+//  $campaignLoyaltyOfferThreshold INT DEFAULT 0,
+//  $campaignLoyaltyOfferTimeout TEXT DEFAULT \'\',
+//  $campaignLoyaltyPoints INT DEFAULT 0,
+//  $campaignOfferQrCode TEXT DEFAULT \'\',
+//  $campaignPriceModel TEXT DEFAULT \'\',
+//  $campaignPublishDate TEXT DEFAULT \'\',
+//  $campaignRatePrice TEXT DEFAULT \'\',
+//  $campaignReviewerUserId TEXT DEFAULT \'\',
+//  $campaignRId TEXT DEFAULT \'\',
+//  $campaignStartDate TEXT DEFAULT \'\',
+//  $campaignStartTime TEXT DEFAULT \'\',
+//  $campaignStatus TEXT DEFAULT \'\',
+//  $campaignTargetList TEXT DEFAULT \'\',
+//  $campaignTimePeriod TEXT DEFAULT \'\',
+//  $campaignTriggerZoneList TEXT DEFAULT \'\',
+//  $campaignType TEXT DEFAULT \'\',
+//  $campaignViewResetCounter INT DEFAULT 0,
+//  $campaignVoucher TEXT DEFAULT \'\',
+//  )
+//   ''');
+// }
+//
+// Future<int> insert(Map<String, dynamic> row) async {
+//   Database _db = await instance.database;
+//   return await _db.insert(_tableName, row);
+// }
+//
+// Future<List<Map<String, dynamic>>> queryItem(int loadNumber) async {
+//   debugPrint('database_testing:-  loadNumber :-   $loadNumber');
+//   Database _db = await instance.database;
+//   // return await _db.query(_tableName, where: '$loadNumber = ?', whereArgs: [loadNumber]);
+//   return await _db
+//       .rawQuery('SELECT * FROM $_tableName WHERE LOAD_NUMBER = $loadNumber');
+// }
+//
+// Future<int> update(Map<String, dynamic> row) async {
+//   Database _db = await instance.database;
+//   int loadNumberValue = row[loadNumber];
+//   return await _db.update(_tableName, row,
+//       where: '$loadNumber = ?', whereArgs: [loadNumberValue]);
+// }
+//
+// Future<int> delete(int loadNumber) async {
+//   Database _db = await instance.database;
+//   return await _db
+//       .delete(_tableName, where: '$loadNumber = ?', whereArgs: [loadNumber]);
+// }
 }

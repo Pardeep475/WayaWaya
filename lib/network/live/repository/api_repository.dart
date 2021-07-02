@@ -90,5 +90,31 @@ class ApiRepository {
     return response;
   }
 
+  Future<dynamic> fetchCampaignApiRepository(
+      {String authorization, Map<String, dynamic> map}) async {
+    final response = await _apiProvider.get(
+        url: '${NetworkConstants.campaigns_end_point}',
+        queryParams: map,
+        authHeader: authorization);
+    return response;
+  }
+
+  Future<dynamic> venueMeApiRepository(
+      {String authorization, Map<String, dynamic> map}) async {
+    final response = await _apiProvider.get(
+        url: '${NetworkConstants.venue_me_end_point}',
+        queryParams: map,
+        authHeader: authorization);
+    return response;
+  }
+
+  Future<dynamic> retailUnitApiRepository(
+      {String authorization, Map<String, dynamic> map}) async {
+    final response = await _apiProvider.get(
+        url: '${NetworkConstants.retail_unit_end_point}',
+        queryParams: map,
+        authHeader: authorization);
+    return response;
+  }
 
 }

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:wayawaya/screens/splash.dart';
+import 'package:wayawaya/utils/app_images.dart';
 import '../config.dart';
 import '../constants.dart';
 import 'background.dart';
@@ -92,7 +93,7 @@ class _SelectMallState extends State<SelectMall> {
         decoration: BoxDecoration(
             image: DecorationImage(
           image: AssetImage(
-            'assets/SplashScreen_BG.jpg',
+            AppImages.splash_screen_bg,
           ),
           fit: BoxFit.cover,
         )),

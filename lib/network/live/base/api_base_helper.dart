@@ -18,14 +18,15 @@ class ApiBaseHelper {
 
   static final dio = Dio();
 
-  Future<dynamic> get({String url, String authHeader}) async {
+  Future<dynamic> get({String url, String authHeader,dynamic queryParams}) async {
     try {
       debugPrint('auth_header  :-  $authHeader');
       debugPrint('api_url  :-  ${NetworkConstants.base_url}$url');
       final response = await dio.get('${NetworkConstants.base_url}$url',
+          queryParameters: queryParams,
           options: Options(
             headers: {"Authorization": "Bearer $authHeader"},
-          ));
+          ),);
       debugPrint('pardeep_testing:-  ${response.statusCode}');
       return response;
     } on SocketException {

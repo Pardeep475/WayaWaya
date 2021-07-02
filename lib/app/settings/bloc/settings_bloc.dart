@@ -6,6 +6,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:wayawaya/app/common/full_screen_privacy_policy_dialog.dart';
 import 'package:wayawaya/app/common/menu/model/main_menu_permission.dart';
 import 'package:wayawaya/app/settings/model/settings_model.dart';
+import 'package:wayawaya/models/omni_channel_item_model/omni_channel_item_model.dart';
+import 'package:wayawaya/models/retail_unit/retail_unit_wrapper.dart';
+import 'package:wayawaya/network/live/repository/api_repository.dart';
+import 'package:wayawaya/network/local/profile_database_helper.dart';
 import 'package:wayawaya/network/local/super_admin_database_helper.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/session_manager.dart';
@@ -21,7 +25,7 @@ class SettingsBloc {
 
   // ignore: close_sinks
   StreamController _mainMenuPermissionsController =
-  StreamController<List<MainMenuPermission>>();
+      StreamController<List<MainMenuPermission>>();
 
   StreamSink<List<MainMenuPermission>> get mainMenuPermissionSink =>
       _mainMenuPermissionsController.sink;
@@ -29,8 +33,9 @@ class SettingsBloc {
   Stream<List<MainMenuPermission>> get mainMenuPermissionStream =>
       _mainMenuPermissionsController.stream;
 
-
   List<SettingsModel> _settingsItemList = [];
+
+  final _repository = ApiRepository();
 
   setUpSettingsData() {
     _settingsItemList.add(
@@ -75,10 +80,57 @@ class SettingsBloc {
   fetchMenuButtons() async {
     String defaultMall = await SessionManager.getDefaultMall();
     List<MainMenuPermission> itemList =
-    await SuperAdminDatabaseHelper.getMenuButtons(defaultMall);
+        await SuperAdminDatabaseHelper.getMenuButtons(defaultMall);
     debugPrint('main_menu_permission_testing:--   ${itemList.length}');
     mainMenuPermissionSink.add(itemList);
     return itemList;
   }
 
+  syncCampaign(int page) async {
+    // String authorization, @Nullable int nextPage, String lastUpdate, List<String> campaignIds
+
+    String defaultMall = await SessionManager.getDefaultMall();
+    OmniChannelItemModel _omniChannelItemModel =
+        await ProfileDatabaseHelper.getActiveOmniChannel(
+      databasePath: defaultMall,
+    );
+
+    debugPrint("omni_channel_item_model :-       ${_omniChannelItemModel.oid}");
+
+    String authorization = await SessionManager.getAuthHeader();
+    String lastUpdate ='2020-07-02 01:01:11';
+
+    // Map<String, String> campaignQuery = {
+    //   "page": page.toString(),
+    //   "sort": "-_updated",
+    //   "where": "{\"campaign_channels.omni_channel_id\":{\"\$elemMatch\":{\"\$eq\":\"" +
+    //       _omniChannelItemModel.oid +
+    //       "\"}}}",
+    // };
+    Map<String, String> campaignQuery = {
+      "page": page.toString(),
+      "sort": "-_updated",
+      "where": "{\"_updated\":{\"\$gt\": \"" + lastUpdate + "\"}}",
+    };
+
+    debugPrint("campaignQuery :-       $campaignQuery");
+
+    try {
+      // dynamic data = await _repository.fetchCampaignApiRepository(authorization: authorization, map: campaignQuery);
+      dynamic data = await _repository.retailUnitApiRepository(authorization: authorization, map: campaignQuery);
+      debugPrint("campaign_settings:-  success $data");
+
+      RetailUnitWrapper _retailUnitWrapper = RetailUnitWrapper.fromJson(data.data);
+      debugPrint("campaign_settings:-  success ${_retailUnitWrapper.items.length}");
+
+    } catch (e) {
+      debugPrint('error_settings:-    $e');
+    }
+
+    // if (campaignIds != null) {
+
+    // campaignQuery.put("_id", "{\"$in\":" + String.valueOf(campaignIds) + "}");
+
+    // }
+  }
 }

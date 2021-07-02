@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:wayawaya/common/model/mall_profile_model.dart';
 import 'package:wayawaya/utils/app_color.dart';
+import 'package:wayawaya/utils/app_images.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/session_manager.dart';
 import 'bloc/mall_bloc.dart';
@@ -42,9 +43,9 @@ class _MallScreenState extends State<MallScreen> {
         decoration: const BoxDecoration(
           image: const DecorationImage(
             image: const AssetImage(
-              'assets/SplashScreen_BG.jpg',
+              AppImages.splash_screen_bg,
             ),
-            fit: BoxFit.cover,
+            fit: BoxFit.fill,
           ),
         ),
         child: StreamBuilder<List<MallProfileModel>>(

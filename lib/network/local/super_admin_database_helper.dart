@@ -9,6 +9,7 @@ import 'package:path/path.dart' as path;
 import 'package:wayawaya/app/common/menu/model/main_menu_permission.dart';
 import 'package:wayawaya/app/preferences/model/preferences_categories.dart';
 import 'package:wayawaya/common/model/mall_profile_model.dart';
+import 'package:wayawaya/models/omni_channel_item_model/omni_channel_item_model.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 
 class SuperAdminDatabaseHelper {
@@ -52,6 +53,7 @@ class SuperAdminDatabaseHelper {
       debugPrint('database_testing:-  $e');
     }
   }
+
 
   static Future<List<MallProfileModel>> getAllVenueProfile() async {
     if (_db == null) {

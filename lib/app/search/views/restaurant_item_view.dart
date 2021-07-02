@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:wayawaya/app/search/model/global_app_search.dart';
 import 'package:wayawaya/utils/app_color.dart';
+import 'package:wayawaya/utils/dimens.dart';
 
 class RestaurantItemView extends StatelessWidget {
   final GlobalAppSearch globalAppSearch;
@@ -18,23 +19,26 @@ class RestaurantItemView extends StatelessWidget {
           // debug
         },
         child: Container(
-          height: 85,
+          height: Dimens.eightyFive,
           child: Row(
             children: [
               Container(
-                width: 75,
+                width: Dimens.seventyFive,
                 child: Center(
                   child: Icon(
                     Icons.restaurant_menu,
-                    size: 35,
+                    size: Dimens.thirtyFive,
                     color: Colors.black54,
                   ),
                 ),
               ),
               Expanded(
                 child: Container(
-                  padding:
-                      EdgeInsets.only(top: 3, bottom: 1, left: 5, right: 3),
+                  padding: EdgeInsets.only(
+                      top: Dimens.three,
+                      bottom: Dimens.one,
+                      left: Dimens.five,
+                      right: Dimens.three),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -43,7 +47,7 @@ class RestaurantItemView extends StatelessWidget {
                         globalAppSearch.heading,
                         style: GoogleFonts.ubuntuCondensed().copyWith(
                           color: AppColor.black.withOpacity(0.7),
-                          fontSize: 19,
+                          fontSize: Dimens.nineteen,
                           fontWeight: FontWeight.w500,
                           letterSpacing: 0.8,
                         ),
@@ -51,13 +55,13 @@ class RestaurantItemView extends StatelessWidget {
                         maxLines: 1,
                       ),
                       SizedBox(
-                        height: 10,
+                        height: Dimens.ten,
                       ),
                       Text(
                         _fetchItemDescription(),
                         style: GoogleFonts.ubuntu().copyWith(
                           color: AppColor.black.withOpacity(0.5),
-                          fontSize: 12,
+                          fontSize: Dimens.twelve,
                           fontWeight: FontWeight.w500,
                           letterSpacing: 0.8,
                         ),
