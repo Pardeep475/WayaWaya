@@ -24,5 +24,6 @@ class NetworkConstants {
   static const campaigns_end_point = "campaigns";
   static const venue_me_end_point = "venues/me";
   static const retail_unit_end_point = "retailUnits";
+  static const venues_end_point = "venues.php";
 
 }

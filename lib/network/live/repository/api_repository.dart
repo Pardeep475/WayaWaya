@@ -117,4 +117,11 @@ class ApiRepository {
     return response;
   }
 
+  Future<dynamic> venueApiRepository(
+      {String authorization}) async {
+    final response = await _apiProvider.get(
+        url: '${NetworkConstants.venues_end_point}',
+        authHeader: authorization);
+    return response;
+  }
 }

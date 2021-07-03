@@ -23,7 +23,7 @@ class ApiBaseHelper {
       debugPrint('auth_header  :-  $authHeader');
       debugPrint('api_url  :-  ${NetworkConstants.base_url}$url');
       final response = await dio.get('${NetworkConstants.base_url}$url',
-          queryParameters: queryParams,
+          // queryParameters: queryParams,
           options: Options(
             headers: {"Authorization": "Bearer $authHeader"},
           ),);

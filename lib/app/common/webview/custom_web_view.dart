@@ -53,6 +53,9 @@ class CustomWebView extends StatelessWidget {
                         onWebViewCreated:
                             (WebViewController webViewController) {
                           _controller.complete(webViewController);
+                          webViewController.clearCache();
+                          final cookieManager = CookieManager();
+                          cookieManager.clearCookies();
                           _customWebViewBloc.webViewSink.add(false);
                         },
                         onProgress: (int progress) {

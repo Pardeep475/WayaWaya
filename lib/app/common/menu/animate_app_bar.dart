@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:wayawaya/app/common/dialogs/common_login_dialog.dart';
 import 'package:wayawaya/app/common/menu/bloc/animate_app_bar_widget_bloc.dart';
 import 'package:wayawaya/app/common/menu/custom_app_bar.dart';
 import 'package:wayawaya/app/common/menu/model/main_menu_permission.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_images.dart';
 import 'package:wayawaya/utils/app_strings.dart';
+import 'package:wayawaya/utils/session_manager.dart';
 
 class AnimateAppBar extends StatefulWidget {
   @required
@@ -194,11 +197,24 @@ class _AnimateAppBarState extends State<AnimateAppBar> {
                                   )*/
                           ,
                           onSearchTap: widget.onSearchTap ??
-                              () {
-                                _animateAppBarWidgetBloc.searchSink.add(true);
-                                // setState(() {
-                                //   showSearch = true;
-                                // });
+                              () async {
+                                bool isLogin = await SessionManager.isLogin();
+                                if (isLogin == null || !isLogin) {
+                                  _showErrorDialog(
+                                    context: context,
+                                    icon: Icon(
+                                      FontAwesomeIcons.exclamationTriangle,
+                                      color: AppColor.orange_500,
+                                    ),
+                                    title: AppString.login.toUpperCase(),
+                                    content: AppString.currently_not_logged_in,
+                                    buttonText: AppString.login.toUpperCase(),
+                                    onPressed: () =>
+                                        Navigator.pushNamed(context, AppString.LOGIN_SCREEN_ROUTE),
+                                  );
+                                } else {
+                                  _animateAppBarWidgetBloc.searchSink.add(true);
+                                }
                               },
                         ),
                         ...widget.children ?? [],
@@ -243,4 +259,39 @@ class _AnimateAppBarState extends State<AnimateAppBar> {
       ),
     );
   }
+
+  _showErrorDialog(
+      {
+        BuildContext context,
+        Icon icon,
+        String title,
+        String content,
+        String buttonText,
+        VoidCallback onPressed}) {
+    showGeneralDialog(
+        barrierColor: Colors.black.withOpacity(0.1),
+        transitionBuilder: (context, a1, a2, widget) {
+          final curvedValue = Curves.easeInOutBack.transform(a1.value) - 1.0;
+          return Transform(
+            transform: Matrix4.translationValues(0.0, curvedValue * 200, 0.0),
+            child: AnimatedOpacity(
+              duration: Duration(milliseconds: 100),
+              opacity: a1.value,
+              child: CommonLoginDialog(
+                icon: icon,
+                title: title,
+                content: content,
+                buttonText: buttonText,
+                onPressed: onPressed,
+              ),
+            ),
+          );
+        },
+        transitionDuration: Duration(milliseconds: 200),
+        barrierDismissible: false,
+        barrierLabel: '',
+        context: context,
+        pageBuilder: (context, animation1, animation2) {});
+  }
+
 }

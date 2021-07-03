@@ -1,6 +1,7 @@
 import 'package:community_material_icon/community_material_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:wayawaya/app/common/dialogs/common_login_dialog.dart';
 import 'package:wayawaya/app/common/menu/model/main_menu_permission.dart';
 import 'package:wayawaya/app/common/webview/model/custom_web_view_model.dart';
 import 'package:wayawaya/screens/map/mall_map.dart';
@@ -70,74 +71,130 @@ class MenuTile extends StatelessWidget {
     );
   }
 
+  _showErrorDialog(
+      {
+        BuildContext context,
+        Icon icon,
+        String title,
+        String content,
+        String buttonText,
+        VoidCallback onPressed}) {
+    showGeneralDialog(
+        barrierColor: Colors.black.withOpacity(0.1),
+        transitionBuilder: (context, a1, a2, widget) {
+          final curvedValue = Curves.easeInOutBack.transform(a1.value) - 1.0;
+          return Transform(
+            transform: Matrix4.translationValues(0.0, curvedValue * 200, 0.0),
+            child: AnimatedOpacity(
+              duration: Duration(milliseconds: 100),
+              opacity: a1.value,
+              child: CommonLoginDialog(
+                icon: icon,
+                title: title,
+                content: content,
+                buttonText: buttonText,
+                onPressed: onPressed,
+              ),
+            ),
+          );
+        },
+        transitionDuration: Duration(milliseconds: 200),
+        barrierDismissible: false,
+        barrierLabel: '',
+        context: context,
+        pageBuilder: (context, animation1, animation2) {});
+  }
+
   _chooseScreens(BuildContext context, String title) async {
     if (title == null) return;
-    switch (title.toLowerCase()) {
-      case 'home':
-        {
-          _openFurtherScreens(context, AppString.HOME_SCREEN_ROUTE);
-        }
-        break;
-      case 'offers':
-        {
-          _openFurtherScreens(context, AppString.OFFER_SCREEN_ROUTE);
-        }
-        break;
-      case 'events':
-        {
-          _openFurtherScreens(context, AppString.EVENT_SCREEN_ROUTE);
-        }
-        break;
-      case 'shops':
-        {
-          Future.delayed(Duration(seconds: 1), () {
-            debugPrint('pardeep_testing_animation:-   $title');
+
+    bool isLogin = await SessionManager.isLogin();
+
+    if(isLogin == null || !isLogin){
+      if(title.toLowerCase() == 'home'){
+        _openFurtherScreens(context, AppString.HOME_SCREEN_ROUTE);
+      }else{
+        _showErrorDialog(
+          context: context,
+          icon: Icon(
+            FontAwesomeIcons.exclamationTriangle,
+            color: AppColor.orange_500,
+          ),
+          title: AppString.login.toUpperCase(),
+          content: AppString.currently_not_logged_in,
+          buttonText: AppString.login.toUpperCase(),
+          onPressed: () =>
+              Navigator.pushNamed(context, AppString.LOGIN_SCREEN_ROUTE),
+        );
+      }
+    }else{
+      switch (title.toLowerCase()) {
+        case 'home':
+          {
+            _openFurtherScreens(context, AppString.HOME_SCREEN_ROUTE);
+          }
+          break;
+        case 'offers':
+          {
+            _openFurtherScreens(context, AppString.OFFER_SCREEN_ROUTE);
+          }
+          break;
+        case 'events':
+          {
+            _openFurtherScreens(context, AppString.EVENT_SCREEN_ROUTE);
+          }
+          break;
+        case 'shops':
+          {
+            Future.delayed(Duration(seconds: 1), () {
+              debugPrint('pardeep_testing_animation:-   $title');
+              Navigator.pushNamedAndRemoveUntil(
+                  context, AppString.SHOP_SCREEN_ROUTE, (route) => false,
+                  arguments: true);
+            });
+          }
+          break;
+        case 'restaurants':
+          {
+            Future.delayed(Duration(seconds: 1), () {
+              debugPrint('pardeep_testing_animation:-   $title');
+              Navigator.pushNamedAndRemoveUntil(
+                  context, AppString.SHOP_SCREEN_ROUTE, (route) => false,
+                  arguments: false);
+            });
+          }
+          break;
+        case 'the mall':
+          {
+            String defaultMap = await SessionManager.getDefaultMall();
+            String mapUrl = '${AppString.MAP_URL_LIVE}?map_data_url=$defaultMap';
+
+            debugPrint('mapUrl_testing:-    $mapUrl');
+
             Navigator.pushNamedAndRemoveUntil(
-                context, AppString.SHOP_SCREEN_ROUTE, (route) => false,
-                arguments: true);
-          });
-        }
-        break;
-      case 'restaurants':
-        {
-          Future.delayed(Duration(seconds: 1), () {
-            debugPrint('pardeep_testing_animation:-   $title');
+              context,
+              AppString.CUSTOM_WEB_VIEW_SCREEN_ROUTE,
+                  (route) => false,
+              arguments: CustomWebViewModel(title: title, webViewUrl: mapUrl),
+            );
+          }
+          break;
+        case 'mall map':
+          {
+            String defaultMap = await SessionManager.getDefaultMall();
+            String mapUrl = '${AppString.MAP_URL_LIVE}?map_data_url=$defaultMap';
+
+            debugPrint('mapUrl_testing:-    $mapUrl');
+
             Navigator.pushNamedAndRemoveUntil(
-                context, AppString.SHOP_SCREEN_ROUTE, (route) => false,
-                arguments: false);
-          });
-        }
-        break;
-      case 'the mall':
-        {
-          String defaultMap = await SessionManager.getDefaultMall();
-          String mapUrl = '${AppString.MAP_URL_LIVE}?map_data_url=$defaultMap';
-
-          debugPrint('mapUrl_testing:-    $mapUrl');
-
-          Navigator.pushNamedAndRemoveUntil(
-            context,
-            AppString.CUSTOM_WEB_VIEW_SCREEN_ROUTE,
-                (route) => false,
-            arguments: CustomWebViewModel(title: title, webViewUrl: mapUrl),
-          );
-        }
-        break;
-      case 'mall map':
-        {
-          String defaultMap = await SessionManager.getDefaultMall();
-          String mapUrl = '${AppString.MAP_URL_LIVE}?map_data_url=$defaultMap';
-
-          debugPrint('mapUrl_testing:-    $mapUrl');
-
-          Navigator.pushNamedAndRemoveUntil(
-            context,
-            AppString.CUSTOM_WEB_VIEW_SCREEN_ROUTE,
-            (route) => false,
-            arguments: CustomWebViewModel(title: title, webViewUrl: mapUrl),
-          );
-        }
-        break;
+              context,
+              AppString.CUSTOM_WEB_VIEW_SCREEN_ROUTE,
+                  (route) => false,
+              arguments: CustomWebViewModel(title: title, webViewUrl: mapUrl),
+            );
+          }
+          break;
+      }
     }
   }
 
@@ -387,7 +444,7 @@ class RhombusMenu extends StatelessWidget {
                 enabled: enabled,
                 cubic: _getCubic("Connect"),
                 onPressed: () {
-                  Navigator.pop(context);
+                  Navigator.pop(context,'');
                   // App.pushTo(
                   //   context: context,
                   //   screen: QRScanner(),
@@ -447,7 +504,7 @@ class RhombusMenu extends StatelessWidget {
                 enabled: enabled,
                 cubic: _getCubic(AppString.rewards_menu),
                 onPressed: () {
-                  Navigator.pop(context);
+                  Navigator.pop(context,AppString.rewards_menu);
                   // App.pushTo(
                   //   context: context,
                   //   screen: RewardsBrowser(),

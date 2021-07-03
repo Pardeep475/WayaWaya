@@ -117,11 +117,11 @@ class SettingsBloc {
 
     try {
       // dynamic data = await _repository.fetchCampaignApiRepository(authorization: authorization, map: campaignQuery);
-      dynamic data = await _repository.retailUnitApiRepository(authorization: authorization, map: campaignQuery);
+      dynamic data = await _repository.venueApiRepository(authorization: authorization);
       debugPrint("campaign_settings:-  success $data");
 
-      RetailUnitWrapper _retailUnitWrapper = RetailUnitWrapper.fromJson(data.data);
-      debugPrint("campaign_settings:-  success ${_retailUnitWrapper.items.length}");
+      // RetailUnitWrapper _retailUnitWrapper = RetailUnitWrapper.fromJson(data.data);
+      // debugPrint("campaign_settings:-  success ${_retailUnitWrapper.items.length}");
 
     } catch (e) {
       debugPrint('error_settings:-    $e');

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
@@ -117,20 +118,27 @@ class DataBaseHelperCommon {
   static Database _database;
 
   Future<Database> get database async {
-    if (_database != null) return _database;
+    if (_database != null) {
+      _database.close();
+      _database = null;
+    }
 
     _database = await _initiateDataBase();
     return _database;
   }
 
-  _initiateDataBase() async {
-    Directory directory = await getApplicationDocumentsDirectory();
-    String path = join(directory.path, _dbName);
-    return await openDatabase(path, version: _dbVersion, onCreate: _onCreate);
+  static _initiateDataBase() async {
+    try{
+      Directory directory = await getApplicationDocumentsDirectory();
+      String path = join(directory.path, _dbName);
+      return await openDatabase(path, version: _dbVersion, onCreate: _onCreate);
+    }catch(e){
+      debugPrint('database exception:-    $e');
+    }
   }
 
-  Future _onCreate(Database db, int version) async {
-    retailUnitCreateTable(db, version);
+  static Future _onCreate(Database db, int version) async {
+    await retailUnitCreateTable(db, version);
     // mainMenuPermissionCreateTable(db, version);
     // allMallCreateTable(db, version);
     // preferenceCategoryCreateTable(db, version);
@@ -181,9 +189,9 @@ class DataBaseHelperCommon {
     ''');
   }
 
-  Future retailUnitCreateTable(Database db, int version) async {
+  static Future retailUnitCreateTable(Database db, int version) async {
     db.execute('''
-    CREATE TABLE $_retailUnitTableName(
+    CREATE TABLE IF NOT EXISTS $_retailUnitTableName (
    $_id INTEGER PRIMARY KEY AUTOINCREMENT,
    $retailUnitId  TEXT DEFAULT \'\',
    $retailUnitName TEXT DEFAULT \'\',
@@ -193,8 +201,25 @@ class DataBaseHelperCommon {
    $retailUnitColor  TEXT DEFAULT \'\',
    $retailUnitFavourite  TEXT DEFAULT \'\',
    $retailUnitSubLocation  TEXT DEFAULT \'\',
-   )
+   );
     ''');
+  }
+
+  static Future<int> getRetailUnitLength() async {
+    Database _db = await instance.database;
+
+    (await _db.query('sqlite_master', columns: ['type', 'name'])).forEach((row) {
+      print(row.values);
+    });
+
+    int count = Sqflite.firstIntValue(
+        await _db.rawQuery('SELECT COUNT(*) FROM $_retailUnitTableName'));
+    return count;
+  }
+
+  static Future<int> insertRetailUnitLength(Map<String, dynamic> row) async {
+    Database _db = await instance.database;
+    return await _db.insert(_retailUnitTableName, row);
   }
 
 // create table for campaign
