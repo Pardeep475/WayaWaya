@@ -352,10 +352,9 @@ class ItemOfferView extends StatelessWidget {
       String defaultMap = await SessionManager.getDefaultMall();
       String mapUrl =
           '${AppString.MAP_URL_LIVE}?retail_unit=${campaign.floorplanId}&map_data_url=$defaultMap';
-      Navigator.pushNamedAndRemoveUntil(
+      Navigator.pushNamed(
         context,
         AppString.CUSTOM_WEB_VIEW_SCREEN_ROUTE,
-        (route) => false,
         arguments:
             CustomWebViewModel(title: _getTitle(context), webViewUrl: mapUrl),
       );

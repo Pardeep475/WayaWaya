@@ -1,24 +1,13 @@
-import 'package:community_material_icon/community_material_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:wayawaya/app/common/dialogs/common_login_dialog.dart';
 import 'package:wayawaya/app/common/menu/model/main_menu_permission.dart';
 import 'package:wayawaya/app/common/webview/model/custom_web_view_model.dart';
-import 'package:wayawaya/screens/map/mall_map.dart';
-import 'package:wayawaya/screens/rewards/qr_code_scanner.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_images.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/session_manager.dart';
 import 'package:wayawaya/utils/utils.dart';
-
-import '../../config.dart';
-import '../events_list.dart';
-import '../home.dart';
-import '../mall_servies.dart';
-import '../offers_list.dart';
-import '../shops_and_rest_list.dart';
-import 'rewards_new.dart';
 
 class MenuTile extends StatelessWidget {
   // final List<MainMenuPermission> itemList = [];
@@ -72,13 +61,12 @@ class MenuTile extends StatelessWidget {
   }
 
   _showErrorDialog(
-      {
-        BuildContext context,
-        Icon icon,
-        String title,
-        String content,
-        String buttonText,
-        VoidCallback onPressed}) {
+      {BuildContext context,
+      Icon icon,
+      String title,
+      String content,
+      String buttonText,
+      VoidCallback onPressed}) {
     showGeneralDialog(
         barrierColor: Colors.black.withOpacity(0.1),
         transitionBuilder: (context, a1, a2, widget) {
@@ -110,10 +98,10 @@ class MenuTile extends StatelessWidget {
 
     bool isLogin = await SessionManager.isLogin();
 
-    if(isLogin == null || !isLogin){
-      if(title.toLowerCase() == 'home'){
-        _openFurtherScreens(context, AppString.HOME_SCREEN_ROUTE);
-      }else{
+    if (isLogin == null || !isLogin) {
+      if (title.toLowerCase() == 'home') {
+        _openFurtherScreens(context, AppString.HOME_SCREEN_ROUTE, false);
+      } else {
         _showErrorDialog(
           context: context,
           icon: Icon(
@@ -127,30 +115,31 @@ class MenuTile extends StatelessWidget {
               Navigator.pushNamed(context, AppString.LOGIN_SCREEN_ROUTE),
         );
       }
-    }else{
+    } else {
       switch (title.toLowerCase()) {
         case 'home':
           {
-            _openFurtherScreens(context, AppString.HOME_SCREEN_ROUTE);
+            _openFurtherScreens(context, AppString.HOME_SCREEN_ROUTE, true);
           }
           break;
         case 'offers':
           {
-            _openFurtherScreens(context, AppString.OFFER_SCREEN_ROUTE);
+            _openFurtherScreens(context, AppString.OFFER_SCREEN_ROUTE, true);
           }
           break;
         case 'events':
           {
-            _openFurtherScreens(context, AppString.EVENT_SCREEN_ROUTE);
+            _openFurtherScreens(context, AppString.EVENT_SCREEN_ROUTE, true);
           }
           break;
         case 'shops':
           {
             Future.delayed(Duration(seconds: 1), () {
               debugPrint('pardeep_testing_animation:-   $title');
-              Navigator.pushNamedAndRemoveUntil(
-                  context, AppString.SHOP_SCREEN_ROUTE, (route) => false,
-                  arguments: true);
+              Navigator.pushNamed(
+                context,
+                AppString.SHOP_SCREEN_ROUTE,
+              );
             });
           }
           break;
@@ -158,23 +147,21 @@ class MenuTile extends StatelessWidget {
           {
             Future.delayed(Duration(seconds: 1), () {
               debugPrint('pardeep_testing_animation:-   $title');
-              Navigator.pushNamedAndRemoveUntil(
-                  context, AppString.SHOP_SCREEN_ROUTE, (route) => false,
-                  arguments: false);
+              Navigator.pushNamed(context, AppString.SHOP_SCREEN_ROUTE);
             });
           }
           break;
         case 'the mall':
           {
             String defaultMap = await SessionManager.getDefaultMall();
-            String mapUrl = '${AppString.MAP_URL_LIVE}?map_data_url=$defaultMap';
+            String mapUrl =
+                '${AppString.MAP_URL_LIVE}?map_data_url=$defaultMap';
 
             debugPrint('mapUrl_testing:-    $mapUrl');
 
-            Navigator.pushNamedAndRemoveUntil(
+            Navigator.pushNamed(
               context,
               AppString.CUSTOM_WEB_VIEW_SCREEN_ROUTE,
-                  (route) => false,
               arguments: CustomWebViewModel(title: title, webViewUrl: mapUrl),
             );
           }
@@ -182,14 +169,14 @@ class MenuTile extends StatelessWidget {
         case 'mall map':
           {
             String defaultMap = await SessionManager.getDefaultMall();
-            String mapUrl = '${AppString.MAP_URL_LIVE}?map_data_url=$defaultMap';
+            String mapUrl =
+                '${AppString.MAP_URL_LIVE}?map_data_url=$defaultMap';
 
             debugPrint('mapUrl_testing:-    $mapUrl');
 
-            Navigator.pushNamedAndRemoveUntil(
+            Navigator.pushNamed(
               context,
               AppString.CUSTOM_WEB_VIEW_SCREEN_ROUTE,
-                  (route) => false,
               arguments: CustomWebViewModel(title: title, webViewUrl: mapUrl),
             );
           }
@@ -198,10 +185,14 @@ class MenuTile extends StatelessWidget {
     }
   }
 
-  _openFurtherScreens(BuildContext context, String title) {
+  _openFurtherScreens(BuildContext context, String title, bool isBackStack) {
     Future.delayed(Duration(seconds: 1), () {
       debugPrint('pardeep_testing_animation:-   $title');
-      Navigator.pushNamedAndRemoveUntil(context, title, (route) => false);
+      if (isBackStack) {
+        Navigator.pushNamed(context, title);
+      } else {
+        Navigator.pushNamedAndRemoveUntil(context, title, (route) => false);
+      }
     });
   }
 }
@@ -444,7 +435,7 @@ class RhombusMenu extends StatelessWidget {
                 enabled: enabled,
                 cubic: _getCubic("Connect"),
                 onPressed: () {
-                  Navigator.pop(context,'');
+                  Navigator.pop(context, '');
                   // App.pushTo(
                   //   context: context,
                   //   screen: QRScanner(),
@@ -504,7 +495,7 @@ class RhombusMenu extends StatelessWidget {
                 enabled: enabled,
                 cubic: _getCubic(AppString.rewards_menu),
                 onPressed: () {
-                  Navigator.pop(context,AppString.rewards_menu);
+                  Navigator.pop(context, AppString.rewards_menu);
                   // App.pushTo(
                   //   context: context,
                   //   screen: RewardsBrowser(),

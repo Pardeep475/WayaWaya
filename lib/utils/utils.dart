@@ -304,8 +304,17 @@ class Utils {
     try {
       DateTime calendar = DateTime.now();
 
-      if (DateTime.parse(startDate).isBefore(calendar) &&
-          DateTime.parse(endDate).isAfter(calendar)) {
+      String startTimeValue =  convertDateToTime(startDate);
+      String endTimeValue =  convertDateToTime(endDate);
+      String currentTime =  convertDateToTime(calendar.toString());
+
+      DateTime.parse(startDate).compareTo(calendar) ;
+
+debugPrint('------------   ${DateTime.parse(startDate).compareTo(calendar)}');
+      debugPrint(
+          'start_date:-    $startTimeValue\n    end_date:-   $endTimeValue\n  isAfter:-   ${DateTime.parse(startTimeValue).isAfter(calendar)}\n isBefore:-   ${DateTime.parse(endTimeValue).isBefore(calendar)}\n ${DateTime.parse(startDate).compareTo(calendar)}');
+      if (DateTime.parse(startDate).isAfter(calendar) &&
+          DateTime.parse(endDate).isBefore(calendar)) {
         return true;
       } else if (calendar.isAfter(DateTime.parse(startDate))) {
         return false;
@@ -317,4 +326,18 @@ class Utils {
       return false;
     }
   }
+
+  static String convertDateToTime(String value){
+    try {
+      DateFormat originalFormat = new DateFormat(AppString.DATE_FORMAT);
+      DateFormat targetFormat = new DateFormat('hh:mm:ss');
+      DateTime date = originalFormat.parse(value);
+      String formattedDate = targetFormat.format(date.toLocal());
+      debugPrint("date_format_birthday---->    $formattedDate");
+      return formattedDate;
+    } catch (e) {
+      return "";
+    }
+  }
+
 }

@@ -531,11 +531,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
         autofocus: false,
         controller: _phoneController,
         validator: (value) {
-          // if (value.isEmpty) {
-          //   return AppString.enter_your_cell_number;
-          // } else {
-          return null;
-          // }
+          if (value.isEmpty && value.length != 10) {
+            return AppString.enter_your_cell_number;
+          } else {
+            return null;
+          }
         },
         decoration: InputDecoration(
           labelText: AppString.cell_number,

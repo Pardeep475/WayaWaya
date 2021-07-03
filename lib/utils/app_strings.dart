@@ -157,6 +157,7 @@ class AppString {
   static const String redeem = "Redeem";
   static const String no_website = "Web Address not available";
   static const String no_number = "Number not available";
+  static const String exit_content = "Are you sure you want to exit?";
 
   // Routes
   static const LOGIN_SCREEN_ROUTE = "LOGIN_SCREEN_ROUTE";

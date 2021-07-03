@@ -30,8 +30,8 @@ class ItemRetailUnitListing extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.pushNamedAndRemoveUntil(
-            context, AppString.SHOP_DETAIL_SCREEN_ROUTE, (route) => false,
+        Navigator.pushNamed(
+            context, AppString.SHOP_DETAIL_SCREEN_ROUTE,
             arguments: retailWithCategory);
       },
       child: Container(
@@ -325,10 +325,9 @@ class ItemRetailUnitListing extends StatelessWidget {
     String defaultMap = await SessionManager.getDefaultMall();
     String mapUrl =
         '${AppString.MAP_URL_LIVE}?retail_unit=${retailWithCategory.subLocations.floorplanId}&map_data_url=$defaultMap';
-    Navigator.pushNamedAndRemoveUntil(
+    Navigator.pushNamed(
       context,
       AppString.CUSTOM_WEB_VIEW_SCREEN_ROUTE,
-      (route) => false,
       arguments: CustomWebViewModel(title: _getName(), webViewUrl: mapUrl),
     );
   }
@@ -373,9 +372,11 @@ class ItemRetailUnitListing extends StatelessWidget {
     if (retailWithCategory.subLocations.openingTimes.closeTime == null)
       return ShopStatus(color: Colors.green.shade400, txt: "OPEN");
 
+    debugPrint('openTime:-   ${retailWithCategory.subLocations.openingTimes.openTime}\n endTime:-  ${retailWithCategory.subLocations.openingTimes.closeTime}');
+
     bool isStoreOpen = Utils.storeStatus(
         startDate: retailWithCategory.subLocations.openingTimes.openTime,
-        endDate: retailWithCategory.subLocations.openingTimes.openTime);
+        endDate: retailWithCategory.subLocations.openingTimes.closeTime);
     if (isStoreOpen) {
       return ShopStatus(color: Colors.green.shade400, txt: "OPEN");
     } else {

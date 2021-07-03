@@ -68,13 +68,13 @@ class _ExpandableCardsState extends State<ExpandableCards> {
             onOfferPressed: () {
               debugPrint('onOfferPressed');
               try {
-                Navigator.pushNamedAndRemoveUntil(
-                    context, AppString.OFFER_SCREEN_ROUTE, (route) => false,
+                Navigator.pushNamed(
+                    context, AppString.OFFER_SCREEN_ROUTE,
                     arguments:
                         widget.categoryBasedModel.retailWithCategory[index].id);
               } catch (e) {
-                Navigator.pushNamedAndRemoveUntil(
-                    context, AppString.OFFER_SCREEN_ROUTE, (route) => false);
+                Navigator.pushNamed(
+                    context, AppString.OFFER_SCREEN_ROUTE,);
               }
             },
           ),

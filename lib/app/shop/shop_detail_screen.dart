@@ -503,6 +503,8 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
           onPressed: () => Navigator.pop(context),
         );
       } else {
+        await launch('tel:$url');
+
         if (await canLaunch(url)) {
           await launch('tel:$url');
         } else {
@@ -539,10 +541,9 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
         onPressed: () => Navigator.pop(context),
       );
     } else {
-      Navigator.pushNamedAndRemoveUntil(
+      Navigator.pushNamed(
         context,
         AppString.CUSTOM_WEB_VIEW_SCREEN_ROUTE,
-        (route) => false,
         arguments: CustomWebViewModel(title: name, webViewUrl: url),
       );
     }
@@ -635,10 +636,9 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
     String defaultMap = await SessionManager.getDefaultMall();
     String mapUrl =
         '${AppString.MAP_URL_LIVE}?retail_unit=${retailWithCategory.subLocations.floorplanId}&map_data_url=$defaultMap';
-    Navigator.pushNamedAndRemoveUntil(
+    Navigator.pushNamed(
       context,
       AppString.CUSTOM_WEB_VIEW_SCREEN_ROUTE,
-      (route) => false,
       arguments: CustomWebViewModel(
           title: _getName(retailWithCategory), webViewUrl: mapUrl),
     );
