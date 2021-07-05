@@ -170,7 +170,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           // _settingsBloc.termAndConditionOnClick(context);
           _implementLocalDb();
 
-          _settingsBloc.syncCampaign(0);
+          // _settingsBloc.syncCampaign(0);
 
           break;
         }
@@ -178,6 +178,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   _implementLocalDb() async {
+
+    SyncService.syncRetailUnit();
+
     String defaultMall = await SessionManager.getDefaultMall();
     List<RetailWithCategory> _omniChannelItemModel =
         await ProfileDatabaseHelper.getMallMenuItems(

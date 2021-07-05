@@ -1,6 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:wayawaya/app/shop/model/retail_unit_category.dart';
+import 'package:wayawaya/app/shop/model/color_codes.dart';
 import 'package:wayawaya/app/shop/model/retail_with_category.dart';
+import 'package:wayawaya/app/shop/model/sub_locations.dart';
+import 'package:wayawaya/models/retail_unit/retail_unit_modal_db.dart';
 import 'package:wayawaya/network/live/database_helper.dart';
 import 'package:wayawaya/utils/session_manager.dart';
 
@@ -29,14 +33,26 @@ class SyncService {
 
     debugPrint(
         'retail_unit_common_count:-   ${_retailWithCategoryList.length}');
-
-    try {
-      _retailWithCategoryList.forEach((element) async {
-        // await DataBaseHelperCommon.insertRetailUnitLength(.toJson());
-      });
-    } catch (e) {
-      debugPrint('retail_unit_common_count:-   $e');
-    }
+    DataBaseHelperCommon.getRetailUnitLength();
+    // try {
+    //   _retailWithCategoryList.forEach((element) async {
+    //     RetailUnitModalDB retailUnitModalDB = RetailUnitModalDB(
+    //       retailUnitId: element.id,
+    //       retailUnitCategories:
+    //       element.retailUnitCategories.toString(),
+    //       retailUnitCategoryName: element.categoryName,
+    //       retailUnitColor: colorCodesToJson(element.color),
+    //       retailUnitDescription: element.description.toString(),
+    //       retailUnitFavourite: element.favourite,
+    //       retailUnitName: element.name,
+    //       retailUnitSubLocation: subLocationsToJson(element.subLocations),
+    //     );
+    //     await DataBaseHelperCommon.insertRetailUnitLength(
+    //         retailUnitModalDB.toJson());
+    //   });
+    // } catch (e) {
+    //   debugPrint('retail_unit_common_count:-   $e');
+    // }
 
     // int _retailUnitCount = await DataBaseHelperCommon.getRetailUnitLength();
     // debugPrint('retail_unit_common_count:-   $_retailUnitCount');

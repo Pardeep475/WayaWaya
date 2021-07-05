@@ -3,6 +3,14 @@ import 'dart:convert';
 import 'rgb_code.dart';
 import 'cymk_code.dart';
 
+
+ColorCodes colorCodesFromJson(String str) =>
+    ColorCodes.fromJson(json.decode(str));
+
+String colorCodesToJson(ColorCodes data) =>
+    json.encode(data.toJson());
+
+
 class ColorCodes {
   final RgbCode rgbCode;
   final String hexCode;

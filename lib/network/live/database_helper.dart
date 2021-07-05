@@ -139,7 +139,7 @@ class DataBaseHelperCommon {
 
   static Future _onCreate(Database db, int version) async {
     await retailUnitCreateTable(db, version);
-    await campaignCreateTable(db, version);
+    // await campaignCreateTable(db, version);
     // mainMenuPermissionCreateTable(db, version);
     // allMallCreateTable(db, version);
     // preferenceCategoryCreateTable(db, version);
@@ -172,7 +172,7 @@ class DataBaseHelperCommon {
    $allMallIBeaconUid TEXT DEFAULT \'\',
    $allMallVenueData TEXT DEFAULT \'\',
    $allMallActive TEXT DEFAULT \'\',
-   )
+   );
     ''');
   }
 
@@ -191,17 +191,18 @@ class DataBaseHelperCommon {
   }
 
   static Future retailUnitCreateTable(Database db, int version) async {
-    db.execute('''
-    CREATE TABLE IF NOT EXISTS $_retailUnitTableName (
+
+    await db.execute('''
+    CREATE TABLE $_retailUnitTableName (
    $_id INTEGER PRIMARY KEY AUTOINCREMENT,
-   $retailUnitId  TEXT DEFAULT \'\',
-   $retailUnitName TEXT DEFAULT \'\',
-   $retailUnitDescription TEXT DEFAULT \'\',
-   $retailUnitCategoryName TEXT DEFAULT \'\',
-   $retailUnitCategories  TEXT DEFAULT \'\',
-   $retailUnitColor  TEXT DEFAULT \'\',
-   $retailUnitFavourite  TEXT DEFAULT \'\',
-   $retailUnitSubLocation  TEXT DEFAULT \'\',
+   $retailUnitId  TEXT NOT NULL,
+   $retailUnitName TEXT NOT NULL,
+   $retailUnitDescription TEXT NOT NULL,
+   $retailUnitCategoryName TEXT NOT NULL,
+   $retailUnitCategories  TEXT NOT NULL,
+   $retailUnitColor  TEXT NOT NULL,
+   $retailUnitFavourite  TEXT NOT NULL,
+   $retailUnitSubLocation  TEXT NOT NULL
    );
     ''');
   }
@@ -226,7 +227,7 @@ class DataBaseHelperCommon {
 
   // create table for campaign Future
   static Future campaignCreateTable(Database db, int version) async {
-    db.execute('''
+    await db.execute('''
   CREATE TABLE $_campaignTableName(
  $_id INTEGER PRIMARY KEY AUTOINCREMENT,
  $campaignAddBudget  TEXT DEFAULT \'\',
