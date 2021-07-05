@@ -136,10 +136,8 @@ class MenuTile extends StatelessWidget {
           {
             Future.delayed(Duration(seconds: 1), () {
               debugPrint('pardeep_testing_animation:-   $title');
-              Navigator.pushNamed(
-                context,
-                AppString.SHOP_SCREEN_ROUTE,
-              );
+              Navigator.pushNamed(context, AppString.SHOP_SCREEN_ROUTE,
+                  arguments: true);
             });
           }
           break;
@@ -147,13 +145,19 @@ class MenuTile extends StatelessWidget {
           {
             Future.delayed(Duration(seconds: 1), () {
               debugPrint('pardeep_testing_animation:-   $title');
-              Navigator.pushNamed(context, AppString.SHOP_SCREEN_ROUTE);
+              Navigator.pushNamed(context, AppString.SHOP_SCREEN_ROUTE,
+                  arguments: false);
             });
           }
           break;
         case 'the mall':
           {
             String defaultMap = await SessionManager.getDefaultMall();
+
+            itemList.forEach((element) {
+              debugPrint('category:    ${element.activity}');
+            });
+
             String mapUrl =
                 '${AppString.MAP_URL_LIVE}?map_data_url=$defaultMap';
 
@@ -554,7 +558,7 @@ class RhombusMenu extends StatelessWidget {
                 enabled: enabled,
                 cubic: _getCubic(AppString.mall_map_menu),
                 onPressed: () {
-                  Navigator.pop(context, AppString.the_mall_menu);
+                  Navigator.pop(context, AppString.mall_map_menu);
                   // App.pushTo(
                   //   context: context,
                   //   screen: MapScreen(),

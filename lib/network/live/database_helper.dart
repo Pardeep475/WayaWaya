@@ -128,17 +128,18 @@ class DataBaseHelperCommon {
   }
 
   static _initiateDataBase() async {
-    try{
+    try {
       Directory directory = await getApplicationDocumentsDirectory();
       String path = join(directory.path, _dbName);
       return await openDatabase(path, version: _dbVersion, onCreate: _onCreate);
-    }catch(e){
+    } catch (e) {
       debugPrint('database exception:-    $e');
     }
   }
 
   static Future _onCreate(Database db, int version) async {
     await retailUnitCreateTable(db, version);
+    await campaignCreateTable(db, version);
     // mainMenuPermissionCreateTable(db, version);
     // allMallCreateTable(db, version);
     // preferenceCategoryCreateTable(db, version);
@@ -208,7 +209,8 @@ class DataBaseHelperCommon {
   static Future<int> getRetailUnitLength() async {
     Database _db = await instance.database;
 
-    (await _db.query('sqlite_master', columns: ['type', 'name'])).forEach((row) {
+    (await _db.query('sqlite_master', columns: ['type', 'name']))
+        .forEach((row) {
       print(row.values);
     });
 
@@ -222,54 +224,54 @@ class DataBaseHelperCommon {
     return await _db.insert(_retailUnitTableName, row);
   }
 
-// create table for campaign
-// Future campaignCreateTable(Database db, int version) async {
-//   db.execute('''
-//   CREATE TABLE $_campaignTableName(
-//  $_id INTEGER PRIMARY KEY AUTOINCREMENT,
-//  $campaignAddBudget  TEXT DEFAULT \'\',
-//  $campaignAddBudgetRemaining TEXT DEFAULT \'\',
-//  $campaignAddClickLimit INT DEFAULT 0,
-//  $campaignAddConversionLimit INT DEFAULT 0,
-//  $campaignAddImpressionLimit INT DEFAULT 0,
-//  $campaignAddPriority INT DEFAULT 0,
-//  $campaignAddServerScript TEXT DEFAULT \'\',
-//  $campaignAddServerUrl TEXT DEFAULT \'\',
-//  $campaignAssetId TEXT DEFAULT \'\',
-//  $campaignB2XDatabaseListId TEXT DEFAULT \'\',
-//  $campaignCampaignChannels TEXT DEFAULT \'\',
-//  $campaignCampaignElement TEXT DEFAULT \'\',
-//  $campaignCostCenterCode TEXT DEFAULT \'\',
-//  $campaignCouponCode TEXT DEFAULT \'\',
-//  $campaignCouponValue TEXT DEFAULT \'\',
-//  $campaignEndDate TEXT DEFAULT \'\',
-//  $campaignEndTime TEXT DEFAULT \'\',
-//  $campaignFloorPlanId TEXT DEFAULT \'\',
-//  $campaignUDID TEXT DEFAULT \'\',
-//  $campaignImageSizeId TEXT DEFAULT \'\',
-//  $campaignLimitViewsPerSession INT DEFAULT 0,
-//  $campaignLoyaltyOfferThreshold INT DEFAULT 0,
-//  $campaignLoyaltyOfferTimeout TEXT DEFAULT \'\',
-//  $campaignLoyaltyPoints INT DEFAULT 0,
-//  $campaignOfferQrCode TEXT DEFAULT \'\',
-//  $campaignPriceModel TEXT DEFAULT \'\',
-//  $campaignPublishDate TEXT DEFAULT \'\',
-//  $campaignRatePrice TEXT DEFAULT \'\',
-//  $campaignReviewerUserId TEXT DEFAULT \'\',
-//  $campaignRId TEXT DEFAULT \'\',
-//  $campaignStartDate TEXT DEFAULT \'\',
-//  $campaignStartTime TEXT DEFAULT \'\',
-//  $campaignStatus TEXT DEFAULT \'\',
-//  $campaignTargetList TEXT DEFAULT \'\',
-//  $campaignTimePeriod TEXT DEFAULT \'\',
-//  $campaignTriggerZoneList TEXT DEFAULT \'\',
-//  $campaignType TEXT DEFAULT \'\',
-//  $campaignViewResetCounter INT DEFAULT 0,
-//  $campaignVoucher TEXT DEFAULT \'\',
-//  )
-//   ''');
-// }
-//
+  // create table for campaign Future
+  static Future campaignCreateTable(Database db, int version) async {
+    db.execute('''
+  CREATE TABLE $_campaignTableName(
+ $_id INTEGER PRIMARY KEY AUTOINCREMENT,
+ $campaignAddBudget  TEXT DEFAULT \'\',
+ $campaignAddBudgetRemaining TEXT DEFAULT \'\',
+ $campaignAddClickLimit INT DEFAULT 0,
+ $campaignAddConversionLimit INT DEFAULT 0,
+ $campaignAddImpressionLimit INT DEFAULT 0,
+ $campaignAddPriority INT DEFAULT 0,
+ $campaignAddServerScript TEXT DEFAULT \'\',
+ $campaignAddServerUrl TEXT DEFAULT \'\',
+ $campaignAssetId TEXT DEFAULT \'\',
+ $campaignB2XDatabaseListId TEXT DEFAULT \'\',
+ $campaignCampaignChannels TEXT DEFAULT \'\',
+ $campaignCampaignElement TEXT DEFAULT \'\',
+ $campaignCostCenterCode TEXT DEFAULT \'\',
+ $campaignCouponCode TEXT DEFAULT \'\',
+ $campaignCouponValue TEXT DEFAULT \'\',
+ $campaignEndDate TEXT DEFAULT \'\',
+ $campaignEndTime TEXT DEFAULT \'\',
+ $campaignFloorPlanId TEXT DEFAULT \'\',
+ $campaignUDID TEXT DEFAULT \'\',
+ $campaignImageSizeId TEXT DEFAULT \'\',
+ $campaignLimitViewsPerSession INT DEFAULT 0,
+ $campaignLoyaltyOfferThreshold INT DEFAULT 0,
+ $campaignLoyaltyOfferTimeout TEXT DEFAULT \'\',
+ $campaignLoyaltyPoints INT DEFAULT 0,
+ $campaignOfferQrCode TEXT DEFAULT \'\',
+ $campaignPriceModel TEXT DEFAULT \'\',
+ $campaignPublishDate TEXT DEFAULT \'\',
+ $campaignRatePrice TEXT DEFAULT \'\',
+ $campaignReviewerUserId TEXT DEFAULT \'\',
+ $campaignRId TEXT DEFAULT \'\',
+ $campaignStartDate TEXT DEFAULT \'\',
+ $campaignStartTime TEXT DEFAULT \'\',
+ $campaignStatus TEXT DEFAULT \'\',
+ $campaignTargetList TEXT DEFAULT \'\',
+ $campaignTimePeriod TEXT DEFAULT \'\',
+ $campaignTriggerZoneList TEXT DEFAULT \'\',
+ $campaignType TEXT DEFAULT \'\',
+ $campaignViewResetCounter INT DEFAULT 0,
+ $campaignVoucher TEXT DEFAULT \'\',
+ )
+  ''');
+  }
+
 // Future<int> insert(Map<String, dynamic> row) async {
 //   Database _db = await instance.database;
 //   return await _db.insert(_tableName, row);

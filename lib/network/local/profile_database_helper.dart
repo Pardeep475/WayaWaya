@@ -746,4 +746,40 @@ class ProfileDatabaseHelper {
     }
     return [];
   }
+
+
+
+
+  static Future<List<RetailWithCategory>> getMallMenuItems({
+    String databasePath,
+  }) async {
+    if (_db == null) {
+      await initDataBase(databasePath);
+    }
+
+    try {
+      List<Map> data = [];
+
+      String query = "SELECT * FROM the_mall ORDER BY sequence_number ASC ";
+
+      debugPrint('query_is :-    $query');
+
+      await _db.transaction((txn) async {
+        data = await txn.rawQuery(query);
+      });
+
+      debugPrint('database_testing:-  all search  ${data.length}');
+      debugPrint('database_testing:-   $data');
+      // List<RetailWithCategory> _allSearchList = [];
+      data.forEach((element) {
+        // _allSearchList.add(RetailWithCategory.fromJson(element));
+      });
+      // _allSearchList.sort((a, b) => a.name.compareTo(b.name));
+      return [];
+    } catch (e) {
+      debugPrint('error:- database :-  $e');
+    }
+    return [];
+  }
+
 }

@@ -87,37 +87,37 @@ class SettingsBloc {
   }
 
   syncCampaign(int page) async {
-    // String authorization, @Nullable int nextPage, String lastUpdate, List<String> campaignIds
-
     String defaultMall = await SessionManager.getDefaultMall();
     OmniChannelItemModel _omniChannelItemModel =
         await ProfileDatabaseHelper.getActiveOmniChannel(
       databasePath: defaultMall,
     );
-
     debugPrint("omni_channel_item_model :-       ${_omniChannelItemModel.oid}");
 
     String authorization = await SessionManager.getAuthHeader();
-    String lastUpdate ='2020-07-02 01:01:11';
+    String lastUpdate = '2020-07-02 01:01:11';
 
+    Map<String, dynamic> campaignQuery = {
+      "page": page.toString(),
+      "sort": "-_updated",
+      "enable": true,
+      "where":
+          "{\"campaign_channels.omni_channel_id\":{\"\$elemMatch\":{\"\$eq\":\"" +
+              _omniChannelItemModel.oid +
+              "\"}}}",
+    };
     // Map<String, String> campaignQuery = {
     //   "page": page.toString(),
     //   "sort": "-_updated",
-    //   "where": "{\"campaign_channels.omni_channel_id\":{\"\$elemMatch\":{\"\$eq\":\"" +
-    //       _omniChannelItemModel.oid +
-    //       "\"}}}",
+    //   "where": "{\"_updated\":{\"\$gt\": \"" + lastUpdate + "\"}}",
     // };
-    Map<String, String> campaignQuery = {
-      "page": page.toString(),
-      "sort": "-_updated",
-      "where": "{\"_updated\":{\"\$gt\": \"" + lastUpdate + "\"}}",
-    };
 
     debugPrint("campaignQuery :-       $campaignQuery");
 
     try {
-      // dynamic data = await _repository.fetchCampaignApiRepository(authorization: authorization, map: campaignQuery);
-      dynamic data = await _repository.venueApiRepository(authorization: authorization);
+      dynamic data = await _repository.fetchCampaignApiRepository(
+          authorization: authorization, map: campaignQuery);
+      // dynamic data = await _repository.fetchCampaignApiRepository(authorization: authorization);
       debugPrint("campaign_settings:-  success $data");
 
       // RetailUnitWrapper _retailUnitWrapper = RetailUnitWrapper.fromJson(data.data);

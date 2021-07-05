@@ -30,8 +30,7 @@ class ItemRetailUnitListing extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.pushNamed(
-            context, AppString.SHOP_DETAIL_SCREEN_ROUTE,
+        Navigator.pushNamed(context, AppString.SHOP_DETAIL_SCREEN_ROUTE,
             arguments: retailWithCategory);
       },
       child: Container(
@@ -372,11 +371,16 @@ class ItemRetailUnitListing extends StatelessWidget {
     if (retailWithCategory.subLocations.openingTimes.closeTime == null)
       return ShopStatus(color: Colors.green.shade400, txt: "OPEN");
 
-    debugPrint('openTime:-   ${retailWithCategory.subLocations.openingTimes.openTime}\n endTime:-  ${retailWithCategory.subLocations.openingTimes.closeTime}');
-
-    bool isStoreOpen = Utils.storeStatus(
-        startDate: retailWithCategory.subLocations.openingTimes.openTime,
-        endDate: retailWithCategory.subLocations.openingTimes.closeTime);
+    debugPrint(
+        'openTime:-   ${retailWithCategory.subLocations.openingTimes.openTime}\n endTime:-  ${retailWithCategory.subLocations.openingTimes.closeTime}');
+    DateTime openTime = Utils.getDateOnStringParse(
+        retailWithCategory.subLocations.openingTimes.openTime,
+        AppString.DATE_FORMAT);
+    DateTime closeTime = Utils.getDateOnStringParse(
+        retailWithCategory.subLocations.openingTimes.closeTime,
+        AppString.DATE_FORMAT);
+    bool isStoreOpen =
+        Utils.storeStatus(openTime: openTime, closeTime: closeTime);
     if (isStoreOpen) {
       return ShopStatus(color: Colors.green.shade400, txt: "OPEN");
     } else {

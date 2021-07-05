@@ -32,7 +32,7 @@ class SyncService {
 
     try {
       _retailWithCategoryList.forEach((element) async {
-        await DataBaseHelperCommon.insertRetailUnitLength(element.toJson());
+        // await DataBaseHelperCommon.insertRetailUnitLength(.toJson());
       });
     } catch (e) {
       debugPrint('retail_unit_common_count:-   $e');

@@ -92,8 +92,11 @@ class ApiRepository {
 
   Future<dynamic> fetchCampaignApiRepository(
       {String authorization, Map<String, dynamic> map}) async {
+
+    // https://api.omnistride.net/api/v1/campaigns?where ={"status": "approved", "_updated":{"$gt":"2021-06-10 09:57:28"}, "campaign_channels.omni_channel_id":{"$elemMatch":{"$eq":"ec6f1eb8901b4f419e2e25e4fa55a3e0"}}}&enable=true
+
     final response = await _apiProvider.get(
-        url: '${NetworkConstants.campaigns_end_point}',
+        url: '${NetworkConstants.campaigns_end_point}?where ={"status": "approved", "_updated":{"\$gt":"2021-06-10 09:57:28"}, "campaign_channels.omni_channel_id":{"\$elemMatch":{"\$eq":"ec6f1eb8901b4f419e2e25e4fa55a3e0"}}}&enable=true',
         queryParams: map,
         authHeader: authorization);
     return response;

@@ -300,34 +300,46 @@ class Utils {
     return Color(int.parse(buffer.toString(), radix: 16));
   }
 
-  static bool storeStatus({String startDate, String endDate}) {
+  static bool storeStatus({DateTime openTime, DateTime closeTime}) {
     try {
-      DateTime calendar = DateTime.now();
+      DateFormat sdf = new DateFormat('HH:mm:ss');
+      DateTime dt = DateTime.now();
 
-      String startTimeValue =  convertDateToTime(startDate);
-      String endTimeValue =  convertDateToTime(endDate);
-      String currentTime =  convertDateToTime(calendar.toString());
+      DateTime tempOpenTime =
+          getDateOnStringParse(sdf.format(openTime), "HH:mm:ss");
+      DateTime tempCloseTime =
+          getDateOnStringParse(sdf.format(closeTime), "HH:mm:ss");
+      DateTime tempCompareTime =
+          getDateOnStringParse(sdf.format(dt), "HH:mm:ss");
 
-      DateTime.parse(startDate).compareTo(calendar) ;
-
-debugPrint('------------   ${DateTime.parse(startDate).compareTo(calendar)}');
-      debugPrint(
-          'start_date:-    $startTimeValue\n    end_date:-   $endTimeValue\n  isAfter:-   ${DateTime.parse(startTimeValue).isAfter(calendar)}\n isBefore:-   ${DateTime.parse(endTimeValue).isBefore(calendar)}\n ${DateTime.parse(startDate).compareTo(calendar)}');
-      if (DateTime.parse(startDate).isAfter(calendar) &&
-          DateTime.parse(endDate).isBefore(calendar)) {
+      if (tempOpenTime.isBefore(tempCompareTime) &&
+          tempCloseTime.isAfter(tempCompareTime)) {
         return true;
-      } else if (calendar.isAfter(DateTime.parse(startDate))) {
-        return false;
-      } else {
+      } else if (tempCloseTime.isAfter(tempCompareTime) &&
+          tempOpenTime.isBefore(tempCompareTime)) {
         return false;
       }
+      return false;
     } catch (e) {
       debugPrint('date_format_tesing:-   $e');
       return false;
     }
   }
 
-  static String convertDateToTime(String value){
+  static DateTime getDateOnStringParse(String dateText, String format) {
+    DateTime returnValue;
+
+    try {
+      DateFormat sdfmt1 = new DateFormat(format);
+      returnValue = sdfmt1.parse(dateText);
+      return returnValue;
+    } catch (e) {
+      debugPrint('Exception caught in getDateOnStringParse    $e');
+      return DateTime.now();
+    }
+  }
+
+  static String convertDateToTime(String value) {
     try {
       DateFormat originalFormat = new DateFormat(AppString.DATE_FORMAT);
       DateFormat targetFormat = new DateFormat('hh:mm:ss');
@@ -339,5 +351,4 @@ debugPrint('------------   ${DateTime.parse(startDate).compareTo(calendar)}');
       return "";
     }
   }
-
 }
