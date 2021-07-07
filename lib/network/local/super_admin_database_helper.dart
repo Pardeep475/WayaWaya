@@ -54,7 +54,6 @@ class SuperAdminDatabaseHelper {
     }
   }
 
-
   static Future<List<MallProfileModel>> getAllVenueProfile() async {
     if (_db == null) {
       await initDataBase();
@@ -84,6 +83,7 @@ class SuperAdminDatabaseHelper {
     });
 
     data.map((e) => debugPrint('database_testing:-    $e'));
+    _mallList.sort((a, b) => a.name.compareTo(b.name));
     return _mallList;
   }
 

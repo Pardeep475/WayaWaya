@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:wayawaya/config.dart';
 import 'package:wayawaya/screens/map/mall_map.dart';
 import 'package:wayawaya/screens/rewards/redeem.dart';
+import 'package:wayawaya/utils/app_images.dart';
 import '../../constants.dart';
 import 'menu.dart';
 
@@ -53,7 +54,7 @@ class _RedeemVoucherState extends State<RedeemVoucher> {
                 'If you have not shown the redemption page to the cashier, you will forfeit your points.',
               ),
               Image.asset(
-                'assets/qr.png',
+                AppImages.icon_barcode,
                 height: 100,
               ),
             ],
@@ -153,7 +154,7 @@ class _RedeemVoucherState extends State<RedeemVoucher> {
                               child: Container(
                                 decoration: BoxDecoration(
                                   image: DecorationImage(
-                                    image: AssetImage('assets/rewards.jpg'),
+                                    image: AssetImage(AppImages.rewards),
                                     fit: BoxFit.fill,
                                   )
                                 ),

@@ -183,6 +183,8 @@ class AppString {
   static const RESTAURANT_DETAIL_SCREEN_ROUTE =
       "RESTAURANT_DETAIL_SCREEN_ROUTE";
   static const CUSTOM_WEB_VIEW_SCREEN_ROUTE = "CUSTOM_WEB_VIEW_SCREEN_ROUTE";
+  static const REWARDS_SCREEN_ROUTE = "REWARDS_SCREEN_ROUTE";
+  static const THE_MALL_SCREEN_ROUTE = "THE_MALL_SCREEN_ROUTE";
 
 // db
   static const String ADMIN_DB_FILE = "admin.db";
@@ -207,6 +209,7 @@ class AppString {
   static const String PARKING_TABLE_NAME = "parking";
   static const String CINEMAS_TABLE_NAME = "cinemas";
   static const String THEME_TABLE_NAME = "theme";
+  static const String SERVICES_TABLE_NAME = "services";
 
   // keys
   static const String OFFER_CAMPAIGN = "offer";

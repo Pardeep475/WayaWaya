@@ -5,6 +5,7 @@ import 'package:wayawaya/config.dart';
 import 'package:wayawaya/constants.dart';
 import 'package:wayawaya/screens/rewards/menu.dart';
 import 'package:wayawaya/screens/rewards/qr_code_scanner.dart';
+import 'package:wayawaya/utils/app_images.dart';
 
 import 'menunew.dart';
 
@@ -39,7 +40,7 @@ class _RewardsScreenState extends State<RewardsScreen> {
                           height: 150,
                           width: App.width(context),
                           child: Image.asset(
-                            "assets/rewards.jpg",
+                            AppImages.rewards,
                             fit: BoxFit.fitWidth,
                           ),
                         ),

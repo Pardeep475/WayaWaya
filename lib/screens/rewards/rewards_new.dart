@@ -1,8 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:wayawaya/app/common/menu/animate_app_bar.dart';
+import 'package:wayawaya/app/common/menu/model/main_menu_permission.dart';
 import 'package:wayawaya/config.dart';
 import 'package:wayawaya/constants.dart';
+import 'package:wayawaya/screens/rewards/bloc/rewards_bloc.dart';
 import 'package:wayawaya/screens/rewards/details.dart';
+import 'package:wayawaya/utils/app_images.dart';
 import 'menunew.dart';
 import 'rewards_slider.dart';
 
@@ -14,8 +18,12 @@ class RewardsBrowser extends StatefulWidget {
 }
 
 class _RewardsBrowserState extends State<RewardsBrowser> {
+  RewardsBloc _rewardsBloc;
+
+
   @override
   void initState() {
+    _rewardsBloc = RewardsBloc();
     super.initState();
   }
 
@@ -29,150 +37,158 @@ class _RewardsBrowserState extends State<RewardsBrowser> {
           width: App.width(context),
           child: Stack(
             children: [
-              MenuNew(
-                title: 'Rewards',
-                centerTitle: true,
-                padding: EdgeInsets.only(right: 40, top: 20),
-                titleSize: 16,
-                children: [
-                  SliverToBoxAdapter(
-                    child: Container(
-                      height: 50,
-                      width: App.width(context),
-                      color: Colors.grey[300],
-                      padding: EdgeInsets.only(left: 22, right: 30, top: 7),
-                      child: Text(
-                        'See if you qualify for a Reward\nVoucher',
-                        style: TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.bold,
+              StreamBuilder<List<MainMenuPermission>>(
+                  initialData: [],
+                  stream: _rewardsBloc.mainMenuPermissionStream,
+                  builder: (context, snapshot) {
+                    return AnimateAppBar(
+                      title: 'Rewards'.toUpperCase(),
+                      isSliver: true,
+                      mainMenuPermissions: snapshot.data,
+                      physics: ClampingScrollPhysics(),
+                      pinned: false,
+                      snap: true,
+                      floating: true,
+                      children: [
+                        SliverToBoxAdapter(
+                          child: Container(
+                            height: 50,
+                            width: App.width(context),
+                            color: Colors.grey[300],
+                            padding: EdgeInsets.only(left: 22, right: 30, top: 7),
+                            child: Text(
+                              'See if you qualify for a Reward\nVoucher',
+                              style: TextStyle(
+                                fontSize: 17,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                  ),
-                  SliverToBoxAdapter(
-                    child: RewardsSlider(),
-                  ),
-                  SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) => InkWell(
-                        onTap: () => App.pushTo(
-                            context: context, screen: RewardsDetails()),
-                        child: Container(
-                          height: 250,
-                          width: App.width(context),
-                          margin: EdgeInsets.symmetric(horizontal: 6),
-                          decoration: BoxDecoration(
-                            border: Border(
-                              top: BorderSide(
-                                color: Color(0xffF1BD80),
-                                width: 3,
-                              ),
-                              left: BorderSide(
-                                color: Color(0xffF1BD80),
-                                width: 3,
-                              ),
-                              right: BorderSide(
-                                color: Color(0xffF1BD80),
-                                width: 3,
-                              ),
-                              bottom: index % 2 == 0
-                                  ? BorderSide.none
-                                  : BorderSide(
+                        SliverToBoxAdapter(
+                          child: RewardsSlider(),
+                        ),
+                        SliverList(
+                          delegate: SliverChildBuilderDelegate(
+                                (context, index) => InkWell(
+                              onTap: () => App.pushTo(
+                                  context: context, screen: RewardsDetails()),
+                              child: Container(
+                                height: 250,
+                                width: App.width(context),
+                                margin: EdgeInsets.symmetric(horizontal: 6),
+                                decoration: BoxDecoration(
+                                  border: Border(
+                                    top: BorderSide(
                                       color: Color(0xffF1BD80),
                                       width: 3,
                                     ),
-                            ),
-                          ),
-                          child: Column(
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  child: Image.asset(
-                                    'assets/rewards.jpg',
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                height: 45,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    SizedBox(
+                                    left: BorderSide(
+                                      color: Color(0xffF1BD80),
                                       width: 3,
                                     ),
-                                    Image.asset(
-                                      'assets/red_fist_bump.png',
-                                      height: 40,
-                                      width: 40,
+                                    right: BorderSide(
+                                      color: Color(0xffF1BD80),
+                                      width: 3,
                                     ),
-                                    SizedBox(
-                                      width: 15,
+                                    bottom: index % 2 == 0
+                                        ? BorderSide.none
+                                        : BorderSide(
+                                      color: Color(0xffF1BD80),
+                                      width: 3,
                                     ),
-                                    Text(
-                                      '50 Points',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 18,
+                                  ),
+                                ),
+                                child: Column(
+                                  children: [
+                                    Expanded(
+                                      child: Container(
+                                        child: Image.asset(
+                                          AppImages.rewards,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    ),
+                                    Container(
+                                      height: 45,
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          SizedBox(
+                                            width: 3,
+                                          ),
+                                          Image.asset(
+                                            AppImages.red_fist_bump,
+                                            height: 40,
+                                            width: 40,
+                                          ),
+                                          SizedBox(
+                                            width: 15,
+                                          ),
+                                          Text(
+                                            '50 Points',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 18,
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ],
                                 ),
                               ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      childCount: 2,
-                    ),
-                  ),
-                ],
-              ),
-
-              ///GESTURES GUIDE
-              Visibility(
-                visible: App.prefs.getBool('rewardGestures') ?? true,
-                child: InkWell(
-                  onTap: () {
-                    setState(() {
-                      App.prefs.setBool('rewardGestures', false);
-                    });
-                  },
-                  child: Container(
-                    height: App.height(context),
-                    width: App.width(context),
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.5),
-                    ),
-                    child: Stack(
-                      children: [
-                        Positioned(
-                          top: 150,
-                          left: 0,
-                          child: gestureH(text: 'Slide & Click'),
-                        ),
-                        Align(
-                          alignment: Alignment.center,
-                          child: Padding(
-                            padding: const EdgeInsets.only(top: 20),
-                            child: gestureH(text: 'Show Detail'),
-                          ),
-                        ),
-                        Align(
-                          alignment: Alignment.bottomCenter,
-                          child: Padding(
-                            padding: const EdgeInsets.only(bottom: 40),
-                            child: gestureV(text: 'Slide'),
+                            ),
+                            childCount: 2,
                           ),
                         ),
                       ],
-                    ),
-                  ),
-                ),
-              ),
+                    );
+                  }),
+
+              //GESTURES GUIDE
+              // Visibility(
+              //   visible: App.prefs.getBool('rewardGestures') ?? true,
+              //   child: InkWell(
+              //     onTap: () {
+              //       setState(() {
+              //         App.prefs.setBool('rewardGestures', false);
+              //       });
+              //     },
+              //     child: Container(
+              //       height: App.height(context),
+              //       width: App.width(context),
+              //       padding: const EdgeInsets.all(20),
+              //       decoration: BoxDecoration(
+              //         color: Colors.black.withOpacity(0.5),
+              //       ),
+              //       child: Stack(
+              //         children: [
+              //           Positioned(
+              //             top: 150,
+              //             left: 0,
+              //             child: gestureH(text: 'Slide & Click'),
+              //           ),
+              //           Align(
+              //             alignment: Alignment.center,
+              //             child: Padding(
+              //               padding: const EdgeInsets.only(top: 20),
+              //               child: gestureH(text: 'Show Detail'),
+              //             ),
+              //           ),
+              //           Align(
+              //             alignment: Alignment.bottomCenter,
+              //             child: Padding(
+              //               padding: const EdgeInsets.only(bottom: 40),
+              //               child: gestureV(text: 'Slide'),
+              //             ),
+              //           ),
+              //         ],
+              //       ),
+              //     ),
+              //   ),
+              // ),
             ],
           ),
         ),
@@ -195,7 +211,7 @@ class _RewardsBrowserState extends State<RewardsBrowser> {
             decoration: BoxDecoration(
               image: DecorationImage(
                 image: AssetImage(
-                  'assets/touch_u.png',
+                  AppImages.touch_u,
                 ),
                 fit: BoxFit.scaleDown,
               ),
@@ -245,7 +261,7 @@ class _RewardsBrowserState extends State<RewardsBrowser> {
             decoration: BoxDecoration(
               image: DecorationImage(
                 image: AssetImage(
-                  'assets/touch_r.png',
+                  AppImages.touch_u,
                 ),
                 fit: BoxFit.scaleDown,
               ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:wayawaya/app/common/menu/animate_app_bar.dart';
 import 'package:wayawaya/app/common/menu/model/main_menu_permission.dart';
+import 'package:wayawaya/app/map/model/service_model.dart';
 import 'package:wayawaya/app/settings/model/settings_model.dart';
 import 'package:wayawaya/app/shop/model/retail_with_category.dart';
 import 'package:wayawaya/models/omni_channel_item_model/omni_channel_item_model.dart';
@@ -178,13 +179,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   _implementLocalDb() async {
-
-    SyncService.syncRetailUnit();
-
     String defaultMall = await SessionManager.getDefaultMall();
-    List<RetailWithCategory> _omniChannelItemModel =
-        await ProfileDatabaseHelper.getMallMenuItems(
+    List<ServiceModel> _serviceList =
+        await ProfileDatabaseHelper.getAllServices(
       databasePath: defaultMall,
     );
+
+    _serviceList.forEach((element) {
+      debugPrint(' ${element.sequenceNumber}');
+    });
   }
 }

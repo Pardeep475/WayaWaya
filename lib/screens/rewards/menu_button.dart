@@ -132,6 +132,11 @@ class MenuTile extends StatelessWidget {
             _openFurtherScreens(context, AppString.EVENT_SCREEN_ROUTE, true);
           }
           break;
+        case 'rewards':
+          {
+            _openFurtherScreens(context, AppString.REWARDS_SCREEN_ROUTE, true);
+          }
+          break;
         case 'shops':
           {
             Future.delayed(Duration(seconds: 1), () {
@@ -152,22 +157,7 @@ class MenuTile extends StatelessWidget {
           break;
         case 'the mall':
           {
-            String defaultMap = await SessionManager.getDefaultMall();
-
-            itemList.forEach((element) {
-              debugPrint('category:    ${element.activity}');
-            });
-
-            String mapUrl =
-                '${AppString.MAP_URL_LIVE}?map_data_url=$defaultMap';
-
-            debugPrint('mapUrl_testing:-    $mapUrl');
-
-            Navigator.pushNamed(
-              context,
-              AppString.CUSTOM_WEB_VIEW_SCREEN_ROUTE,
-              arguments: CustomWebViewModel(title: title, webViewUrl: mapUrl),
-            );
+            _openFurtherScreens(context, AppString.THE_MALL_SCREEN_ROUTE, true);
           }
           break;
         case 'mall map':

@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:wayawaya/config.dart';
 import 'package:wayawaya/screens/map/mall_map.dart';
 import 'package:wayawaya/screens/rewards/redeem.dart';
+import 'package:wayawaya/utils/app_images.dart';
 import '../../constants.dart';
 import 'menu.dart';
 
@@ -42,7 +43,7 @@ class _RewardsDetailsState extends State<RewardsDetails> {
               ),
             ),
             onPressed: () {
-              Navigator.of(context).pop();
+              // Navigator.of(context).pop();
               App.pushTo(context: context, screen: RedeemVoucher());
             },
           ),
@@ -194,7 +195,7 @@ class _RewardsDetailsState extends State<RewardsDetails> {
                             Text(
                               'Offer',
                               style:
-                              TextStyle(fontWeight: FontWeight.w400, fontSize: 14),
+                              TextStyle(fontWeight: FontWeight.w400, fontSize: 18),
                             ),
                           ],
                         ),
@@ -237,7 +238,7 @@ class _RewardsDetailsState extends State<RewardsDetails> {
                             Expanded(
                               child: Container(
                                 child: Image.asset(
-                                  'assets/rewards.jpg',
+                                  AppImages.rewards,
                                   fit: BoxFit.cover,
                                 ),
                               ),
@@ -252,7 +253,7 @@ class _RewardsDetailsState extends State<RewardsDetails> {
                                     width: 3,
                                   ),
                                   Image.asset(
-                                    'assets/red_fist_bump.png',
+                                    AppImages.red_fist_bump,
                                     height: 40,
                                     width: 40,
                                   ),

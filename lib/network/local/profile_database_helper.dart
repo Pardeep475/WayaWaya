@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart' as path;
 import 'package:wayawaya/app/home/model/campaign_model.dart';
+import 'package:wayawaya/app/map/model/service_model.dart';
 import 'package:wayawaya/app/preferences/model/preferences_categories.dart';
 import 'package:wayawaya/app/search/model/global_app_search.dart';
 import 'package:wayawaya/app/shop/model/retail_unit_category.dart';
@@ -55,21 +56,20 @@ class ProfileDatabaseHelper {
     }
   }
 
-
-  static Future<OmniChannelItemModel> getActiveOmniChannel({String databasePath}) async {
+  static Future<OmniChannelItemModel> getActiveOmniChannel(
+      {String databasePath}) async {
     if (_db == null) {
       await initDataBase(databasePath);
     }
     List<Map> data;
 
-
     await _db.transaction((txn) async {
-      data = await txn.query(
-        'omni_channel',
-        where: "type = ?",
-        whereArgs: ['app_android',],
-        limit: 1
-      );
+      data = await txn.query('omni_channel',
+          where: "type = ?",
+          whereArgs: [
+            'app_android',
+          ],
+          limit: 1);
     });
 
     debugPrint('database_testing:-   ${data.length}');
@@ -79,14 +79,12 @@ class ProfileDatabaseHelper {
     });
 
     data.map((e) => debugPrint('database_testing:-    $e'));
-    if(_mallList.length > 0){
+    if (_mallList.length > 0) {
       return _mallList[0];
-    }else{
+    } else {
       return null;
     }
-
   }
-
 
   static Future<List<Category>> getAllCategories(String databasePath) async {
     debugPrint('database_testing:-  database path $databasePath');
@@ -747,9 +745,6 @@ class ProfileDatabaseHelper {
     return [];
   }
 
-
-
-
   static Future<List<RetailWithCategory>> getMallMenuItems({
     String databasePath,
   }) async {
@@ -782,4 +777,24 @@ class ProfileDatabaseHelper {
     return [];
   }
 
+  static Future<List<ServiceModel>> getAllServices({
+    String databasePath,
+  }) async {
+    if (_db == null) {
+      await initDataBase(databasePath);
+    }
+    List<Map> data;
+    await _db.transaction((txn) async {
+      data = await txn.query(
+        AppString.SERVICES_TABLE_NAME,
+      );
+    });
+    debugPrint('database_testing:-   ${data.length}');
+    List<ServiceModel> _mallList = [];
+    data.forEach((element) {
+      _mallList.add(ServiceModel.fromJson(element));
+    });
+    _mallList.sort((a, b) => a.sequenceNumber.compareTo(b.sequenceNumber));
+    return _mallList;
+  }
 }

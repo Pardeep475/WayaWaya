@@ -10,6 +10,7 @@ import 'package:wayawaya/app/common/webview/custom_web_view.dart';
 import 'package:wayawaya/app/events/event_detail_screen.dart';
 import 'package:wayawaya/app/events/event_screen.dart';
 import 'package:wayawaya/app/mall/mall_screen.dart';
+import 'package:wayawaya/app/map/the_mall_screen.dart';
 import 'package:wayawaya/app/map/two_d_map_screen.dart';
 import 'package:wayawaya/app/offers/offer_details.dart';
 import 'package:wayawaya/app/offers/offers_screen.dart';
@@ -19,6 +20,7 @@ import 'package:wayawaya/app/search/search_screen.dart';
 import 'package:wayawaya/app/settings/settings_screen.dart';
 import 'package:wayawaya/app/shop/shop_detail_screen.dart';
 import 'package:wayawaya/app/shop/shop_screen.dart';
+import 'package:wayawaya/screens/rewards/rewards.dart';
 import 'package:wayawaya/screens/shops_and_rest_details.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/session_manager.dart';
@@ -29,6 +31,8 @@ import 'app/home/home_screen.dart';
 import 'app/settings/my_account_screen.dart';
 import 'app/settings/my_devices_screen.dart';
 import 'network/local/super_admin_database_helper.dart';
+import 'screens/rewards/rewards_new.dart';
+import 'screens/rewards/rewards_slider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -229,6 +233,20 @@ class MyAppState extends State<MyApp> {
       case AppString.CUSTOM_WEB_VIEW_SCREEN_ROUTE:
         return PageTransition(
           child: CustomWebView(),
+          type: PageTransitionType.rightToLeft,
+          settings: settings,
+        );
+        break;
+        case AppString.REWARDS_SCREEN_ROUTE:
+        return PageTransition(
+          child: RewardsBrowser(),
+          type: PageTransitionType.rightToLeft,
+          settings: settings,
+        );
+        break;
+      case AppString.THE_MALL_SCREEN_ROUTE:
+        return PageTransition(
+          child: TheMallScreen(),
           type: PageTransitionType.rightToLeft,
           settings: settings,
         );
