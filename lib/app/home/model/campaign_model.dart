@@ -97,7 +97,7 @@ class Campaign {
   String triggerZoneList;
   String type;
   int viewResetCounter;
-  String voucher;
+  dynamic voucher;
 
   factory Campaign.fromJson(Map<String, dynamic> json) => Campaign(
     addBudget: json["add_budget"],

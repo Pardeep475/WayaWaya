@@ -3,6 +3,7 @@ import 'dart:io';
 // import 'package:device_preview/device_preview.dart';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_geofence/geofence.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:wayawaya/app/auth/signup/sign_up_screen.dart';
 import 'package:wayawaya/app/auth/splash/splash_screen.dart';
@@ -39,7 +40,7 @@ Future<void> main() async {
   // SuperAdminDatabaseHelper _superAdminDatabaseHelper =
   //     SuperAdminDatabaseHelper();
   // await _superAdminDatabaseHelper.initDataBase();
-
+  Geofence.initialize();
   await SuperAdminDatabaseHelper.initDataBase();
   bool isFirstTime = await SessionManager.isFirstTime();
   runApp(MyApp(isFirstTime: isFirstTime));

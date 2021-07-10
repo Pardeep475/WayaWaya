@@ -19,7 +19,8 @@ class AppString {
   static const DEFAULT_MALL_KEY =
       'twG0iiIbMw3IxS5MMw|R6f29ZKdAz7TaDA1cJFFSwtysP88doc_Vwq8EbJfPIN2I';
 
-  static const MAP_URL_LIVE = "https://acbash.com/orioncepheid/mapfolder/map/twodmap/vectormap/mod.html";
+  static const MAP_URL_LIVE =
+      "https://acbash.com/orioncepheid/mapfolder/map/twodmap/vectormap/mod.html";
 
   // session Manager
   static const IS_FIRST_TIME = "IS_FIRST_TIME";
@@ -158,6 +159,18 @@ class AppString {
   static const String no_website = "Web Address not available";
   static const String no_number = "Number not available";
   static const String exit_content = "Are you sure you want to exit?";
+  static const String quality_for_rewards =
+      "See if you qualify for a Reward Voucher?";
+  static const String no_rewards_available =
+      "Currently no rewards available under this category but please come back soon.";
+  static const String offer_validation_error =
+      "Not available for current loyalty level";
+  static const String offer_user_logged_in_error =
+      "Only for registered members.";
+  static const String not_at_venue =
+      "You need to visit the mall to earn points.";
+  static const String not_at_venue_msg =
+      "You need to visit the mall to earn/redeem shop points. If you are at the mall please check following and restart your app. \n ● You received a Welcome message when visiting the mall. \n ● You have this mall selected as your current mall.";
 
   // Routes
   static const LOGIN_SCREEN_ROUTE = "LOGIN_SCREEN_ROUTE";

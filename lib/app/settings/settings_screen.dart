@@ -7,6 +7,7 @@ import 'package:wayawaya/app/shop/model/retail_with_category.dart';
 import 'package:wayawaya/models/omni_channel_item_model/omni_channel_item_model.dart';
 import 'package:wayawaya/network/local/profile_database_helper.dart';
 import 'package:wayawaya/network/local/sync_service.dart';
+import 'package:wayawaya/screens/rewards/model/rewards_categories.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/session_manager.dart';
@@ -180,13 +181,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   _implementLocalDb() async {
     String defaultMall = await SessionManager.getDefaultMall();
-    List<ServiceModel> _serviceList =
-        await ProfileDatabaseHelper.getAllServices(
+    List<RewardsCategory> _serviceList =
+        await ProfileDatabaseHelper.getRewardsCategories(
       databasePath: defaultMall,
     );
 
     _serviceList.forEach((element) {
-      debugPrint(' ${element.sequenceNumber}');
+      debugPrint(' ${element.name}');
     });
   }
 }

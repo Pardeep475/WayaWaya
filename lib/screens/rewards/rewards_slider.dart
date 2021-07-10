@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:wayawaya/screens/rewards/model/rewards_categories.dart';
+import 'package:wayawaya/utils/app_images.dart';
+import 'package:wayawaya/utils/dimens.dart';
 
 import '../../config.dart';
 import 'wallet.dart';
 
 class RewardsSlider extends StatefulWidget {
+  final List<RewardsCategory> rewardsCategoryList;
+
+  RewardsSlider({this.rewardsCategoryList});
+
   @override
   _RewardsSliderState createState() => _RewardsSliderState();
 }
@@ -17,21 +24,21 @@ class _RewardsSliderState extends State<RewardsSlider> {
   getCategoryIcon(int index) {
     switch (index) {
       case 0:
-        return 'assets/r_all.png';
+        return AppImages.r_all;
       case 1:
-        return 'assets/r_wallet.png';
+        return AppImages.r_wallet;
       case 2:
-        return 'assets/r_food.png';
+        return AppImages.r_food;
       case 3:
-        return 'assets/r_fashion.png';
+        return AppImages.r_fashion;
       case 4:
-        return 'assets/r_grocery.png';
+        return AppImages.r_grocery;
       case 5:
-        return 'assets/r_finance.png';
+        return AppImages.r_finance;
       case 6:
-        return 'assets/r_others.png';
+        return AppImages.r_others;
       case 7:
-        return 'assets/r_health.png';
+        return AppImages.r_health;
     }
   }
 
@@ -56,32 +63,106 @@ class _RewardsSliderState extends State<RewardsSlider> {
     }
   }
 
-  Widget categoryOval({int index}) {
-    getCategoryIcon(index);
-    getCategoryColor(index);
+  getCategoryIconRewards({RewardsCategory rewardsCategory}) {
+    if (rewardsCategory == null) return AppImages.r_all;
+    if (rewardsCategory.name == null) return AppImages.r_all;
+    switch (rewardsCategory.name) {
+      case "All":
+        return AppImages.r_all;
+        break;
+
+      case "Shopping":
+      case "Clothing":
+      case "Eyewear & Optometrists":
+      case "Footwear":
+      case "Jewellery & Accessories":
+      case "Fashion and Accessories":
+        // iconName = "fashion_accessories";
+//                        categoriesIconName = R.drawable.ic_fashion_accessories;
+        return AppImages.r_fashion;
+        break;
+
+      case "Banks, Forex & Financial":
+      case "Financial Services":
+        // iconName = "financial_services";
+//                        categoriesIconName = R.drawable.ic_financial_services;
+        return AppImages.r_finance;
+        break;
+
+      case "Restaurants":
+      case "Wine & Spirits":
+      case "Food and Drink":
+        // iconName = "food_drink";
+//                        categoriesIconName = R.drawable.ic_food_drink;
+        return AppImages.r_food;
+        break;
+
+      case "Food & Dining":
+        // iconName = "food_dining";
+        return AppImages.r_food;
+        break;
+
+      case "Department Stores":
+      case "Groceries":
+      case "Groceries / Homeware":
+      case "Groceries and Homeware":
+        // iconName = "groceries_homeware";
+//                        categoriesIconName = R.drawable.ic_groceries_homeware;
+        return AppImages.r_grocery;
+        break;
+
+      case "Hair, Health & Beauty":
+      case "Health and Beauty":
+        // iconName = "health_beauty";
+//                        categoriesIconName = R.drawable.ic_health_beauty;
+        return AppImages.r_health;
+        break;
+
+      case "Home & Decor":
+      case "Services":
+        // iconName = "services";
+//                        categoriesIconName = R.drawable.ic_services;
+        return AppImages.r_grocery;
+        break;
+
+      default:
+        // iconName = "other";
+//                        categoriesIconName = R.drawable.ic_other;
+        return AppImages.r_others;
+    }
+  }
+
+  Widget categoryOval({int index, RewardsCategory rewardsCategory}) {
     return AnimatedContainer(
       duration: Duration(milliseconds: 400),
-      height: _vIndiceWheel == index ? 150 : 60,
-      padding: EdgeInsets.all(8),
+      height: _vIndiceWheel == index ? Dimens.oneFifty : Dimens.sixty,
+      padding: EdgeInsets.all(Dimens.eight),
       decoration: BoxDecoration(
-          color: getCategoryColor(index),
-          shape: BoxShape.circle,
-          image: DecorationImage(
-              scale: 0.5, image: AssetImage(getCategoryIcon(index)))),
+        color: getCategoryColor(index),
+        shape: BoxShape.circle,
+        image: DecorationImage(
+          scale: 1,
+          image: AssetImage(
+            rewardsCategory == null
+                ? getCategoryIcon(index)
+                : getCategoryIconRewards(rewardsCategory: rewardsCategory),
+          ),
+        ),
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 190,
-      width: App.width(context),
-      margin: EdgeInsets.only(bottom: 10),
+      height: Dimens.oneEightyFive,
+      width: MediaQuery.of(context).size.width,
+      margin: EdgeInsets.only(bottom: Dimens.ten),
       constraints: BoxConstraints(
-        maxHeight: 180,
-        maxWidth: App.width(context),
+        maxHeight: Dimens.oneEightyFive,
+        maxWidth: MediaQuery.of(context).size.width,
       ),
-      color: Colors.blueGrey[100],
+      color: Color(0xFFF0F0F0),
       child: RotatedBox(
         quarterTurns: -1,
         child: GestureDetector(
@@ -99,7 +180,7 @@ class _RewardsSliderState extends State<RewardsSlider> {
           child: ListWheelScrollView.useDelegate(
             itemExtent: itemWidth,
             controller: _controller,
-            squeeze: 0.8,
+            squeeze: 1,
             onSelectedItemChanged: (val) {
               setState(() {
                 _vIndiceWheel = val;
@@ -107,12 +188,19 @@ class _RewardsSliderState extends State<RewardsSlider> {
             },
             childDelegate: ListWheelChildLoopingListDelegate(
               children: List<Widget>.generate(
-                8,
+                widget.rewardsCategoryList != null &&
+                        widget.rewardsCategoryList.isNotEmpty
+                    ? widget.rewardsCategoryList.length
+                    : 8,
                 (index) => Center(
                   child: RotatedBox(
                     quarterTurns: 1,
                     child: categoryOval(
                       index: index,
+                      rewardsCategory: widget.rewardsCategoryList != null &&
+                              widget.rewardsCategoryList.isNotEmpty
+                          ? widget.rewardsCategoryList[index]
+                          : null,
                     ),
                   ),
                 ),

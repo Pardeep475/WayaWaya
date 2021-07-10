@@ -12,6 +12,7 @@ import 'package:wayawaya/app/shop/model/retail_unit_category.dart';
 import 'package:wayawaya/app/shop/model/retail_with_category.dart';
 import 'package:wayawaya/common/model/categories_model.dart';
 import 'package:wayawaya/models/omni_channel_item_model/omni_channel_item_model.dart';
+import 'package:wayawaya/screens/rewards/model/rewards_categories.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 
 class ProfileDatabaseHelper {
@@ -745,38 +746,6 @@ class ProfileDatabaseHelper {
     return [];
   }
 
-  static Future<List<RetailWithCategory>> getMallMenuItems({
-    String databasePath,
-  }) async {
-    if (_db == null) {
-      await initDataBase(databasePath);
-    }
-
-    try {
-      List<Map> data = [];
-
-      String query = "SELECT * FROM the_mall ORDER BY sequence_number ASC ";
-
-      debugPrint('query_is :-    $query');
-
-      await _db.transaction((txn) async {
-        data = await txn.rawQuery(query);
-      });
-
-      debugPrint('database_testing:-  all search  ${data.length}');
-      debugPrint('database_testing:-   $data');
-      // List<RetailWithCategory> _allSearchList = [];
-      data.forEach((element) {
-        // _allSearchList.add(RetailWithCategory.fromJson(element));
-      });
-      // _allSearchList.sort((a, b) => a.name.compareTo(b.name));
-      return [];
-    } catch (e) {
-      debugPrint('error:- database :-  $e');
-    }
-    return [];
-  }
-
   static Future<List<ServiceModel>> getAllServices({
     String databasePath,
   }) async {
@@ -796,5 +765,38 @@ class ProfileDatabaseHelper {
     });
     _mallList.sort((a, b) => a.sequenceNumber.compareTo(b.sequenceNumber));
     return _mallList;
+  }
+
+  static Future<List<RewardsCategory>> getRewardsCategories({
+    String databasePath,
+  }) async {
+    if (_db == null) {
+      await initDataBase(databasePath);
+    }
+
+    try {
+      List<Map> data = [];
+
+      String query = "SELECT * FROM categories where (type in (\"sub\")" +
+          " and parent in (SELECT category_id FROM categories WHERE name in (\"Shopping\", \"Restaurants\")))";
+
+      debugPrint('query_is :-    $query');
+
+      await _db.transaction((txn) async {
+        data = await txn.rawQuery(query);
+      });
+
+      debugPrint('database_testing:-  all search  ${data.length}');
+      debugPrint('$data');
+      List<RewardsCategory> _rewardsCategory = [];
+      data.forEach((element) {
+        _rewardsCategory.add(RewardsCategory.fromJson(element));
+      });
+      // _allSearchList.sort((a, b) => a.name.compareTo(b.name));
+      return _rewardsCategory;
+    } catch (e) {
+      debugPrint('error:- database :-  $e');
+    }
+    return [];
   }
 }

@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:wayawaya/app/common/webview/model/custom_web_view_model.dart';
 import 'package:wayawaya/app/map/model/service_model.dart';
@@ -22,7 +24,7 @@ class ItemTheMall extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        _clickListener(context,serviceModel);
+        _clickListener(context, serviceModel);
       },
       child: Container(
         height: MediaQuery.of(context).size.height,
@@ -36,10 +38,14 @@ class ItemTheMall extends StatelessWidget {
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset(
-              getImage(serviceModel),
-              height: Dimens.sixtyFive,
-              width: Dimens.sixtyFive,
+            Container(
+              color: Colors.yellow,
+              child: SvgPicture.asset(
+                getImage(serviceModel),
+                height: Dimens.sixtyFive,
+                width: Dimens.sixtyFive,
+                fit: BoxFit.cover,
+              ),
             ),
             Padding(
               padding: EdgeInsets.all(Dimens.eight),
@@ -81,19 +87,19 @@ class ItemTheMall extends StatelessWidget {
     switch (name['name']) {
       case 'filling_station':
         {
-          return AppImages.ic_1;
+          return AppImages.petrol_station;
         }
       case 'carwash_icon':
         {
-          return AppImages.ic_1;
+          return AppImages.car_wash;
         }
       case 'info':
         {
-          return AppImages.ic_1;
+          return AppImages.info;
         }
       case 'escalator':
         {
-          return AppImages.ic_13;
+          return AppImages.escalator;
         }
       case 'wheel':
         {
@@ -101,59 +107,59 @@ class ItemTheMall extends StatelessWidget {
         }
       case 'restroom':
         {
-          return AppImages.ic_9;
+          return AppImages.restuarant;
         }
       case 'atm':
         {
-          return AppImages.ic_2;
+          return AppImages.atm;
         }
       case 'stairs':
         {
-          return AppImages.ic_3;
+          return AppImages.stairs;
         }
       case 'centre_management':
         {
-          return AppImages.ic_4;
+          return AppImages.centre_management;
         }
       case 'fire_escape':
         {
-          return AppImages.ic_6;
+          return AppImages.fire_escape;
         }
       case 'entrance':
         {
-          return AppImages.ic_5;
+          return AppImages.entrances;
         }
       case 'delivery':
         {
-          return AppImages.ic_7;
+          return AppImages.delivery_gate;
         }
       case 'bench':
         {
-          return AppImages.ic_8;
+          return AppImages.benches;
         }
       case 'parking':
         {
-          return AppImages.ic_14;
+          return AppImages.parking;
         }
       case 'elevator':
         {
-          return AppImages.ic_13;
+          return AppImages.elevators;
         }
       case 'recycle':
         {
-          return AppImages.ic_10;
+          return AppImages.recycling;
         }
       case 'security':
         {
-          return AppImages.ic_12;
+          return AppImages.security;
         }
       case 'taxi':
         {
-          return AppImages.ic_11;
+          return AppImages.taxi_rank;
         }
       case 'assembly_point':
         {
-          return AppImages.ic_15;
+          return AppImages.assembly_point;
         }
       default:
         {

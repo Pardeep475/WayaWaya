@@ -23,7 +23,7 @@ class UserDataResponse {
   String currency;
   String language;
   String devices;
-  String loyaltyStatus;
+  dynamic loyaltyStatus;
   String gender;
   String registrationDate;
   bool isTester;

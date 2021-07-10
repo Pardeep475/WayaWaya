@@ -203,7 +203,7 @@ class SignUpBloc {
             : user.data['social_media'].toString(),
         loyaltyStatus: user.data['loyalty_status'] == null
             ? null
-            : user.data['loyalty_status'].toString(),
+            : json.encode(user.data['loyalty_status']),
         categories: user.data['preferences'] == null
             ? null
             : user.data['preferences']['categories'] == null

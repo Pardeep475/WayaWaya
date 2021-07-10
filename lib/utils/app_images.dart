@@ -40,5 +40,30 @@ class AppImages {
   static const ic_13 = "assets/image/ic_13.png";
   static const ic_14 = "assets/image/ic_14.png";
   static const ic_15 = "assets/image/ic_15.png";
-
+  static const assembly_point = "assets/image/assembly_point.svg";
+  static const atm = "assets/image/atm.svg";
+  static const baby_change = "assets/image/baby_change.svg";
+  static const benches = "assets/image/benches.svg";
+  static const car_wash = "assets/image/car_wash.svg";
+  static const centre_management = "assets/image/centre_management.svg";
+  static const courier = "assets/image/courier.svg";
+  static const delivery_gate = "assets/image/delivery_gate.svg";
+  static const disabled = "assets/image/disabled.svg";
+  static const elevators = "assets/image/elevators.svg";
+  static const entrances = "assets/image/entrances.svg";
+  static const escalator = "assets/image/escalator.svg";
+  static const fire_escape = "assets/image/fire_escape.svg";
+  static const info = "assets/image/info.svg";
+  static const market = "assets/image/market.svg";
+  static const parking = "assets/image/parking.svg";
+  static const petrol_station = "assets/image/petrol_station.svg";
+  static const recycling = "assets/image/recycling.svg";
+  static const restuarant = "assets/image/restuarant.svg";
+  static const road_way = "assets/image/road_way.svg";
+  static const security = "assets/image/security.svg";
+  static const stairs = "assets/image/stairs.svg";
+  static const taxi_rank = "assets/image/taxi_rank.svg";
+  static const toilets = "assets/image/toilets.svg";
+  static const wifi = "assets/image/wifi.svg";
+  static const green_fist_bump = "assets/image/green_fist_bump.png";
 }
