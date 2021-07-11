@@ -1,1 +1,14 @@
-<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256"><defs><style>.cls-1{fill:none;stroke:#fff;stroke-miterlimit:10;stroke-width:2px;}</style></defs><line class="cls-1" x1="129.4" y1="64.69" x2="129.4" y2="159.07"/><polygon class="cls-1" points="110.02 157.34 94.15 157.34 94.15 133.68 84.83 133.68 89.94 85.68 114.11 85.68 119.55 133.51 110.02 133.68 110.02 157.34"/><polygon class="cls-1" points="141.85 85.68 171.3 85.68 171.3 120.4 164.66 120.4 164.66 157.34 148.83 157.34 149.06 120.4 141.85 120.4 141.85 85.68"/><circle class="cls-1" cx="102.03" cy="71.96" r="8.98"/><circle class="cls-1" cx="156.57" cy="71.96" r="8.98"/></svg>
+<svg width="256" height="256" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0)">
+<path d="M131.743 4.55579V256" stroke="white" stroke-width="2" stroke-miterlimit="10"/>
+<path d="M80.1104 251.391H37.83V188.357H13L26.6139 60.4766H91.0068L105.5 187.904L80.1104 188.357V251.391Z" stroke="white" stroke-width="2" stroke-miterlimit="10"/>
+<path d="M164.909 60.4766H243.369V152.977H225.679V251.391H183.505L184.118 152.977H164.909V60.4766Z" stroke="white" stroke-width="2" stroke-miterlimit="10"/>
+<path d="M58.8227 47.8485C72.0356 47.8485 82.7469 37.1372 82.7469 23.9242C82.7469 10.7112 72.0356 0 58.8227 0C45.6097 0 34.8984 10.7112 34.8984 23.9242C34.8984 37.1372 45.6097 47.8485 58.8227 47.8485Z" stroke="white" stroke-width="2" stroke-miterlimit="10"/>
+<path d="M204.126 47.8485C217.339 47.8485 228.051 37.1372 228.051 23.9242C228.051 10.7112 217.339 0 204.126 0C190.913 0 180.202 10.7112 180.202 23.9242C180.202 37.1372 190.913 47.8485 204.126 47.8485Z" stroke="white" stroke-width="2" stroke-miterlimit="10"/>
+</g>
+<defs>
+<clipPath id="clip0">
+<rect width="256" height="256" fill="white"/>
+</clipPath>
+</defs>
+</svg>

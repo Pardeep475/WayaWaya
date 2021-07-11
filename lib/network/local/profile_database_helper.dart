@@ -7,12 +7,12 @@ import 'package:path/path.dart' as path;
 import 'package:wayawaya/app/home/model/campaign_model.dart';
 import 'package:wayawaya/app/map/model/service_model.dart';
 import 'package:wayawaya/app/preferences/model/preferences_categories.dart';
+import 'package:wayawaya/app/rewards/model/rewards_categories.dart';
 import 'package:wayawaya/app/search/model/global_app_search.dart';
 import 'package:wayawaya/app/shop/model/retail_unit_category.dart';
 import 'package:wayawaya/app/shop/model/retail_with_category.dart';
 import 'package:wayawaya/common/model/categories_model.dart';
 import 'package:wayawaya/models/omni_channel_item_model/omni_channel_item_model.dart';
-import 'package:wayawaya/screens/rewards/model/rewards_categories.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 
 class ProfileDatabaseHelper {

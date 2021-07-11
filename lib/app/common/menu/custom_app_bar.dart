@@ -1,21 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:wayawaya/app/common/dialogs/common_error_dialog.dart';
 import 'package:wayawaya/app/common/dialogs/common_login_dialog.dart';
 import 'package:wayawaya/app/common/menu/model/main_menu_permission.dart';
 import 'package:wayawaya/common/model/categories_model.dart';
-import 'package:wayawaya/screens/rewards/menu_button.dart';
-import 'package:wayawaya/screens/select_def_mall.dart';
-import 'package:wayawaya/screens/settings.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/dimens.dart';
 import 'package:wayawaya/utils/session_manager.dart';
-
-import '../../../config.dart';
 import '../../../constants.dart';
 import 'bloc/custom_app_bar_bloc.dart';
+import 'menu_button.dart';
 
 class CustomAppBar extends StatefulWidget {
   final Function onSnowTap;

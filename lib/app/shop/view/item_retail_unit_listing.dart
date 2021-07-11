@@ -4,7 +4,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:wayawaya/app/common/webview/model/custom_web_view_model.dart';
 import 'package:wayawaya/app/shop/model/retail_with_category.dart';
 import 'package:wayawaya/app/shop/model/shop_status.dart';
-import 'package:wayawaya/screens/shops_and_rest_details.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_images.dart';
 import 'package:wayawaya/utils/app_strings.dart';
@@ -327,7 +326,7 @@ class ItemRetailUnitListing extends StatelessWidget {
     Navigator.pushNamed(
       context,
       AppString.CUSTOM_WEB_VIEW_SCREEN_ROUTE,
-      arguments: CustomWebViewModel(title: _getName(), webViewUrl: mapUrl),
+      arguments: CustomWebViewModel(title: _getName(), webViewUrl: mapUrl.replaceAll(" ", "%20")),
     );
   }
 

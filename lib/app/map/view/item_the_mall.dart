@@ -6,7 +6,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:wayawaya/app/common/webview/model/custom_web_view_model.dart';
 import 'package:wayawaya/app/map/model/service_model.dart';
-import 'package:wayawaya/app/shop/model/color_codes.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_images.dart';
 import 'package:wayawaya/utils/app_strings.dart';
@@ -38,14 +37,11 @@ class ItemTheMall extends StatelessWidget {
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
-              color: Colors.yellow,
-              child: SvgPicture.asset(
-                getImage(serviceModel),
-                height: Dimens.sixtyFive,
-                width: Dimens.sixtyFive,
-                fit: BoxFit.cover,
-              ),
+            SvgPicture.asset(
+              getImage(serviceModel),
+              height: Dimens.sixtyFive,
+              width: Dimens.sixtyFive,
+              fit: BoxFit.cover,
             ),
             Padding(
               padding: EdgeInsets.all(Dimens.eight),
@@ -84,7 +80,7 @@ class ItemTheMall extends StatelessWidget {
     if (serviceModel == null) return '';
     if (serviceModel.icon == null) return '';
     dynamic name = jsonDecode(serviceModel.icon);
-    switch (name['name']) {
+    switch (name['name'].toString().toLowerCase()) {
       case 'filling_station':
         {
           return AppImages.petrol_station;
@@ -100,14 +96,6 @@ class ItemTheMall extends StatelessWidget {
       case 'escalator':
         {
           return AppImages.escalator;
-        }
-      case 'wheel':
-        {
-          return AppImages.ic_1;
-        }
-      case 'restroom':
-        {
-          return AppImages.restuarant;
         }
       case 'atm':
         {
@@ -137,6 +125,10 @@ class ItemTheMall extends StatelessWidget {
         {
           return AppImages.benches;
         }
+      case 'wheel':
+        {
+          return AppImages.disabled;
+        }
       case 'parking':
         {
           return AppImages.parking;
@@ -161,9 +153,35 @@ class ItemTheMall extends StatelessWidget {
         {
           return AppImages.assembly_point;
         }
+      case 'wifi':
+        {
+          return AppImages.wifi;
+        }
+      case 'restroom':
+      case 'toilets':
+        {
+          return AppImages.toilets;
+        }
+      case 'road way':
+      case 'roadway':
+        {
+          return AppImages.road_way;
+        }
+      case 'baby_change':
+        {
+          return AppImages.baby_change;
+        }
+      case 'courier':
+        {
+          return AppImages.courier;
+        }
+      case 'restuarant':
+        {
+          return AppImages.restuarant;
+        }
       default:
         {
-          return AppImages.ic_1;
+          return AppImages.restuarant;
         }
     }
   }
@@ -203,7 +221,8 @@ class ItemTheMall extends StatelessWidget {
     Navigator.pushNamed(
       context,
       AppString.CUSTOM_WEB_VIEW_SCREEN_ROUTE,
-      arguments: CustomWebViewModel(title: 'MAP', webViewUrl: mapUrl),
+      arguments: CustomWebViewModel(
+          title: 'MAP', webViewUrl: mapUrl.replaceAll(" ", "%20")),
     );
   }
 }

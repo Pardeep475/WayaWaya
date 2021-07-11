@@ -356,7 +356,7 @@ class ItemOfferView extends StatelessWidget {
         context,
         AppString.CUSTOM_WEB_VIEW_SCREEN_ROUTE,
         arguments:
-            CustomWebViewModel(title: _getTitle(context), webViewUrl: mapUrl),
+            CustomWebViewModel(title: _getTitle(context), webViewUrl: mapUrl.replaceAll(" ", "%20")),
       );
     } catch (e) {
       debugPrint('offers_error:-   $e');

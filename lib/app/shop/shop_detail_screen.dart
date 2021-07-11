@@ -544,7 +544,7 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
       Navigator.pushNamed(
         context,
         AppString.CUSTOM_WEB_VIEW_SCREEN_ROUTE,
-        arguments: CustomWebViewModel(title: name, webViewUrl: url),
+        arguments: CustomWebViewModel(title: name, webViewUrl: url.replaceAll(" ", "%20")),
       );
     }
   }
@@ -640,7 +640,7 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
       context,
       AppString.CUSTOM_WEB_VIEW_SCREEN_ROUTE,
       arguments: CustomWebViewModel(
-          title: _getName(retailWithCategory), webViewUrl: mapUrl),
+          title: _getName(retailWithCategory), webViewUrl: mapUrl.replaceAll(" ", "%20")),
     );
   }
 }

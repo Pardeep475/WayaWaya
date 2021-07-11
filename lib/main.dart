@@ -16,24 +16,22 @@ import 'package:wayawaya/app/map/two_d_map_screen.dart';
 import 'package:wayawaya/app/offers/offer_details.dart';
 import 'package:wayawaya/app/offers/offers_screen.dart';
 import 'package:wayawaya/app/preferences/select_preferences_screen.dart';
-import 'package:wayawaya/app/restaurant/restaurant_screen.dart';
+import 'package:wayawaya/app/rewards/details.dart';
+import 'package:wayawaya/app/rewards/qr_code_scanner.dart';
 import 'package:wayawaya/app/search/search_screen.dart';
 import 'package:wayawaya/app/settings/settings_screen.dart';
 import 'package:wayawaya/app/shop/shop_detail_screen.dart';
 import 'package:wayawaya/app/shop/shop_screen.dart';
-import 'package:wayawaya/screens/rewards/rewards.dart';
-import 'package:wayawaya/screens/shops_and_rest_details.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/session_manager.dart';
 import 'package:wayawaya/utils/size_config.dart';
 import 'app/auth/forgotpassword/forgot_password_screen.dart';
 import 'app/auth/login/login_screen.dart';
 import 'app/home/home_screen.dart';
+import 'app/rewards/rewards_new.dart';
 import 'app/settings/my_account_screen.dart';
 import 'app/settings/my_devices_screen.dart';
 import 'network/local/super_admin_database_helper.dart';
-import 'screens/rewards/rewards_new.dart';
-import 'screens/rewards/rewards_slider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -217,13 +215,6 @@ class MyAppState extends State<MyApp> {
           settings: settings,
         );
         break;
-      case AppString.RESTAURANT_SCREEN_ROUTE:
-        return PageTransition(
-          child: RestaurantScreen(),
-          type: PageTransitionType.rightToLeft,
-          settings: settings,
-        );
-        break;
       case AppString.SHOP_DETAIL_SCREEN_ROUTE:
         return PageTransition(
           child: ShopDetailScreen(),
@@ -238,7 +229,7 @@ class MyAppState extends State<MyApp> {
           settings: settings,
         );
         break;
-        case AppString.REWARDS_SCREEN_ROUTE:
+      case AppString.REWARDS_SCREEN_ROUTE:
         return PageTransition(
           child: RewardsBrowser(),
           type: PageTransitionType.rightToLeft,
@@ -248,6 +239,20 @@ class MyAppState extends State<MyApp> {
       case AppString.THE_MALL_SCREEN_ROUTE:
         return PageTransition(
           child: TheMallScreen(),
+          type: PageTransitionType.rightToLeft,
+          settings: settings,
+        );
+        break;
+      case AppString.QR_SCANNER_SCREEN_ROUTE:
+        return PageTransition(
+          child: QRScanner(),
+          type: PageTransitionType.rightToLeft,
+          settings: settings,
+        );
+        break;
+      case AppString.REWARDS_DETAIL_SCREEN_ROUTE:
+        return PageTransition(
+          child: RewardsDetails(),
           type: PageTransitionType.rightToLeft,
           settings: settings,
         );

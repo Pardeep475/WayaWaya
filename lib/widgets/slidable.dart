@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:wayawaya/utils/app_images.dart';
-import '../screens/offers_list.dart';
 import '../constants.dart';
-import '../screens/events_list.dart';
 
 class Slide extends StatefulWidget {
   const Slide({Key key}) : super(key: key);
@@ -40,7 +38,7 @@ class _SlideState extends State<Slide> {
                     Container(
                       height: 130,
                       child: Image.asset(
-                        'assets/menu_app_ic.png',
+                        AppImages.menu_app_ic,
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -68,11 +66,13 @@ class _SlideState extends State<Slide> {
                       Expanded(
                         flex: 1,
                         child: InkWell(
-                          onTap: () => Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (_) => OffersList(),
-                            ),
-                          ),
+                          onTap: () {
+                            // Navigator.of(context).push(
+                            //   MaterialPageRoute(
+                            //     builder: (_) => OffersList(),
+                            //   ),
+                            // )
+                          },
                           child: Container(
                             height: 70,
                             decoration: BoxDecoration(
@@ -90,11 +90,13 @@ class _SlideState extends State<Slide> {
                       Expanded(
                         flex: 1,
                         child: InkWell(
-                          onTap: () => Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (_) => EventsList(),
-                            ),
-                          ),
+                          onTap: () {
+                            // Navigator.of(context).push(
+                            //   MaterialPageRoute(
+                            //     builder: (_) => EventsList(),
+                            //   ),
+                            // )
+                          },
                           child: Container(
                             height: 70,
                             decoration: BoxDecoration(

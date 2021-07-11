@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:wayawaya/app/common/menu/menu_button.dart';
 import 'package:wayawaya/app/common/menu/model/main_menu_permission.dart';
-import 'package:wayawaya/config.dart';
-import 'package:wayawaya/screens/rewards/menu_button.dart';
-import 'package:wayawaya/screens/select_def_mall.dart';
-import 'package:wayawaya/screens/settings.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/dimens.dart';
 import '../constants.dart';

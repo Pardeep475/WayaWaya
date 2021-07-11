@@ -1,1 +1,16 @@
-<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256"><defs><style>.cls-1{fill:none;stroke:#fff;stroke-miterlimit:10;stroke-width:2px;}</style></defs><rect class="cls-1" x="94.64" y="71.06" width="94.04" height="94.04"/><polyline class="cls-1" points="152.23 97 162.08 87.58 171.64 97"/><line class="cls-1" x1="162.08" y1="110.02" x2="162.08" y2="87.58"/><polyline class="cls-1" points="172.1 139.18 162.25 148.6 152.7 139.18"/><line class="cls-1" x1="162.25" y1="126.16" x2="162.25" y2="148.6"/><circle class="cls-1" cx="125.07" cy="94.3" r="8.49"/><polygon class="cls-1" points="113.3 107.65 136.91 107.65 139.15 129.8 133.91 129.8 131.55 150.29 118.34 150.29 116.41 129.86 111 129.8 113.3 107.65"/></svg>
+<svg width="256" height="256" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0)">
+<path d="M256 0H0V256H256V0Z" stroke="white" stroke-width="2" stroke-miterlimit="10"/>
+<path d="M156.773 70.6151L183.588 44.9716L209.612 70.6151" stroke="white" stroke-width="2" stroke-miterlimit="10"/>
+<path d="M183.586 106.059V44.9716" stroke="white" stroke-width="2" stroke-miterlimit="10"/>
+<path d="M210.86 185.439L184.046 211.083L158.049 185.439" stroke="white" stroke-width="2" stroke-miterlimit="10"/>
+<path d="M184.049 149.996V211.083" stroke="white" stroke-width="2" stroke-miterlimit="10"/>
+<path d="M82.8365 86.3769C95.6008 86.3769 105.948 76.0294 105.948 63.265C105.948 50.5007 95.6008 40.1531 82.8365 40.1531C70.0721 40.1531 59.7246 50.5007 59.7246 63.265C59.7246 76.0294 70.0721 86.3769 82.8365 86.3769Z" stroke="white" stroke-width="2" stroke-miterlimit="10"/>
+<path d="M50.7954 99.607H115.068L121.165 159.905H106.901L100.476 215.684H64.5155L59.2615 160.068L44.5342 159.905L50.7954 99.607Z" stroke="white" stroke-width="2" stroke-miterlimit="10"/>
+</g>
+<defs>
+<clipPath id="clip0">
+<rect width="256" height="256" fill="white"/>
+</clipPath>
+</defs>
+</svg>

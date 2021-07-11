@@ -1,1 +1,16 @@
-<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256"><defs><style>.cls-1,.cls-2,.cls-3,.cls-4,.cls-5{fill:none;stroke:#fff;stroke-miterlimit:10;}.cls-1{stroke-width:2px;}.cls-2{stroke-width:3px;}.cls-3{stroke-width:4px;}.cls-4{stroke-width:5px;}.cls-5{stroke-width:6px;}</style></defs><path class="cls-1" d="M134.87,56.15c.17.94,0,6.72,0,6.72"/><line class="cls-2" x1="134.87" y1="67.85" x2="134.95" y2="80.4"/><line class="cls-3" x1="134.95" y1="87.21" x2="134.87" y2="101.93"/><line class="cls-4" x1="134.95" y1="109.12" x2="134.95" y2="127.21"/><line class="cls-5" x1="134.87" y1="137.06" x2="134.87" y2="159.88"/><line class="cls-1" x1="182.87" y1="159.88" x2="156.32" y2="57.26"/><line class="cls-1" x1="87.21" y1="159.88" x2="113.43" y2="56.15"/></svg>
+<svg width="256" height="256" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0)">
+<path d="M127.621 0C128.041 2.31987 127.621 16.5846 127.621 16.5846" stroke="white" stroke-width="2" stroke-miterlimit="10"/>
+<path d="M127.621 28.8748L127.819 59.8475" stroke="white" stroke-width="3" stroke-miterlimit="10"/>
+<path d="M127.819 76.6544L127.621 112.983" stroke="white" stroke-width="4" stroke-miterlimit="10"/>
+<path d="M127.818 130.727V175.372" stroke="white" stroke-width="5" stroke-miterlimit="10"/>
+<path d="M127.621 199.681V256" stroke="white" stroke-width="6" stroke-miterlimit="10"/>
+<path d="M246.084 256L180.561 2.73938" stroke="white" stroke-width="2" stroke-miterlimit="10"/>
+<path d="M10 256L74.7095 0" stroke="white" stroke-width="2" stroke-miterlimit="10"/>
+</g>
+<defs>
+<clipPath id="clip0">
+<rect width="256" height="256" fill="white"/>
+</clipPath>
+</defs>
+</svg>

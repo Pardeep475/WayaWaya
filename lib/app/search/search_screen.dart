@@ -6,14 +6,12 @@ import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_images.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/dimens.dart';
-import 'package:wayawaya/widgets/search_all.dart';
-import 'package:wayawaya/widgets/search_events.dart';
-import 'package:wayawaya/widgets/search_offers.dart';
-import 'package:wayawaya/widgets/search_restaurants.dart';
-import 'package:wayawaya/widgets/search_shops.dart';
-
-import '../../constants.dart';
 import 'bloc/search_bloc.dart';
+import 'views/search_all.dart';
+import 'views/search_events.dart';
+import 'views/search_offers.dart';
+import 'views/search_restaurants.dart';
+import 'views/search_shops.dart';
 
 class SearchScreen extends StatefulWidget {
   @override
@@ -156,7 +154,7 @@ class _SearchScreenState extends State<SearchScreen>
                             icon: Icon(
                               Icons.youtube_searched_for_outlined,
                               size: Dimens.thirtyFour,
-                              color: appLightColor,
+                              color: AppColor.colored_text,
                             ),
                             onPressed: () {
                               _searchBloc.searchSink.add(true);
@@ -165,7 +163,7 @@ class _SearchScreenState extends State<SearchScreen>
                           bottom: PreferredSize(
                             preferredSize: Size.fromHeight(Dimens.fiftyEight),
                             child: Container(
-                              color: white,
+                              color: AppColor.white,
                               padding: EdgeInsets.only(
                                 top: Dimens.one,
                               ),
@@ -184,10 +182,10 @@ class _SearchScreenState extends State<SearchScreen>
                                     fontSize: Dimens.sixteen,
                                     fontWeight: FontWeight.w500,
                                   ),
-                                  unselectedLabelColor: white,
+                                  unselectedLabelColor: AppColor.white,
                                   indicatorSize: TabBarIndicatorSize.tab,
                                   indicator: BoxDecoration(
-                                    color: white,
+                                    color: AppColor.white,
                                   ),
                                   onTap: (position) {},
                                   tabs: [

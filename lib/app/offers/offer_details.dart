@@ -317,7 +317,7 @@ class _OffersDetailsState extends State<OfferDetails> {
         context,
         AppString.CUSTOM_WEB_VIEW_SCREEN_ROUTE,
         arguments: CustomWebViewModel(
-            title: _getTitle(context, campaign), webViewUrl: mapUrl),
+            title: _getTitle(context, campaign), webViewUrl: mapUrl.replaceAll(" ", "%20")),
       );
     } catch (e) {
       debugPrint('offers_details_error:-   $e');

@@ -1,1 +1,13 @@
-<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256"><defs><style>.cls-1{fill:none;stroke:#fff;stroke-miterlimit:10;stroke-width:2px;}</style></defs><polyline class="cls-1" points="133.44 93.58 160.39 93.58 160.39 149.75 132.6 149.75"/><polyline class="cls-1" points="123.35 97.98 146.5 121.55 123.35 145.12"/><line class="cls-1" x1="104.47" y1="121.55" x2="146.1" y2="121.55"/><circle class="cls-1" cx="133.44" cy="121.55" r="47.5"/></svg>
+<svg width="256" height="256" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0)">
+<path d="M127.998 52.6283H200.621V203.992H125.734" stroke="white" stroke-width="2" stroke-miterlimit="10"/>
+<path d="M100.808 64.485L163.191 128L100.808 191.515" stroke="white" stroke-width="2" stroke-miterlimit="10"/>
+<path d="M49.9316 128H162.114" stroke="white" stroke-width="2" stroke-miterlimit="10"/>
+<path d="M128 256C198.692 256 256 198.692 256 128C256 57.3076 198.692 0 128 0C57.3076 0 0 57.3076 0 128C0 198.692 57.3076 256 128 256Z" stroke="white" stroke-width="2" stroke-miterlimit="10"/>
+</g>
+<defs>
+<clipPath id="clip0">
+<rect width="256" height="256" fill="white"/>
+</clipPath>
+</defs>
+</svg>

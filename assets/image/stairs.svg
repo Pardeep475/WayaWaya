@@ -1,1 +1,12 @@
-<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256"><defs><style>.cls-1{fill:none;stroke:#fff;stroke-miterlimit:10;stroke-width:2px;}</style></defs><polyline class="cls-1" points="183.43 88.56 156.91 88.56 156.91 111.55 133.81 111.55 133.81 136.32 109.55 136.32 109.55 158.66 86.06 158.66"/><polyline class="cls-1" points="95.64 76.57 121.3 76.57 121.3 102.36"/><line class="cls-1" x1="86.06" y1="111.43" x2="121.42" y2="76.57"/></svg>
+<svg width="256" height="256" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0)">
+<path d="M256 51.5234H186.275V111.968H125.542V177.092H61.7587V235.827H0" stroke="white" stroke-width="2" stroke-miterlimit="10"/>
+<path d="M25.1875 20H92.6514V87.8057" stroke="white" stroke-width="2" stroke-miterlimit="10"/>
+<path d="M0 111.652L92.9666 20" stroke="white" stroke-width="2" stroke-miterlimit="10"/>
+</g>
+<defs>
+<clipPath id="clip0">
+<rect width="256" height="256" fill="white"/>
+</clipPath>
+</defs>
+</svg>
