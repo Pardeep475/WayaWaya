@@ -264,6 +264,12 @@ class _OffersDetailsState extends State<OfferDetails> {
     }
   }
 
+  String _getImage(BuildContext context, Campaign campaign) {
+    if (campaign == null) return '';
+    if (campaign.campaignElement == null) return '';
+    return Utils.getTranslatedCodeFromImageId(campaign.campaignElement.imageId);
+  }
+
   _shareFiles(BuildContext buildContext, Campaign campaign) {
     try {
       String subject = _getTitle(buildContext, campaign);
@@ -296,12 +302,6 @@ class _OffersDetailsState extends State<OfferDetails> {
     } catch (e) {
       debugPrint('$e');
     }
-  }
-
-  String _getImage(BuildContext context, Campaign campaign) {
-    if (campaign == null) return '';
-    if (campaign.campaignElement == null) return '';
-    return Utils.getTranslatedCodeFromImageId(campaign.campaignElement.imageId);
   }
 
   _locateOnMap(BuildContext context, Campaign campaign) async {

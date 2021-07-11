@@ -29,7 +29,7 @@ class CampaignElement {
     this.locationFieldTag,
   });
 
-  List<Description> description;
+  List<LanguageStore> description;
   List<LanguageStore> name;
   List<Description> format;
   List<Description> url;
@@ -45,8 +45,8 @@ class CampaignElement {
 
   factory CampaignElement.fromJson(Map<String, dynamic> json) =>
       CampaignElement(
-        description: List<Description>.from(
-            json["description"].map((x) => Description.fromJson(x))),
+        description: List<LanguageStore>.from(
+            json["description"].map((x) => LanguageStore.fromJson(x))),
         name: List<LanguageStore>.from(
             json["name"].map((x) => LanguageStore.fromJson(x))),
         format: List<Description>.from(

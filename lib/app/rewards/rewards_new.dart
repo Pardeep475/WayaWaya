@@ -226,6 +226,8 @@ class _RewardsBrowserState extends State<RewardsBrowser> {
                                               index: index,
                                               campaign:
                                                   snapshot.data.data[index],
+                                              listOfCampaign:
+                                                  snapshot.data.data,
                                               size: snapshot.data.data.length,
                                             ),
                                             childCount:

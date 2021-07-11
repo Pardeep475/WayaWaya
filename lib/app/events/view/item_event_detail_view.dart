@@ -129,10 +129,23 @@ class ItemEventDetailView extends StatelessWidget {
                         SizedBox(
                           width: Dimens.two,
                         ),
-                        Icon(
-                          Icons.circle,
-                          color: Colors.red,
-                          size: Dimens.eighteen,
+                        Container(
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                  color: Colors.red,
+                                  width: Dimens.one),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey[400],
+                                  blurRadius: 5.0,
+                                ),
+                              ]),
+                          child: Icon(
+                            Icons.circle,
+                            color: Colors.red,
+                            size: Dimens.forteen,
+                          ),
                         ),
                         SizedBox(
                           width: Dimens.six,

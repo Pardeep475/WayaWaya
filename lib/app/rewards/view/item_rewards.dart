@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:wayawaya/app/auth/login/model/user_data_response.dart';
 import 'package:wayawaya/app/home/model/campaign_model.dart';
+import 'package:wayawaya/app/offers/model/detail_model.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_images.dart';
 import 'package:wayawaya/utils/app_strings.dart';
@@ -15,15 +16,19 @@ class ItemRewards extends StatelessWidget {
   final int size;
   final int index;
   final Campaign campaign;
+  final List<Campaign> listOfCampaign;
 
-  ItemRewards({this.size, this.index, this.campaign});
+  ItemRewards({this.size, this.index, this.campaign, this.listOfCampaign});
 
   @override
   Widget build(BuildContext context) {
     getErrorText(campaign);
     return InkWell(
       onTap: () {
-        Navigator.pushNamed(context, AppString.REWARDS_DETAIL_SCREEN_ROUTE);
+        DetailModel _detailModel =
+            DetailModel(listOfCampaign: this.listOfCampaign, position: index);
+        Navigator.pushNamed(context, AppString.REWARDS_DETAIL_SCREEN_ROUTE,
+            arguments: _detailModel);
       },
       child: Container(
         height: Dimens.twoHundredFifty,

@@ -199,6 +199,36 @@ class Utils {
     return text;
   }
 
+  static String getDescription(
+      BuildContext context, List<Description> translatedData) {
+    String languageCode =
+        '${Localizations.localeOf(context).languageCode}_${Localizations.localeOf(context).countryCode}';
+    String languageCode1 = '${Localizations.localeOf(context).languageCode}';
+    String preferredLanguageLocal = 'en_UK';
+
+    String text = "";
+    if (translatedData != null) {
+      translatedData.forEach((language) {
+        if (language.language == preferredLanguageLocal) {
+          text = language.text;
+          return;
+        } else if (language.language == Language.EN_US) {
+          text = language.text;
+          return;
+        } else if (language.language == Language.EN_US) {
+          text = language.text;
+          return;
+        } else {
+          String defaultLang = "en_US";
+          if (language.language == Language.EN_US) {
+            text = language.text;
+          }
+        }
+      });
+    }
+    return text;
+  }
+
   static String getTranslatedCodeFromImageId(List<ImageId> translatedData) {
     String text = "";
     if (translatedData != null) {
