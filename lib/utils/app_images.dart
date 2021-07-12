@@ -66,4 +66,10 @@ class AppImages {
   static const toilets = "assets/image/toilets.svg";
   static const wifi = "assets/image/wifi.svg";
   static const green_fist_bump = "assets/image/green_fist_bump.png";
+  static const ic_loyelty_chart_banner =
+      "assets/image/ic_loyelty_chart_banner.jpg";
+  static const ic_find_rewards = "assets/image/ic_find_rewards.png";
+  static const ic_earn_points = "assets/image/ic_earn_points.png";
+  static const ic_redeem_points = "assets/image/ic_redeem_points.png";
+  static const ic_rewards_wallet = "assets/image/ic_rewards_wallet.png";
 }

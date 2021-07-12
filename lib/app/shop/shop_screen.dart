@@ -54,6 +54,8 @@ class _ShopScreenState extends State<ShopScreen> {
     }
 
     return SafeArea(
+      top: false,
+      bottom: false,
       child: Scaffold(
         backgroundColor: Color(0xffF0F0F0),
         body: StreamBuilder<List<MainMenuPermission>>(

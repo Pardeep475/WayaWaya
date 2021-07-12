@@ -9,6 +9,7 @@ import 'package:wayawaya/app/home/model/campaign_model.dart';
 import 'package:wayawaya/network/live/model/api_response.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_strings.dart';
+import 'package:wayawaya/utils/dimens.dart';
 
 import '../../constants.dart';
 import 'bloc/event_bloc.dart';
@@ -35,7 +36,7 @@ class _EventScreenState extends State<EventScreen> {
             'You need to visit the mall to earn points.',
             style: TextStyle(
               color: Colors.grey[600],
-              fontSize: 16,
+              fontSize: Dimens.sixteen,
             ),
           ),
         ),
@@ -45,7 +46,7 @@ class _EventScreenState extends State<EventScreen> {
               'OK',
               style: TextStyle(
                 color: black,
-                fontSize: 15,
+                fontSize: Dimens.fifteen,
               ),
             ),
             onPressed: () {
@@ -72,105 +73,112 @@ class _EventScreenState extends State<EventScreen> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
+        top: false,
+        bottom: false,
         child: Scaffold(
-      body: StreamBuilder<List<MainMenuPermission>>(
-          initialData: [],
-          stream: _eventBloc.mainMenuPermissionStream,
-          builder: (context, snapshot) {
-            return AnimateAppBar(
-              title: AppString.events.toUpperCase(),
-              isSliver: true,
-              physics: ClampingScrollPhysics(),
-              pinned: false,
-              snap: true,
-              floating: true,
-              mainMenuPermissions: snapshot.data,
-              children: [
-                StreamBuilder<ApiResponse<List<Campaign>>>(
-                  stream: _eventBloc.eventCampaignStream,
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      switch (snapshot.data.status) {
-                        case Status.LOADING:
-                          // Future.delayed(Duration(milliseconds: 200), () {
-                          //   Utils.commonProgressDialog(context);
-                          // });
-                          return SliverFillRemaining(
-                            child: Container(
-                              width: MediaQuery.of(context).size.width,
-                              color: Colors.transparent,
-                              height: MediaQuery.of(context).size.height,
-                            ),
-                          );
-                          break;
-                        case Status.COMPLETED:
-                          {
-                            debugPrint("completed");
-                            // Navigator.pop(context);
-                            if (snapshot.data.data.isEmpty) {
-                              return SliverToBoxAdapter(
-                                child: Card(
-                                  color: AppColor.white,
-                                  elevation: 2,
-                                  child: Container(
-                                    padding: EdgeInsets.symmetric(vertical: 30),
-                                    child: Text(
-                                      AppString.no_offer_found,
-                                      textAlign: TextAlign.center,
-                                      style: GoogleFonts.ubuntuCondensed()
-                                          .copyWith(
-                                        color: black.withOpacity(0.7),
-                                        fontSize: 19,
-                                        fontWeight: FontWeight.w500,
-                                        letterSpacing: 0.8,
+          body: StreamBuilder<List<MainMenuPermission>>(
+              initialData: [],
+              stream: _eventBloc.mainMenuPermissionStream,
+              builder: (context, snapshot) {
+                return AnimateAppBar(
+                  title: AppString.events.toUpperCase(),
+                  isSliver: true,
+                  physics: ClampingScrollPhysics(),
+                  pinned: false,
+                  snap: true,
+                  floating: true,
+                  mainMenuPermissions: snapshot.data,
+                  children: [
+                    StreamBuilder<ApiResponse<List<Campaign>>>(
+                      stream: _eventBloc.eventCampaignStream,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          switch (snapshot.data.status) {
+                            case Status.LOADING:
+                              // Future.delayed(Duration(milliseconds: 200), () {
+                              //   Utils.commonProgressDialog(context);
+                              // });
+                              return SliverFillRemaining(
+                                child: Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  color: Colors.transparent,
+                                  height: MediaQuery.of(context).size.height,
+                                ),
+                              );
+                              break;
+                            case Status.COMPLETED:
+                              {
+                                debugPrint("completed");
+                                // Navigator.pop(context);
+                                if (snapshot.data.data.isEmpty) {
+                                  return SliverToBoxAdapter(
+                                    child: Card(
+                                      color: AppColor.white,
+                                      elevation: 2,
+                                      child: Container(
+                                        padding:
+                                            EdgeInsets.symmetric(vertical: 30),
+                                        child: Text(
+                                          AppString.no_offer_found,
+                                          textAlign: TextAlign.center,
+                                          style: GoogleFonts.ubuntuCondensed()
+                                              .copyWith(
+                                            color: black.withOpacity(0.7),
+                                            fontSize: 19,
+                                            fontWeight: FontWeight.w500,
+                                            letterSpacing: 0.8,
+                                          ),
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ),
-                              );
-                            } else {
-                              return SliverList(
-                                delegate: SliverChildBuilderDelegate(
-                                  (BuildContext context, int index) {
-                                    return ItemEventView(
-                                      campaign: snapshot.data.data[index],
-                                      listOfCampaign: snapshot.data.data,
-                                      index: index,
-                                    );
-                                  },
-                                  childCount: snapshot.data.data.length,
-                                ),
-                              );
-                            }
+                                  );
+                                } else {
+                                  return SliverPadding(
+                                    padding:
+                                        EdgeInsets.only(bottom: Dimens.fifty),
+                                    sliver: SliverList(
+                                      delegate: SliverChildBuilderDelegate(
+                                        (BuildContext context, int index) {
+                                          return ItemEventView(
+                                            campaign: snapshot.data.data[index],
+                                            listOfCampaign: snapshot.data.data,
+                                            index: index,
+                                          );
+                                        },
+                                        childCount: snapshot.data.data.length,
+                                      ),
+                                    ),
+                                  );
+                                }
+                              }
+                              break;
+                            case Status.ERROR:
+                              {
+                                // Navigator.pop(context);
+                                Future.delayed(Duration(milliseconds: 100), () {
+                                  _showErrorDialog(
+                                    icon: Icon(
+                                      FontAwesomeIcons.exclamationTriangle,
+                                      color: AppColor.orange_500,
+                                    ),
+                                    title: AppString.login.toUpperCase(),
+                                    content: AppString
+                                        .check_your_internet_connectivity,
+                                    buttonText: AppString.ok.toUpperCase(),
+                                    onPressed: () => Navigator.pop(context),
+                                  );
+                                });
+                              }
+                              break;
                           }
-                          break;
-                        case Status.ERROR:
-                          {
-                            // Navigator.pop(context);
-                            Future.delayed(Duration(milliseconds: 100), () {
-                              _showErrorDialog(
-                                icon: Icon(
-                                  FontAwesomeIcons.exclamationTriangle,
-                                  color: AppColor.orange_500,
-                                ),
-                                title: AppString.login.toUpperCase(),
-                                content:
-                                    AppString.check_your_internet_connectivity,
-                                buttonText: AppString.ok.toUpperCase(),
-                                onPressed: () => Navigator.pop(context),
-                              );
-                            });
-                          }
-                          break;
-                      }
-                    }
-                    return SliverToBoxAdapter();
-                  },
-                ),
-              ],
-            );
-          }),
-    ));
+                        }
+                        return SliverToBoxAdapter();
+                      },
+                    ),
+                  ],
+                );
+              }),
+        ));
   }
 
   _showErrorDialog(

@@ -34,6 +34,8 @@ class _TheMallScreenState extends State<TheMallScreen> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
+      top: false,
+      bottom: false,
       child: Scaffold(
         body: StreamBuilder<List<MainMenuPermission>>(
             initialData: [],

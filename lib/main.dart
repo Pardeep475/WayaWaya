@@ -17,6 +17,7 @@ import 'package:wayawaya/app/offers/offer_details.dart';
 import 'package:wayawaya/app/offers/offers_screen.dart';
 import 'package:wayawaya/app/preferences/select_preferences_screen.dart';
 import 'package:wayawaya/app/rewards/details.dart';
+import 'package:wayawaya/app/rewards/loyalty_screen.dart';
 import 'package:wayawaya/app/rewards/qr_code_scanner.dart';
 import 'package:wayawaya/app/search/search_screen.dart';
 import 'package:wayawaya/app/settings/settings_screen.dart';
@@ -253,6 +254,13 @@ class MyAppState extends State<MyApp> {
       case AppString.REWARDS_DETAIL_SCREEN_ROUTE:
         return PageTransition(
           child: RewardsDetails(),
+          type: PageTransitionType.rightToLeft,
+          settings: settings,
+        );
+        break;
+      case AppString.LOYALTY_SCREEN_ROUTE:
+        return PageTransition(
+          child: LoyaltyScreen(),
           type: PageTransitionType.rightToLeft,
           settings: settings,
         );

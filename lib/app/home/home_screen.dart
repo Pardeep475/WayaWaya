@@ -47,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
         // return false;
       },
       child: SafeArea(
-        // top: false,
+        top: false,
         // bottom: false,
         child: Scaffold(
           backgroundColor: AppColor.primaryDark,

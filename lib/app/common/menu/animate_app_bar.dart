@@ -7,6 +7,7 @@ import 'package:wayawaya/app/common/menu/model/main_menu_permission.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_images.dart';
 import 'package:wayawaya/utils/app_strings.dart';
+import 'package:wayawaya/utils/dimens.dart';
 import 'package:wayawaya/utils/session_manager.dart';
 
 class AnimateAppBar extends StatefulWidget {
@@ -25,6 +26,7 @@ class AnimateAppBar extends StatefulWidget {
   final bool floating;
   final bool pinned;
   final bool snap;
+  final bool topValue;
   @required
   final List<MainMenuPermission> mainMenuPermissions;
   @required
@@ -45,6 +47,7 @@ class AnimateAppBar extends StatefulWidget {
       this.floating,
       this.pinned,
       this.snap,
+      this.topValue,
       this.mainMenuPermissions,
       this.children});
 
@@ -68,7 +71,7 @@ class _AnimateAppBarState extends State<AnimateAppBar> {
 
   searchBar() {
     return Container(
-      height: 50,
+      height: Dimens.fifty,
       color: AppColor.white,
       width: MediaQuery.of(context).size.width,
       child: Row(
@@ -89,7 +92,7 @@ class _AnimateAppBarState extends State<AnimateAppBar> {
                   ),
                   CircleAvatar(
                     backgroundColor: AppColor.white,
-                    radius: 20,
+                    radius: Dimens.twenty,
                     foregroundImage: AssetImage(
                       AppImages.menu_app_ic,
                     ),
@@ -100,7 +103,7 @@ class _AnimateAppBarState extends State<AnimateAppBar> {
           ),
           Expanded(
             child: Container(
-              width: 100,
+              width: Dimens.hundred,
               child: TextField(
                 autofocus: true,
                 onSubmitted: (val) {
@@ -155,8 +158,8 @@ class _AnimateAppBarState extends State<AnimateAppBar> {
   Widget build(BuildContext context) {
     debugPrint('animate_app_bar_testing:-  ${widget.isSliver}');
     return SafeArea(
-      // top: false,
-      // bottom: false,
+      top: widget.topValue ?? false,
+      bottom: false,
       child: Scaffold(
         backgroundColor: Colors.grey[100],
         body: Container(
@@ -209,8 +212,8 @@ class _AnimateAppBarState extends State<AnimateAppBar> {
                                     title: AppString.login.toUpperCase(),
                                     content: AppString.currently_not_logged_in,
                                     buttonText: AppString.login.toUpperCase(),
-                                    onPressed: () =>
-                                        Navigator.pushNamed(context, AppString.LOGIN_SCREEN_ROUTE),
+                                    onPressed: () => Navigator.pushNamed(
+                                        context, AppString.LOGIN_SCREEN_ROUTE),
                                   );
                                 } else {
                                   _animateAppBarWidgetBloc.searchSink.add(true);
@@ -261,13 +264,12 @@ class _AnimateAppBarState extends State<AnimateAppBar> {
   }
 
   _showErrorDialog(
-      {
-        BuildContext context,
-        Icon icon,
-        String title,
-        String content,
-        String buttonText,
-        VoidCallback onPressed}) {
+      {BuildContext context,
+      Icon icon,
+      String title,
+      String content,
+      String buttonText,
+      VoidCallback onPressed}) {
     showGeneralDialog(
         barrierColor: Colors.black.withOpacity(0.1),
         transitionBuilder: (context, a1, a2, widget) {
@@ -293,5 +295,4 @@ class _AnimateAppBarState extends State<AnimateAppBar> {
         context: context,
         pageBuilder: (context, animation1, animation2) {});
   }
-
 }

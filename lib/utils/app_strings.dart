@@ -159,6 +159,112 @@ class AppString {
   static const String no_website = "Web Address not available";
   static const String no_number = "Number not available";
   static const String exit_content = "Are you sure you want to exit?";
+  static const String find_rewards = "Find Rewards";
+  static const String header_title1_p1 = "– Click on the Rewards menu button";
+  static const String header_title1_p2 =
+      "– You are presented with ALL the available rewards";
+  static const String header_title1_p3 =
+      "– You can search for rewards within specific categories such as “ Food and Drink”, selectable by sliding through the category slider and clicking on the category of interest.";
+  static const String header_title1_p4 =
+      "– You can further reset the filter to “ALL”";
+  static const String header_title1_p5 =
+      "– You can find your Rewards Wallet by clicking that option, at the bottom of the screen.";
+
+  static const String earn_points = "Earn points";
+  static const String header_title2_p1 =
+      "– We reward you for using the Connect Waya-Waya App. See Points Awarded section";
+  static const String header_title2_p2 =
+      "– On entering a participating shop, ask for the QR code, and scan it to earn points.";
+  static const String header_title2_p3 =
+      "– The QR Code scan option, is located on your middle menu button, click and scan.";
+  static const String header_title2_p4 =
+      "– Note: You do need to physically be at the mall and inside the shop, to scan for points.";
+  static const String header_title2_p5 =
+      "– Points scanned are immediately added to your Rewards Wallet, accessible frrom the Rewards screen.";
+
+  static const String redeem_points = "Redeem points";
+  static const String header_title3_p1 =
+      "– When you find a Reward you are interested in, you can click the Waya-Waya FISTPUMP icon, to initiate the reward.";
+  static const String header_title3_p2 =
+      "– A GREEN FISTPUMP will indicate you have sufficient points to redeem the Reward";
+  static const String header_title3_p3 =
+      "– A RED FISTPUMP indicates you still need to earn more points.";
+  static const String header_title3_p4 =
+      "– You can click the Reward and open the Rewards Detail page, and from there redeem the reward.";
+
+
+  static const String rewards_wallet = "Rewards Wallet";
+  static const String header_title4_p1 =
+      "– The Rewards wallet, shows you how many points you have, as well as how many points you have redeemed.";
+  static const String header_title4_p2 =
+      "– You will also see your Monthly totals of points balance.";
+  static const String header_title4_p3 =
+      "– Click each month to expand it, and examine transaction details";
+  static const String header_title4_p4 =
+      "– Key to PIE chart:";
+
+  static const String header_title4_p4_1 =
+      "\u2022 Available - The amount of points you have that you can still redeem.";
+  static const String header_title4_p4_2 =
+      "\u2022 Earn - The total number of points you have earned.";
+  static const String header_title4_p4_3 =
+      "\u2022 Redeemed - The total number of points you have redeemed at point of sale. ";
+
+
+  static const String loyalty_title = "Points Award Rules";
+  static const String open_the_app =
+      "Open the APP";
+  static const String h1_point1 =
+      "– More than 1 times a week and earn 5 points";
+  static const String h1_point2 =
+      "– More than 3 times a week and earn 10 points";
+  static const String h1_point3 =
+      "– More than 5 times a week and earn 15 points";
+  static const String h1_note =
+      "Points can only be earned once per day";
+
+  static const String header_2 =
+      "View a Promotion";
+  static const String h2_point1 =
+      "– More than 1 times a month and earn 5 points";
+  static const String h2_point2 =
+      "– More than 3 times a month and earn 10 points";
+  static const String h2_point3 =
+      "– More than 5 times a month and earn 15 points";
+  static const String h2_note =
+      "Points can only be earned once per day";
+
+  static const String header_3 =
+      "View Ads or Offers";
+  static const String h3_point1 =
+      "– More than 1 times a month and earn 5 points";
+  static const String h3_point2 =
+      "– More than 3 times a month and earn 10 points";
+  static const String h3_point3 =
+      "– More than 5 times a month and earn 15 points";
+  static const String h3_note =
+      "Points can only be earned once per day";
+
+  static const String header_4 =
+      "Visit a Store";
+  static const String h4_point1 =
+      "– More than 1 times a month and earn 5 points";
+  static const String h4_point2 =
+      "– More than 3 times a month and earn 10 points";
+  static const String h4_point3 =
+      "– More than 5 times a month and earn 15 points";
+  static const String h4_note =
+      "Points can only be earned once per day";
+
+  static const String header_5 =
+      "Visit the Mall";
+
+
+  static const String intro =
+      "Introducing the new Connect Waya-Waya® Rewards Programme!";
+  static const String some_intro_text =
+      "Depending on how many times per month you access the app, view ads or offers, visit the mall or store, will determine how many points you accumulate, which can be used at your favourite stores and restaurants. You can also earn additional rewards points by simply visiting any of our participating shopping centres and scanning the QR codes in-store. Earning rewards points has never been easier!”";
+
   static const String quality_for_rewards =
       "See if you qualify for a Reward Voucher?";
   static const String no_rewards_available =
@@ -200,6 +306,7 @@ class AppString {
   static const THE_MALL_SCREEN_ROUTE = "THE_MALL_SCREEN_ROUTE";
   static const QR_SCANNER_SCREEN_ROUTE = "QR_SCANNER_SCREEN_ROUTE";
   static const REWARDS_DETAIL_SCREEN_ROUTE = "REWARDS_DETAIL_SCREEN_ROUTE";
+  static const LOYALTY_SCREEN_ROUTE = "LOYALTY_SCREEN_ROUTE";
 
 // db
   static const String ADMIN_DB_FILE = "admin.db";

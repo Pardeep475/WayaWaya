@@ -56,6 +56,8 @@ class _EventDetailScreen extends State<EventDetailScreen> {
     List<Campaign> _listOfCampaign = _detailModel.listOfCampaign;
 
     return SafeArea(
+      top: false,
+      bottom: false,
       child: Scaffold(
         body: Stack(
           children: [
@@ -86,44 +88,48 @@ class _EventDetailScreen extends State<EventDetailScreen> {
                                     Card(
                                       margin: const EdgeInsets.all(0),
                                       elevation: Dimens.ten,
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.end,
-                                        children: [
-                                          Expanded(
-                                            child: bottomButton(
-                                                icon: Icons.remove_red_eye,
-                                                index: 0,
-                                                contentText: '0'),
-                                          ),
-                                          Expanded(
-                                            child: bottomButton(
-                                                icon:
-                                                    Icons.watch_later_outlined,
-                                                index: 1,
-                                                contentText: _getTimingText(
-                                                    context,
-                                                    _listOfCampaign[index])),
-                                          ),
-                                          Expanded(
-                                            child: bottomButton(
-                                                icon: Icons.share,
-                                                index: 2,
-                                                contentText: '0'),
-                                          ),
-                                          Expanded(
-                                            child: bottomButton(
-                                                onPressed: () {
-                                                  _addEventToCalender(context,
-                                                      _listOfCampaign[index]);
-                                                },
-                                                icon: Icons.event,
-                                                index: 3,
-                                                contentText: 'Add'),
-                                          ),
-                                        ],
+                                      child: Container(
+                                        margin: EdgeInsets.only(
+                                            bottom: Dimens.twenty),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.end,
+                                          children: [
+                                            Expanded(
+                                              child: bottomButton(
+                                                  icon: Icons.remove_red_eye,
+                                                  index: 0,
+                                                  contentText: '0'),
+                                            ),
+                                            Expanded(
+                                              child: bottomButton(
+                                                  icon: Icons
+                                                      .watch_later_outlined,
+                                                  index: 1,
+                                                  contentText: _getTimingText(
+                                                      context,
+                                                      _listOfCampaign[index])),
+                                            ),
+                                            Expanded(
+                                              child: bottomButton(
+                                                  icon: Icons.share,
+                                                  index: 2,
+                                                  contentText: '0'),
+                                            ),
+                                            Expanded(
+                                              child: bottomButton(
+                                                  onPressed: () {
+                                                    _addEventToCalender(context,
+                                                        _listOfCampaign[index]);
+                                                  },
+                                                  icon: Icons.event,
+                                                  index: 3,
+                                                  contentText: 'Add'),
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ],

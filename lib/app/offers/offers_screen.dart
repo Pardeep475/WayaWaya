@@ -10,6 +10,7 @@ import 'package:wayawaya/app/offers/view/item_offer_view.dart';
 import 'package:wayawaya/network/live/model/api_response.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_strings.dart';
+import 'package:wayawaya/utils/dimens.dart';
 
 import '../../constants.dart';
 import 'bloc/offers_bloc.dart';
@@ -39,6 +40,8 @@ class _OfferScreenState extends State<OfferScreen> {
   Widget build(BuildContext context) {
     rid = ModalRoute.of(context).settings.arguments;
     return SafeArea(
+      top: false,
+      bottom: false,
       child: Scaffold(
         body: StreamBuilder<List<MainMenuPermission>>(
             initialData: [],
@@ -88,7 +91,7 @@ class _OfferScreenState extends State<OfferScreen> {
                                         style: GoogleFonts.ubuntuCondensed()
                                             .copyWith(
                                           color: black.withOpacity(0.7),
-                                          fontSize: 19,
+                                          fontSize: Dimens.nineteen,
                                           fontWeight: FontWeight.w500,
                                           letterSpacing: 0.8,
                                         ),
@@ -97,16 +100,20 @@ class _OfferScreenState extends State<OfferScreen> {
                                   ),
                                 );
                               } else {
-                                return SliverList(
-                                  delegate: SliverChildBuilderDelegate(
-                                    (BuildContext context, int index) {
-                                      return ItemOfferView(
-                                        campaign: snapshot.data.data[index],
-                                        listOfCampaign: snapshot.data.data,
-                                        index: index,
-                                      );
-                                    },
-                                    childCount: snapshot.data.data.length,
+                                return SliverPadding(
+                                  padding:
+                                      EdgeInsets.only(bottom: Dimens.fifty),
+                                  sliver: SliverList(
+                                    delegate: SliverChildBuilderDelegate(
+                                      (BuildContext context, int index) {
+                                        return ItemOfferView(
+                                          campaign: snapshot.data.data[index],
+                                          listOfCampaign: snapshot.data.data,
+                                          index: index,
+                                        );
+                                      },
+                                      childCount: snapshot.data.data.length,
+                                    ),
                                   ),
                                 );
                               }

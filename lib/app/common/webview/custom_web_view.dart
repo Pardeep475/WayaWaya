@@ -28,85 +28,87 @@ class CustomWebView extends StatelessWidget {
 
     if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
     return SafeArea(
+        top: false,
+        bottom: false,
         child: Scaffold(
-      body: StreamBuilder<List<MainMenuPermission>>(
-          initialData: [],
-          stream: _customWebViewBloc.mainMenuPermissionStream,
-          builder: (context, snapshot) {
-            return AnimateAppBar(
-              title: _customWebViewModel.title,
-              isSliver: true,
-              mainMenuPermissions: snapshot.data,
-              physics: const NeverScrollableScrollPhysics(),
-              children: [
-                SliverFillRemaining(
-                  child: Stack(
-                    children: [
-                      WebView(
-                        initialUrl: _customWebViewModel.webViewUrl,
-                        gestureRecognizers: <
-                            Factory<OneSequenceGestureRecognizer>>{
-                          Factory<VerticalDragGestureRecognizer>(
-                              () => VerticalDragGestureRecognizer()),
-                        },
-                        javascriptMode: JavascriptMode.unrestricted,
-                        onWebViewCreated:
-                            (WebViewController webViewController) {
-                          _controller.complete(webViewController);
-                          webViewController.clearCache();
-                          final cookieManager = CookieManager();
-                          cookieManager.clearCookies();
-                          _customWebViewBloc.webViewSink.add(false);
-                        },
-                        onProgress: (int progress) {
-                          debugPrint(
-                              "WebView is loading (progress : $progress%)");
-                        },
-                        onPageStarted: (String url) {
-                          debugPrint('Page started loading: $url');
-                          _customWebViewBloc.webViewSink.add(false);
-                        },
-                        onPageFinished: (String url) {
-                          debugPrint('Page finished loading: $url');
-                          _customWebViewBloc.webViewSink.add(true);
-                        },
-                        debuggingEnabled: true,
-                        onWebResourceError: (error) {
-                          _customWebViewBloc.webViewSink.add(true);
-                          debugPrint(
-                              'Page error: ${error.description}  \n ${error.errorType}  \n ${error.errorCode} \n ${error.domain}  \n ${error.failingUrl}');
-                        },
-                        gestureNavigationEnabled: false,
-                      ),
-                      StreamBuilder<bool>(
-                          initialData: false,
-                          stream: _customWebViewBloc.webViewStream,
-                          builder: (context, snapshot) {
-                            if (snapshot.data == null) {
-                              return const SizedBox();
-                            }
-                            if (snapshot.data) {
-                              return const SizedBox();
-                            } else {
-                              return Positioned.fill(
-                                child: Container(
-                                  child: Center(
-                                    child: CircularProgressIndicator(
-                                      valueColor:
-                                          new AlwaysStoppedAnimation<Color>(
-                                              AppColor.primary),
+          body: StreamBuilder<List<MainMenuPermission>>(
+              initialData: [],
+              stream: _customWebViewBloc.mainMenuPermissionStream,
+              builder: (context, snapshot) {
+                return AnimateAppBar(
+                  title: _customWebViewModel.title,
+                  isSliver: true,
+                  mainMenuPermissions: snapshot.data,
+                  physics: const NeverScrollableScrollPhysics(),
+                  children: [
+                    SliverFillRemaining(
+                      child: Stack(
+                        children: [
+                          WebView(
+                            initialUrl: _customWebViewModel.webViewUrl,
+                            gestureRecognizers: <
+                                Factory<OneSequenceGestureRecognizer>>{
+                              Factory<VerticalDragGestureRecognizer>(
+                                  () => VerticalDragGestureRecognizer()),
+                            },
+                            javascriptMode: JavascriptMode.unrestricted,
+                            onWebViewCreated:
+                                (WebViewController webViewController) {
+                              _controller.complete(webViewController);
+                              webViewController.clearCache();
+                              final cookieManager = CookieManager();
+                              cookieManager.clearCookies();
+                              _customWebViewBloc.webViewSink.add(false);
+                            },
+                            onProgress: (int progress) {
+                              debugPrint(
+                                  "WebView is loading (progress : $progress%)");
+                            },
+                            onPageStarted: (String url) {
+                              debugPrint('Page started loading: $url');
+                              _customWebViewBloc.webViewSink.add(false);
+                            },
+                            onPageFinished: (String url) {
+                              debugPrint('Page finished loading: $url');
+                              _customWebViewBloc.webViewSink.add(true);
+                            },
+                            debuggingEnabled: true,
+                            onWebResourceError: (error) {
+                              _customWebViewBloc.webViewSink.add(true);
+                              debugPrint(
+                                  'Page error: ${error.description}  \n ${error.errorType}  \n ${error.errorCode} \n ${error.domain}  \n ${error.failingUrl}');
+                            },
+                            gestureNavigationEnabled: false,
+                          ),
+                          StreamBuilder<bool>(
+                              initialData: false,
+                              stream: _customWebViewBloc.webViewStream,
+                              builder: (context, snapshot) {
+                                if (snapshot.data == null) {
+                                  return const SizedBox();
+                                }
+                                if (snapshot.data) {
+                                  return const SizedBox();
+                                } else {
+                                  return Positioned.fill(
+                                    child: Container(
+                                      child: Center(
+                                        child: CircularProgressIndicator(
+                                          valueColor:
+                                              new AlwaysStoppedAnimation<Color>(
+                                                  AppColor.primary),
+                                        ),
+                                      ),
                                     ),
-                                  ),
-                                ),
-                              );
-                            }
-                          }),
-                    ],
-                  ),
-                ),
-              ],
-            );
-          }),
-    ));
+                                  );
+                                }
+                              }),
+                        ],
+                      ),
+                    ),
+                  ],
+                );
+              }),
+        ));
   }
 }

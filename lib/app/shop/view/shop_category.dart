@@ -5,6 +5,7 @@ import 'package:wayawaya/app/shop/bloc/shop_bloc.dart';
 import 'package:wayawaya/app/shop/model/category_based_model.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_strings.dart';
+import 'package:wayawaya/utils/dimens.dart';
 
 import 'expandable_card.dart';
 
@@ -45,14 +46,14 @@ class _ShopCategoryScreenState extends State<ShopCategoryScreen> {
                   color: AppColor.white,
                   elevation: 2,
                   child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 30),
+                    padding: EdgeInsets.symmetric(vertical: Dimens.thirty),
                     width: double.infinity,
                     child: Text(
                       AppString.no_record_found,
                       textAlign: TextAlign.center,
                       style: GoogleFonts.ubuntuCondensed().copyWith(
                         color: AppColor.black.withOpacity(0.7),
-                        fontSize: 19,
+                        fontSize: Dimens.nineteen,
                         fontWeight: FontWeight.w500,
                         letterSpacing: 0.8,
                       ),
@@ -64,6 +65,7 @@ class _ShopCategoryScreenState extends State<ShopCategoryScreen> {
           } else {
             return ListView.builder(
                 itemCount: snapshot.data.length,
+                padding: EdgeInsets.only(bottom: Dimens.thirty),
                 itemBuilder: (context, index) {
                   return ExpandableCards(
                     index: index,

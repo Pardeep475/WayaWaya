@@ -47,113 +47,113 @@ class _RewardsBrowserState extends State<RewardsBrowser> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: bgColor,
-        floatingActionButton: GestureDetector(
-          onTap: () {},
-          child: Container(
-            decoration: BoxDecoration(
-                color: AppColor.colored_text, shape: BoxShape.circle),
-            padding: EdgeInsets.all(Dimens.five),
-            child: Image.asset(
-              AppImages.r_wallet,
-              height: Dimens.thirtyFive,
-              width: Dimens.thirtyFive,
-            ),
+    return Scaffold(
+      backgroundColor: bgColor,
+      floatingActionButton: GestureDetector(
+        onTap: () {
+          Navigator.pushNamed(context, AppString.LOYALTY_SCREEN_ROUTE);
+        },
+        child: Container(
+          decoration: BoxDecoration(
+              color: AppColor.colored_text, shape: BoxShape.circle),
+          padding: EdgeInsets.all(Dimens.five),
+          child: Image.asset(
+            AppImages.r_wallet,
+            height: Dimens.thirtyFive,
+            width: Dimens.thirtyFive,
           ),
         ),
-        body: Container(
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-          child: Stack(
-            children: [
-              StreamBuilder<List<MainMenuPermission>>(
-                  initialData: [],
-                  stream: _rewardsBloc.mainMenuPermissionStream,
-                  builder: (context, snapshot) {
-                    return AnimateAppBar(
-                      title: 'Rewards'.toUpperCase(),
-                      isSliver: true,
-                      mainMenuPermissions: snapshot.data,
-                      physics: ClampingScrollPhysics(),
-                      pinned: false,
-                      snap: true,
-                      floating: true,
-                      children: [
-                        SliverToBoxAdapter(
-                          child: Container(
-                            width: MediaQuery.of(context).size.width,
-                            color: Color(0xffE0E0E0),
-                            padding: EdgeInsets.only(
-                                top: Dimens.fifteen, bottom: Dimens.fifteen),
-                            child: Text(
-                              AppString.quality_for_rewards,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: Dimens.eighteen,
-                                fontWeight: FontWeight.bold,
-                              ),
+      ),
+      body: Container(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        child: Stack(
+          children: [
+            StreamBuilder<List<MainMenuPermission>>(
+                initialData: [],
+                stream: _rewardsBloc.mainMenuPermissionStream,
+                builder: (context, snapshot) {
+                  return AnimateAppBar(
+                    title: 'Rewards'.toUpperCase(),
+                    isSliver: true,
+                    mainMenuPermissions: snapshot.data,
+                    physics: ClampingScrollPhysics(),
+                    pinned: false,
+                    snap: true,
+                    floating: true,
+                    children: [
+                      SliverToBoxAdapter(
+                        child: Container(
+                          width: MediaQuery.of(context).size.width,
+                          color: Color(0xffE0E0E0),
+                          padding: EdgeInsets.only(
+                              top: Dimens.fifteen, bottom: Dimens.fifteen),
+                          child: Text(
+                            AppString.quality_for_rewards,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: Dimens.eighteen,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
-                        SliverToBoxAdapter(
-                          child: StreamBuilder<List<RewardsCategory>>(
-                              initialData: [],
-                              stream: _rewardsBloc.rewardsCategoryStream,
-                              builder: (context, snapshot) {
-                                debugPrint(
-                                    'rewards_categories_list:-   ${snapshot.data.length}');
-                                return Container(
-                                  height: Dimens.oneEightyFive,
-                                  width: MediaQuery.of(context).size.width,
-                                  constraints: BoxConstraints(
-                                    maxHeight: Dimens.oneEightyFive,
-                                    maxWidth: MediaQuery.of(context).size.width,
-                                  ),
-                                  color: Color(0xFFF0F0F0),
-                                  child: Stack(
-                                    children: [
-                                      Positioned.fill(
-                                        child: RotatedBox(
-                                          quarterTurns: -1,
-                                          child: GestureDetector(
-                                            onTap: () {},
-                                            child:
-                                                ListWheelScrollView.useDelegate(
-                                              itemExtent: itemWidth,
-                                              controller: _controller,
-                                              squeeze: 1,
-                                              onSelectedItemChanged: (val) {
-                                                _rewardsBloc
-                                                    .updateRewardsCategory(val);
-                                                _rewardsBloc
-                                                    .titleRewardsCategorySink
-                                                    .add(snapshot
-                                                        .data[val].name);
-                                              },
-                                              childDelegate:
-                                                  ListWheelChildLoopingListDelegate(
-                                                children: List<Widget>.generate(
-                                                  snapshot.data != null &&
-                                                          snapshot
-                                                              .data.isNotEmpty
-                                                      ? snapshot.data.length
-                                                      : 8,
-                                                  (index) => Center(
-                                                    child: RotatedBox(
-                                                      quarterTurns: 1,
-                                                      child: ItemCategoryOval(
-                                                        index: index,
-                                                        rewardsCategory: snapshot
-                                                                        .data !=
-                                                                    null &&
-                                                                snapshot.data
-                                                                    .isNotEmpty
-                                                            ? snapshot
-                                                                .data[index]
-                                                            : null,
-                                                      ),
+                      ),
+                      SliverToBoxAdapter(
+                        child: StreamBuilder<List<RewardsCategory>>(
+                            initialData: [],
+                            stream: _rewardsBloc.rewardsCategoryStream,
+                            builder: (context, snapshot) {
+                              debugPrint(
+                                  'rewards_categories_list:-   ${snapshot.data.length}');
+                              return Container(
+                                height: Dimens.oneEightyFive,
+                                width: MediaQuery.of(context).size.width,
+                                constraints: BoxConstraints(
+                                  maxHeight: Dimens.oneEightyFive,
+                                  maxWidth: MediaQuery.of(context).size.width,
+                                ),
+                                color: Color(0xFFF0F0F0),
+                                child: Stack(
+                                  children: [
+                                    Positioned.fill(
+                                      child: RotatedBox(
+                                        quarterTurns: -1,
+                                        child: GestureDetector(
+                                          onTap: () {},
+                                          child:
+                                              ListWheelScrollView.useDelegate(
+                                            itemExtent: itemWidth,
+                                            controller: _controller,
+                                            squeeze: 1,
+                                            onSelectedItemChanged: (val) {
+                                              _rewardsBloc
+                                                  .updateRewardsCategory(val);
+                                              _rewardsBloc
+                                                  .titleRewardsCategorySink
+                                                  .add(snapshot
+                                                      .data[val].name);
+                                            },
+                                            childDelegate:
+                                                ListWheelChildLoopingListDelegate(
+                                              children: List<Widget>.generate(
+                                                snapshot.data != null &&
+                                                        snapshot
+                                                            .data.isNotEmpty
+                                                    ? snapshot.data.length
+                                                    : 8,
+                                                (index) => Center(
+                                                  child: RotatedBox(
+                                                    quarterTurns: 1,
+                                                    child: ItemCategoryOval(
+                                                      index: index,
+                                                      rewardsCategory: snapshot
+                                                                      .data !=
+                                                                  null &&
+                                                              snapshot.data
+                                                                  .isNotEmpty
+                                                          ? snapshot
+                                                              .data[index]
+                                                          : null,
                                                     ),
                                                   ),
                                                 ),
@@ -162,155 +162,155 @@ class _RewardsBrowserState extends State<RewardsBrowser> {
                                           ),
                                         ),
                                       ),
-                                      Positioned(
-                                        bottom: 0,
-                                        left: 0,
-                                        right: 0,
-                                        child: StreamBuilder<String>(
-                                            initialData: 'All',
-                                            stream: _rewardsBloc
-                                                .titleRewardsCategoryStream,
-                                            builder: (context, snapshot) {
-                                              return Container(
-                                                width: MediaQuery.of(context)
-                                                    .size
-                                                    .width,
-                                                padding: EdgeInsets.only(
-                                                    top: Dimens.fifteen,
-                                                    bottom: Dimens.fifteen),
-                                                child: Text(
-                                                  snapshot.data ?? "All",
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                                                    fontSize: Dimens.eighteen,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
+                                    ),
+                                    Positioned(
+                                      bottom: 0,
+                                      left: 0,
+                                      right: 0,
+                                      child: StreamBuilder<String>(
+                                          initialData: 'All',
+                                          stream: _rewardsBloc
+                                              .titleRewardsCategoryStream,
+                                          builder: (context, snapshot) {
+                                            return Container(
+                                              width: MediaQuery.of(context)
+                                                  .size
+                                                  .width,
+                                              padding: EdgeInsets.only(
+                                                  top: Dimens.fifteen,
+                                                  bottom: Dimens.fifteen),
+                                              child: Text(
+                                                snapshot.data ?? "All",
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                  fontSize: Dimens.eighteen,
+                                                  fontWeight: FontWeight.bold,
                                                 ),
-                                              );
-                                            }),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              }),
-                        ),
-                        StreamBuilder<ApiResponse<List<Campaign>>>(
-                            stream: _rewardsBloc.rewardsListStream,
-                            builder: (context, snapshot) {
-                              if (snapshot.hasData) {
-                                switch (snapshot.data.status) {
-                                  case Status.LOADING:
-                                    // Future.delayed(Duration(milliseconds: 200), () {
-                                    //   Utils.commonProgressDialog(context);
-                                    // });
-                                    return SliverFillRemaining(
-                                      child: Container(
-                                        width:
-                                            MediaQuery.of(context).size.width,
-                                        color: Colors.transparent,
-                                        height:
-                                            MediaQuery.of(context).size.height,
-                                      ),
-                                    );
-                                    break;
-                                  case Status.COMPLETED:
-                                    {
-                                      debugPrint("completed");
-                                      // Navigator.pop(context);
-                                      if (snapshot.data.data.isEmpty) {
-                                        return NoRewardsAvailable();
-                                      } else {
-                                        return SliverList(
-                                          delegate: SliverChildBuilderDelegate(
-                                            (context, index) => ItemRewards(
-                                              index: index,
-                                              campaign:
-                                                  snapshot.data.data[index],
-                                              listOfCampaign:
-                                                  snapshot.data.data,
-                                              size: snapshot.data.data.length,
-                                            ),
-                                            childCount:
-                                                snapshot.data.data.length,
-                                          ),
-                                        );
-                                      }
-                                    }
-                                    break;
-                                  case Status.ERROR:
-                                    {
-                                      // Navigator.pop(context);
-                                      Future.delayed(
-                                          Duration(milliseconds: 100), () {
-                                        _showErrorDialog(
-                                          icon: Icon(
-                                            FontAwesomeIcons
-                                                .exclamationTriangle,
-                                            color: AppColor.orange_500,
-                                          ),
-                                          title: AppString.login.toUpperCase(),
-                                          content: AppString
-                                              .check_your_internet_connectivity,
-                                          buttonText:
-                                              AppString.ok.toUpperCase(),
-                                          onPressed: () =>
-                                              Navigator.pop(context),
-                                        );
-                                      });
-                                    }
-                                    break;
-                                }
-                              }
-                              return SliverToBoxAdapter();
+                                              ),
+                                            );
+                                          }),
+                                    ),
+                                  ],
+                                ),
+                              );
                             }),
-                      ],
-                    );
-                  }),
+                      ),
+                      StreamBuilder<ApiResponse<List<Campaign>>>(
+                          stream: _rewardsBloc.rewardsListStream,
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              switch (snapshot.data.status) {
+                                case Status.LOADING:
+                                  // Future.delayed(Duration(milliseconds: 200), () {
+                                  //   Utils.commonProgressDialog(context);
+                                  // });
+                                  return SliverFillRemaining(
+                                    child: Container(
+                                      width:
+                                          MediaQuery.of(context).size.width,
+                                      color: Colors.transparent,
+                                      height:
+                                          MediaQuery.of(context).size.height,
+                                    ),
+                                  );
+                                  break;
+                                case Status.COMPLETED:
+                                  {
+                                    debugPrint("completed");
+                                    // Navigator.pop(context);
+                                    if (snapshot.data.data.isEmpty) {
+                                      return NoRewardsAvailable();
+                                    } else {
+                                      return SliverList(
+                                        delegate: SliverChildBuilderDelegate(
+                                          (context, index) => ItemRewards(
+                                            index: index,
+                                            campaign:
+                                                snapshot.data.data[index],
+                                            listOfCampaign:
+                                                snapshot.data.data,
+                                            size: snapshot.data.data.length,
+                                          ),
+                                          childCount:
+                                              snapshot.data.data.length,
+                                        ),
+                                      );
+                                    }
+                                  }
+                                  break;
+                                case Status.ERROR:
+                                  {
+                                    // Navigator.pop(context);
+                                    Future.delayed(
+                                        Duration(milliseconds: 100), () {
+                                      _showErrorDialog(
+                                        icon: Icon(
+                                          FontAwesomeIcons
+                                              .exclamationTriangle,
+                                          color: AppColor.orange_500,
+                                        ),
+                                        title: AppString.login.toUpperCase(),
+                                        content: AppString
+                                            .check_your_internet_connectivity,
+                                        buttonText:
+                                            AppString.ok.toUpperCase(),
+                                        onPressed: () =>
+                                            Navigator.pop(context),
+                                      );
+                                    });
+                                  }
+                                  break;
+                              }
+                            }
+                            return SliverToBoxAdapter();
+                          }),
+                    ],
+                  );
+                }),
 
-              //GESTURES GUIDE
-              // Visibility(
-              //   visible: App.prefs.getBool('rewardGestures') ?? true,
-              //   child: InkWell(
-              //     onTap: () {
-              //       setState(() {
-              //         App.prefs.setBool('rewardGestures', false);
-              //       });
-              //     },
-              //     child: Container(
-              //       height: App.height(context),
-              //       width: App.width(context),
-              //       padding: const EdgeInsets.all(20),
-              //       decoration: BoxDecoration(
-              //         color: Colors.black.withOpacity(0.5),
-              //       ),
-              //       child: Stack(
-              //         children: [
-              //           Positioned(
-              //             top: 150,
-              //             left: 0,
-              //             child: gestureH(text: 'Slide & Click'),
-              //           ),
-              //           Align(
-              //             alignment: Alignment.center,
-              //             child: Padding(
-              //               padding: const EdgeInsets.only(top: 20),
-              //               child: gestureH(text: 'Show Detail'),
-              //             ),
-              //           ),
-              //           Align(
-              //             alignment: Alignment.bottomCenter,
-              //             child: Padding(
-              //               padding: const EdgeInsets.only(bottom: 40),
-              //               child: gestureV(text: 'Slide'),
-              //             ),
-              //           ),
-              //         ],
-              //       ),
-              //     ),
-              //   ),
-              // ),
-            ],
-          ),
+            //GESTURES GUIDE
+            // Visibility(
+            //   visible: App.prefs.getBool('rewardGestures') ?? true,
+            //   child: InkWell(
+            //     onTap: () {
+            //       setState(() {
+            //         App.prefs.setBool('rewardGestures', false);
+            //       });
+            //     },
+            //     child: Container(
+            //       height: App.height(context),
+            //       width: App.width(context),
+            //       padding: const EdgeInsets.all(20),
+            //       decoration: BoxDecoration(
+            //         color: Colors.black.withOpacity(0.5),
+            //       ),
+            //       child: Stack(
+            //         children: [
+            //           Positioned(
+            //             top: 150,
+            //             left: 0,
+            //             child: gestureH(text: 'Slide & Click'),
+            //           ),
+            //           Align(
+            //             alignment: Alignment.center,
+            //             child: Padding(
+            //               padding: const EdgeInsets.only(top: 20),
+            //               child: gestureH(text: 'Show Detail'),
+            //             ),
+            //           ),
+            //           Align(
+            //             alignment: Alignment.bottomCenter,
+            //             child: Padding(
+            //               padding: const EdgeInsets.only(bottom: 40),
+            //               child: gestureV(text: 'Slide'),
+            //             ),
+            //           ),
+            //         ],
+            //       ),
+            //     ),
+            //   ),
+            // ),
+          ],
         ),
       ),
     );

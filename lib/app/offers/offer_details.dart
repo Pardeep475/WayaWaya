@@ -62,6 +62,8 @@ class _OffersDetailsState extends State<OfferDetails> {
     List<Campaign> _listOfCampaign = _detailModel.listOfCampaign;
 
     return SafeArea(
+      top: false,
+      bottom: false,
       child: Scaffold(
         body: Stack(
           children: [
@@ -92,139 +94,145 @@ class _OffersDetailsState extends State<OfferDetails> {
                                     Card(
                                       elevation: Dimens.ten,
                                       margin: const EdgeInsets.all(0),
-                                      child: Row(
-                                        children: [
-                                          // FutureBuilder(
-                                          //   future: _redeemLayout(
-                                          //       _listOfCampaign[index]),
-                                          //   builder: (context, snapshot) {
-                                          //     if (snapshot.hasData &&
-                                          //         snapshot.data) {
-                                          //       return Expanded(
-                                          //         child: Material(
-                                          //           color: Colors.transparent,
-                                          //           child: InkWell(
-                                          //             onTap: () {},
-                                          //             child: Column(
-                                          //               mainAxisAlignment:
-                                          //                   MainAxisAlignment
-                                          //                       .center,
-                                          //               mainAxisSize:
-                                          //                   MainAxisSize.max,
-                                          //               children: [
-                                          //                 SizedBox(
-                                          //                   height:
-                                          //                       Dimens.fifteen,
-                                          //                 ),
-                                          //                 Icon(
-                                          //                   FontAwesomeIcons
-                                          //                       .gift,
-                                          //                   color:
-                                          //                       AppColor.black,
-                                          //                 ),
-                                          //                 SizedBox(
-                                          //                   height: Dimens.ten,
-                                          //                 ),
-                                          //                 Text(
-                                          //                   AppString.redeem
-                                          //                       .toUpperCase(),
-                                          //                   style: TextStyle(
-                                          //                     fontSize:
-                                          //                         Dimens.ten,
-                                          //                   ),
-                                          //                 ),
-                                          //                 SizedBox(
-                                          //                   height: Dimens.ten,
-                                          //                 ),
-                                          //               ],
-                                          //             ),
-                                          //           ),
-                                          //         ),
-                                          //       );
-                                          //     }
-                                          //     return SizedBox();
-                                          //   },
-                                          // ),
-                                          Expanded(
-                                            flex: 1,
-                                            child: InkWell(
-                                              onTap: () {
-                                                _locateOnMap(context,
-                                                    _listOfCampaign[index]);
-                                              },
-                                              child: Container(
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.center,
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.end,
-                                                  children: [
-                                                    SizedBox(
-                                                      height: Dimens.fifteen,
-                                                    ),
-                                                    Icon(
-                                                      FontAwesomeIcons
-                                                          .mapMarkerAlt,
-                                                      color: black,
-                                                    ),
-                                                    SizedBox(
-                                                      height: Dimens.ten,
-                                                    ),
-                                                    Text(
-                                                      'Locate'.toUpperCase(),
-                                                      style: TextStyle(
-                                                        fontSize:
-                                                            Dimens.forteen,
+                                      child: Container(
+                                        margin: EdgeInsets.only(
+                                            bottom: Dimens.twenty),
+                                        child: Row(
+                                          children: [
+                                            // FutureBuilder(
+                                            //   future: _redeemLayout(
+                                            //       _listOfCampaign[index]),
+                                            //   builder: (context, snapshot) {
+                                            //     if (snapshot.hasData &&
+                                            //         snapshot.data) {
+                                            //       return Expanded(
+                                            //         child: Material(
+                                            //           color: Colors.transparent,
+                                            //           child: InkWell(
+                                            //             onTap: () {},
+                                            //             child: Column(
+                                            //               mainAxisAlignment:
+                                            //                   MainAxisAlignment
+                                            //                       .center,
+                                            //               mainAxisSize:
+                                            //                   MainAxisSize.max,
+                                            //               children: [
+                                            //                 SizedBox(
+                                            //                   height:
+                                            //                       Dimens.fifteen,
+                                            //                 ),
+                                            //                 Icon(
+                                            //                   FontAwesomeIcons
+                                            //                       .gift,
+                                            //                   color:
+                                            //                       AppColor.black,
+                                            //                 ),
+                                            //                 SizedBox(
+                                            //                   height: Dimens.ten,
+                                            //                 ),
+                                            //                 Text(
+                                            //                   AppString.redeem
+                                            //                       .toUpperCase(),
+                                            //                   style: TextStyle(
+                                            //                     fontSize:
+                                            //                         Dimens.ten,
+                                            //                   ),
+                                            //                 ),
+                                            //                 SizedBox(
+                                            //                   height: Dimens.ten,
+                                            //                 ),
+                                            //               ],
+                                            //             ),
+                                            //           ),
+                                            //         ),
+                                            //       );
+                                            //     }
+                                            //     return SizedBox();
+                                            //   },
+                                            // ),
+                                            Expanded(
+                                              flex: 1,
+                                              child: InkWell(
+                                                onTap: () {
+                                                  _locateOnMap(context,
+                                                      _listOfCampaign[index]);
+                                                },
+                                                child: Container(
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .center,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.end,
+                                                    children: [
+                                                      SizedBox(
+                                                        height: Dimens.fifteen,
                                                       ),
-                                                    ),
-                                                    SizedBox(
-                                                      height: Dimens.ten,
-                                                    ),
-                                                  ],
+                                                      Icon(
+                                                        FontAwesomeIcons
+                                                            .mapMarkerAlt,
+                                                        color: black,
+                                                      ),
+                                                      SizedBox(
+                                                        height: Dimens.ten,
+                                                      ),
+                                                      Text(
+                                                        'Locate'.toUpperCase(),
+                                                        style: TextStyle(
+                                                          fontSize:
+                                                              Dimens.forteen,
+                                                        ),
+                                                      ),
+                                                      SizedBox(
+                                                        height: Dimens.ten,
+                                                      ),
+                                                    ],
+                                                  ),
                                                 ),
                                               ),
                                             ),
-                                          ),
-                                          Expanded(
-                                            flex: 1,
-                                            child: InkWell(
-                                              onTap: () {
-                                                _shareFiles(context,
-                                                    _listOfCampaign[index]);
-                                              },
-                                              child: Container(
-                                                child: Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.end,
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.center,
-                                                  children: [
-                                                    SizedBox(
-                                                      height: Dimens.fifteen,
-                                                    ),
-                                                    Icon(
-                                                      Icons.share,
-                                                      color: black,
-                                                    ),
-                                                    SizedBox(
-                                                      height: Dimens.ten,
-                                                    ),
-                                                    Text(
-                                                      'Share'.toUpperCase(),
-                                                      style: TextStyle(
-                                                        fontSize:
-                                                            Dimens.forteen,
+                                            Expanded(
+                                              flex: 1,
+                                              child: InkWell(
+                                                onTap: () {
+                                                  _shareFiles(context,
+                                                      _listOfCampaign[index]);
+                                                },
+                                                child: Container(
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.end,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      SizedBox(
+                                                        height: Dimens.fifteen,
                                                       ),
-                                                    ),
-                                                    SizedBox(
-                                                      height: Dimens.ten,
-                                                    ),
-                                                  ],
+                                                      Icon(
+                                                        Icons.share,
+                                                        color: black,
+                                                      ),
+                                                      SizedBox(
+                                                        height: Dimens.ten,
+                                                      ),
+                                                      Text(
+                                                        'Share'.toUpperCase(),
+                                                        style: TextStyle(
+                                                          fontSize:
+                                                              Dimens.forteen,
+                                                        ),
+                                                      ),
+                                                      SizedBox(
+                                                        height: Dimens.ten,
+                                                      ),
+                                                    ],
+                                                  ),
                                                 ),
                                               ),
                                             ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ],
@@ -317,7 +325,8 @@ class _OffersDetailsState extends State<OfferDetails> {
         context,
         AppString.CUSTOM_WEB_VIEW_SCREEN_ROUTE,
         arguments: CustomWebViewModel(
-            title: _getTitle(context, campaign), webViewUrl: mapUrl.replaceAll(" ", "%20")),
+            title: _getTitle(context, campaign),
+            webViewUrl: mapUrl.replaceAll(" ", "%20")),
       );
     } catch (e) {
       debugPrint('offers_details_error:-   $e');
