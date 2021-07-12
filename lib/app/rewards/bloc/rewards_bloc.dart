@@ -40,17 +40,14 @@ class RewardsBloc {
   Stream<ApiResponse<List<Campaign>>> get rewardsListStream =>
       _rewardsListController.stream;
 
-
   // ignore: close_sinks
-  StreamController _titleRewardsCategoryController =
-  StreamController<String>();
+  StreamController _titleRewardsCategoryController = StreamController<String>();
 
   StreamSink<String> get titleRewardsCategorySink =>
       _titleRewardsCategoryController.sink;
 
   Stream<String> get titleRewardsCategoryStream =>
       _titleRewardsCategoryController.stream;
-
 
   List<RewardsCategory> _rewardsCategoryList;
 
@@ -92,6 +89,22 @@ class RewardsBloc {
       List<Campaign> campaignList =
           await ProfileDatabaseHelper.getCampaignByType(
               databasePath: defaultMall, campaignType: 'offer');
+      rewardsListSink.add(ApiResponse.completed(campaignList));
+    } catch (e) {
+      rewardsListSink.add(ApiResponse.error(e));
+    }
+  }
+
+  fetchRewardsListByCategory(String categoryId) async {
+
+    rewardsListSink.add(ApiResponse.loading(null));
+    try {
+      String defaultMall = await SessionManager.getDefaultMall();
+      List<Campaign> campaignList =
+          await ProfileDatabaseHelper.getCampaignByType(
+              databasePath: defaultMall,
+              campaignType: 'offer',
+              categoryId: categoryId);
       rewardsListSink.add(ApiResponse.completed(campaignList));
     } catch (e) {
       rewardsListSink.add(ApiResponse.error(e));

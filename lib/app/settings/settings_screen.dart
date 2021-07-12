@@ -6,6 +6,7 @@ import 'package:wayawaya/app/settings/model/settings_model.dart';
 import 'package:wayawaya/network/local/profile_database_helper.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_strings.dart';
+import 'package:wayawaya/utils/dimens.dart';
 import 'package:wayawaya/utils/session_manager.dart';
 import '../../constants.dart';
 import 'bloc/settings_bloc.dart';
@@ -34,6 +35,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
+      top: false,
+      bottom: false,
       child: Scaffold(
         body: StreamBuilder<List<MainMenuPermission>>(
             initialData: [],
@@ -84,16 +87,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   fontSize: 16,
                 ),
               ),
-              const SizedBox(
-                height: 3,
+               SizedBox(
+                height: Dimens.five,
               ),
               InkWell(
                 onTap: _logoutButtonClick,
                 child: Container(
                   color: white,
                   margin:
-                      const EdgeInsets.symmetric(horizontal: 5, vertical: 3),
-                  height: 60,
+                      const EdgeInsets.symmetric(horizontal: 5),
+                  padding: EdgeInsets.only(top: Dimens.fifteen,bottom: Dimens.twenty),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -101,13 +104,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         Icons.login_outlined,
                         color: AppColor.dark_text,
                       ),
-                      const SizedBox(
-                        width: 5,
+                       SizedBox(
+                        width: Dimens.five,
                       ),
-                      const Text(
+                       Text(
                         AppString.logout,
-                        style: const TextStyle(
-                          fontSize: 18,
+                        style:  TextStyle(
+                          fontSize: Dimens.eighteen,
                           color: AppColor.dark_text,
                           fontWeight: FontWeight.w600,
                         ),
@@ -178,7 +181,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   _implementLocalDb() async {
     String defaultMall = await SessionManager.getDefaultMall();
     List<RewardsCategory> _serviceList =
-        await ProfileDatabaseHelper.getRewardsCategories(
+        await ProfileDatabaseHelper.getLoyaltyData(
       databasePath: defaultMall,
     );
 

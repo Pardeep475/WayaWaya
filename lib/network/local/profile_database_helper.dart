@@ -505,7 +505,8 @@ class ProfileDatabaseHelper {
       final String campaignType,
       final String searchText,
       final String rid,
-      final String publishDate}) async {
+      final String publishDate,
+      final String categoryId}) async {
     debugPrint('database_testing:-  database path $databasePath');
     if (_db == null) {
       await initDataBase(databasePath);
@@ -530,15 +531,39 @@ class ProfileDatabaseHelper {
 
     // whereClause += " AND publish_date <= '" + publish_date + "'";
 
-    String query = "SELECT *, '' as shop_name FROM " +
-        AppString.CAMPAIGN_TABLE_NAME +
-        " " +
-        whereClause +
-        searchQueryCondition +
-        offerForRetailUnitCondition +
-        " ORDER BY " +
-        'start_date' +
-        " ASC";
+    String query = "";
+
+    if (categoryId == null) {
+      query = "SELECT *, '' as shop_name FROM " +
+          AppString.CAMPAIGN_TABLE_NAME +
+          " " +
+          whereClause +
+          searchQueryCondition +
+          offerForRetailUnitCondition +
+          " ORDER BY " +
+          'start_date' +
+          " ASC";
+    } else {
+      query = "SELECT *, '' as shop_name FROM campaign " +
+          whereClause +
+          " AND (voucher LIKE '%\"is_coupon\": true%' or voucher LIKE '%\"is_coupon\":true%') AND (" +
+          'campaign_element' +
+          " LIKE '%\"category_id\":" +
+          "\"" +
+          categoryId +
+          "\"%' or " +
+          'campaign_element' +
+          " LIKE '%\"category_id\": " +
+          "\"" +
+          categoryId +
+          "\"%')" +
+          " ORDER BY " +
+          'start_date' +
+          " ASC";
+    }
+
+    debugPrint('query_campaign:-  $query');
+
 
     List<Map> data;
 
@@ -794,6 +819,41 @@ class ProfileDatabaseHelper {
       });
       // _allSearchList.sort((a, b) => a.name.compareTo(b.name));
       return _rewardsCategory;
+    } catch (e) {
+      debugPrint('error:- database :-  $e');
+    }
+    return [];
+  }
+
+  static Future getLoyaltyData({
+    String databasePath,
+  }) async {
+    if (_db == null) {
+      await initDataBase(databasePath);
+    }
+
+    try {
+      List<Map> data = [];
+
+      String query =
+          "SELECT timestamp, SUM( points ) as total_month_point , strftime(\"%m\", timestamp ) as 'month'" +
+              " FROM loyalty group by strftime(\"%m-%Y\", timestamp ) " +
+              " ORDER BY timestamp DESC";
+
+      debugPrint('query_is :-    $query');
+
+      await _db.transaction((txn) async {
+        data = await txn.rawQuery(query);
+      });
+
+      debugPrint('database_testing:-  all search  ${data.length}');
+      debugPrint('$data');
+      // List<RewardsCategory> _rewardsCategory = [];
+      // data.forEach((element) {
+      //   _rewardsCategory.add(RewardsCategory.fromJson(element));
+      // });
+      // _allSearchList.sort((a, b) => a.name.compareTo(b.name));
+      // return _rewardsCategory;
     } catch (e) {
       debugPrint('error:- database :-  $e');
     }

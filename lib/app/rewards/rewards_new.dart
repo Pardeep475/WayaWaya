@@ -118,43 +118,39 @@ class _RewardsBrowserState extends State<RewardsBrowser> {
                                     Positioned.fill(
                                       child: RotatedBox(
                                         quarterTurns: -1,
-                                        child: GestureDetector(
-                                          onTap: () {},
-                                          child:
-                                              ListWheelScrollView.useDelegate(
-                                            itemExtent: itemWidth,
-                                            controller: _controller,
-                                            squeeze: 1,
-                                            onSelectedItemChanged: (val) {
-                                              _rewardsBloc
-                                                  .updateRewardsCategory(val);
-                                              _rewardsBloc
-                                                  .titleRewardsCategorySink
-                                                  .add(snapshot
-                                                      .data[val].name);
-                                            },
-                                            childDelegate:
-                                                ListWheelChildLoopingListDelegate(
-                                              children: List<Widget>.generate(
-                                                snapshot.data != null &&
-                                                        snapshot
-                                                            .data.isNotEmpty
-                                                    ? snapshot.data.length
-                                                    : 8,
-                                                (index) => Center(
-                                                  child: RotatedBox(
-                                                    quarterTurns: 1,
-                                                    child: ItemCategoryOval(
-                                                      index: index,
-                                                      rewardsCategory: snapshot
-                                                                      .data !=
-                                                                  null &&
-                                                              snapshot.data
-                                                                  .isNotEmpty
-                                                          ? snapshot
-                                                              .data[index]
-                                                          : null,
-                                                    ),
+                                        child: ListWheelScrollView.useDelegate(
+                                          itemExtent: itemWidth,
+                                          controller: _controller,
+                                          onSelectedItemChanged: (val) {
+                                            _rewardsBloc
+                                                .fetchRewardsListByCategory(
+                                                    snapshot.data[val].categoryId);
+
+                                            _rewardsBloc
+                                                .updateRewardsCategory(val);
+                                            _rewardsBloc
+                                                .titleRewardsCategorySink
+                                                .add(snapshot.data[val].name);
+                                          },
+                                          childDelegate:
+                                              ListWheelChildLoopingListDelegate(
+                                            children: List<Widget>.generate(
+                                              snapshot.data != null &&
+                                                      snapshot.data.isNotEmpty
+                                                  ? snapshot.data.length
+                                                  : 8,
+                                              (index) => Center(
+                                                child: RotatedBox(
+                                                  quarterTurns: 1,
+                                                  child: ItemCategoryOval(
+                                                    index: index,
+                                                    rewardsCategory:
+                                                        snapshot.data != null &&
+                                                                snapshot.data
+                                                                    .isNotEmpty
+                                                            ? snapshot
+                                                                .data[index]
+                                                            : null,
                                                   ),
                                                 ),
                                               ),
@@ -206,8 +202,7 @@ class _RewardsBrowserState extends State<RewardsBrowser> {
                                   // });
                                   return SliverFillRemaining(
                                     child: Container(
-                                      width:
-                                          MediaQuery.of(context).size.width,
+                                      width: MediaQuery.of(context).size.width,
                                       color: Colors.transparent,
                                       height:
                                           MediaQuery.of(context).size.height,
@@ -225,14 +220,11 @@ class _RewardsBrowserState extends State<RewardsBrowser> {
                                         delegate: SliverChildBuilderDelegate(
                                           (context, index) => ItemRewards(
                                             index: index,
-                                            campaign:
-                                                snapshot.data.data[index],
-                                            listOfCampaign:
-                                                snapshot.data.data,
+                                            campaign: snapshot.data.data[index],
+                                            listOfCampaign: snapshot.data.data,
                                             size: snapshot.data.data.length,
                                           ),
-                                          childCount:
-                                              snapshot.data.data.length,
+                                          childCount: snapshot.data.data.length,
                                         ),
                                       );
                                     }
@@ -241,21 +233,18 @@ class _RewardsBrowserState extends State<RewardsBrowser> {
                                 case Status.ERROR:
                                   {
                                     // Navigator.pop(context);
-                                    Future.delayed(
-                                        Duration(milliseconds: 100), () {
+                                    Future.delayed(Duration(milliseconds: 100),
+                                        () {
                                       _showErrorDialog(
                                         icon: Icon(
-                                          FontAwesomeIcons
-                                              .exclamationTriangle,
+                                          FontAwesomeIcons.exclamationTriangle,
                                           color: AppColor.orange_500,
                                         ),
                                         title: AppString.login.toUpperCase(),
                                         content: AppString
                                             .check_your_internet_connectivity,
-                                        buttonText:
-                                            AppString.ok.toUpperCase(),
-                                        onPressed: () =>
-                                            Navigator.pop(context),
+                                        buttonText: AppString.ok.toUpperCase(),
+                                        onPressed: () => Navigator.pop(context),
                                       );
                                     });
                                   }
