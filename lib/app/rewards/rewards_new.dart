@@ -124,7 +124,8 @@ class _RewardsBrowserState extends State<RewardsBrowser> {
                                           onSelectedItemChanged: (val) {
                                             _rewardsBloc
                                                 .fetchRewardsListByCategory(
-                                                    snapshot.data[val].categoryId);
+                                                    snapshot
+                                                        .data[val].categoryId);
 
                                             _rewardsBloc
                                                 .updateRewardsCategory(val);
@@ -216,15 +217,22 @@ class _RewardsBrowserState extends State<RewardsBrowser> {
                                     if (snapshot.data.data.isEmpty) {
                                       return NoRewardsAvailable();
                                     } else {
-                                      return SliverList(
-                                        delegate: SliverChildBuilderDelegate(
-                                          (context, index) => ItemRewards(
-                                            index: index,
-                                            campaign: snapshot.data.data[index],
-                                            listOfCampaign: snapshot.data.data,
-                                            size: snapshot.data.data.length,
+                                      return SliverPadding(
+                                        padding: EdgeInsets.only(
+                                            bottom: Dimens.forty),
+                                        sliver: SliverList(
+                                          delegate: SliverChildBuilderDelegate(
+                                            (context, index) => ItemRewards(
+                                              index: index,
+                                              campaign:
+                                                  snapshot.data.data[index],
+                                              listOfCampaign:
+                                                  snapshot.data.data,
+                                              size: snapshot.data.data.length,
+                                            ),
+                                            childCount:
+                                                snapshot.data.data.length,
                                           ),
-                                          childCount: snapshot.data.data.length,
                                         ),
                                       );
                                     }

@@ -283,6 +283,26 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       fontSize: Dimens.sixteen,
                     ),
                   ),
+                  Container(
+                    width: 35,
+                    child: Radio(
+                      value: 2,
+                      groupValue: snapshot.data,
+                      onChanged: (newValue) {
+                        debugPrint('radio_button_click:-   $newValue');
+                        _groupValue = newValue;
+                        _signUpBloc.genderSink.add(_groupValue);
+                      },
+                      activeColor: AppColor.colored_text,
+                    ),
+                  ),
+                  const Text(
+                    AppString.m,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w400,
+                      fontSize: 14,
+                    ),
+                  ),
                 ],
               );
             }),
@@ -531,7 +551,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         autofocus: false,
         controller: _phoneController,
         validator: (value) {
-          if (value.isEmpty && value.length != 10) {
+          if (value.isEmpty || value.length != 10) {
             return AppString.enter_your_cell_number;
           } else {
             return null;
@@ -917,6 +937,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
       gender = AppString.USER_GENDER_MALE;
     } else if (_groupValue == 1) {
       gender = AppString.USER_GENDER_FEMALE;
+    } else if (_groupValue == 2) {
+      gender = AppString.USER_GENDER_UKNOWN;
     } else {
       gender = "unknown";
     }

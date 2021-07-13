@@ -56,7 +56,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
                         return SliverList(
                           delegate: SliverChildBuilderDelegate(
-                            (BuildContext context, int index) {
+                                (BuildContext context, int index) {
                               return CustomSettingsCard(
                                 settingsModel: snapshot.data[index],
                                 onPressed: (value) {
@@ -87,7 +87,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   fontSize: 16,
                 ),
               ),
-               SizedBox(
+              SizedBox(
                 height: Dimens.five,
               ),
               InkWell(
@@ -95,8 +95,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 child: Container(
                   color: white,
                   margin:
-                      const EdgeInsets.symmetric(horizontal: 5),
-                  padding: EdgeInsets.only(top: Dimens.fifteen,bottom: Dimens.twenty),
+                  const EdgeInsets.symmetric(horizontal: 5),
+                  padding: EdgeInsets.only(
+                      top: Dimens.fifteen, bottom: Dimens.twenty),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -104,12 +105,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         Icons.login_outlined,
                         color: AppColor.dark_text,
                       ),
-                       SizedBox(
+                      SizedBox(
                         width: Dimens.five,
                       ),
-                       Text(
+                      Text(
                         AppString.logout,
-                        style:  TextStyle(
+                        style: TextStyle(
                           fontSize: Dimens.eighteen,
                           color: AppColor.dark_text,
                           fontWeight: FontWeight.w600,
@@ -168,11 +169,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
       case AppString.term_and_conditions:
         {
           debugPrint('settings_click_testing:-  ${settingsModel.title}');
-          _settingsBloc.termAndConditionOnClick(context);
+          // _settingsBloc.termAndConditionOnClick(context);
           // _implementLocalDb();
-
-          // _settingsBloc.syncCampaign(0);
-
+          _settingsBloc.syncCampaign(0);
           break;
         }
     }
@@ -181,7 +180,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   _implementLocalDb() async {
     String defaultMall = await SessionManager.getDefaultMall();
     List<RewardsCategory> _serviceList =
-        await ProfileDatabaseHelper.getLoyaltyData(
+    await ProfileDatabaseHelper.getLoyaltyData(
       databasePath: defaultMall,
     );
 

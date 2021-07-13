@@ -1,14 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:wayawaya/app/shop/model/retail_with_category.dart';
+import 'package:wayawaya/common/model/mall_profile_model.dart';
 import 'package:wayawaya/network/live/database_helper.dart';
+import 'package:wayawaya/network/local/super_admin_database_helper.dart';
 import 'package:wayawaya/utils/session_manager.dart';
 import 'profile_database_helper.dart';
 
 class SyncService {
   // make it singleton class
-  SyncService._privateConstructor();
-  static final SyncService instance = SyncService._privateConstructor();
-  static SyncService _database;
+  static final SyncService _syncService = SyncService._internal();
+
+  factory SyncService() {
+    return _syncService;
+  }
+
+  SyncService._internal();
+
+  static syncAllMallData() async {
+    List<MallProfileModel> _allMallData =
+        await SuperAdminDatabaseHelper.getAllVenueProfile();
+    _allMallData.forEach((element) async {
+      debugPrint('All_Mall_Data:-  ${element.name}');
+      await DataBaseHelperCommon.insertAllMalls(element.toJson());
+    });
+
+    int _allMallsCount = await DataBaseHelperCommon.getAllMallsLength();
+    debugPrint('all_malls_count:-   $_allMallsCount');
+  }
 
   static syncRetailUnit() async {
     DataBaseHelperCommon.getRetailUnitLength();
@@ -22,7 +40,8 @@ class SyncService {
             categoryId: '',
             favourite: 0);
 
-    debugPrint('retail_unit_common_count:-   ${_retailWithCategoryList.length}');
+    debugPrint(
+        'retail_unit_common_count:-   ${_retailWithCategoryList.length}');
 
     // try {
     //   _retailWithCategoryList.forEach((element) async {
@@ -48,4 +67,5 @@ class SyncService {
     // debugPrint('retail_unit_common_count:-   $_retailUnitCount');
   }
 
+  static syncCampaign() async {}
 }

@@ -11,6 +11,7 @@ import 'package:wayawaya/models/retail_unit/retail_unit_wrapper.dart';
 import 'package:wayawaya/network/live/repository/api_repository.dart';
 import 'package:wayawaya/network/local/profile_database_helper.dart';
 import 'package:wayawaya/network/local/super_admin_database_helper.dart';
+import 'package:wayawaya/network/local/sync_service.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/session_manager.dart';
 
@@ -89,50 +90,52 @@ class SettingsBloc {
   }
 
   syncCampaign(int page) async {
-    String defaultMall = await SessionManager.getDefaultMall();
-    OmniChannelItemModel _omniChannelItemModel =
-        await ProfileDatabaseHelper.getActiveOmniChannel(
-      databasePath: defaultMall,
-    );
-    debugPrint("omni_channel_item_model :-       ${_omniChannelItemModel.oid}");
+    SyncService.syncAllMallData();
 
-    String authorization = await SessionManager.getAuthHeader();
-    String lastUpdate = '2020-07-02 01:01:11';
-
-    Map<String, dynamic> campaignQuery = {
-      "page": page.toString(),
-      "sort": "-_updated",
-      "enable": true,
-      "where":
-          "{\"campaign_channels.omni_channel_id\":{\"\$elemMatch\":{\"\$eq\":\"" +
-              _omniChannelItemModel.oid +
-              "\"}}}",
-    };
-    // Map<String, String> campaignQuery = {
+    // String defaultMall = await SessionManager.getDefaultMall();
+    // OmniChannelItemModel _omniChannelItemModel =
+    //     await ProfileDatabaseHelper.getActiveOmniChannel(
+    //   databasePath: defaultMall,
+    // );
+    // debugPrint("omni_channel_item_model :-       ${_omniChannelItemModel.oid}");
+    //
+    // String authorization = await SessionManager.getAuthHeader();
+    // String lastUpdate = '2020-07-02 01:01:11';
+    //
+    // Map<String, dynamic> campaignQuery = {
     //   "page": page.toString(),
     //   "sort": "-_updated",
-    //   "where": "{\"_updated\":{\"\$gt\": \"" + lastUpdate + "\"}}",
+    //   "enable": true,
+    //   "where":
+    //       "{\"campaign_channels.omni_channel_id\":{\"\$elemMatch\":{\"\$eq\":\"" +
+    //           _omniChannelItemModel.oid +
+    //           "\"}}}",
     // };
-
-    debugPrint("campaignQuery :-       $campaignQuery");
-
-    try {
-      dynamic data = await _repository.fetchCampaignApiRepository(
-          authorization: authorization, map: campaignQuery);
-      // dynamic data = await _repository.fetchCampaignApiRepository(authorization: authorization);
-      debugPrint("campaign_settings:-  success $data");
-
-      // RetailUnitWrapper _retailUnitWrapper = RetailUnitWrapper.fromJson(data.data);
-      // debugPrint("campaign_settings:-  success ${_retailUnitWrapper.items.length}");
-
-    } catch (e) {
-      debugPrint('error_settings:-    $e');
-    }
-
-    // if (campaignIds != null) {
-
-    // campaignQuery.put("_id", "{\"$in\":" + String.valueOf(campaignIds) + "}");
-
+    // // Map<String, String> campaignQuery = {
+    // //   "page": page.toString(),
+    // //   "sort": "-_updated",
+    // //   "where": "{\"_updated\":{\"\$gt\": \"" + lastUpdate + "\"}}",
+    // // };
+    //
+    // debugPrint("campaignQuery :-       $campaignQuery");
+    //
+    // try {
+    //   dynamic data = await _repository.fetchCampaignApiRepository(
+    //       authorization: authorization, map: campaignQuery);
+    //   // dynamic data = await _repository.fetchCampaignApiRepository(authorization: authorization);
+    //   debugPrint("campaign_settings:-  success $data");
+    //
+    //   // RetailUnitWrapper _retailUnitWrapper = RetailUnitWrapper.fromJson(data.data);
+    //   // debugPrint("campaign_settings:-  success ${_retailUnitWrapper.items.length}");
+    //
+    // } catch (e) {
+    //   debugPrint('error_settings:-    $e');
     // }
+    //
+    // // if (campaignIds != null) {
+    //
+    // // campaignQuery.put("_id", "{\"$in\":" + String.valueOf(campaignIds) + "}");
+    //
+    // // }
   }
 }

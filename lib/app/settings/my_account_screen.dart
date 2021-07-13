@@ -156,6 +156,9 @@ class _MyAccountScreenState extends State<MyAccountScreen> {
       } else {
         if (_myAccountBloc.fetchGender == AppString.USER_GENDER_MALE) {
           _myAccountBloc.genderSink.add(0);
+        }
+        if (_myAccountBloc.fetchGender == AppString.USER_GENDER_UKNOWN) {
+          _myAccountBloc.genderSink.add(2);
         } else {
           _myAccountBloc.genderSink.add(1);
         }
@@ -209,6 +212,26 @@ class _MyAccountScreenState extends State<MyAccountScreen> {
                   ),
                   const Text(
                     AppString.ms,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w400,
+                      fontSize: 14,
+                    ),
+                  ),
+                  Container(
+                    width: 35,
+                    child: Radio(
+                      value: 2,
+                      groupValue: snapshot.data,
+                      onChanged: (newValue) {
+                        debugPrint('radio_button_click:-   $newValue');
+                        _groupValue = newValue;
+                        _myAccountBloc.genderSink.add(_groupValue);
+                      },
+                      activeColor: AppColor.colored_text,
+                    ),
+                  ),
+                  const Text(
+                    AppString.m,
                     style: const TextStyle(
                       fontWeight: FontWeight.w400,
                       fontSize: 14,
@@ -387,7 +410,7 @@ class _MyAccountScreenState extends State<MyAccountScreen> {
         autofocus: false,
         controller: _phoneController,
         validator: (value) {
-          if (value.isEmpty && value.length != 10) {
+          if (value.isEmpty || value.length != 10) {
             return AppString.enter_your_cell_number;
           } else {
             return null;
@@ -590,9 +613,12 @@ class _MyAccountScreenState extends State<MyAccountScreen> {
       gender = AppString.USER_GENDER_MALE;
     } else if (_groupValue == 1) {
       gender = AppString.USER_GENDER_FEMALE;
+    } else if (_groupValue == 2) {
+      gender = AppString.USER_GENDER_UKNOWN;
     } else {
       gender = "unknown";
     }
+
     return gender;
   }
 
