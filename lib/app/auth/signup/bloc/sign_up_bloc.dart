@@ -75,6 +75,7 @@ class SignUpBloc {
         fetchUserDetails(
           differ: 'USER_DETAILS',
           userId: signUpModel.userName,
+          gender: signUpModel.title,
         );
         // signUpSink.add(ApiResponse.completed(ErrorResponse(differ: differ)));
       }
@@ -105,7 +106,7 @@ class SignUpBloc {
     }
   }
 
-  fetchUserDetails({String userId, String differ}) async {
+  fetchUserDetails({String userId, String differ, String gender}) async {
     // , data: '{"devices":["OPPO~^CPH1911~^ANDROID10"]}', map: map
     try {
       String authToken = await SessionManager.getJWTToken();
@@ -131,7 +132,7 @@ class SignUpBloc {
           debugPrint("testing__:-   ${user.response.data['message']}");
         }
       } else {
-        loginSuccess(user, differ);
+        loginSuccess(user, differ, gender);
       }
     } catch (e) {
       debugPrint("error_in_login_api:-  $e");
@@ -167,7 +168,7 @@ class SignUpBloc {
     _signUpController?.close();
   }
 
-  void loginSuccess(user, differ) async {
+  void loginSuccess(user, differ, gender) async {
     try {
       String accessToken = await SessionManager.getJWTToken();
 
@@ -180,7 +181,7 @@ class SignUpBloc {
             ? null
             : user.data['user_name'].toString(),
         userId: user.data['_id'] == null ? null : user.data['_id'].toString(),
-        gender: user.data[''] == null ? null : user.data[''].toString(),
+        gender: gender,
         dob: user.data['date_of_birth'] == null
             ? null
             : user.data['date_of_birth'].toString(),

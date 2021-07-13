@@ -207,6 +207,14 @@ class LoginBloc {
     try {
       String accessToken = await SessionManager.getJWTToken();
 
+      String userData = await SessionManager.getUserData();
+      UserDataResponse _response = userDataResponseFromJson(userData);
+
+      String gender = AppString.USER_GENDER_MALE;
+      if (_response != null && _response.gender != null) {
+        gender = _response.gender;
+      }
+
       UserDataResponse userDataResponse = UserDataResponse(
         accessToken: accessToken,
         lastName: user.data['last_name'] == null
@@ -216,7 +224,7 @@ class LoginBloc {
             ? null
             : user.data['user_name'].toString(),
         userId: user.data['_id'] == null ? null : user.data['_id'].toString(),
-        gender: user.data[''] == null ? null : user.data[''].toString(),
+        gender: user.data['title'] == null ? gender : user.data['title'],
         dob: user.data['date_of_birth'] == null
             ? null
             : user.data['date_of_birth'].toString(),
@@ -274,9 +282,6 @@ class LoginBloc {
       );
       SessionManager.setUserData(userDataResponseToJson(userDataResponse));
 
-      String userData = await SessionManager.getUserData();
-      UserDataResponse response = userDataResponseFromJson(userData);
-      debugPrint('login_response_tesing:-  ${response.email}');
       loginSink.add(ApiResponse.completed(ErrorResponse(differ: differ)));
     } catch (e) {
       debugPrint("login_success_testing:-  error $e");

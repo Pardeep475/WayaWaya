@@ -117,22 +117,22 @@ class ItemOfferView extends StatelessWidget {
                       },
                     ),
                   ),
-                  Positioned(
-                    left: Dimens.ten,
-                    top: Dimens.five,
-                    child: ShapeOfView(
-                      elevation: Dimens.three,
-                      shape: StarShape(noOfPoints: 5),
-                      child: Container(
-                        color: AppColor.yellow,
-                        padding: EdgeInsets.all(Dimens.twenty),
-                        child: Text(
-                          _startText(),
-                          style: TextStyle(color: AppColor.white, fontSize: 14),
-                        ),
-                      ),
-                    ),
-                  ),
+                  // Positioned(
+                  //   left: Dimens.ten,
+                  //   top: Dimens.five,
+                  //   child: ShapeOfView(
+                  //     elevation: Dimens.three,
+                  //     shape: StarShape(noOfPoints: 5),
+                  //     child: Container(
+                  //       color: AppColor.yellow,
+                  //       padding: EdgeInsets.all(Dimens.twenty),
+                  //       child: Text(
+                  //         _startText(),
+                  //         style: TextStyle(color: AppColor.white, fontSize: 14),
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
                 ],
               ),
             ),

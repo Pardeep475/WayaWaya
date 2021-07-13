@@ -61,6 +61,8 @@ class SettingsBloc {
     dynamic mallData = await SessionManager.getSmallDefaultMallData();
     dynamic value = json.decode(mallData);
     dynamic tAcUrl = value['terms_and_conditions_url'][0]['text'];
+    // String termAndCondition =
+    //     new Uri.dataFromString(tAcUrl, mimeType: 'text/html').toString();
     Navigator.push(
       context,
       FullScreenPrivacyPolicyDialog(

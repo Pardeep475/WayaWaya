@@ -150,6 +150,16 @@ class _MyAccountScreenState extends State<MyAccountScreen> {
       _lastNameController.text = _myAccountBloc.fetchLastName;
       _dobController.text = _myAccountBloc.fetchDateOfBirth;
       _phoneController.text = _myAccountBloc.fetchPhoneNumber;
+      if (_myAccountBloc.fetchGender == null ||
+          _myAccountBloc.fetchGender.isEmpty) {
+        _myAccountBloc.genderSink.add(0);
+      } else {
+        if (_myAccountBloc.fetchGender == AppString.USER_GENDER_MALE) {
+          _myAccountBloc.genderSink.add(0);
+        } else {
+          _myAccountBloc.genderSink.add(1);
+        }
+      }
     });
   }
 
@@ -377,11 +387,11 @@ class _MyAccountScreenState extends State<MyAccountScreen> {
         autofocus: false,
         controller: _phoneController,
         validator: (value) {
-          // if (value.isEmpty) {
-          //   return AppString.enter_your_cell_number;
-          // } else {
-          return null;
-          // }
+          if (value.isEmpty && value.length != 10) {
+            return AppString.enter_your_cell_number;
+          } else {
+            return null;
+          }
         },
         decoration: const InputDecoration(
           labelText: AppString.cell_number,
@@ -414,6 +424,8 @@ class _MyAccountScreenState extends State<MyAccountScreen> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
+      top: false,
+      bottom: false,
       child: Stack(
         children: [
           Scaffold(
@@ -454,37 +466,29 @@ class _MyAccountScreenState extends State<MyAccountScreen> {
                     ],
                   );
                 }),
-            bottomNavigationBar: Container(
-              height: 200,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
+            bottomNavigationBar: InkWell(
+              onTap: () {
+                _updateUserInfo();
+                // return successDialog();
+              },
+              child: Wrap(
                 children: [
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 5),
-                    child: InkWell(
-                      onTap: () {
-                        _updateUserInfo();
-                        // return successDialog();
-                      },
-                      child: Card(
-                        shadowColor: AppColor.white,
-                        child: Container(
-                          height: 50,
-                          child: Center(
-                            child: Text(
-                              AppString.save.toUpperCase(),
-                              style: const TextStyle(
-                                color: AppColor.dark_text,
-                                fontSize: 17,
-                              ),
-                            ),
+                  Card(
+                    shadowColor: AppColor.white,
+                    margin: EdgeInsets.all(0),
+                    child: Container(
+                      padding: EdgeInsets.only(
+                          top: Dimens.twenty, bottom: Dimens.thirty),
+                      child: Center(
+                        child: Text(
+                          AppString.save.toUpperCase(),
+                          style: const TextStyle(
+                            color: AppColor.dark_text,
+                            fontSize: 17,
                           ),
                         ),
                       ),
                     ),
-                  ),
-                  const SizedBox(
-                    height: 25,
                   ),
                 ],
               ),

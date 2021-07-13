@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:wayawaya/common/bloc/web_view_bloc.dart';
 
 // import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
@@ -10,8 +12,6 @@ import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/dimens.dart';
 import 'package:webview_flutter/platform_interface.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-
-
 
 class FullScreenPrivacyPolicyDialog extends ModalRoute<bool> {
   final Completer<WebViewController> _controller =
@@ -60,6 +60,23 @@ class FullScreenPrivacyPolicyDialog extends ModalRoute<bool> {
   }
 
   Widget _buildOverlayContent(BuildContext context) {
+    String webViewUrl = Uri.dataFromString(this.url,
+        mimeType: 'text/html', parameters: {'charset': 'utf-8'}).toString();
+    debugPrint('webViewUrl:-    ${this.url}');
+    bool isHtml = false;
+    String finalLink = '';
+    if (webViewUrl.contains('http')) {
+      isHtml = false;
+      finalLink = this.url;
+    } else {
+      isHtml = true;
+      finalLink = Uri.dataFromString(
+        this.url,
+        mimeType: 'text/html',
+        encoding: Encoding.getByName('utf-8'),
+      ).toString();
+    }
+
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Container(
@@ -90,17 +107,18 @@ class FullScreenPrivacyPolicyDialog extends ModalRoute<bool> {
             Expanded(
               child: Stack(
                 children: [
-                  WebView(
-                    initialUrl:
-                        Uri.dataFromString(this.url, mimeType: 'text/html',parameters: { 'charset': 'utf-8' }).toString()
-                                 ??
-                            AppString.PRIVACY_POLICY_URL,
+                  isHtml ? SingleChildScrollView(child: Html(data: this.url,),) :WebView(
+                    initialUrl: this.url ?? AppString.PRIVACY_POLICY_URL,
+                    userAgent: "random",
                     javascriptMode: JavascriptMode.unrestricted,
                     onWebResourceError: (WebResourceError error) {
                       print("WebView_error:- $error");
                     },
                     onWebViewCreated: (WebViewController webViewController) {
                       _controller.complete(webViewController);
+                      webViewController.clearCache();
+                      final cookieManager = CookieManager();
+                      cookieManager.clearCookies();
                     },
                     onProgress: (int progress) {
                       print("WebView is loading (progress : $progress%)");
@@ -143,7 +161,7 @@ class FullScreenPrivacyPolicyDialog extends ModalRoute<bool> {
                   //     ),
                   //   ),
                   // ),
-                  StreamBuilder<bool>(
+                  isHtml ? SizedBox():StreamBuilder<bool>(
                       stream: _webViewBloc.webViewStream,
                       initialData: true,
                       builder: (context, snapshot) {

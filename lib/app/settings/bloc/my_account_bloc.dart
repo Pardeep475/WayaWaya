@@ -15,10 +15,9 @@ import 'package:wayawaya/utils/session_manager.dart';
 import 'package:wayawaya/utils/utils.dart';
 
 class MyAccountBloc {
-
   // ignore: close_sinks
   StreamController _mainMenuPermissionsController =
-  StreamController<List<MainMenuPermission>>();
+      StreamController<List<MainMenuPermission>>();
 
   StreamSink<List<MainMenuPermission>> get mainMenuPermissionSink =>
       _mainMenuPermissionsController.sink;
@@ -48,6 +47,7 @@ class MyAccountBloc {
   String _lastName = '';
   String _dateOfBirth = '';
   String _phoneNumber = '';
+  String _gender = '';
 
   final _repository = ApiRepository();
 
@@ -71,7 +71,7 @@ class MyAccountBloc {
 
   _setUpGender(UserDataResponse _response) {
     try {
-      // _firstName = _response.gender ?? '';
+      _gender = _response.gender ?? '';
     } catch (e) {
       debugPrint('account_testing:-  email $e');
     }
@@ -136,6 +136,8 @@ class MyAccountBloc {
   String get fetchDateOfBirth => _dateOfBirth;
 
   String get fetchPhoneNumber => _phoneNumber;
+
+  String get fetchGender => _gender;
 
   updateUserInfoApi(
       {BuildContext context, String userId, UpdateUserModel data}) async {
@@ -226,10 +228,9 @@ class MyAccountBloc {
   fetchMenuButtons() async {
     String defaultMall = await SessionManager.getDefaultMall();
     List<MainMenuPermission> itemList =
-    await SuperAdminDatabaseHelper.getMenuButtons(defaultMall);
+        await SuperAdminDatabaseHelper.getMenuButtons(defaultMall);
     debugPrint('main_menu_permission_testing:--   ${itemList.length}');
     mainMenuPermissionSink.add(itemList);
     return itemList;
   }
-
 }
