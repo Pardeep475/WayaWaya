@@ -35,7 +35,6 @@ class SelectPreferencesScreen extends StatefulWidget {
 }
 
 class _SelectPreferencesScreenState extends State<SelectPreferencesScreen> {
-  bool _lang = true;
   bool showMalls = false;
 
   TextStyle _title = GoogleFonts.encodeSansCondensed().copyWith(
@@ -44,78 +43,6 @@ class _SelectPreferencesScreenState extends State<SelectPreferencesScreen> {
     letterSpacing: 1.1,
     fontSize: 19,
   );
-  TextStyle _content = TextStyle(
-    color: Colors.grey[600],
-    fontSize: 15,
-    fontWeight: FontWeight.w500,
-  );
-
-  successDialog() {
-    showDialog(
-      context: context,
-      barrierDismissible: true,
-      builder: (_) => AlertDialog(
-        contentPadding: EdgeInsets.fromLTRB(20, 20, 20, 10),
-        content: Container(
-          height: 100,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                padding: EdgeInsets.only(right: 30),
-                child: Text(
-                  'Your preferences saved successfully.',
-                  style: TextStyle(
-                    color: Colors.grey[600],
-                    fontSize: 17,
-                  ),
-                ),
-              ),
-              Container(
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    TextButton(
-                      child: Text(
-                        'HOMEPAGE',
-                        style: TextStyle(
-                          color: black,
-                          fontSize: 15,
-                        ),
-                      ),
-                      onPressed: () {
-                        // Navigator.of(context).pop();
-                        // App.prefs
-                        //     .setBool('homeGestures', true)
-                        //     .whenComplete(() => App.pushTo(
-                        //   context: context,
-                        //   screen: HomeScreen(),
-                        // ));
-                      },
-                    ),
-                    TextButton(
-                      child: Text(
-                        'SETTINGS',
-                        style: TextStyle(
-                          color: black,
-                          fontSize: 15,
-                        ),
-                      ),
-                      onPressed: () {
-                        // Navigator.of(context).pop();
-                        // App.pushTo(context: context, screen: Settings());
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
 
   SelectPreferencesBloc _selectPreferencesBloc;
   NotificationModel _notificationModel;
@@ -150,6 +77,8 @@ class _SelectPreferencesScreenState extends State<SelectPreferencesScreen> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
+      top: false,
+      bottom: false,
       child: Scaffold(
         backgroundColor: bgColor,
         body: Stack(
@@ -164,7 +93,7 @@ class _SelectPreferencesScreenState extends State<SelectPreferencesScreen> {
                     floating: true,
                     pinned: true,
                     mainMenuPermissions: snapshot.data,
-                    physics: RangeMaintainingScrollPhysics(),
+                    physics: ClampingScrollPhysics(),
                     snap: true,
                     onSnowTap: () {
                       setState(() {
@@ -301,6 +230,7 @@ class _SelectPreferencesScreenState extends State<SelectPreferencesScreen> {
                                     ),
                                     ListView.builder(
                                       itemCount: snapshot.data.length,
+                                      padding: EdgeInsets.all(0),
                                       physics: NeverScrollableScrollPhysics(),
                                       shrinkWrap: true,
                                       itemBuilder: (_, index) {
@@ -332,6 +262,7 @@ class _SelectPreferencesScreenState extends State<SelectPreferencesScreen> {
                                     ),
                                     ListView.builder(
                                       itemCount: snapshot.data.length,
+                                      padding: EdgeInsets.all(0),
                                       physics: NeverScrollableScrollPhysics(),
                                       shrinkWrap: true,
                                       itemBuilder: (_, index) {
@@ -347,7 +278,7 @@ class _SelectPreferencesScreenState extends State<SelectPreferencesScreen> {
                       SliverToBoxAdapter(
                         child: Container(
                           width: App.width(context),
-                          margin: EdgeInsets.only(bottom: 3),
+                          margin: EdgeInsets.only(bottom: 30),
                           padding: EdgeInsets.symmetric(horizontal: 15),
                           child: Row(
                             children: [
