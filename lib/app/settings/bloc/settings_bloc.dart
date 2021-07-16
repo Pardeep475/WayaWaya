@@ -90,7 +90,9 @@ class SettingsBloc {
   }
 
   syncCampaign(int page) async {
-    SyncService.syncAllMallData();
+    await SyncService.syncAllMallData();
+
+    // await SyncService.fetchLoyaltyFromNetwork(0);
 
     // String defaultMall = await SessionManager.getDefaultMall();
     // OmniChannelItemModel _omniChannelItemModel =

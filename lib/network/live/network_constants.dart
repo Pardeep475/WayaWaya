@@ -10,9 +10,7 @@ class NetworkConstants {
 
   static const base_url = "https://api.omnistride.net/api/v1/";
 
-  static const base_url_image =
-      "res.cloudinary.com/intelipower/image/upload";
-
+  static const base_url_image = "res.cloudinary.com/intelipower/image/upload";
 
   // end points
   static const login_end_point = "accounts/guest";
@@ -25,5 +23,5 @@ class NetworkConstants {
   static const venue_me_end_point = "venues/me";
   static const retail_unit_end_point = "retailUnits";
   static const venues_end_point = "venues.php";
-
+  static const loyalty_transactions_end_point = "loyaltyTransactions";
 }
