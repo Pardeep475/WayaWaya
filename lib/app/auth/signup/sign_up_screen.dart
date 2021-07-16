@@ -940,7 +940,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     } else if (_groupValue == 2) {
       gender = AppString.USER_GENDER_UKNOWN;
     } else {
-      gender = "unknown";
+      gender = AppString.USER_GENDER_UKNOWN;
     }
     return gender;
   }

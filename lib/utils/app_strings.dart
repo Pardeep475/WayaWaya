@@ -78,10 +78,10 @@ class AppString {
   static const ok = "OK";
   static const mr = "Mr.";
   static const ms = "Ms.";
-  static const m = "M.";
+  static const m = "Unwilling to Specify";
   static const String USER_GENDER_MALE = "mr";
   static const String USER_GENDER_FEMALE = "ms";
-  static const String USER_GENDER_UKNOWN = "m";
+  static const String USER_GENDER_UKNOWN = "unknown";
   static const forgot_password = "Forgot password?";
   static const not_account_yet = "No account yet? Create one";
   static const enter_valid_email_address = "Enter valid email address";

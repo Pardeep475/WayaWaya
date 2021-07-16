@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:rotated_corner_decoration/rotated_corner_decoration.dart';
 import 'package:wayawaya/app/home/model/campaign_model.dart';
+import 'package:wayawaya/app/offers/model/detail_model.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_images.dart';
 import 'package:wayawaya/utils/app_strings.dart';
@@ -24,15 +25,17 @@ class CommonImageWidget extends StatelessWidget {
         if (tag.toUpperCase() == 'OFFER') {
           List<Campaign> _listOfCampaign = [];
           _listOfCampaign.add(campaign);
-          Navigator.pushNamedAndRemoveUntil(
-              context, AppString.OFFER_DETAILS_SCREEN_ROUTE, (route) => false,
-              arguments: _listOfCampaign);
+          DetailModel _detailModel =
+              DetailModel(listOfCampaign: _listOfCampaign, position: 0);
+          Navigator.pushNamed(context, AppString.OFFER_DETAILS_SCREEN_ROUTE,
+              arguments: _detailModel);
         } else if (tag.toUpperCase() == 'EVENT') {
           List<Campaign> _listOfCampaign = [];
           _listOfCampaign.add(campaign);
-          Navigator.pushNamedAndRemoveUntil(
-              context, AppString.EVENT_DETAILS_ROUTE, (route) => false,
-              arguments: _listOfCampaign);
+          DetailModel _detailModel =
+          DetailModel(listOfCampaign: _listOfCampaign, position: 0);
+          Navigator.pushNamed(context, AppString.EVENT_DETAILS_ROUTE,
+              arguments: _detailModel);
         }
       },
       child: Container(

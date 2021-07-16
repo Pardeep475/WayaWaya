@@ -198,7 +198,7 @@ class ItemRewards extends StatelessWidget {
     try {
       debugPrint('campaign_voucher:-   ${campaign.voucher}');
       dynamic voucherJson = jsonDecode(campaign.voucher);
-      int voucher = voucherJson['discount'];
+      int voucher = voucherJson['value'];
       if (voucher != null && voucher > 0) {
         return "$voucher Points";
       } else {

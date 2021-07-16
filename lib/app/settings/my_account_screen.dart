@@ -616,7 +616,7 @@ class _MyAccountScreenState extends State<MyAccountScreen> {
     } else if (_groupValue == 2) {
       gender = AppString.USER_GENDER_UKNOWN;
     } else {
-      gender = "unknown";
+      gender = AppString.USER_GENDER_UKNOWN;
     }
 
     return gender;

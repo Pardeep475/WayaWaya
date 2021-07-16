@@ -21,6 +21,10 @@ class _LoyaltyScreenState extends State<LoyaltyScreen> {
   void initState() {
     _loyaltyBloc = LoyaltyBloc();
     super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loyaltyBloc.setTotalBalance();
+    });
   }
 
   @override
