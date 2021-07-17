@@ -74,6 +74,20 @@ class Utils {
     }
   }
 
+
+   static String getStringFromDate(DateTime date, String format) {
+    String returnValue;
+    try {
+      DateFormat sdfmt2 = new DateFormat(format);
+      returnValue = sdfmt2.format(date);
+      return returnValue;
+    } catch (e) {
+
+    }
+
+    return "";
+  }
+
   static commonProgressDialog(BuildContext context) {
     showGeneralDialog(
       barrierColor: Colors.black.withOpacity(0.1),
@@ -380,5 +394,35 @@ class Utils {
     } catch (e) {
       return "";
     }
+  }
+
+  static DateTime firstDate() {
+    DateTime dt =
+        getDateOnStringParse(AppString.BUILD_TIME, AppString.DATE_FORMAT);
+    String date = getUTCDate(dt, AppString.DATE_FORMAT);
+    return getDateOnStringParse(date, AppString.DATE_FORMAT);
+  }
+
+  static String getUTCDate(DateTime dateTime, String format) {
+    var val = DateFormat(format).format(dateTime);
+    var offset = dateTime.timeZoneOffset;
+    var hours =
+        offset.inHours > 0 ? offset.inHours : 1; // For fixing divide by 0
+
+    if (!offset.isNegative) {
+      val = val +
+          "+" +
+          offset.inHours.toString().padLeft(2, '0') +
+          ":" +
+          (offset.inMinutes % (hours * 60)).toString().padLeft(2, '0');
+    } else {
+      val = val +
+          "-" +
+          (-offset.inHours).toString().padLeft(2, '0') +
+          ":" +
+          (offset.inMinutes % (hours * 60)).toString().padLeft(2, '0');
+    }
+    print(val);
+    return val;
   }
 }

@@ -3,7 +3,9 @@ import 'package:wayawaya/app/auth/login/model/user_model.dart';
 import 'package:wayawaya/app/auth/signup/model/sign_up_model.dart';
 import 'package:wayawaya/app/preferences/model/upload_preferences_model.dart';
 import 'package:wayawaya/app/settings/model/update_user_model.dart';
+import 'package:wayawaya/models/omni_channel_item_model/omni_channel_item_model.dart';
 import 'package:wayawaya/network/live/base/api_base_helper.dart';
+import 'package:wayawaya/network/local/profile_database_helper.dart';
 import 'package:wayawaya/utils/session_manager.dart';
 
 import '../network_constants.dart';
@@ -96,7 +98,7 @@ class ApiRepository {
 
     final response = await _apiProvider.get(
         url:
-            '${NetworkConstants.campaigns_end_point}?where ={"status": "approved", "_updated":{"\$gt":"2021-06-10 09:57:28"}, "campaign_channels.omni_channel_id":{"\$elemMatch":{"\$eq":"ec6f1eb8901b4f419e2e25e4fa55a3e0"}}}&enable=true',
+            '${NetworkConstants.campaigns_end_point}?where={"status": "approved", "_updated":{"\$gt":"2021-06-10 09:57:28"}, "campaign_channels.omni_channel_id":{"\$elemMatch":{"\$eq":"ec6f1eb8901b4f419e2e25e4fa55a3e0"}}}&enable=true',
         queryParams: map,
         authHeader: authorization);
     return response;
@@ -130,6 +132,50 @@ class ApiRepository {
       {String authorization, Map<String, dynamic> map}) async {
     final response = await _apiProvider.get(
         url: '${NetworkConstants.loyalty_transactions_end_point}',
+        authHeader: authorization);
+    return response;
+  }
+
+  Future<dynamic> refreshTokenApiRepository() async {
+    String refreshToken = await SessionManager.getRefreshToken();
+    String authorization = await SessionManager.getDefaultMall();
+    final response = await _apiProvider.get(
+        url: '${NetworkConstants.refreshTokens}$refreshToken',
+        authHeader: authorization);
+    return response;
+  }
+
+  Future<dynamic> getSyncStatus(String lastUpdate, int nextPageNo) async {
+    String authorization = await SessionManager.getDefaultMall();
+    OmniChannelItemModel _omniChannelItemModel =
+        await ProfileDatabaseHelper.getActiveOmniChannel(
+      databasePath: authorization,
+    );
+    String oid = _omniChannelItemModel.oid;
+    // Map<String, dynamic> syncQuery = {
+    //   "page": nextPageNo.toString(),
+    //   "sort": "_updated",
+    //   "where": "{\"_updated\":{\"\$gt\":\"" + lastUpdate ??
+    //       "" +
+    //           "\"},\"r\":{\"\$regex\":\"^.*/campaigns|/triggerZones|/retailUnits|/categories|/pois|/appSoftwareParameters\"},\"\$or\":[{\"c.campaign_channels.omni_channel_id\":{\"\$elemMatch\":{\"\$eq\":\"" +
+    //           oid +
+    //           "\"}}},{\"c.campaign_channels.omni_channel_id\":{\"\$exists\":false}}]}",
+    //   "image_url": "1",
+    //   "enable": true,
+    // };
+
+    String whereClause = "?where=" +
+            "{\"_updated\":{\"\$gt\":\"" +
+            lastUpdate ??
+        "" +
+            "\"},\"r\":{\"\$regex\":\"^.*/campaigns|/triggerZones|/retailUnits|/categories|/pois|/appSoftwareParameters\"},\"\$or\":[{\"c.campaign_channels.omni_channel_id\":{\"\$elemMatch\":{\"\$eq\":\"" +
+            oid +
+            "\"}}},{\"c.campaign_channels.omni_channel_id\":{\"\$exists\":false}}]}";
+
+    final response = await _apiProvider.get(
+        url:
+            '${NetworkConstants.lastUpdate}$whereClause&page=${nextPageNo.toString()}&sort=_updated&image_url=1&enable=true',
+        // queryParams: syncQuery,
         authHeader: authorization);
     return response;
   }

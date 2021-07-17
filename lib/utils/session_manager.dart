@@ -154,6 +154,14 @@ class SessionManager {
         .then((value) => value.getString(AppString.PREF_GUEST_USER_CATEGORIES));
   }
 
+  static void setSyncDate(String syncDate) async {
+    _pref.then((value) => value.setString(AppString.SYNC_DATE, syncDate));
+  }
+
+  static Future<String> getSyncDate() {
+    return _pref.then((value) => value.getString(AppString.SYNC_DATE));
+  }
+
   void clearAllData() {
     _pref.then((value) {
       value.clear();

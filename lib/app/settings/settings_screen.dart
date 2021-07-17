@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:wayawaya/app/common/menu/animate_app_bar.dart';
 import 'package:wayawaya/app/common/menu/model/main_menu_permission.dart';
-import 'package:wayawaya/app/rewards/model/rewards_categories.dart';
 import 'package:wayawaya/app/settings/model/settings_model.dart';
+import 'package:wayawaya/models/omni_channel_item_model/omni_channel_item_model.dart';
 import 'package:wayawaya/network/local/profile_database_helper.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_strings.dart';
@@ -56,7 +56,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
                         return SliverList(
                           delegate: SliverChildBuilderDelegate(
-                                (BuildContext context, int index) {
+                            (BuildContext context, int index) {
                               return CustomSettingsCard(
                                 settingsModel: snapshot.data[index],
                                 onPressed: (value) {
@@ -94,8 +94,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 onTap: _logoutButtonClick,
                 child: Container(
                   color: white,
-                  margin:
-                  const EdgeInsets.symmetric(horizontal: 5),
+                  margin: const EdgeInsets.symmetric(horizontal: 5),
                   padding: EdgeInsets.only(
                       top: Dimens.fifteen, bottom: Dimens.twenty),
                   child: Row(
@@ -179,13 +178,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   _implementLocalDb() async {
     String defaultMall = await SessionManager.getDefaultMall();
-    List<RewardsCategory> _serviceList =
-    await ProfileDatabaseHelper.getLoyaltyData(
+    OmniChannelItemModel _omniChannelItemModel =
+        await ProfileDatabaseHelper.getActiveOmniChannel(
       databasePath: defaultMall,
     );
-
-    _serviceList.forEach((element) {
-      debugPrint(' ${element.name}');
-    });
+    debugPrint('qwertyui ${_omniChannelItemModel.id}    \n   ${_omniChannelItemModel.oid}');
   }
 }

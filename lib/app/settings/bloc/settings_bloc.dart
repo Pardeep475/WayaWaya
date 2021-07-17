@@ -90,29 +90,29 @@ class SettingsBloc {
   }
 
   syncCampaign(int page) async {
-    await SyncService.syncAllMallData();
+    await SyncService.fetchAllSyncData();
 
     // await SyncService.fetchLoyaltyFromNetwork(0);
 
-    // String defaultMall = await SessionManager.getDefaultMall();
-    // OmniChannelItemModel _omniChannelItemModel =
-    //     await ProfileDatabaseHelper.getActiveOmniChannel(
-    //   databasePath: defaultMall,
-    // );
-    // debugPrint("omni_channel_item_model :-       ${_omniChannelItemModel.oid}");
+    String defaultMall = await SessionManager.getDefaultMall();
+    OmniChannelItemModel _omniChannelItemModel =
+        await ProfileDatabaseHelper.getActiveOmniChannel(
+      databasePath: defaultMall,
+    );
+    debugPrint("omni_channel_item_model :-       ${_omniChannelItemModel.oid}");
     //
-    // String authorization = await SessionManager.getAuthHeader();
-    // String lastUpdate = '2020-07-02 01:01:11';
-    //
-    // Map<String, dynamic> campaignQuery = {
-    //   "page": page.toString(),
-    //   "sort": "-_updated",
-    //   "enable": true,
-    //   "where":
-    //       "{\"campaign_channels.omni_channel_id\":{\"\$elemMatch\":{\"\$eq\":\"" +
-    //           _omniChannelItemModel.oid +
-    //           "\"}}}",
-    // };
+    String authorization = await SessionManager.getAuthHeader();
+    String lastUpdate = '2020-07-02 01:01:11';
+
+    Map<String, dynamic> campaignQuery = {
+      "page": page.toString(),
+      "sort": "-_updated",
+      "enable": true,
+      "where":
+          "{\"campaign_channels.omni_channel_id\":{\"\$elemMatch\":{\"\$eq\":\"" +
+              _omniChannelItemModel.oid +
+              "\"}}}",
+    };
     // // Map<String, String> campaignQuery = {
     // //   "page": page.toString(),
     // //   "sort": "-_updated",
@@ -122,10 +122,10 @@ class SettingsBloc {
     // debugPrint("campaignQuery :-       $campaignQuery");
     //
     // try {
-    //   dynamic data = await _repository.fetchCampaignApiRepository(
-    //       authorization: authorization, map: campaignQuery);
-    //   // dynamic data = await _repository.fetchCampaignApiRepository(authorization: authorization);
-    //   debugPrint("campaign_settings:-  success $data");
+      dynamic data = await _repository.fetchCampaignApiRepository(
+          authorization: authorization, map: campaignQuery);
+      // dynamic data = await _repository.fetchCampaignApiRepository(authorization: authorization);
+      debugPrint("campaign_settings:-  success $data");
     //
     //   // RetailUnitWrapper _retailUnitWrapper = RetailUnitWrapper.fromJson(data.data);
     //   // debugPrint("campaign_settings:-  success ${_retailUnitWrapper.items.length}");

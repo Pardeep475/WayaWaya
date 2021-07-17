@@ -4,10 +4,14 @@ import 'package:wayawaya/app/auth/login/model/user_data_response.dart';
 import 'package:wayawaya/common/model/mall_profile_model.dart';
 import 'package:wayawaya/network/local/database_helper.dart';
 import 'package:wayawaya/network/live/repository/api_repository.dart';
+import 'package:wayawaya/network/local/profile_database_helper.dart';
 import 'package:wayawaya/network/local/super_admin_database_helper.dart';
+import 'package:wayawaya/network/model/loyalty/loyalty_new.dart';
 import 'package:wayawaya/network/model/loyalty/loyalty_response.dart';
+import 'package:wayawaya/network/model/loyalty/loyalty_temp.dart';
+import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/session_manager.dart';
-import 'profile_database_helper.dart';
+import 'package:wayawaya/utils/utils.dart';
 
 class SyncService {
   // make it singleton class
@@ -20,6 +24,30 @@ class SyncService {
   SyncService._internal();
 
   static final _repository = ApiRepository();
+
+  static String lastUpdate;
+
+  static fetchAllSyncData() async{
+    await setSyncDateQuery();
+    await fetchUpdateData(1);
+  }
+
+  static setSyncDateQuery() async {
+    String syncDate = await SessionManager.getSyncDate();
+    if (syncDate != null) {
+      lastUpdate = syncDate;
+    } else {
+      lastUpdate = Utils.getStringFromDate(Utils.firstDate(), AppString.DATE_FORMAT);
+    }
+  }
+
+  static fetchUpdateData(int page) {
+    Utils.checkConnectivity().then((value) {
+      if (value != null && value) {
+        dynamic data = _repository.getSyncStatus(lastUpdate, page);
+      }
+    });
+  }
 
   static syncAllMallData() async {
     List<MallProfileModel> _allMallData =
@@ -73,35 +101,4 @@ class SyncService {
   }
 
   static syncCampaign() async {}
-
-  static syncLoyalty() async {}
-
-  static fetchLoyaltyFromNetwork(int page) async {
-    String authToken = await SessionManager.getJWTToken();
-    try {
-      String userData = await SessionManager.getUserData();
-      UserDataResponse _response = userDataResponseFromJson(userData);
-
-      Map<String, dynamic> loyaltyQuery = {
-        "page": page.toString(),
-        "sort": "-event_timestamp",
-        "enable": true,
-        "where": "{\"points\":{\"\$gt\":0},\"user_id\":\"" +
-            _response.userId +
-            "\"}",
-      };
-
-      dynamic _loyaltyData = await _repository.loyaltyApiRepository(
-          authorization: authToken, map: loyaltyQuery);
-      debugPrint("testing__:-  success $_loyaltyData");
-      if (_loyaltyData is DioError) {
-      } else {
-        LoyaltyResponse _loyaltyResponse =
-            LoyaltyResponse.fromJson(_loyaltyData.data);
-        debugPrint("testing__:-  success ${_loyaltyResponse.items.length}");
-      }
-    } catch (e) {
-      debugPrint("error_in_login_api:-  $e");
-    }
-  }
 }

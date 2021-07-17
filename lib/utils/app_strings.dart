@@ -40,9 +40,11 @@ class AppString {
       "PREF_GUEST_USER_FAVOURITE_MALL";
   static const String PREF_GUEST_USER_CURRENCY = "PREF_GUEST_USER_CURRENCY";
   static const String PREF_GUEST_USER_LANGUAGE = "PREF_GUEST_USER_LANGUAGE";
+  static const String SYNC_DATE = "SYNC_DATE";
 
   static const String DEVICE_SEPARATOR = "~^";
   static const String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
+  static const String BUILD_TIME = "2021-07-17 09:58:00";
   static const String DATE_FORMAT_UPDATE = "yyyy-MM-dd hh:mm:ss a";
   static const String DATE_FORMAT_WITHOUT_TIME = "yyyy-MM-dd 00:00:00";
   static const String STATE = "state";

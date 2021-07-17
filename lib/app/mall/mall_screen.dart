@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:wayawaya/common/model/mall_profile_model.dart';
+import 'package:wayawaya/models/omni_channel_item_model/omni_channel_item_model.dart';
+import 'package:wayawaya/network/local/profile_database_helper.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_images.dart';
 import 'package:wayawaya/utils/app_strings.dart';
@@ -62,23 +64,16 @@ class _MallScreenState extends State<MallScreen> {
                   },
                   itemBuilder: (_, index) {
                     return InkWell(
-                      onTap: () {
+                      onTap: () async{
                         SessionManager.setFirstTime(true);
                         SessionManager.setDefaultMall(
                             snapshot.data[index].identifier);
                         SessionManager.setAuthHeader(snapshot.data[index].key);
                         SessionManager.setSmallDefaultMallData(
                             snapshot.data[index].venue_data);
+
                         Navigator.pushReplacementNamed(
                             context, AppString.SPLASH_SCREEN_ROUTE);
-                        // App.prefs.setBool('defaultMall', true);
-                        // App.prefs.setString('selectedMall', getMallName(index).toString());
-                        // printR(App.prefs.getString('selectedMall').toString());
-                        // widget.onlyChangeMall ? Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
-                        //   builder: (_) => Splash(),
-                        // ), (route) => false) : Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
-                        //   builder: (_) => BackgroundScreen(),
-                        // ), (route) => false);
                       },
                       child: Container(
                         height: 125,

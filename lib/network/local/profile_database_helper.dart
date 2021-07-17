@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart' as path;
 import 'package:wayawaya/app/home/model/campaign_model.dart';
@@ -13,7 +14,12 @@ import 'package:wayawaya/app/shop/model/retail_unit_category.dart';
 import 'package:wayawaya/app/shop/model/retail_with_category.dart';
 import 'package:wayawaya/common/model/categories_model.dart';
 import 'package:wayawaya/models/omni_channel_item_model/omni_channel_item_model.dart';
+import 'package:wayawaya/network/model/loyalty/loyalty_points.dart';
+import 'package:wayawaya/network/model/loyalty/loyalty_response.dart';
+import 'package:wayawaya/network/model/loyalty/loyalty_temp.dart';
 import 'package:wayawaya/utils/app_strings.dart';
+
+import 'table/loyalty_table.dart';
 
 class ProfileDatabaseHelper {
   static final ProfileDatabaseHelper _profileDatabaseHelper =
@@ -564,7 +570,6 @@ class ProfileDatabaseHelper {
 
     debugPrint('query_campaign:-  $query');
 
-
     List<Map> data;
 
     await _db.transaction((txn) async {
@@ -825,7 +830,7 @@ class ProfileDatabaseHelper {
     return [];
   }
 
-  static Future getLoyaltyData({
+  static Future<List<LoyaltyTemp>> getLoyaltyData({
     String databasePath,
   }) async {
     if (_db == null) {
@@ -848,15 +853,102 @@ class ProfileDatabaseHelper {
 
       debugPrint('database_testing:-  all search  ${data.length}');
       debugPrint('$data');
-      // List<RewardsCategory> _rewardsCategory = [];
-      // data.forEach((element) {
-      //   _rewardsCategory.add(RewardsCategory.fromJson(element));
-      // });
-      // _allSearchList.sort((a, b) => a.name.compareTo(b.name));
-      // return _rewardsCategory;
+      List<LoyaltyTemp> _loyaltyTemp = [];
+      data.forEach((element) {
+        _loyaltyTemp.add(LoyaltyTemp.fromJson(element));
+      });
+      return _loyaltyTemp;
     } catch (e) {
       debugPrint('error:- database :-  $e');
     }
     return [];
   }
+
+  static Future<List<LoyaltyPoints>> getLoyaltyUserPoints({
+    String databasePath,
+  }) async {
+    if (_db == null) {
+      await initDataBase(databasePath);
+    }
+
+    try {
+      List<Map> data = [];
+
+      String query =
+          " SELECT Min(points) as redeemed, MAX(points) as total_points_earned,  (MAX(points) - Min(points)) as available_points FROM (\n" +
+              "SELECT transactions, SUM(points) as points FROM \n" +
+              "(\n" +
+              "SELECT CASE \n" +
+              "WHEN type in ('redemption') THEN 'redeemed'\n" +
+              " WHEN type not in ('redemption') THEN 'total_points_earned' \n" +
+              " END as transactions, abs(sum(points))  as points \n" +
+              "FROM loyalty  \n" +
+              "GROUP BY \n" +
+              "CASE WHEN type in ('redemption') THEN 'redeemed' WHEN type not in ('redemption') THEN 'total_points_earned' END\n" +
+              "UNION SELECT 'redeemed', 0 \n" +
+              "UNION  SELECT 'total_points_earned', 0\n" +
+              ") GROUP BY transactions\n" +
+              ")";
+
+      debugPrint('query_is :-    $query');
+
+      await _db.transaction((txn) async {
+        data = await txn.rawQuery(query);
+      });
+
+      debugPrint('database_testing:-  all search  ${data.length}');
+      debugPrint('$data');
+      List<LoyaltyPoints> _loyaltyPoints = [];
+      data.forEach((element) {
+        _loyaltyPoints.add(LoyaltyPoints.fromJson(element));
+      });
+      return _loyaltyPoints;
+    } catch (e) {
+      debugPrint('error:- database :-  $e');
+    }
+    return [];
+  }
+
+  static Future<List<LoyaltyData>> getLoyaltyTransaction({
+    String databasePath,
+    int month,
+  }) async {
+    if (_db == null) {
+      await initDataBase(databasePath);
+    }
+
+    try {
+      List<Map> data = [];
+      NumberFormat formatter = new NumberFormat("00");
+      String formattedMonth = formatter.format(month);
+      String query = "SELECT * FROM " +
+          LoyaltyTable.LOYALTY_TABLE_NAME +
+          " WHERE strftime(\"%m\", " +
+          LoyaltyTable.COLUMN_TIMESTAMP +
+          ") = \"" +
+          formattedMonth +
+          "\" ORDER BY " +
+          LoyaltyTable.COLUMN_TIMESTAMP +
+          " DESC";
+
+      debugPrint('query_is :-    $query');
+
+      await _db.transaction((txn) async {
+        data = await txn.rawQuery(query);
+      });
+
+      debugPrint('database_testing:-  all search  ${data.length}');
+      debugPrint('$data');
+      List<LoyaltyData> _loyaltyData = [];
+      data.forEach((element) {
+        _loyaltyData.add(LoyaltyData.fromJson(element));
+      });
+      return _loyaltyData;
+    } catch (e) {
+      debugPrint('error:- database :-  $e');
+    }
+    return [];
+  }
+
+
 }
