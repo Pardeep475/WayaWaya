@@ -11,6 +11,7 @@ import 'package:wayawaya/network/local/profile_database_helper.dart';
 import 'package:wayawaya/network/local/super_admin_database_helper.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/session_manager.dart';
+import 'package:wayawaya/utils/utils.dart';
 
 class HomeBloc {
   // ignore: close_sinks
@@ -54,7 +55,15 @@ class HomeBloc {
   getAllCampaign() async {
     String defaultMall = await SessionManager.getDefaultMall();
     List<Campaign> campaignList =
-        await ProfileDatabaseHelper.getAllCampaign(defaultMall);
+        await ProfileDatabaseHelper.getLauncherCampaignData(
+            databasePath: defaultMall,
+            limit: 25,
+            offset: 0,
+            rid: "",
+            searchText: "",
+            publish_date:
+                Utils.getStringFromDate(DateTime.now(), AppString.DATE_FORMAT),
+            campaignType: "");
 
     if (campaignList.isNotEmpty) {
       _differnicateCatagories(campaignList);

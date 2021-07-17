@@ -22,23 +22,13 @@ class ApiBaseHelper {
     try {
       debugPrint('auth_header  :-  $authHeader');
       debugPrint('api_url  :-  ${NetworkConstants.base_url}$url');
-      if(queryParams == null){
-        final response = await dio.get('${NetworkConstants.base_url}$url',
-          // queryParameters: queryParams,
-          options: Options(
-            headers: {"Authorization": "Bearer $authHeader"},
-          ),);
-        debugPrint('pardeep_testing:-  ${response.statusCode}');
-        return response;
-      }else{
-        final response = await dio.get('${NetworkConstants.base_url}$url',
-          queryParameters: queryParams,
-          options: Options(
-            headers: {"Authorization": "Bearer $authHeader"},
-          ),);
-        debugPrint('pardeep_testing:-  ${response.statusCode}');
-        return response;
-      }
+      final response = await dio.get('${NetworkConstants.base_url}$url',
+        // queryParameters: queryParams,
+        options: Options(
+          headers: {"Authorization": "Bearer $authHeader"},
+        ),);
+      debugPrint('pardeep_testing:-  ${response.statusCode}');
+      return response;
     } on SocketException {
       throw NoInternetException(AppString.check_your_internet_connectivity);
     } on HttpException {

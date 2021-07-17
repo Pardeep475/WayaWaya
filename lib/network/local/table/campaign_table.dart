@@ -140,17 +140,53 @@ class CampaignTable {
   }
 
   static Future<int> campaignTableLength({Database db}) async {
-    (await db.query('sqlite_master', columns: ['type', 'name'])).forEach((row) {
-      print(row.values);
-    });
-
     int count = Sqflite.firstIntValue(
         await db.rawQuery('SELECT COUNT(*) FROM $CAMPAIGN_TABLE_NAME'));
     return count;
   }
 
   static Future<int> insertCampaignTable(
-      {Database db, Map<String, dynamic> row}) async {
-    return await db.insert(CAMPAIGN_TABLE_NAME, row);
+      {Database db, Map<String, dynamic> row, String campaignId}) async {
+    await db.transaction((txn) async {
+      var batch = txn.batch();
+      if (campaignId == null) {
+        batch.insert(CAMPAIGN_TABLE_NAME, row);
+      } else {
+        // dynamic campaign = await getCampaignById(db, campaignId);
+        dynamic campaign = txn.update(CAMPAIGN_TABLE_NAME, row,
+            where: '$COLUMN_ID = ?', whereArgs: [campaignId]);
+        if (campaign == null) {
+          batch.insert(CAMPAIGN_TABLE_NAME, row);
+        } else {
+          batch.update(CAMPAIGN_TABLE_NAME, row,
+              where: '$COLUMN_ID = ?', whereArgs: [campaignId]);
+        }
+      }
+      await batch.commit();
+    });
+    return 0;
   }
+
+  static Future<int> updateCampaignTable(
+      Database db, Map<String, dynamic> row, String campaignId) async {
+    return await db.update(CAMPAIGN_TABLE_NAME, row,
+        where: '$COLUMN_ID = ?', whereArgs: [campaignId]);
+  }
+
+  static Future<dynamic> getCampaignById(Database db, String campaignId) async {
+    return await db.query(CAMPAIGN_TABLE_NAME,
+        where: '$COLUMN_ID = ?', whereArgs: [campaignId]);
+  }
+
+// static Future<List<Campaign>> getAllCampaign(Database db) async {
+//   List<Map> data;
+//   await db.transaction((txn) async {
+//     data = await txn.query(
+//       CAMPAIGN_TABLE_NAME,
+//       where: "status = ?",
+//       whereArgs: ['approved'],
+//       orderBy: 'start_date ASC',
+//     );
+//   });
+// }
 }

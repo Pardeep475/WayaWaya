@@ -1,17 +1,13 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:wayawaya/app/auth/login/model/user_data_response.dart';
-import 'package:wayawaya/common/model/mall_profile_model.dart';
-import 'package:wayawaya/network/local/database_helper.dart';
+import 'package:wayawaya/app/home/model/campaign_model.dart';
 import 'package:wayawaya/network/live/repository/api_repository.dart';
-import 'package:wayawaya/network/local/profile_database_helper.dart';
-import 'package:wayawaya/network/local/super_admin_database_helper.dart';
-import 'package:wayawaya/network/model/loyalty/loyalty_new.dart';
-import 'package:wayawaya/network/model/loyalty/loyalty_response.dart';
-import 'package:wayawaya/network/model/loyalty/loyalty_temp.dart';
+import 'package:wayawaya/network/model/campaign/campaign_api_response.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/session_manager.dart';
 import 'package:wayawaya/utils/utils.dart';
+
+import 'database_helper.dart';
+import 'profile_database_helper.dart';
 
 class SyncService {
   // make it singleton class
@@ -27,9 +23,10 @@ class SyncService {
 
   static String lastUpdate;
 
-  static fetchAllSyncData() async{
+  static fetchAllSyncData() async {
     await setSyncDateQuery();
-    await fetchUpdateData(1);
+    // await fetchUpdateData(1);
+    await fetchCampaignData(1);
   }
 
   static setSyncDateQuery() async {
@@ -37,7 +34,8 @@ class SyncService {
     if (syncDate != null) {
       lastUpdate = syncDate;
     } else {
-      lastUpdate = Utils.getStringFromDate(Utils.firstDate(), AppString.DATE_FORMAT);
+      lastUpdate =
+          Utils.getStringFromDate(Utils.firstDate(), AppString.DATE_FORMAT);
     }
   }
 
@@ -49,56 +47,70 @@ class SyncService {
     });
   }
 
-  static syncAllMallData() async {
-    List<MallProfileModel> _allMallData =
-        await SuperAdminDatabaseHelper.getAllVenueProfile();
-    _allMallData.forEach((element) async {
-      debugPrint('All_Mall_Data:-  ${element.name}');
-      await DataBaseHelperCommon.insertAllMalls(element.toJson());
+  static fetchCampaignData(int page) async {
+    int count = await DataBaseHelperCommon.getCampaignLength();
+    debugPrint('CountOfCampaign:-  $count');
+    // if (count == 0 || count < 0) {
+    //   syncCampaignDataFromDatabase();
+    // } else {
+      Utils.checkConnectivity().then((value) {
+        if (value != null && value) {
+          syncCampaignDataFromNetwork(page);
+        }
+      });
+    // }
+  }
+
+  static syncCampaignDataFromNetwork(int page) async {
+    try {
+      dynamic data = await _repository.fetchCampaignApiRepository(
+          lastUpdate: lastUpdate, nextPage: page);
+      if (data == null) {
+        return;
+      }
+      if (data.data == null) {
+        return;
+      }
+      CampaignApiResponse _campaignApiResponse =
+          CampaignApiResponse.fromJson(data.data);
+      if (_campaignApiResponse.items != null &&
+          _campaignApiResponse.items.isNotEmpty) {
+        debugPrint('campaign_count:-  ${_campaignApiResponse.items.length}');
+        await Future.forEach(_campaignApiResponse.items,
+            (Campaign element) async {
+          debugPrint('CampaignId:-  ${element.id}');
+          await DataBaseHelperCommon.insertCampaign(
+              element.toJson(), element.id);
+        });
+      }
+      if (_campaignApiResponse.links != null &&
+          _campaignApiResponse.links.next != null) {
+        syncCampaignDataFromNetwork(page + 1);
+      }
+    } catch (e) {
+      debugPrint('campaign_exception:- $e');
+    }
+  }
+
+  static syncCampaignDataFromDatabase() async {
+    String defaultMall = await SessionManager.getDefaultMall();
+    List<Campaign> campaignList =
+        await ProfileDatabaseHelper.getLauncherCampaignData(
+            databasePath: defaultMall,
+            limit: 25,
+            offset: 0,
+            rid: "",
+            searchText: "",
+            publish_date:
+                Utils.getStringFromDate(DateTime.now(), AppString.DATE_FORMAT),
+            campaignType: "");
+
+    campaignList.forEach((element) async {
+      debugPrint('CampaignId:-  ${element.id}');
+      await DataBaseHelperCommon.insertCampaign(element.toJson(), element.id);
     });
 
-    int _allMallsCount = await DataBaseHelperCommon.getAllMallsLength();
-    debugPrint('all_malls_count:-   $_allMallsCount');
+    int count = await DataBaseHelperCommon.getCampaignLength();
+    debugPrint('CountOfCampaign:-  $count');
   }
-
-  static syncRetailUnit() async {
-    // DataBaseHelperCommon.getRetailUnitLength();
-    // String defaultMall = await SessionManager.getDefaultMall();
-    // debugPrint('retail_unit_common_count:-   $defaultMall');
-    // List<RetailWithCategory> _retailWithCategoryList =
-    //     await ProfileDatabaseHelper.getRetailWithCategory(
-    //         databasePath: defaultMall,
-    //         isShop: true,
-    //         searchQuery: '',
-    //         categoryId: '',
-    //         favourite: 0);
-
-    // debugPrint(
-    //     'retail_unit_common_count:-   ${_retailWithCategoryList.length}');
-
-    // try {
-    //   _retailWithCategoryList.forEach((element) async {
-    //     RetailUnitModalDB retailUnitModalDB = RetailUnitModalDB(
-    //       retailUnitId: element.id,
-    //       retailUnitCategories:
-    //       element.retailUnitCategories.toString(),
-    //       retailUnitCategoryName: element.categoryName,
-    //       retailUnitColor: colorCodesToJson(element.color),
-    //       retailUnitDescription: element.description.toString(),
-    //       retailUnitFavourite: element.favourite,
-    //       retailUnitName: element.name,
-    //       retailUnitSubLocation: subLocationsToJson(element.subLocations),
-    //     );
-    //     await DataBaseHelperCommon.insertRetailUnitLength(
-    //         retailUnitModalDB.toJson());
-    //   });
-    // } catch (e) {
-    //   debugPrint('retail_unit_common_count:-   $e');
-    // }
-
-    // int _retailUnitCount = await DataBaseHelperCommon.getRetailUnitLength();
-    // debugPrint('retail_unit_common_count:-   $_retailUnitCount');
-  }
-
-  static syncCampaign() async {}
 }

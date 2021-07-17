@@ -19,6 +19,7 @@ import 'package:wayawaya/network/model/loyalty/loyalty_response.dart';
 import 'package:wayawaya/network/model/loyalty/loyalty_temp.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 
+import 'table/campaign_table.dart';
 import 'table/loyalty_table.dart';
 
 class ProfileDatabaseHelper {
@@ -185,20 +186,65 @@ class ProfileDatabaseHelper {
     return _preferencesCategoriesList;
   }
 
-  static Future<List<Campaign>> getAllCampaign(String databasePath) async {
-    debugPrint('database_testing:-  database path $databasePath');
+  static Future<List<Campaign>> getLauncherCampaignData(
+      {String databasePath,
+      String campaignType,
+      int limit,
+      int offset,
+      String searchText,
+      String rid,
+      String publish_date}) async {
     if (_db == null) {
       await initDataBase(databasePath);
     }
+
+    String whereClause = "";
+    String searchQueryCondition = "";
+    String offerForRetailUnitCondition = "";
+    if (searchText != null && searchText.isNotEmpty) {
+      searchQueryCondition = " AND ( " +
+          CampaignTable.COLUMN_CAMPAIGN_ELEMENT +
+          " LIKE '%" +
+          searchText +
+          "%' ) ";
+    }
+
+    if (rid != null && rid.isNotEmpty) {
+      offerForRetailUnitCondition = " AND ( rid LIKE '%" + rid + "%') ";
+    }
+    if (campaignType.isNotEmpty) {
+      whereClause = " WHERE type='" +
+          campaignType +
+          "' AND " +
+          CampaignTable.COLUMN_STATUS +
+          "='approved' ";
+    } else {
+      whereClause = " WHERE " + CampaignTable.COLUMN_STATUS + "='approved' ";
+    }
+
+    whereClause += " AND publish_date <= '" + publish_date + "'";
+
+    String query = "SELECT *, '' as shop_name FROM " +
+        CampaignTable.CAMPAIGN_TABLE_NAME +
+        " " +
+        whereClause +
+        searchQueryCondition +
+        offerForRetailUnitCondition +
+        " AND voucher NOT LIKE '%\"is_coupon\": true%'" +
+        " ORDER BY " +
+        CampaignTable.COLUMN_START_DATE +
+        " ASC" +
+        " LIMIT " +
+        limit.toString() +
+        " OFFSET " +
+        offset.toString();
+
     List<Map> data;
+
     await _db.transaction((txn) async {
-      data = await txn.query(
-        AppString.CAMPAIGN_TABLE_NAME,
-        where: "status = ?",
-        whereArgs: ['approved'],
-        orderBy: 'start_date ASC',
-      );
+      data = await txn.rawQuery(query);
     });
+
     // _db.close();
     debugPrint('database_testing:-   ${data.length}');
     debugPrint('database_testing:-   $data');
@@ -949,6 +995,4 @@ class ProfileDatabaseHelper {
     }
     return [];
   }
-
-
 }

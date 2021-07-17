@@ -104,29 +104,17 @@ class DataBaseHelperCommon {
     // return await CreateAllMallTable.insertAllMalls(db: _db, row: row);
   }
 
-// Future<int> insert(Map<String, dynamic> row) async {
-//   Database _db = await instance.database;
-//   return await _db.insert(_tableName, row);
-// }
-//
-// Future<List<Map<String, dynamic>>> queryItem(int loadNumber) async {
-//   debugPrint('database_testing:-  loadNumber :-   $loadNumber');
-//   Database _db = await instance.database;
-//   // return await _db.query(_tableName, where: '$loadNumber = ?', whereArgs: [loadNumber]);
-//   return await _db
-//       .rawQuery('SELECT * FROM $_tableName WHERE LOAD_NUMBER = $loadNumber');
-// }
-//
-// Future<int> update(Map<String, dynamic> row) async {
-//   Database _db = await instance.database;
-//   int loadNumberValue = row[loadNumber];
-//   return await _db.update(_tableName, row,
-//       where: '$loadNumber = ?', whereArgs: [loadNumberValue]);
-// }
-//
-// Future<int> delete(int loadNumber) async {
-//   Database _db = await instance.database;
-//   return await _db
-//       .delete(_tableName, where: '$loadNumber = ?', whereArgs: [loadNumber]);
-// }
+  // campaign all queries
+
+  static Future<int> getCampaignLength() async {
+    Database _db = await instance.database;
+    return await CampaignTable.campaignTableLength(db: _db);
+  }
+
+  static Future<int> insertCampaign(
+      Map<String, dynamic> row, String campaignID) async {
+    Database _db = await instance.database;
+    return await CampaignTable.insertCampaignTable(
+        db: _db, row: row, campaignId: campaignID);
+  }
 }
