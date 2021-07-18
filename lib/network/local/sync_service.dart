@@ -29,6 +29,7 @@ class SyncService {
     await fetchCampaignData(1);
   }
 
+
   static setSyncDateQuery() async {
     String syncDate = await SessionManager.getSyncDate();
     if (syncDate != null) {
@@ -47,15 +48,21 @@ class SyncService {
     });
   }
 
+  // start campaign data
   static fetchCampaignData(int page) async {
     int count = await DataBaseHelperCommon.getCampaignLength();
     debugPrint('CountOfCampaign:-  $count');
     if (count == 0 || count < 0) {
-      syncCampaignDataFromDatabase();
-    } else {
-      Utils.checkConnectivity().then((value) {
+      await syncCampaignDataFromDatabase();
+      Utils.checkConnectivity().then((value) async{
         if (value != null && value) {
-          syncCampaignDataFromNetwork(page);
+          await syncCampaignDataFromNetwork(page);
+        }
+      });
+    } else {
+      Utils.checkConnectivity().then((value) async{
+        if (value != null && value) {
+          await syncCampaignDataFromNetwork(page);
         }
       });
     }
@@ -113,4 +120,6 @@ class SyncService {
     int count = await DataBaseHelperCommon.getCampaignLength();
     debugPrint('CountOfCampaign:-  $count');
   }
+  // end campaign data
+
 }

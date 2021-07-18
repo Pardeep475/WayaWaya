@@ -135,7 +135,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         context, AppString.SPLASH_SCREEN_ROUTE, (route) => false);
   }
 
-  _onItemClick(SettingsModel settingsModel) async{
+  _onItemClick(SettingsModel settingsModel) async {
     switch (settingsModel.title) {
       case AppString.my_account:
         {
@@ -159,24 +159,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
       case AppString.my_favourites:
         {
           debugPrint('settings_click_testing:-  ${settingsModel.title}');
-          await SyncService.fetchAllSyncData();
+          // await SyncService.fetchAllSyncData();
           break;
         }
       case AppString.privacy_policy:
         {
           debugPrint('settings_click_testing:-  ${settingsModel.title}');
-          // _settingsBloc.privacyPolicyOnClick(context);
+          _settingsBloc.privacyPolicyOnClick(context);
 
-          DataBaseHelperCommon.deleteData();
+          // DataBaseHelperCommon.deleteData();
 
           break;
         }
       case AppString.term_and_conditions:
         {
           debugPrint('settings_click_testing:-  ${settingsModel.title}');
-          // _settingsBloc.termAndConditionOnClick(context);
+          _settingsBloc.termAndConditionOnClick(context);
           // _implementLocalDb();
-          _settingsBloc.syncCampaign(0);
+          // _settingsBloc.syncCampaign(0);
           break;
         }
     }
@@ -188,6 +188,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         await ProfileDatabaseHelper.getActiveOmniChannel(
       databasePath: defaultMall,
     );
-    debugPrint('qwertyui ${_omniChannelItemModel.id}    \n   ${_omniChannelItemModel.oid}');
+    debugPrint(
+        'qwertyui ${_omniChannelItemModel.id}    \n   ${_omniChannelItemModel.oid}');
   }
 }
