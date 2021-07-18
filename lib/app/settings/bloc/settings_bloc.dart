@@ -5,15 +5,18 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:wayawaya/app/common/full_screen_privacy_policy_dialog.dart';
 import 'package:wayawaya/app/common/menu/model/main_menu_permission.dart';
+import 'package:wayawaya/app/home/model/campaign_model.dart';
 import 'package:wayawaya/app/settings/model/settings_model.dart';
 import 'package:wayawaya/models/omni_channel_item_model/omni_channel_item_model.dart';
 import 'package:wayawaya/models/retail_unit/retail_unit_wrapper.dart';
 import 'package:wayawaya/network/live/repository/api_repository.dart';
+import 'package:wayawaya/network/local/database_helper.dart';
 import 'package:wayawaya/network/local/profile_database_helper.dart';
 import 'package:wayawaya/network/local/super_admin_database_helper.dart';
 import 'package:wayawaya/network/local/sync_service.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/session_manager.dart';
+import 'package:wayawaya/utils/utils.dart';
 
 class SettingsBloc {
 // ignore: close_sinks
@@ -90,7 +93,19 @@ class SettingsBloc {
   }
 
   syncCampaign(int page) async {
-    await SyncService.fetchAllSyncData();
+    List<Campaign> campaignList =
+        await DataBaseHelperCommon.getLauncherCampaignData(
+            limit: 25,
+            offset: 0,
+            rid: "",
+            searchText: "",
+            publish_date:
+                Utils.getStringFromDate(DateTime.now(), AppString.DATE_FORMAT),
+            campaignType: "");
+
+    debugPrint('campaignList:-   ${campaignList.length}');
+
+    //
 
     // await SyncService.fetchLoyaltyFromNetwork(0);
 

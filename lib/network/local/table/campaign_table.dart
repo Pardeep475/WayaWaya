@@ -1,4 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:wayawaya/app/home/model/campaign_model.dart';
 
 class CampaignTable {
   static final CampaignTable _campaignTable = CampaignTable._internal();
@@ -147,24 +149,36 @@ class CampaignTable {
 
   static Future<int> insertCampaignTable(
       {Database db, Map<String, dynamic> row, String campaignId}) async {
-    await db.transaction((txn) async {
-      var batch = txn.batch();
-      if (campaignId == null) {
-        batch.insert(CAMPAIGN_TABLE_NAME, row);
+    if (campaignId == null) {
+      return await db.insert(CAMPAIGN_TABLE_NAME, row);
+    } else {
+      dynamic campaign = await getCampaignById(db, campaignId);
+      if (campaign == null || campaign.length == 0 || campaign.length < 0) {
+        return db.insert(CAMPAIGN_TABLE_NAME, row);
       } else {
-        // dynamic campaign = await getCampaignById(db, campaignId);
-        dynamic campaign = txn.update(CAMPAIGN_TABLE_NAME, row,
+        return db.update(CAMPAIGN_TABLE_NAME, row,
             where: '$COLUMN_ID = ?', whereArgs: [campaignId]);
-        if (campaign == null) {
-          batch.insert(CAMPAIGN_TABLE_NAME, row);
-        } else {
-          batch.update(CAMPAIGN_TABLE_NAME, row,
-              where: '$COLUMN_ID = ?', whereArgs: [campaignId]);
-        }
       }
-      await batch.commit();
-    });
-    return 0;
+    }
+
+    // await db.transaction((txn) async {
+    //   var batch = txn.batch();
+    //   if (campaignId == null) {
+    //     batch.insert(CAMPAIGN_TABLE_NAME, row);
+    //   } else {
+    //     // dynamic campaign = await getCampaignById(db, campaignId);
+    //     dynamic campaign = txn.update(CAMPAIGN_TABLE_NAME, row,
+    //         where: '$COLUMN_ID = ?', whereArgs: [campaignId]);
+    //     if (campaign == null) {
+    //       batch.insert(CAMPAIGN_TABLE_NAME, row);
+    //     } else {
+    //       batch.update(CAMPAIGN_TABLE_NAME, row,
+    //           where: '$COLUMN_ID = ?', whereArgs: [campaignId]);
+    //     }
+    //   }
+    //   await batch.commit();
+    // });
+    // return 0;
   }
 
   static Future<int> updateCampaignTable(
@@ -178,15 +192,68 @@ class CampaignTable {
         where: '$COLUMN_ID = ?', whereArgs: [campaignId]);
   }
 
-// static Future<List<Campaign>> getAllCampaign(Database db) async {
-//   List<Map> data;
-//   await db.transaction((txn) async {
-//     data = await txn.query(
-//       CAMPAIGN_TABLE_NAME,
-//       where: "status = ?",
-//       whereArgs: ['approved'],
-//       orderBy: 'start_date ASC',
-//     );
-//   });
-// }
+  static Future<List<Campaign>> getLauncherCampaignData(
+      {Database db,
+      String campaignType,
+      int limit,
+      int offset,
+      String searchText,
+      String rid,
+      String publish_date}) async {
+    String whereClause = "";
+    String searchQueryCondition = "";
+    String offerForRetailUnitCondition = "";
+    if (searchText != null && searchText.isNotEmpty) {
+      searchQueryCondition = " AND ( " +
+          CampaignTable.COLUMN_CAMPAIGN_ELEMENT +
+          " LIKE '%" +
+          searchText +
+          "%' ) ";
+    }
+
+    if (rid != null && rid.isNotEmpty) {
+      offerForRetailUnitCondition = " AND ( rid LIKE '%" + rid + "%') ";
+    }
+    if (campaignType.isNotEmpty) {
+      whereClause = " WHERE type='" +
+          campaignType +
+          "' AND " +
+          CampaignTable.COLUMN_STATUS +
+          "='approved' ";
+    } else {
+      whereClause = " WHERE " + CampaignTable.COLUMN_STATUS + "='approved' ";
+    }
+
+    whereClause += " AND publish_date <= '" + publish_date + "'";
+
+    String query = "SELECT *, '' as shop_name FROM " +
+        CAMPAIGN_TABLE_NAME +
+        " " +
+        whereClause +
+        searchQueryCondition +
+        offerForRetailUnitCondition +
+        " AND voucher NOT LIKE '%\"is_coupon\": true%'" +
+        " ORDER BY " +
+        COLUMN_START_DATE +
+        " ASC" +
+        " LIMIT " +
+        limit.toString() +
+        " OFFSET " +
+        offset.toString();
+
+    List<Map> data;
+
+    debugPrint('campaign_query:-  $query');
+
+    await db.transaction((txn) async {
+      data = await txn.rawQuery(query);
+    });
+    debugPrint('database_testing:-   ${data.length}');
+    // debugPrint('database_testing:-   $data');
+    List<Campaign> _mallList = [];
+    data.forEach((element) {
+      _mallList.add(Campaign.fromJson(element));
+    });
+    return _mallList;
+  }
 }

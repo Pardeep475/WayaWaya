@@ -3,7 +3,9 @@ import 'package:wayawaya/app/common/menu/animate_app_bar.dart';
 import 'package:wayawaya/app/common/menu/model/main_menu_permission.dart';
 import 'package:wayawaya/app/settings/model/settings_model.dart';
 import 'package:wayawaya/models/omni_channel_item_model/omni_channel_item_model.dart';
+import 'package:wayawaya/network/local/database_helper.dart';
 import 'package:wayawaya/network/local/profile_database_helper.dart';
+import 'package:wayawaya/network/local/sync_service.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/dimens.dart';
@@ -133,7 +135,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         context, AppString.SPLASH_SCREEN_ROUTE, (route) => false);
   }
 
-  _onItemClick(SettingsModel settingsModel) {
+  _onItemClick(SettingsModel settingsModel) async{
     switch (settingsModel.title) {
       case AppString.my_account:
         {
@@ -157,12 +159,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
       case AppString.my_favourites:
         {
           debugPrint('settings_click_testing:-  ${settingsModel.title}');
+          await SyncService.fetchAllSyncData();
           break;
         }
       case AppString.privacy_policy:
         {
           debugPrint('settings_click_testing:-  ${settingsModel.title}');
-          _settingsBloc.privacyPolicyOnClick(context);
+          // _settingsBloc.privacyPolicyOnClick(context);
+
+          DataBaseHelperCommon.deleteData();
+
           break;
         }
       case AppString.term_and_conditions:

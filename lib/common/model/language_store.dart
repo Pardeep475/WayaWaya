@@ -1,3 +1,10 @@
+import 'dart:convert';
+
+LanguageStore languageStoreFromJson(String str) =>
+    LanguageStore.fromJson(json.decode(str));
+
+String languageStoreToJson(LanguageStore data) => json.encode(data.toJson());
+
 class LanguageStore {
   String language;
   String text;

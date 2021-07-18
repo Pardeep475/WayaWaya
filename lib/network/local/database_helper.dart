@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import 'package:wayawaya/app/home/model/campaign_model.dart';
+import 'package:wayawaya/utils/app_strings.dart';
+import 'package:wayawaya/utils/utils.dart';
 import 'table/beacon_table.dart';
 import 'table/campaign_table.dart';
 import 'table/categories_table.dart';
@@ -117,4 +120,29 @@ class DataBaseHelperCommon {
     return await CampaignTable.insertCampaignTable(
         db: _db, row: row, campaignId: campaignID);
   }
+
+  static Future<List<Campaign>> getLauncherCampaignData(
+      {String campaignType,
+      int limit,
+      int offset,
+      String searchText,
+      String rid,
+      String publish_date}) async {
+    Database _db = await instance.database;
+    return await CampaignTable.getLauncherCampaignData(
+        db: _db,
+        limit: 25,
+        offset: 0,
+        rid: "",
+        searchText: "",
+        publish_date:
+            Utils.getStringFromDate(DateTime.now(), AppString.DATE_FORMAT),
+        campaignType: "");
+  }
+
+  static Future deleteData() async{
+    Database _db = await instance.database;
+    await _db.delete(CampaignTable.CAMPAIGN_TABLE_NAME);
+  }
+
 }

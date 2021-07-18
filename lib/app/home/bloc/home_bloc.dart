@@ -7,6 +7,8 @@ import 'package:wayawaya/app/home/model/campaign_element.dart';
 import 'package:wayawaya/app/home/model/campaign_model.dart';
 import 'package:wayawaya/app/home/model/top_campaign_model.dart';
 import 'package:wayawaya/app/home/model/whatson_campaign.dart';
+import 'package:wayawaya/common/model/language_store.dart';
+import 'package:wayawaya/network/local/database_helper.dart';
 import 'package:wayawaya/network/local/profile_database_helper.dart';
 import 'package:wayawaya/network/local/super_admin_database_helper.dart';
 import 'package:wayawaya/utils/app_strings.dart';
@@ -54,16 +56,26 @@ class HomeBloc {
 
   getAllCampaign() async {
     String defaultMall = await SessionManager.getDefaultMall();
+    // List<Campaign> campaignList =
+    //     await ProfileDatabaseHelper.getLauncherCampaignData(
+    //         databasePath: defaultMall,
+    //         limit: 25,
+    //         offset: 0,
+    //         rid: "",
+    //         searchText: "",
+    //         publish_date:
+    //             Utils.getStringFromDate(DateTime.now(), AppString.DATE_FORMAT),
+    //         campaignType: "");
+
     List<Campaign> campaignList =
-        await ProfileDatabaseHelper.getLauncherCampaignData(
-            databasePath: defaultMall,
-            limit: 25,
-            offset: 0,
-            rid: "",
-            searchText: "",
-            publish_date:
-                Utils.getStringFromDate(DateTime.now(), AppString.DATE_FORMAT),
-            campaignType: "");
+    await DataBaseHelperCommon.getLauncherCampaignData(
+        limit: 25,
+        offset: 0,
+        rid: "",
+        searchText: "",
+        publish_date:
+        Utils.getStringFromDate(DateTime.now(), AppString.DATE_FORMAT),
+        campaignType: "");
 
     if (campaignList.isNotEmpty) {
       _differnicateCatagories(campaignList);
@@ -76,11 +88,12 @@ class HomeBloc {
       switch (element.type) {
         case AppString.OFFER_CAMPAIGN:
           {
-            CampaignElement campaignElement = element.campaignElement;
-            // CampaignElement.fromJson(jsonDecode(element.campaignElement));
-            campaignElement.imageId.forEach((campaignModel) {
+            // CampaignElement campaignElement = element.campaignElement;
+            CampaignElement campaignElement = CampaignElement.fromJson(jsonDecode(element.campaignElement));
+            List<LanguageStore> imageId = List<LanguageStore>.from(campaignElement.imageId.map((x) => LanguageStore.fromJson(x)));
+            imageId.forEach((campaignModel) {
               // ignore: unrelated_type_equality_checks
-              if (campaignModel.language == Language.EN_US) {
+              if (campaignModel.language == 'en_US') {
                 topCampaignList.add(TopCampaignModel(
                     imgUrl: campaignModel.text,
                     tag: AppString.offer,
@@ -92,11 +105,11 @@ class HomeBloc {
           }
         case AppString.EVENT_CAMPAIGN:
           {
-            CampaignElement campaignElement = element.campaignElement;
-            // CampaignElement.fromJson(jsonDecode(element.campaignElement));
-            campaignElement.imageId.forEach((campaignModel) {
+            CampaignElement campaignElement = CampaignElement.fromJson(jsonDecode(element.campaignElement));
+            List<LanguageStore> imageId = List<LanguageStore>.from(campaignElement.imageId.map((x) => LanguageStore.fromJson(x)));
+            imageId.forEach((campaignModel) {
               // ignore: unrelated_type_equality_checks
-              if (campaignModel.language == Language.EN_US) {
+              if (campaignModel.language == 'en_US') {
                 topCampaignList.add(TopCampaignModel(
                     imgUrl: campaignModel.text,
                     tag: AppString.event,
@@ -108,11 +121,11 @@ class HomeBloc {
           }
         case AppString.WHATSON_CAMPAIGN:
           {
-            CampaignElement campaignElement = element.campaignElement;
-            // CampaignElement.fromJson(jsonDecode(element.campaignElement));
-            campaignElement.imageId.forEach((element) {
+            CampaignElement campaignElement = CampaignElement.fromJson(jsonDecode(element.campaignElement));
+            List<LanguageStore> imageId = List<LanguageStore>.from(campaignElement.imageId.map((x) => LanguageStore.fromJson(x)));
+            imageId.forEach((element) {
               // ignore: unrelated_type_equality_checks
-              if (element.language == Language.EN_US) {
+              if (element.language == 'en_US') {
                 whatsonCampaignList.add(element.text);
               }
             });
@@ -121,21 +134,17 @@ class HomeBloc {
           }
         case AppString.ACTIVITIES_CAMPAIGN:
           {
-            CampaignElement campaignElement = element.campaignElement;
-            // CampaignElement.fromJson(jsonDecode(element.campaignElement));
-            campaignElement.imageId.forEach((element) {
+            CampaignElement campaignElement = CampaignElement.fromJson(jsonDecode(element.campaignElement));
+            List<LanguageStore> imageId = List<LanguageStore>.from(campaignElement.imageId.map((x) => LanguageStore.fromJson(x)));
+            imageId.forEach((element) {
               // ignore: unrelated_type_equality_checks
-              if (element.language == Language.EN_US) {
+              if (element.language == 'en_US') {
                 activitiesCampaignList.add(element.text);
               }
             });
             break;
           }
       }
-    });
-
-    whatsonCampaignList.forEach((element) {
-      debugPrint('whatson_campaing_list:-  $element');
     });
 
     activitySink.add(activitiesCampaignList);

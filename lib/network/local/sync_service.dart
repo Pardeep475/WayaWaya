@@ -50,15 +50,15 @@ class SyncService {
   static fetchCampaignData(int page) async {
     int count = await DataBaseHelperCommon.getCampaignLength();
     debugPrint('CountOfCampaign:-  $count');
-    // if (count == 0 || count < 0) {
-    //   syncCampaignDataFromDatabase();
-    // } else {
+    if (count == 0 || count < 0) {
+      syncCampaignDataFromDatabase();
+    } else {
       Utils.checkConnectivity().then((value) {
         if (value != null && value) {
           syncCampaignDataFromNetwork(page);
         }
       });
-    // }
+    }
   }
 
   static syncCampaignDataFromNetwork(int page) async {

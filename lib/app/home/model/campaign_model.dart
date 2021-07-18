@@ -17,7 +17,7 @@ String campaignToJson(Campaign data) => json.encode(data.toJson());
 class Campaign {
   Campaign({
     this.addBudget,
-    this.addBudgetRemaining,
+    // this.addBudgetRemaining,
     this.addClickLimit,
     this.addConversionLimit,
     this.addImpressionLimit,
@@ -58,7 +58,7 @@ class Campaign {
   });
 
   dynamic addBudget;
-  dynamic addBudgetRemaining;
+  // dynamic addBudgetRemaining;
   dynamic addClickLimit;
   int addConversionLimit;
   int addImpressionLimit;
@@ -68,7 +68,7 @@ class Campaign {
   String assetId;
   String b2XDatabaseListId;
   dynamic campaignChannels;
-  CampaignElement campaignElement;
+  dynamic campaignElement;
   String costCentreCode;
   String couponCode;
   String couponValue;
@@ -99,7 +99,7 @@ class Campaign {
 
   factory Campaign.fromJson(Map<String, dynamic> json) => Campaign(
         addBudget: json["add_budget"],
-        addBudgetRemaining: json["add_budget_remaining"],
+        // addBudgetRemaining: json["add_budget_remaining"],
         addClickLimit: json["add_click_limit"],
         addConversionLimit: json["add_conversion_limit"],
         addImpressionLimit: json["add_impression_limit"],
@@ -109,12 +109,12 @@ class Campaign {
         assetId: json["asset_id"],
         b2XDatabaseListId: json["b2x_database_list_id"],
         campaignChannels: json["campaign_channels"],
-        campaignElement: json["campaign_element"] == null
+        campaignElement: json["campaign_element"]/* == null
             ? null
             : json["campaign_element"] is String
                 ? CampaignElement.fromJson(jsonDecode(json["campaign_element"]))
                 : CampaignElement.fromJson(json["campaign_element"]),
-        costCentreCode: json["cost_centre_code"],
+        costCentreCode: json["cost_centre_code"]*/,
         couponCode: json["coupon_code"],
         couponValue: json["coupon_value"],
         endDate: json["end_date"],
@@ -145,7 +145,7 @@ class Campaign {
 
   Map<String, dynamic> toJson() => {
         "add_budget": addBudget,
-        "add_budget_remaining": addBudgetRemaining,
+        // "add_budget_remaining": addBudgetRemaining,
         "add_click_limit": addClickLimit,
         "add_conversion_limit": addConversionLimit,
         "add_impression_limit": addImpressionLimit,
@@ -156,7 +156,7 @@ class Campaign {
         "b2x_database_list_id": b2XDatabaseListId,
         "campaign_channels": campaignChannels,
         "campaign_element":
-            campaignElement == null ? null : campaignElement.toString(),
+            campaignElement == null ? null : jsonEncode(campaignElement),
         "cost_centre_code": costCentreCode,
         "coupon_code": couponCode,
         "coupon_value": couponValue,

@@ -24,63 +24,67 @@ class CampaignElement {
     this.urlLinkAlias,
     this.type,
     this.templateId,
-    this.campaignTemplate,
-    this.coolOffPeriod,
+    // this.campaignTemplate,
+    // this.coolOffPeriod,
     this.locationFieldTag,
   });
 
-  List<LanguageStore> description;
-  List<LanguageStore> name;
-  List<Description> format;
-  List<Description> url;
-  List<Description> text;
+  // List<LanguageStore> description;
+  // List<LanguageStore> name;
+  // List<Description> format;
+  // List<Description> url;
+  // List<Description> text;
+  dynamic description;
+  dynamic name;
+  dynamic format;
+  dynamic url;
+  dynamic text;
   int order;
-  List<ImageId> imageId;
-  List<Description> urlLinkAlias;
+  // List<ImageId> imageId;
+  // List<Description> urlLinkAlias;
+  dynamic imageId;
+  dynamic urlLinkAlias;
   String type;
   String templateId;
-  CampaignTemplate campaignTemplate;
-  int coolOffPeriod;
+  // CampaignTemplate campaignTemplate;
+  // int coolOffPeriod;
   String locationFieldTag;
 
   factory CampaignElement.fromJson(Map<String, dynamic> json) =>
       CampaignElement(
-        description: List<LanguageStore>.from(
-            json["description"].map((x) => LanguageStore.fromJson(x))),
-        name: List<LanguageStore>.from(
-            json["name"].map((x) => LanguageStore.fromJson(x))),
-        format: List<Description>.from(
-            json["format"].map((x) => Description.fromJson(x))),
-        url: List<Description>.from(
-            json["url"].map((x) => Description.fromJson(x))),
-        text: List<Description>.from(
-            json["text"].map((x) => Description.fromJson(x))),
+        // description: json["description"] == null ? [] : List<LanguageStore>.from(
+        //     json["description"].map((x) => LanguageStore.fromJson(x))),
+        description: json["description"],
+        name:  json["name"] ,
+        format: json["format"],
+        url: json["url"],
+        text:json["text"] ,
         order: json["order"],
-        imageId: List<ImageId>.from(
-            json["image_id"].map((x) => ImageId.fromJson(x))),
-        urlLinkAlias: List<Description>.from(
-            json["url_link_alias"].map((x) => Description.fromJson(x))),
+        imageId:json["image_id"],
+        urlLinkAlias: json["url_link_alias"],
         type: json["type"],
         templateId: json["template_id"],
-        campaignTemplate: CampaignTemplate.fromJson(json["campaign_template"]),
-        coolOffPeriod: json["cool_off_period"],
+        // campaignTemplate: json["campaign_template"] == null
+        //     ? null
+        //     : CampaignTemplate.fromJson(json["campaign_template"]),
+        // coolOffPeriod: json["cool_off_period"],
         locationFieldTag: json["location_field_tag"],
       );
 
   Map<String, dynamic> toJson() => {
-        "description": List<dynamic>.from(description.map((x) => x.toJson())),
-        "name": List<dynamic>.from(name.map((x) => x.toJson())),
-        "format": List<dynamic>.from(format.map((x) => x.toJson())),
-        "url": List<dynamic>.from(url.map((x) => x.toJson())),
-        "text": List<dynamic>.from(text.map((x) => x.toJson())),
+        "description": description == null ? null : jsonEncode(description),
+        "name": name == null ? null :  jsonEncode(name),
+        "format": format == null ? null : jsonEncode(format),
+        "url": url == null ? null :  jsonEncode(url),
+        "text": text == null ? null :  jsonEncode(text),
         "order": order,
-        "image_id": List<dynamic>.from(imageId.map((x) => x.toJson())),
-        "url_link_alias":
-            List<dynamic>.from(urlLinkAlias.map((x) => x.toJson())),
+        "image_id": imageId == null ? null :  jsonEncode(imageId),
+        "url_link_alias": urlLinkAlias == null ? null : jsonEncode(urlLinkAlias),
         "type": type,
         "template_id": templateId,
-        "campaign_template": campaignTemplate.toJson(),
-        "cool_off_period": coolOffPeriod,
+        // "campaign_template":
+        //     campaignTemplate == null ? null : campaignTemplate.toJson(),
+        // "cool_off_period": coolOffPeriod,
         "location_field_tag": locationFieldTag,
       };
 }
