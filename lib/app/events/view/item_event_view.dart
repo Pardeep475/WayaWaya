@@ -34,13 +34,17 @@ class ItemEventView extends StatelessWidget {
   String _getTitle(BuildContext context) {
     if (campaign == null) return '';
     if (campaign.campaignElement == null) return '';
-    return Utils.getTranslatedCode(context, campaign.campaignElement.name);
+    CampaignElement camElement = CampaignElement.fromJson(jsonDecode(campaign.campaignElement));
+    List<LanguageStore> name = List<LanguageStore>.from(camElement.name.map((x) => LanguageStore.fromJson(x)));
+    return Utils.getTranslatedCode(context, name);
   }
 
   String _getImage(BuildContext context) {
     if (campaign == null) return '';
     if (campaign.campaignElement == null) return '';
-    return Utils.getTranslatedCodeFromImageId(campaign.campaignElement.imageId);
+    CampaignElement camElement = CampaignElement.fromJson(jsonDecode(campaign.campaignElement));
+    List<LanguageStore> imageId = List<LanguageStore>.from(camElement.imageId.map((x) => LanguageStore.fromJson(x)));
+    return Utils.getTranslatedCode(context, imageId);
   }
 
   String _startDate(BuildContext context) {

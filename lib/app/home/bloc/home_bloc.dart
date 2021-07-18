@@ -55,7 +55,7 @@ class HomeBloc {
   List<TopCampaignModel> topCampaignList = [];
 
   getAllCampaign() async {
-    String defaultMall = await SessionManager.getDefaultMall();
+    // String defaultMall = await SessionManager.getDefaultMall();
     // List<Campaign> campaignList =
     //     await ProfileDatabaseHelper.getLauncherCampaignData(
     //         databasePath: defaultMall,

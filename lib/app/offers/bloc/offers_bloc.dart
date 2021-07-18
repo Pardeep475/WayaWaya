@@ -3,9 +3,12 @@ import 'dart:async';
 import 'package:wayawaya/app/common/menu/model/main_menu_permission.dart';
 import 'package:wayawaya/app/home/model/campaign_model.dart';
 import 'package:wayawaya/network/live/model/api_response.dart';
+import 'package:wayawaya/network/local/database_helper.dart';
 import 'package:wayawaya/network/local/profile_database_helper.dart';
 import 'package:wayawaya/network/local/super_admin_database_helper.dart';
+import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/session_manager.dart';
+import 'package:wayawaya/utils/utils.dart';
 
 class OffersBloc {
   // ignore: close_sinks
@@ -31,10 +34,22 @@ class OffersBloc {
   getOfferCampaign({String rid}) async {
     offerCampaignSink.add(ApiResponse.loading(null));
     try {
-      String defaultMall = await SessionManager.getDefaultMall();
+      // String defaultMall = await SessionManager.getDefaultMall();
+      // List<Campaign> campaignList =
+      //     await ProfileDatabaseHelper.getCampaignByType(
+      //         databasePath: defaultMall, campaignType: 'offer',rid: rid);
+
       List<Campaign> campaignList =
-          await ProfileDatabaseHelper.getCampaignByType(
-              databasePath: defaultMall, campaignType: 'offer',rid: rid);
+          await DataBaseHelperCommon.getCampaignOffersAndEvents(
+              limit: 25,
+              offset: 0,
+              rid: rid ?? "",
+              searchText: "",
+              publish_date: Utils.getStringFromDate(
+                  DateTime.now(), AppString.DATE_FORMAT),
+              isCoupon: false,
+              campaingType: "offer");
+
       offerCampaignSink.add(ApiResponse.completed(campaignList));
     } catch (e) {
       offerCampaignSink.add(ApiResponse.error(e));

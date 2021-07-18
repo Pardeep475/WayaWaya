@@ -14,6 +14,7 @@ import 'package:wayawaya/app/home/model/campaign_model.dart';
 import 'package:wayawaya/app/offers/bloc/offer_detail_bloc.dart';
 import 'package:wayawaya/app/offers/model/detail_model.dart';
 import 'package:wayawaya/app/offers/view/item_offer_view_detail.dart';
+import 'package:wayawaya/common/model/language_store.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/dimens.dart';
@@ -47,7 +48,11 @@ class _OffersDetailsState extends State<OfferDetails> {
   _getTitle(BuildContext context, Campaign campaign) {
     if (campaign == null) return '';
     if (campaign.campaignElement == null) return '';
-    title = Utils.getTranslatedCode(context, campaign.campaignElement.name);
+    CampaignElement camElement =
+        CampaignElement.fromJson(jsonDecode(campaign.campaignElement));
+    List<LanguageStore> name = List<LanguageStore>.from(
+        camElement.name.map((x) => LanguageStore.fromJson(x)));
+    title = Utils.getTranslatedCode(context, name);
     if (title != lastTitle) {
       lastTitle = title;
       _offerDetailBloc.mainMenuPermissionSink
@@ -275,7 +280,11 @@ class _OffersDetailsState extends State<OfferDetails> {
   String _getImage(BuildContext context, Campaign campaign) {
     if (campaign == null) return '';
     if (campaign.campaignElement == null) return '';
-    return Utils.getTranslatedCodeFromImageId(campaign.campaignElement.imageId);
+    CampaignElement camElement =
+        CampaignElement.fromJson(jsonDecode(campaign.campaignElement));
+    List<LanguageStore> imageId = List<LanguageStore>.from(
+        camElement.imageId.map((x) => LanguageStore.fromJson(x)));
+    return Utils.getTranslatedCode(context, imageId);
   }
 
   _shareFiles(BuildContext buildContext, Campaign campaign) {
@@ -294,11 +303,17 @@ class _OffersDetailsState extends State<OfferDetails> {
       String description = '';
       if (campaign.campaignElement != null &&
           campaign.campaignElement.description != null) {
-        campaign.campaignElement.description.forEach((element) {
-          if (element.language == Language.EN_US) {
-            description = element.text;
-          }
-        });
+        CampaignElement camElement =
+            CampaignElement.fromJson(jsonDecode(campaign.campaignElement));
+        List<LanguageStore> descriptionList = List<LanguageStore>.from(
+            camElement.description.map((x) => LanguageStore.fromJson(x)));
+        description = Utils.getTranslatedCode(context, descriptionList);
+
+        // campaign.campaignElement.description.forEach((element) {
+        //   if (element.language == Language.EN_US) {
+        //     description = element.text;
+        //   }
+        // });
       }
 
       Share.share(description + "\n" + _getImage(buildContext, campaign),

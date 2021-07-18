@@ -13,6 +13,7 @@ import 'package:wayawaya/app/home/model/campaign_element.dart';
 import 'package:wayawaya/app/home/model/campaign_model.dart';
 import 'package:wayawaya/app/offers/model/detail_model.dart';
 import 'package:wayawaya/app/offers/model/voucher.dart';
+import 'package:wayawaya/common/model/language_store.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_images.dart';
 import 'package:wayawaya/utils/app_strings.dart';
@@ -30,13 +31,17 @@ class ItemOfferView extends StatelessWidget {
   String _getTitle(BuildContext context) {
     if (campaign == null) return '';
     if (campaign.campaignElement == null) return '';
-    return Utils.getTranslatedCode(context, campaign.campaignElement.name);
+    CampaignElement camElement = CampaignElement.fromJson(jsonDecode(campaign.campaignElement));
+    List<LanguageStore> name = List<LanguageStore>.from(camElement.name.map((x) => LanguageStore.fromJson(x)));
+    return Utils.getTranslatedCode(context, name);
   }
 
   String _getImage(BuildContext context) {
     if (campaign == null) return '';
     if (campaign.campaignElement == null) return '';
-    return Utils.getTranslatedCodeFromImageId(campaign.campaignElement.imageId);
+    CampaignElement camElement = CampaignElement.fromJson(jsonDecode(campaign.campaignElement));
+    List<LanguageStore> imageId = List<LanguageStore>.from(camElement.imageId.map((x) => LanguageStore.fromJson(x)));
+    return Utils.getTranslatedCode(context, imageId);
   }
 
   String _startDate(BuildContext context) {

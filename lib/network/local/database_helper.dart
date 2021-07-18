@@ -131,18 +131,38 @@ class DataBaseHelperCommon {
     Database _db = await instance.database;
     return await CampaignTable.getLauncherCampaignData(
         db: _db,
-        limit: 25,
-        offset: 0,
-        rid: "",
-        searchText: "",
+        limit: limit,
+        offset: offset,
+        rid: rid,
+        searchText: searchText,
         publish_date:
             Utils.getStringFromDate(DateTime.now(), AppString.DATE_FORMAT),
-        campaignType: "");
+        campaignType: campaignType);
   }
 
-  static Future deleteData() async{
+  static Future<List<Campaign>> getCampaignOffersAndEvents(
+      {final String campaingType,
+      final int limit,
+      final int offset,
+      final String searchText,
+      final String rid,
+      final String publish_date,
+      bool isCoupon}) async {
+    Database _db = await instance.database;
+    return await CampaignTable.getCampaignOffersAndEvents(
+        db: _db,
+        limit: limit,
+        offset: offset,
+        rid: rid,
+        searchText: searchText,
+        publish_date:
+            Utils.getStringFromDate(DateTime.now(), AppString.DATE_FORMAT),
+        campaingType: campaingType,
+        isCoupon: isCoupon);
+  }
+
+  static Future deleteData() async {
     Database _db = await instance.database;
     await _db.delete(CampaignTable.CAMPAIGN_TABLE_NAME);
   }
-
 }

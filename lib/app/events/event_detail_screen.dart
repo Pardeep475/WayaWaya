@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +12,7 @@ import 'package:wayawaya/app/events/view/item_event_detail_view.dart';
 import 'package:wayawaya/app/home/model/campaign_element.dart';
 import 'package:wayawaya/app/home/model/campaign_model.dart';
 import 'package:wayawaya/app/offers/model/detail_model.dart';
+import 'package:wayawaya/common/model/language_store.dart';
 import 'package:wayawaya/common/model/mall_profile_model.dart';
 import 'package:wayawaya/network/local/super_admin_database_helper.dart';
 import 'package:wayawaya/utils/app_color.dart';
@@ -42,7 +45,11 @@ class _EventDetailScreen extends State<EventDetailScreen> {
   _getTitle(BuildContext context, Campaign campaign) {
     if (campaign == null) return '';
     if (campaign.campaignElement == null) return '';
-    title = Utils.getTranslatedCode(context, campaign.campaignElement.name);
+    CampaignElement camElement =
+    CampaignElement.fromJson(jsonDecode(campaign.campaignElement));
+    List<LanguageStore> name = List<LanguageStore>.from(
+        camElement.name.map((x) => LanguageStore.fromJson(x)));
+    title = Utils.getTranslatedCode(context, name);
     if (title != lastTitle) {
       lastTitle = title;
       _eventDetailBloc.mainMenuPermissionSink
@@ -179,11 +186,11 @@ class _EventDetailScreen extends State<EventDetailScreen> {
     if (campaign.campaignElement == null) return '';
     if (campaign.campaignElement.description == null) return '';
     String description = '';
-    campaign.campaignElement.description.forEach((element) {
-      if (element.language == Language.EN_US) {
-        description = element.text;
-      }
-    });
+    CampaignElement camElement =
+    CampaignElement.fromJson(jsonDecode(campaign.campaignElement));
+    List<LanguageStore> descriptionList = List<LanguageStore>.from(
+        camElement.description.map((x) => LanguageStore.fromJson(x)));
+    description = Utils.getTranslatedCode(context, descriptionList);
 
     return description;
   }
@@ -226,7 +233,9 @@ class _EventDetailScreen extends State<EventDetailScreen> {
   _getTitleForCalender(BuildContext context, Campaign campaign) {
     if (campaign == null) return '';
     if (campaign.campaignElement == null) return '';
-    return Utils.getTranslatedCode(context, campaign.campaignElement.name);
+    CampaignElement camElement = CampaignElement.fromJson(jsonDecode(campaign.campaignElement));
+    List<LanguageStore> name = List<LanguageStore>.from(camElement.name.map((x) => LanguageStore.fromJson(x)));
+    return Utils.getTranslatedCode(context, name);
   }
 
   String _getTimingText(BuildContext context, Campaign campaign) {

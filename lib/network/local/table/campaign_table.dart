@@ -256,4 +256,62 @@ class CampaignTable {
     });
     return _mallList;
   }
+
+  static Future<List<Campaign>> getCampaignOffersAndEvents(
+      {Database db,
+      String campaingType,
+      final int limit,
+      final int offset,
+      final String searchText,
+      final String rid,
+      final String publish_date,
+      bool isCoupon}) async {
+    String whereClause = "";
+    String strType = "";
+    String searchQueryCondition = "";
+    String offerForRetailUnitCondition = "";
+    if (searchText != null && searchText.isNotEmpty) {
+      searchQueryCondition = " AND ( " + CampaignTable.COLUMN_CAMPAIGN_ELEMENT + " LIKE '%" + searchText + "%' ) ";
+    }
+    if (rid != null && rid.isNotEmpty) {
+      offerForRetailUnitCondition = " AND ( rid LIKE '%" + rid + "%') ";
+    }
+
+    if (campaingType.isNotEmpty) {
+      whereClause = " WHERE type='" + campaingType + "' AND " + CampaignTable.COLUMN_STATUS + "='approved' ";
+    } else {
+      whereClause = " WHERE " + CampaignTable.COLUMN_STATUS + "='approved' ";
+    }
+
+    if (campaingType.isNotEmpty && campaingType == "offer") {
+      strType = " AND (voucher NOT  LIKE '%\"is_coupon\": true%'  AND  voucher  NOT LIKE '%\"is_coupon\":true%')";
+    } else {
+      strType = " AND voucher NOT LIKE '%\"is_coupon\": " + isCoupon.toString() + "%'";
+    }
+
+    whereClause += " AND publish_date <= '" + publish_date + "'";
+
+    String query = "SELECT *, '' as shop_name FROM " + CampaignTable.CAMPAIGN_TABLE_NAME + " " +
+        whereClause +
+        searchQueryCondition +
+        offerForRetailUnitCondition +
+        strType +
+        " ORDER BY " + CampaignTable.COLUMN_START_DATE + " ASC" +
+        " LIMIT " + limit.toString() + " OFFSET " + offset.toString();
+
+    List<Map> data;
+
+    debugPrint('campaign_query:-  $query');
+
+    await db.transaction((txn) async {
+      data = await txn.rawQuery(query);
+    });
+    debugPrint('database_testing:-   ${data.length}');
+    // debugPrint('database_testing:-   $data');
+    List<Campaign> _mallList = [];
+    data.forEach((element) {
+      _mallList.add(Campaign.fromJson(element));
+    });
+    return _mallList;
+  }
 }
