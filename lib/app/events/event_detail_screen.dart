@@ -45,11 +45,19 @@ class _EventDetailScreen extends State<EventDetailScreen> {
   _getTitle(BuildContext context, Campaign campaign) {
     if (campaign == null) return '';
     if (campaign.campaignElement == null) return '';
-    CampaignElement camElement =
-    CampaignElement.fromJson(jsonDecode(campaign.campaignElement));
-    List<LanguageStore> name = List<LanguageStore>.from(
-        camElement.name.map((x) => LanguageStore.fromJson(x)));
-    title = Utils.getTranslatedCode(context, name);
+    try {
+      CampaignElement camElement =
+          campaignElementFromJson(campaign.campaignElement);
+      List<LanguageStore> name = List<LanguageStore>.from(
+          camElement.name.map((x) => LanguageStore.fromJson(x)));
+      title = Utils.getTranslatedCode(context, name);
+    } catch (e) {
+      CampaignElement camElement =
+          campaignElementFromJson(jsonDecode(campaign.campaignElement));
+      List<LanguageStore> name = List<LanguageStore>.from(
+          camElement.name.map((x) => LanguageStore.fromJson(x)));
+      title = Utils.getTranslatedCode(context, name);
+    }
     if (title != lastTitle) {
       lastTitle = title;
       _eventDetailBloc.mainMenuPermissionSink
@@ -186,11 +194,21 @@ class _EventDetailScreen extends State<EventDetailScreen> {
     if (campaign.campaignElement == null) return '';
     if (campaign.campaignElement.description == null) return '';
     String description = '';
-    CampaignElement camElement =
-    CampaignElement.fromJson(jsonDecode(campaign.campaignElement));
-    List<LanguageStore> descriptionList = List<LanguageStore>.from(
-        camElement.description.map((x) => LanguageStore.fromJson(x)));
-    description = Utils.getTranslatedCode(context, descriptionList);
+    if (campaign.campaignElement != null) {
+      try {
+        CampaignElement camElement =
+            campaignElementFromJson(campaign.campaignElement);
+        List<LanguageStore> name = List<LanguageStore>.from(
+            camElement.description.map((x) => LanguageStore.fromJson(x)));
+        description = Utils.getTranslatedCode(context, name);
+      } catch (e) {
+        CampaignElement camElement =
+            campaignElementFromJson(jsonDecode(campaign.campaignElement));
+        List<LanguageStore> name = List<LanguageStore>.from(
+            camElement.description.map((x) => LanguageStore.fromJson(x)));
+        description = Utils.getTranslatedCode(context, name);
+      }
+    }
 
     return description;
   }
@@ -233,9 +251,19 @@ class _EventDetailScreen extends State<EventDetailScreen> {
   _getTitleForCalender(BuildContext context, Campaign campaign) {
     if (campaign == null) return '';
     if (campaign.campaignElement == null) return '';
-    CampaignElement camElement = CampaignElement.fromJson(jsonDecode(campaign.campaignElement));
-    List<LanguageStore> name = List<LanguageStore>.from(camElement.name.map((x) => LanguageStore.fromJson(x)));
-    return Utils.getTranslatedCode(context, name);
+    try {
+      CampaignElement camElement =
+          campaignElementFromJson(campaign.campaignElement);
+      List<LanguageStore> name = List<LanguageStore>.from(
+          camElement.name.map((x) => LanguageStore.fromJson(x)));
+      return Utils.getTranslatedCode(context, name);
+    } catch (e) {
+      CampaignElement camElement =
+          campaignElementFromJson(jsonDecode(campaign.campaignElement));
+      List<LanguageStore> name = List<LanguageStore>.from(
+          camElement.name.map((x) => LanguageStore.fromJson(x)));
+      return Utils.getTranslatedCode(context, name);
+    }
   }
 
   String _getTimingText(BuildContext context, Campaign campaign) {

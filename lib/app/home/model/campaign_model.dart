@@ -93,7 +93,7 @@ class Campaign {
   // dynamic targetList;
   // String timePeriod;
   // dynamic triggerZoneList;
-  String type;
+  dynamic type;
   // dynamic viewResetCounter;
   dynamic voucher;
 

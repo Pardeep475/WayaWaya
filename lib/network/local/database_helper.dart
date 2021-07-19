@@ -41,12 +41,10 @@ class DataBaseHelperCommon {
   static Database _database;
 
   Future<Database> get database async {
-    if (_database != null) {
-      _database.close();
-      _database = null;
+    if (_database == null) {
+      _database = await _initiateDataBase();
     }
 
-    _database = await _initiateDataBase();
     return _database;
   }
 
@@ -164,5 +162,33 @@ class DataBaseHelperCommon {
   static Future deleteData() async {
     Database _db = await instance.database;
     await _db.delete(CampaignTable.CAMPAIGN_TABLE_NAME);
+    await _db.delete(BeaconTable.BEACON_TABLE_NAME);
+    await _db.delete(CategoriesTable.CATEGORY_TABLE_NAME);
+    await _db.delete(CinemasTable.CINEMAS_TABLE_NAME);
+    await _db.delete(EventTable.EVENT_TABLE_NAME);
+    await _db.delete(Favourites.FAVOURITES_TABLE_NAME);
+    await _db.delete(InTheMallTable.IN_THE_MALL_TABLE_NAME);
+    await _db.delete(LoyaltyTable.LOYALTY_TABLE_NAME);
+    await _db.delete(MallProfilesTable.TABLE_NAME_MALL_PROFILE);
+    await _db.delete(OfferTable.OFFER_TABLE_NAME);
+    await _db.delete(OmniChannelItemTable.OMNI_CHANNEL_TABLE_NAME);
+    await _db.delete(ParkingTable.PARKING_TABLE_NAME);
+    await _db.delete(RetailUnitCategoryMap.RETAIL_CATEGORY_MAP_TABLE_NAME);
+    await _db.delete(RetailUnitTable.RETAIL_UNIT_TABLE_NAME);
+    await _db.delete(ServicesTable.SERVICES_TABLE_NAME);
+    await _db.delete(TempLoyaltyUserPointTable.LOYALTY_USER_POINT_TABLE_NAME);
+    await _db.delete(TheMallTable.THE_MALL_TABLE_NAME);
+    await _db.delete(ThemesTable.THEME_TABLE_NAME);
+    await _db.delete(TriggerZoneTable.TRIGGER_ZONE_TABLE_NAME);
+    await _db.delete(VenuesTable.VENUES_TABLE_NAME);
+    return;
+  }
+
+  static Future deleteDataBase() async {
+    Database _db = await instance.database;
+    await _db.close();
+    Directory directory = await getApplicationDocumentsDirectory();
+    String path = join(directory.path, _dbName);
+    return await deleteDatabase(path);
   }
 }

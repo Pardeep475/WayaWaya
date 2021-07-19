@@ -25,11 +25,12 @@ class SyncService {
 
   static String lastUpdate;
 
-  static fetchAllSyncData() async {
+  static Future fetchAllSyncData() async {
     await setSyncDateQuery();
     // await compute(setSyncDateQuery, syncDate);
     // await fetchUpdateData(1);
     await fetchCampaignData(1);
+    return null;
   }
 
   static setSyncDateQuery() async {

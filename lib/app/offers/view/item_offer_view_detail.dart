@@ -20,17 +20,29 @@ class ItemOfferViewDetail extends StatelessWidget {
   String _getTitle(BuildContext context) {
     if (campaign == null) return '';
     if (campaign.campaignElement == null) return '';
-    CampaignElement camElement = CampaignElement.fromJson(jsonDecode(campaign.campaignElement));
-    List<LanguageStore> name = List<LanguageStore>.from(camElement.name.map((x) => LanguageStore.fromJson(x)));
-    return Utils.getTranslatedCode(context, name);
+    try{
+      CampaignElement camElement = campaignElementFromJson(campaign.campaignElement);
+      List<LanguageStore> name = List<LanguageStore>.from(camElement.name.map((x) => LanguageStore.fromJson(x)));
+      return Utils.getTranslatedCode(context, name);
+    }catch(e){
+      CampaignElement camElement = campaignElementFromJson(jsonDecode(campaign.campaignElement));
+      List<LanguageStore> name = List<LanguageStore>.from(camElement.name.map((x) => LanguageStore.fromJson(x)));
+      return Utils.getTranslatedCode(context, name);
+    }
   }
 
   String _getImage(BuildContext context) {
     if (campaign == null) return '';
     if (campaign.campaignElement == null) return '';
-    CampaignElement camElement = CampaignElement.fromJson(jsonDecode(campaign.campaignElement));
-    List<LanguageStore> imageId = List<LanguageStore>.from(camElement.imageId.map((x) => LanguageStore.fromJson(x)));
-    return Utils.getTranslatedCode(context, imageId);
+    try{
+      CampaignElement camElement = CampaignElement.fromJson(jsonDecode(campaign.campaignElement));
+      List<LanguageStore> imageId = List<LanguageStore>.from(camElement.imageId.map((x) => LanguageStore.fromJson(x)));
+      return Utils.getTranslatedCode(context, imageId);
+    }catch(e){
+      CampaignElement camElement = CampaignElement.fromJson(jsonDecode(jsonDecode(campaign.campaignElement)));
+      List<LanguageStore> imageId = List<LanguageStore>.from(camElement.imageId.map((x) => LanguageStore.fromJson(x)));
+      return Utils.getTranslatedCode(context, imageId);
+    }
   }
 
   String _startDate(BuildContext context) {

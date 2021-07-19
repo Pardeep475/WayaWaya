@@ -65,18 +65,18 @@ class HomeBloc {
                 Utils.getStringFromDate(DateTime.now(), AppString.DATE_FORMAT),
             campaignType: "");
 
-    if (campaignList.isEmpty) {
-      String defaultMall = await SessionManager.getDefaultMall();
-      campaignList = await ProfileDatabaseHelper.getLauncherCampaignData(
-          databasePath: defaultMall,
-          limit: 25,
-          offset: 0,
-          rid: "",
-          searchText: "",
-          publish_date:
-              Utils.getStringFromDate(DateTime.now(), AppString.DATE_FORMAT),
-          campaignType: "");
-    }
+    // if (campaignList.isEmpty) {
+    //   String defaultMall = await SessionManager.getDefaultMall();
+    //   campaignList = await ProfileDatabaseHelper.getLauncherCampaignData(
+    //       databasePath: defaultMall,
+    //       limit: 25,
+    //       offset: 0,
+    //       rid: "",
+    //       searchText: "",
+    //       publish_date:
+    //           Utils.getStringFromDate(DateTime.now(), AppString.DATE_FORMAT),
+    //       campaignType: "");
+    // }
 
     if (campaignList.isNotEmpty) {
       _differnicateCatagories(campaignList);
@@ -89,68 +89,112 @@ class HomeBloc {
       switch (element.type) {
         case AppString.OFFER_CAMPAIGN:
           {
-            // CampaignElement campaignElement = element.campaignElement;
-            CampaignElement campaignElement =
-                CampaignElement.fromJson(jsonDecode(element.campaignElement));
-            List<LanguageStore> imageId = List<LanguageStore>.from(
-                campaignElement.imageId.map((x) => LanguageStore.fromJson(x)));
-            imageId.forEach((campaignModel) {
-              // ignore: unrelated_type_equality_checks
-              if (campaignModel.language == 'en_US') {
-                topCampaignList.add(TopCampaignModel(
-                    imgUrl: campaignModel.text,
-                    tag: AppString.offer,
-                    campaign: element));
-              }
-            });
+            CampaignElement campaignElement;
+            try {
+              campaignElement =
+                  CampaignElement.fromJson(jsonDecode(element.campaignElement));
+            } catch (e) {
+              campaignElement = CampaignElement.fromJson(
+                  jsonDecode(jsonDecode(element.campaignElement)));
+            }
+
+            try {
+              List<LanguageStore> imageId = List<LanguageStore>.from(
+                  campaignElement.imageId
+                      .map((x) => LanguageStore.fromJson(x)));
+              imageId.forEach((campaignModel) {
+                // ignore: unrelated_type_equality_checks
+                if (campaignModel.language == 'en_US') {
+                  topCampaignList.add(TopCampaignModel(
+                      imgUrl: campaignModel.text,
+                      tag: AppString.offer,
+                      campaign: element));
+                }
+              });
+            } catch (e) {}
 
             break;
           }
         case AppString.EVENT_CAMPAIGN:
           {
-            CampaignElement campaignElement =
-                CampaignElement.fromJson(jsonDecode(element.campaignElement));
-            List<LanguageStore> imageId = List<LanguageStore>.from(
-                campaignElement.imageId.map((x) => LanguageStore.fromJson(x)));
-            imageId.forEach((campaignModel) {
-              // ignore: unrelated_type_equality_checks
-              if (campaignModel.language == 'en_US') {
-                topCampaignList.add(TopCampaignModel(
-                    imgUrl: campaignModel.text,
-                    tag: AppString.event,
-                    campaign: element));
-              }
-            });
+            CampaignElement campaignElement;
+            try {
+              campaignElement =
+                  CampaignElement.fromJson(jsonDecode(element.campaignElement));
+            } catch (e) {
+              campaignElement = CampaignElement.fromJson(
+                  jsonDecode(jsonDecode(element.campaignElement)));
+            }
 
+            try {
+              List<LanguageStore> imageId = List<LanguageStore>.from(
+                  campaignElement.imageId
+                      .map((x) => LanguageStore.fromJson(x)));
+              imageId.forEach((campaignModel) {
+                // ignore: unrelated_type_equality_checks
+                if (campaignModel.language == 'en_US') {
+                  topCampaignList.add(TopCampaignModel(
+                      imgUrl: campaignModel.text,
+                      tag: AppString.event,
+                      campaign: element));
+                }
+              });
+            } catch (e) {
+              debugPrint('database_exception:-  $e');
+            }
             break;
           }
         case AppString.WHATSON_CAMPAIGN:
           {
-            CampaignElement campaignElement =
-                CampaignElement.fromJson(json.decode(element.campaignElement));
-            List<LanguageStore> imageId = List<LanguageStore>.from(
-                campaignElement.imageId.map((x) => LanguageStore.fromJson(x)));
-            imageId.forEach((element) {
-              // ignore: unrelated_type_equality_checks
-              if (element.language == 'en_US') {
-                whatsonCampaignList.add(element.text);
-              }
-            });
+            CampaignElement campaignElement;
+            try {
+              campaignElement =
+                  CampaignElement.fromJson(jsonDecode(element.campaignElement));
+            } catch (e) {
+              campaignElement = CampaignElement.fromJson(
+                  jsonDecode(jsonDecode(element.campaignElement)));
+            }
+
+            try {
+              List<LanguageStore> imageId = List<LanguageStore>.from(
+                  campaignElement.imageId
+                      .map((x) => LanguageStore.fromJson(x)));
+              imageId.forEach((element) {
+                // ignore: unrelated_type_equality_checks
+                if (element.language == 'en_US') {
+                  whatsonCampaignList.add(element.text);
+                }
+              });
+            } catch (e) {
+              debugPrint('database_exception:-  $e');
+            }
 
             break;
           }
         case AppString.ACTIVITIES_CAMPAIGN:
           {
-            CampaignElement campaignElement =
-                CampaignElement.fromJson(jsonDecode(element.campaignElement));
-            List<LanguageStore> imageId = List<LanguageStore>.from(
-                campaignElement.imageId.map((x) => LanguageStore.fromJson(x)));
-            imageId.forEach((element) {
-              // ignore: unrelated_type_equality_checks
-              if (element.language == 'en_US') {
-                activitiesCampaignList.add(element.text);
-              }
-            });
+            CampaignElement campaignElement;
+            try {
+              campaignElement =
+                  CampaignElement.fromJson(jsonDecode(element.campaignElement));
+            } catch (e) {
+              campaignElement = CampaignElement.fromJson(
+                  jsonDecode(jsonDecode(element.campaignElement)));
+            }
+
+            try {
+              List<LanguageStore> imageId = List<LanguageStore>.from(
+                  campaignElement.imageId
+                      .map((x) => LanguageStore.fromJson(x)));
+              imageId.forEach((element) {
+                // ignore: unrelated_type_equality_checks
+                if (element.language == 'en_US') {
+                  activitiesCampaignList.add(element.text);
+                }
+              });
+            } catch (e) {
+              debugPrint('database_exception:-  $e');
+            }
             break;
           }
       }

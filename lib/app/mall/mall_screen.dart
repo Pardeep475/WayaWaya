@@ -2,12 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:wayawaya/common/model/mall_profile_model.dart';
 import 'package:wayawaya/models/omni_channel_item_model/omni_channel_item_model.dart';
+import 'package:wayawaya/network/local/database_helper.dart';
 import 'package:wayawaya/network/local/profile_database_helper.dart';
 import 'package:wayawaya/network/local/sync_service.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_images.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/session_manager.dart';
+import 'package:wayawaya/utils/utils.dart';
 import 'bloc/mall_bloc.dart';
 
 class MallScreen extends StatefulWidget {
@@ -65,14 +67,28 @@ class _MallScreenState extends State<MallScreen> {
                   },
                   itemBuilder: (_, index) {
                     return InkWell(
-                      onTap: () async{
-                        SessionManager.setFirstTime(true);
-                        SessionManager.setDefaultMall(snapshot.data[index].identifier);
-                        SessionManager.setAuthHeader(snapshot.data[index].key);
-                        SessionManager.setSmallDefaultMallData(snapshot.data[index].venue_data);
-                        await SyncService.fetchAllSyncData();
-                        Navigator.pushReplacementNamed(
-                            context, AppString.SPLASH_SCREEN_ROUTE);
+                      onTap: () async {
+                        try {
+                          Utils.commonProgressDialog(context);
+
+                          SessionManager.setFirstTime(true);
+                          SessionManager.setDefaultMall(
+                              snapshot.data[index].identifier);
+                          SessionManager.setAuthHeader(
+                              snapshot.data[index].key);
+                          SessionManager.setSmallDefaultMallData(
+                              snapshot.data[index].venue_data);
+                          await DataBaseHelperCommon.deleteData();
+                          int count =
+                              await DataBaseHelperCommon.getCampaignLength();
+                          debugPrint('count_of_campaign:-  $count');
+                          await SyncService.fetchAllSyncData();
+                        } catch (e) {
+                          Navigator.pop(context);
+                        } finally {
+                          Navigator.pushNamedAndRemoveUntil(context,
+                              AppString.SPLASH_SCREEN_ROUTE, (route) => false);
+                        }
                       },
                       child: Container(
                         height: 125,

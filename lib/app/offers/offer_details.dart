@@ -48,11 +48,19 @@ class _OffersDetailsState extends State<OfferDetails> {
   _getTitle(BuildContext context, Campaign campaign) {
     if (campaign == null) return '';
     if (campaign.campaignElement == null) return '';
-    CampaignElement camElement =
-        CampaignElement.fromJson(jsonDecode(campaign.campaignElement));
-    List<LanguageStore> name = List<LanguageStore>.from(
-        camElement.name.map((x) => LanguageStore.fromJson(x)));
-    title = Utils.getTranslatedCode(context, name);
+    try {
+      CampaignElement camElement =
+          campaignElementFromJson(campaign.campaignElement);
+      List<LanguageStore> name = List<LanguageStore>.from(
+          camElement.name.map((x) => LanguageStore.fromJson(x)));
+      title = Utils.getTranslatedCode(context, name);
+    } catch (e) {
+      CampaignElement camElement =
+          campaignElementFromJson(jsonDecode(campaign.campaignElement));
+      List<LanguageStore> name = List<LanguageStore>.from(
+          camElement.name.map((x) => LanguageStore.fromJson(x)));
+      title = Utils.getTranslatedCode(context, name);
+    }
     if (title != lastTitle) {
       lastTitle = title;
       _offerDetailBloc.mainMenuPermissionSink
@@ -280,11 +288,19 @@ class _OffersDetailsState extends State<OfferDetails> {
   String _getImage(BuildContext context, Campaign campaign) {
     if (campaign == null) return '';
     if (campaign.campaignElement == null) return '';
-    CampaignElement camElement =
-        CampaignElement.fromJson(jsonDecode(campaign.campaignElement));
-    List<LanguageStore> imageId = List<LanguageStore>.from(
-        camElement.imageId.map((x) => LanguageStore.fromJson(x)));
-    return Utils.getTranslatedCode(context, imageId);
+    try {
+      CampaignElement camElement =
+          CampaignElement.fromJson(jsonDecode(campaign.campaignElement));
+      List<LanguageStore> imageId = List<LanguageStore>.from(
+          camElement.imageId.map((x) => LanguageStore.fromJson(x)));
+      return Utils.getTranslatedCode(context, imageId);
+    } catch (e) {
+      CampaignElement camElement = CampaignElement.fromJson(
+          jsonDecode(jsonDecode(campaign.campaignElement)));
+      List<LanguageStore> imageId = List<LanguageStore>.from(
+          camElement.imageId.map((x) => LanguageStore.fromJson(x)));
+      return Utils.getTranslatedCode(context, imageId);
+    }
   }
 
   _shareFiles(BuildContext buildContext, Campaign campaign) {
@@ -301,19 +317,20 @@ class _OffersDetailsState extends State<OfferDetails> {
       }
 
       String description = '';
-      if (campaign.campaignElement != null &&
-          campaign.campaignElement.description != null) {
-        CampaignElement camElement =
-            CampaignElement.fromJson(jsonDecode(campaign.campaignElement));
-        List<LanguageStore> descriptionList = List<LanguageStore>.from(
-            camElement.description.map((x) => LanguageStore.fromJson(x)));
-        description = Utils.getTranslatedCode(context, descriptionList);
-
-        // campaign.campaignElement.description.forEach((element) {
-        //   if (element.language == Language.EN_US) {
-        //     description = element.text;
-        //   }
-        // });
+      if (campaign.campaignElement != null) {
+        try {
+          CampaignElement camElement =
+              campaignElementFromJson(campaign.campaignElement);
+          List<LanguageStore> name = List<LanguageStore>.from(
+              camElement.description.map((x) => LanguageStore.fromJson(x)));
+          description = Utils.getTranslatedCode(buildContext, name);
+        } catch (e) {
+          CampaignElement camElement =
+              campaignElementFromJson(jsonDecode(campaign.campaignElement));
+          List<LanguageStore> name = List<LanguageStore>.from(
+              camElement.description.map((x) => LanguageStore.fromJson(x)));
+          description = Utils.getTranslatedCode(buildContext, name);
+        }
       }
 
       Share.share(description + "\n" + _getImage(buildContext, campaign),
