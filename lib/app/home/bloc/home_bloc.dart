@@ -55,27 +55,28 @@ class HomeBloc {
   List<TopCampaignModel> topCampaignList = [];
 
   getAllCampaign() async {
-    // String defaultMall = await SessionManager.getDefaultMall();
-    // List<Campaign> campaignList =
-    //     await ProfileDatabaseHelper.getLauncherCampaignData(
-    //         databasePath: defaultMall,
-    //         limit: 25,
-    //         offset: 0,
-    //         rid: "",
-    //         searchText: "",
-    //         publish_date:
-    //             Utils.getStringFromDate(DateTime.now(), AppString.DATE_FORMAT),
-    //         campaignType: "");
-
     List<Campaign> campaignList =
-    await DataBaseHelperCommon.getLauncherCampaignData(
-        limit: 25,
-        offset: 0,
-        rid: "",
-        searchText: "",
-        publish_date:
-        Utils.getStringFromDate(DateTime.now(), AppString.DATE_FORMAT),
-        campaignType: "");
+        await DataBaseHelperCommon.getLauncherCampaignData(
+            limit: 25,
+            offset: 0,
+            rid: "",
+            searchText: "",
+            publish_date:
+                Utils.getStringFromDate(DateTime.now(), AppString.DATE_FORMAT),
+            campaignType: "");
+
+    if (campaignList.isEmpty) {
+      String defaultMall = await SessionManager.getDefaultMall();
+      campaignList = await ProfileDatabaseHelper.getLauncherCampaignData(
+          databasePath: defaultMall,
+          limit: 25,
+          offset: 0,
+          rid: "",
+          searchText: "",
+          publish_date:
+              Utils.getStringFromDate(DateTime.now(), AppString.DATE_FORMAT),
+          campaignType: "");
+    }
 
     if (campaignList.isNotEmpty) {
       _differnicateCatagories(campaignList);
@@ -89,8 +90,10 @@ class HomeBloc {
         case AppString.OFFER_CAMPAIGN:
           {
             // CampaignElement campaignElement = element.campaignElement;
-            CampaignElement campaignElement = CampaignElement.fromJson(jsonDecode(element.campaignElement));
-            List<LanguageStore> imageId = List<LanguageStore>.from(campaignElement.imageId.map((x) => LanguageStore.fromJson(x)));
+            CampaignElement campaignElement =
+                CampaignElement.fromJson(jsonDecode(element.campaignElement));
+            List<LanguageStore> imageId = List<LanguageStore>.from(
+                campaignElement.imageId.map((x) => LanguageStore.fromJson(x)));
             imageId.forEach((campaignModel) {
               // ignore: unrelated_type_equality_checks
               if (campaignModel.language == 'en_US') {
@@ -105,8 +108,10 @@ class HomeBloc {
           }
         case AppString.EVENT_CAMPAIGN:
           {
-            CampaignElement campaignElement = CampaignElement.fromJson(jsonDecode(element.campaignElement));
-            List<LanguageStore> imageId = List<LanguageStore>.from(campaignElement.imageId.map((x) => LanguageStore.fromJson(x)));
+            CampaignElement campaignElement =
+                CampaignElement.fromJson(jsonDecode(element.campaignElement));
+            List<LanguageStore> imageId = List<LanguageStore>.from(
+                campaignElement.imageId.map((x) => LanguageStore.fromJson(x)));
             imageId.forEach((campaignModel) {
               // ignore: unrelated_type_equality_checks
               if (campaignModel.language == 'en_US') {
@@ -121,8 +126,10 @@ class HomeBloc {
           }
         case AppString.WHATSON_CAMPAIGN:
           {
-            CampaignElement campaignElement = CampaignElement.fromJson(jsonDecode(element.campaignElement));
-            List<LanguageStore> imageId = List<LanguageStore>.from(campaignElement.imageId.map((x) => LanguageStore.fromJson(x)));
+            CampaignElement campaignElement =
+                CampaignElement.fromJson(json.decode(element.campaignElement));
+            List<LanguageStore> imageId = List<LanguageStore>.from(
+                campaignElement.imageId.map((x) => LanguageStore.fromJson(x)));
             imageId.forEach((element) {
               // ignore: unrelated_type_equality_checks
               if (element.language == 'en_US') {
@@ -134,8 +141,10 @@ class HomeBloc {
           }
         case AppString.ACTIVITIES_CAMPAIGN:
           {
-            CampaignElement campaignElement = CampaignElement.fromJson(jsonDecode(element.campaignElement));
-            List<LanguageStore> imageId = List<LanguageStore>.from(campaignElement.imageId.map((x) => LanguageStore.fromJson(x)));
+            CampaignElement campaignElement =
+                CampaignElement.fromJson(jsonDecode(element.campaignElement));
+            List<LanguageStore> imageId = List<LanguageStore>.from(
+                campaignElement.imageId.map((x) => LanguageStore.fromJson(x)));
             imageId.forEach((element) {
               // ignore: unrelated_type_equality_checks
               if (element.language == 'en_US') {

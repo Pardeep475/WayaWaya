@@ -3,6 +3,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:wayawaya/common/model/mall_profile_model.dart';
 import 'package:wayawaya/network/local/profile_database_helper.dart';
 import 'package:wayawaya/network/local/super_admin_database_helper.dart';
+import 'package:wayawaya/network/local/sync_service.dart';
 import 'package:wayawaya/utils/app_images.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/session_manager.dart';
@@ -18,8 +19,9 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      _confirmLocAlways().then((value) {
+      _confirmLocAlways().then((value) async {
         _openFurtherScreen();
+        await SyncService.fetchAllSyncData();
       });
     });
   }
@@ -48,8 +50,7 @@ class _SplashScreenState extends State<SplashScreen> {
     String defaultMall = await SessionManager.getDefaultMall();
     if (defaultMall == null || defaultMall.isEmpty) {
       List<MallProfileModel> _mallList =
-          await SuperAdminDatabaseHelper.getDefaultVenueProfile(
-              defaultMall);
+          await SuperAdminDatabaseHelper.getDefaultVenueProfile(defaultMall);
       debugPrint('database_testing:-   ${_mallList.length}');
       if (_mallList.length > 0) {
         SessionManager.setDefaultMall(_mallList[0].identifier);

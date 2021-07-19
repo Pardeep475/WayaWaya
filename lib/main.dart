@@ -23,6 +23,7 @@ import 'package:wayawaya/app/search/search_screen.dart';
 import 'package:wayawaya/app/settings/settings_screen.dart';
 import 'package:wayawaya/app/shop/shop_detail_screen.dart';
 import 'package:wayawaya/app/shop/shop_screen.dart';
+import 'package:wayawaya/network/local/sync_service.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/session_manager.dart';
 import 'package:wayawaya/utils/size_config.dart';
@@ -36,9 +37,6 @@ import 'network/local/super_admin_database_helper.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // SuperAdminDatabaseHelper _superAdminDatabaseHelper =
-  //     SuperAdminDatabaseHelper();
-  // await _superAdminDatabaseHelper.initDataBase();
   Geofence.initialize();
   await SuperAdminDatabaseHelper.initDataBase();
   bool isFirstTime = await SessionManager.isFirstTime();
@@ -64,6 +62,10 @@ class MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     _getCurrentDeviceInfo();
+  }
+
+  updateDataToDatabase() async{
+
   }
 
   @override
@@ -289,7 +291,9 @@ class MyAppState extends State<MyApp> {
       SessionManager.setCurrentDevice(finalDevice ?? ""); // "Moto G (4)"
     } else {
       IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
-      debugPrint('device_info_testing ${iosInfo.utsname.machine}'); //
+      debugPrint('deviceTesting:- version:- ${iosInfo.utsname.version}\nrelease:- ${iosInfo.utsname.release}\nnodename:- ${iosInfo.utsname.nodename}\machine:- ${iosInfo.utsname.machine}\nsysname:- ${iosInfo.utsname.sysname}');
+      debugPrint(
+          'device_info_testing:- ${'${iosInfo.utsname.version}${AppString.DEVICE_SEPARATOR}${iosInfo.utsname.release}${AppString.DEVICE_SEPARATOR}APPLE${iosInfo.utsname.nodename}'.toUpperCase().trim()}');
       SessionManager.setCurrentDevice(iosInfo.utsname.machine ?? "");
     }
   }

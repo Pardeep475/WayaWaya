@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:wayawaya/common/model/mall_profile_model.dart';
 import 'package:wayawaya/models/omni_channel_item_model/omni_channel_item_model.dart';
 import 'package:wayawaya/network/local/profile_database_helper.dart';
+import 'package:wayawaya/network/local/sync_service.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_images.dart';
 import 'package:wayawaya/utils/app_strings.dart';
@@ -66,12 +67,10 @@ class _MallScreenState extends State<MallScreen> {
                     return InkWell(
                       onTap: () async{
                         SessionManager.setFirstTime(true);
-                        SessionManager.setDefaultMall(
-                            snapshot.data[index].identifier);
+                        SessionManager.setDefaultMall(snapshot.data[index].identifier);
                         SessionManager.setAuthHeader(snapshot.data[index].key);
-                        SessionManager.setSmallDefaultMallData(
-                            snapshot.data[index].venue_data);
-
+                        SessionManager.setSmallDefaultMallData(snapshot.data[index].venue_data);
+                        await SyncService.fetchAllSyncData();
                         Navigator.pushReplacementNamed(
                             context, AppString.SPLASH_SCREEN_ROUTE);
                       },

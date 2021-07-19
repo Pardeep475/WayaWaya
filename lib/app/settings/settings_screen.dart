@@ -159,15 +159,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
       case AppString.my_favourites:
         {
           debugPrint('settings_click_testing:-  ${settingsModel.title}');
-          // await SyncService.fetchAllSyncData();
+          await SyncService.fetchAllSyncData();
           break;
         }
       case AppString.privacy_policy:
         {
           debugPrint('settings_click_testing:-  ${settingsModel.title}');
-          _settingsBloc.privacyPolicyOnClick(context);
+          // _settingsBloc.privacyPolicyOnClick(context);
 
-          // DataBaseHelperCommon.deleteData();
+          DataBaseHelperCommon.deleteData();
 
           break;
         }
@@ -176,7 +176,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           debugPrint('settings_click_testing:-  ${settingsModel.title}');
           _settingsBloc.termAndConditionOnClick(context);
           // _implementLocalDb();
-          // _settingsBloc.syncCampaign(0);
+          _settingsBloc.syncCampaign(0);
           break;
         }
     }

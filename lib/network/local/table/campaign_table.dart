@@ -150,11 +150,19 @@ class CampaignTable {
   static Future<int> insertCampaignTable(
       {Database db, Map<String, dynamic> row, String campaignId}) async {
     if (campaignId == null) {
-      return await db.insert(CAMPAIGN_TABLE_NAME, row);
+      try{
+        return db.insert(CAMPAIGN_TABLE_NAME, row);
+      }catch(e){
+        debugPrint('database_insert:-  $e');
+      }
     } else {
       dynamic campaign = await getCampaignById(db, campaignId);
       if (campaign == null || campaign.length == 0 || campaign.length < 0) {
-        return db.insert(CAMPAIGN_TABLE_NAME, row);
+        try{
+          return db.insert(CAMPAIGN_TABLE_NAME, row);
+        }catch(e){
+          debugPrint('database_insert:-  $e');
+        }
       } else {
         return db.update(CAMPAIGN_TABLE_NAME, row,
             where: '$COLUMN_ID = ?', whereArgs: [campaignId]);
@@ -183,8 +191,13 @@ class CampaignTable {
 
   static Future<int> updateCampaignTable(
       Database db, Map<String, dynamic> row, String campaignId) async {
-    return await db.update(CAMPAIGN_TABLE_NAME, row,
-        where: '$COLUMN_ID = ?', whereArgs: [campaignId]);
+    try{
+      return await db.update(CAMPAIGN_TABLE_NAME, row,
+          where: '$COLUMN_ID = ?', whereArgs: [campaignId]);
+    }catch(e){
+      debugPrint('database_update:-  $e');
+    }
+
   }
 
   static Future<dynamic> getCampaignById(Database db, String campaignId) async {

@@ -33,7 +33,7 @@ class CommonImageWidget extends StatelessWidget {
           List<Campaign> _listOfCampaign = [];
           _listOfCampaign.add(campaign);
           DetailModel _detailModel =
-          DetailModel(listOfCampaign: _listOfCampaign, position: 0);
+              DetailModel(listOfCampaign: _listOfCampaign, position: 0);
           Navigator.pushNamed(context, AppString.EVENT_DETAILS_ROUTE,
               arguments: _detailModel);
         }
@@ -84,8 +84,8 @@ class CommonImageWidget extends StatelessWidget {
                   return Container(
                     child: Center(
                       child: CircularProgressIndicator(
-                        valueColor: new AlwaysStoppedAnimation<Color>(
-                            AppColor.primaryDark),
+                        valueColor:
+                            new AlwaysStoppedAnimation<Color>(AppColor.white),
                       ),
                     ),
                   );

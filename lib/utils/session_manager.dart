@@ -11,8 +11,7 @@ class SessionManager {
 
   SessionManager._internal();
 
-  static final Future<SharedPreferences> _pref =
-      SharedPreferences.getInstance();
+  static final Future<SharedPreferences> _pref = SharedPreferences.getInstance();
 
   static void setFirstTime(bool isFirstTime) {
     _pref.then((value) => value.setBool(AppString.IS_FIRST_TIME, isFirstTime));
@@ -158,7 +157,7 @@ class SessionManager {
     _pref.then((value) => value.setString(AppString.SYNC_DATE, syncDate));
   }
 
-  static Future<String> getSyncDate() {
+  static Future<String> getSyncDate() async {
     return _pref.then((value) => value.getString(AppString.SYNC_DATE));
   }
 

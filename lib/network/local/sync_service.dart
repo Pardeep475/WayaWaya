@@ -1,4 +1,6 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:wayawaya/app/home/model/campaign_model.dart';
 import 'package:wayawaya/network/live/repository/api_repository.dart';
 import 'package:wayawaya/network/model/campaign/campaign_api_response.dart';
@@ -25,10 +27,10 @@ class SyncService {
 
   static fetchAllSyncData() async {
     await setSyncDateQuery();
+    // await compute(setSyncDateQuery, syncDate);
     // await fetchUpdateData(1);
     await fetchCampaignData(1);
   }
-
 
   static setSyncDateQuery() async {
     String syncDate = await SessionManager.getSyncDate();
@@ -38,6 +40,7 @@ class SyncService {
       lastUpdate =
           Utils.getStringFromDate(Utils.firstDate(), AppString.DATE_FORMAT);
     }
+    return null;
   }
 
   static fetchUpdateData(int page) {
@@ -54,13 +57,13 @@ class SyncService {
     debugPrint('CountOfCampaign:-  $count');
     if (count == 0 || count < 0) {
       await syncCampaignDataFromDatabase();
-      Utils.checkConnectivity().then((value) async{
+      Utils.checkConnectivity().then((value) async {
         if (value != null && value) {
           await syncCampaignDataFromNetwork(page);
         }
       });
     } else {
-      Utils.checkConnectivity().then((value) async{
+      Utils.checkConnectivity().then((value) async {
         if (value != null && value) {
           await syncCampaignDataFromNetwork(page);
         }
@@ -120,6 +123,6 @@ class SyncService {
     int count = await DataBaseHelperCommon.getCampaignLength();
     debugPrint('CountOfCampaign:-  $count');
   }
-  // end campaign data
+// end campaign data
 
 }
