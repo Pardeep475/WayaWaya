@@ -33,7 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _homeBloc = HomeBloc();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _homeBloc.fetchMenuButtons();
-      _homeBloc.getAllCampaign();
+      _homeBloc.getAllCampaign(context);
     });
   }
 

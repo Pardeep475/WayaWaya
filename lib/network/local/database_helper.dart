@@ -180,8 +180,7 @@ class DataBaseHelperCommon {
     await _db.delete(TheMallTable.THE_MALL_TABLE_NAME);
     await _db.delete(ThemesTable.THEME_TABLE_NAME);
     await _db.delete(TriggerZoneTable.TRIGGER_ZONE_TABLE_NAME);
-    await _db.delete(VenuesTable.VENUES_TABLE_NAME);
-    return;
+    return await _db.delete(VenuesTable.VENUES_TABLE_NAME);
   }
 
   static Future deleteDataBase() async {

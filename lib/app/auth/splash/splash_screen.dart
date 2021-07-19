@@ -20,8 +20,11 @@ class _SplashScreenState extends State<SplashScreen> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       _confirmLocAlways().then((value) async {
-        _openFurtherScreen();
-        await SyncService.fetchAllSyncData();
+        await SyncService.fetchAllSyncData().then((value) {
+          Future.delayed(Duration(seconds: 3), () {
+            _openFurtherScreen();
+          });
+        });
       });
     });
   }
@@ -31,61 +34,61 @@ class _SplashScreenState extends State<SplashScreen> {
     var status2 = await Permission.locationAlways.request();
     if (status2.isGranted) {
       debugPrint('Always');
-      Navigator.pushNamedAndRemoveUntil(
-          context, AppString.LOGIN_SCREEN_ROUTE, (route) => false);
+      // Navigator.pushNamedAndRemoveUntil(
+      //     context, AppString.LOGIN_SCREEN_ROUTE, (route) => false);
     } else if (status2.isPermanentlyDenied) {
       debugPrint('Only while using');
-      Navigator.pushNamedAndRemoveUntil(
-          context, AppString.LOGIN_SCREEN_ROUTE, (route) => false);
+      // Navigator.pushNamedAndRemoveUntil(
+      //     context, AppString.LOGIN_SCREEN_ROUTE, (route) => false);
     } else {
       debugPrint('Only while using');
-      Navigator.pushNamedAndRemoveUntil(
-          context, AppString.LOGIN_SCREEN_ROUTE, (route) => false);
+      // Navigator.pushNamedAndRemoveUntil(
+      //     context, AppString.LOGIN_SCREEN_ROUTE, (route) => false);
     }
 
     return;
   }
 
   _openFurtherScreen() async {
-    String defaultMall = await SessionManager.getDefaultMall();
-    if (defaultMall == null || defaultMall.isEmpty) {
-      List<MallProfileModel> _mallList =
-          await SuperAdminDatabaseHelper.getDefaultVenueProfile(defaultMall);
-      debugPrint('database_testing:-   ${_mallList.length}');
-      if (_mallList.length > 0) {
-        SessionManager.setDefaultMall(_mallList[0].identifier);
-        SessionManager.setAuthHeader(_mallList[0].key);
-        SessionManager.setSmallDefaultMallData(_mallList[0].venue_data);
+    try {
+      String defaultMall = await SessionManager.getDefaultMall();
+      if (defaultMall == null || defaultMall.isEmpty) {
+        List<MallProfileModel> _mallList =
+            await SuperAdminDatabaseHelper.getDefaultVenueProfile(defaultMall);
+        debugPrint('database_testing:-   ${_mallList.length}');
+        if (_mallList.length > 0) {
+          SessionManager.setDefaultMall(_mallList[0].identifier);
+          SessionManager.setAuthHeader(_mallList[0].key);
+          SessionManager.setSmallDefaultMallData(_mallList[0].venue_data);
+        }
       }
-    }
 
-    await ProfileDatabaseHelper.initDataBase(defaultMall);
-
-    bool isFirstTime = await SessionManager.getISLoginScreenVisible();
-    if (!isFirstTime) {
-      // open Login screen
-      // Navigator.pushReplacementNamed(context, AppString.LOGIN_SCREEN_ROUTE);
-      Navigator.pushNamedAndRemoveUntil(
-          context, AppString.LOGIN_SCREEN_ROUTE, (route) => false);
-    } else {
-      // open Home screen
-      // Navigator.pushReplacementNamed(context, AppString.HOME_SCREEN_ROUTE);
-      Navigator.pushNamedAndRemoveUntil(
-          context, AppString.HOME_SCREEN_ROUTE, (route) => false);
-      // Navigator.pushReplacementNamed(context, AppString.HOME_SCREEN_ROUTE);
+      await ProfileDatabaseHelper.initDataBase(defaultMall);
+    } catch (e) {} finally {
+      bool isFirstTime = await SessionManager.getISLoginScreenVisible();
+      debugPrint('isFirstTimeSplash:-   $isFirstTime');
+      if (!isFirstTime) {
+        Navigator.pushNamedAndRemoveUntil(
+            context, AppString.LOGIN_SCREEN_ROUTE, (route) => false);
+      } else {
+        Navigator.pushNamedAndRemoveUntil(
+            context, AppString.HOME_SCREEN_ROUTE, (route) => false);
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          image: const DecorationImage(
-            image: const AssetImage(
-              AppImages.icon_splash,
+    return SafeArea(
+      child: Scaffold(
+        body: Container(
+          decoration: const BoxDecoration(
+            image: const DecorationImage(
+              image: const AssetImage(
+                AppImages.app_splashscreen,
+              ),
+              fit: BoxFit.fill,
             ),
-            fit: BoxFit.cover,
           ),
         ),
       ),

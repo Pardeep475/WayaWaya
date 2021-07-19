@@ -54,7 +54,17 @@ class HomeBloc {
 
   List<TopCampaignModel> topCampaignList = [];
 
-  getAllCampaign() async {
+  getAllCampaign(BuildContext context) async {
+    Utils.commonProgressDialog(context);
+
+    getCampaignData().then((value) {
+      Navigator.pop(context);
+      _differnicateCatagories(value);
+      campaignSink.add(value);
+    });
+  }
+
+  Future<List<Campaign>> getCampaignData() async {
     List<Campaign> campaignList =
         await DataBaseHelperCommon.getLauncherCampaignData(
             limit: 25,
@@ -65,23 +75,12 @@ class HomeBloc {
                 Utils.getStringFromDate(DateTime.now(), AppString.DATE_FORMAT),
             campaignType: "");
 
-    // if (campaignList.isEmpty) {
-    //   String defaultMall = await SessionManager.getDefaultMall();
-    //   campaignList = await ProfileDatabaseHelper.getLauncherCampaignData(
-    //       databasePath: defaultMall,
-    //       limit: 25,
-    //       offset: 0,
-    //       rid: "",
-    //       searchText: "",
-    //       publish_date:
-    //           Utils.getStringFromDate(DateTime.now(), AppString.DATE_FORMAT),
-    //       campaignType: "");
-    // }
-
-    if (campaignList.isNotEmpty) {
-      _differnicateCatagories(campaignList);
-      campaignSink.add(campaignList);
+    if (campaignList.isEmpty) {
+      Future.delayed(Duration(microseconds: 500), () {
+        getCampaignData();
+      });
     }
+    return campaignList;
   }
 
   _differnicateCatagories(List<Campaign> campaignList) {

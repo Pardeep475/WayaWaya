@@ -70,7 +70,8 @@ class _MallScreenState extends State<MallScreen> {
                       onTap: () async {
                         try {
                           Utils.commonProgressDialog(context);
-
+                          debugPrint(
+                              'checking_mall:-  ${snapshot.data[index].name}\n ${snapshot.data[index].identifier}');
                           SessionManager.setFirstTime(true);
                           SessionManager.setDefaultMall(
                               snapshot.data[index].identifier);
@@ -78,16 +79,20 @@ class _MallScreenState extends State<MallScreen> {
                               snapshot.data[index].key);
                           SessionManager.setSmallDefaultMallData(
                               snapshot.data[index].venue_data);
-                          await DataBaseHelperCommon.deleteData();
-                          int count =
-                              await DataBaseHelperCommon.getCampaignLength();
-                          debugPrint('count_of_campaign:-  $count');
-                          await SyncService.fetchAllSyncData();
+                          DataBaseHelperCommon.deleteData().then((value) async {
+                            int count =
+                                await DataBaseHelperCommon.getCampaignLength();
+
+                            debugPrint('checking_mall:-  $count');
+                            Future.delayed(Duration(seconds: 2), () {
+                              Navigator.pushNamedAndRemoveUntil(
+                                  context,
+                                  AppString.SPLASH_SCREEN_ROUTE,
+                                  (route) => false);
+                            });
+                          });
                         } catch (e) {
                           Navigator.pop(context);
-                        } finally {
-                          Navigator.pushNamedAndRemoveUntil(context,
-                              AppString.SPLASH_SCREEN_ROUTE, (route) => false);
                         }
                       },
                       child: Container(

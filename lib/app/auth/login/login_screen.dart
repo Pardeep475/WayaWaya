@@ -29,14 +29,12 @@ class _LoginScreenState extends State<LoginScreen> {
   void initState() {
     super.initState();
     _initViews();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      SessionManager.setISLoginScreenVisible(true);
-    });
   }
 
   _initViews() {
     debugPrint('performance_testing:-   login screen initState ');
-    _emailController = TextEditingController(text: 'pardeepsharma475@gmail.com');
+    _emailController =
+        TextEditingController(text: 'pardeepsharma475@gmail.com');
     _passwordController = TextEditingController(text: 'qwerty');
     _formKey = GlobalKey<FormState>();
     _loginBloc = LoginBloc();
@@ -55,10 +53,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 backgroundColor: AppColor.white,
                 title: AppString.login.toUpperCase(),
                 borderRadius: 0,
-                width: MediaQuery
-                    .of(context)
-                    .size
-                    .width,
+                width: MediaQuery.of(context).size.width,
                 onPressed: () {
                   _loginButtonPressed(context);
                 },
@@ -71,10 +66,7 @@ class _LoginScreenState extends State<LoginScreen> {
               _forgotButtonPressed(context);
             },
             child: Container(
-              width: MediaQuery
-                  .of(context)
-                  .size
-                  .width,
+              width: MediaQuery.of(context).size.width,
               padding: const EdgeInsets.symmetric(vertical: 7),
               child: const Text(
                 AppString.forgot_password,
@@ -89,13 +81,11 @@ class _LoginScreenState extends State<LoginScreen> {
           InkWell(
             onTap: () {
               debugPrint('create account');
+              SessionManager.setISLoginScreenVisible(true);
               Navigator.pushNamed(context, AppString.SIGN_UP_SCREEN_ROUTE);
             },
             child: Container(
-              width: MediaQuery
-                  .of(context)
-                  .size
-                  .width,
+              width: MediaQuery.of(context).size.width,
               padding: const EdgeInsets.symmetric(vertical: 7),
               child: const Text(
                 AppString.not_account_yet,
@@ -126,14 +116,15 @@ class _LoginScreenState extends State<LoginScreen> {
                                 // onTap: () => Navigator.of(context)
                                 //     .push(MaterialPageRoute(builder: (_) => Preferences())),
                                 onTap: () {
+                                  SessionManager.setISLoginScreenVisible(true);
                                   Navigator.pushNamedAndRemoveUntil(
                                       context,
                                       AppString.SELECT_PREFERENCES_SCREEN_ROUTE,
-                                          (route) => false);
+                                      (route) => false);
                                 },
                                 child: const Padding(
                                   padding:
-                                  const EdgeInsets.fromLTRB(20, 10, 6, 10),
+                                      const EdgeInsets.fromLTRB(20, 10, 6, 10),
                                   child: const Text(
                                     AppString.skip,
                                     style: TextStyle(
@@ -187,15 +178,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         Utils.commonProgressDialog(context);
                       });
                       return Container(
-                        width: MediaQuery
-                            .of(context)
-                            .size
-                            .width,
+                        width: MediaQuery.of(context).size.width,
                         color: Colors.transparent,
-                        height: MediaQuery
-                            .of(context)
-                            .size
-                            .height,
+                        height: MediaQuery.of(context).size.height,
                       );
                       break;
                     case Status.COMPLETED:
@@ -235,7 +220,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                                 title: AppString.login.toUpperCase(),
                                 content:
-                                AppString.check_your_internet_connectivity,
+                                    AppString.check_your_internet_connectivity,
                                 buttonText: AppString.preferences.toUpperCase(),
                                 onPressed: _loginComplete,
                               );
@@ -247,7 +232,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                                 title: AppString.login.toUpperCase(),
                                 content:
-                                AppString.check_your_internet_connectivity,
+                                    AppString.check_your_internet_connectivity,
                                 buttonText: AppString.ok.toUpperCase(),
                                 onPressed: () => Navigator.pop(context),
                               );
@@ -277,7 +262,7 @@ class _LoginScreenState extends State<LoginScreen> {
       autofocus: false,
       controller: _passwordController,
       validator: (value) =>
-      value.isEmpty ? AppString.enter_valid_password : null,
+          value.isEmpty ? AppString.enter_valid_password : null,
       decoration: InputDecoration(
         labelText: AppString.password,
         alignLabelWithHint: true,
@@ -349,11 +334,12 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  _showErrorDialog({Icon icon,
-    String title,
-    String content,
-    String buttonText,
-    VoidCallback onPressed}) {
+  _showErrorDialog(
+      {Icon icon,
+      String title,
+      String content,
+      String buttonText,
+      VoidCallback onPressed}) {
     showGeneralDialog(
         barrierColor: Colors.black.withOpacity(0.1),
         transitionBuilder: (context, a1, a2, widget) {
@@ -424,11 +410,13 @@ class _LoginScreenState extends State<LoginScreen> {
     // } catch (e) {
     //   debugPrint('time_zone:-  $e');
     // }
-
+    SessionManager.setISLoginScreenVisible(true);
     Navigator.pushNamed(context, AppString.FORGOT_PASSWORD_SCREEN_ROUTE);
   }
 
   _loginButtonPressed(BuildContext context) {
+    SessionManager.setISLoginScreenVisible(true);
+
     if (_formKey.currentState.validate()) {
       Utils.checkConnectivity().then((value) {
         if (value) {
@@ -454,6 +442,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   _loginComplete() {
     debugPrint('login_testing :-   login complete');
+    SessionManager.setISLoginScreenVisible(true);
     SessionManager.setISLogin(true);
     Navigator.pushNamedAndRemoveUntil(
         context, AppString.HOME_SCREEN_ROUTE, (route) => false);
@@ -466,5 +455,3 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 }
-
-
