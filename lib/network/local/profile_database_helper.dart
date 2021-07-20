@@ -54,10 +54,10 @@ class ProfileDatabaseHelper {
         // Write and flush the bytes written
         await File(dbPath).writeAsBytes(bytes, flush: true);
         // open the database
-        _db = await openDatabase(dbPath, readOnly: true);
+        _db = await openDatabase(dbPath, readOnly: false);
       } else {
         debugPrint("database_testing:- Opening existing database");
-        _db = await openDatabase(dbPath, readOnly: true);
+        _db = await openDatabase(dbPath, readOnly: false);
       }
     } catch (e) {
       debugPrint('database_testing:-  $e');

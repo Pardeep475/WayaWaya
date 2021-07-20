@@ -20,11 +20,29 @@ class _SplashScreenState extends State<SplashScreen> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       _confirmLocAlways().then((value) async {
-        await SyncService.fetchAllSyncData().then((value) {
+        try {
+          String defaultMall = await SessionManager.getDefaultMall();
+          if (defaultMall == null || defaultMall.isEmpty) {
+            List<MallProfileModel> _mallList =
+                await SuperAdminDatabaseHelper.getDefaultVenueProfile(
+                    defaultMall);
+            debugPrint('database_testing:-   ${_mallList.length}');
+            if (_mallList.length > 0) {
+              SessionManager.setDefaultMall(_mallList[0].identifier);
+              SessionManager.setAuthHeader(_mallList[0].key);
+              SessionManager.setSmallDefaultMallData(_mallList[0].venue_data);
+            }
+          }
+          await ProfileDatabaseHelper.initDataBase(defaultMall);
+          await SyncService.fetchAllSyncData();
+
+        } catch (e) {
+          debugPrint('splash_database_error:-    $e');
+        } finally {
           Future.delayed(Duration(seconds: 3), () {
             _openFurtherScreen();
           });
-        });
+        }
       });
     });
   }
@@ -50,30 +68,14 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   _openFurtherScreen() async {
-    try {
-      String defaultMall = await SessionManager.getDefaultMall();
-      if (defaultMall == null || defaultMall.isEmpty) {
-        List<MallProfileModel> _mallList =
-            await SuperAdminDatabaseHelper.getDefaultVenueProfile(defaultMall);
-        debugPrint('database_testing:-   ${_mallList.length}');
-        if (_mallList.length > 0) {
-          SessionManager.setDefaultMall(_mallList[0].identifier);
-          SessionManager.setAuthHeader(_mallList[0].key);
-          SessionManager.setSmallDefaultMallData(_mallList[0].venue_data);
-        }
-      }
-
-      await ProfileDatabaseHelper.initDataBase(defaultMall);
-    } catch (e) {} finally {
-      bool isFirstTime = await SessionManager.getISLoginScreenVisible();
-      debugPrint('isFirstTimeSplash:-   $isFirstTime');
-      if (!isFirstTime) {
-        Navigator.pushNamedAndRemoveUntil(
-            context, AppString.LOGIN_SCREEN_ROUTE, (route) => false);
-      } else {
-        Navigator.pushNamedAndRemoveUntil(
-            context, AppString.HOME_SCREEN_ROUTE, (route) => false);
-      }
+    bool isFirstTime = await SessionManager.getISLoginScreenVisible();
+    debugPrint('isFirstTimeSplash:-   $isFirstTime');
+    if (!isFirstTime) {
+      Navigator.pushNamedAndRemoveUntil(
+          context, AppString.LOGIN_SCREEN_ROUTE, (route) => false);
+    } else {
+      Navigator.pushNamedAndRemoveUntil(
+          context, AppString.HOME_SCREEN_ROUTE, (route) => false);
     }
   }
 

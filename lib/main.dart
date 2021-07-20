@@ -291,10 +291,17 @@ class MyAppState extends State<MyApp> {
       SessionManager.setCurrentDevice(finalDevice ?? ""); // "Moto G (4)"
     } else {
       IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
-      debugPrint('deviceTesting:- version:- ${iosInfo.utsname.version}\nrelease:- ${iosInfo.utsname.release}\nnodename:- ${iosInfo.utsname.nodename}\machine:- ${iosInfo.utsname.machine}\nsysname:- ${iosInfo.utsname.sysname}');
+      // OPPO~^CPH1911~^ANDROID10
+      // device_info_testing iOS 14.5, iPhone 12 Pro Max iPhone
+      // Apple ~^ iPhone X ~^ iOS 14.4.2
+
       debugPrint(
-          'device_info_testing:- ${'${iosInfo.utsname.version}${AppString.DEVICE_SEPARATOR}${iosInfo.utsname.release}${AppString.DEVICE_SEPARATOR}APPLE${iosInfo.utsname.nodename}'.toUpperCase().trim()}');
-      SessionManager.setCurrentDevice(iosInfo.utsname.machine ?? "");
+          'device_info_testing:- ${'Apple${AppString.DEVICE_SEPARATOR}${iosInfo.name}${AppString.DEVICE_SEPARATOR}${iosInfo.systemName} ${iosInfo.systemVersion}'.toUpperCase().trim()}'); // e.g.
+      String finalDevice =
+      'Apple${AppString.DEVICE_SEPARATOR}${iosInfo.name}${AppString.DEVICE_SEPARATOR}${iosInfo.systemName} ${iosInfo.systemVersion}'
+          .toUpperCase()
+          .trim();
+      SessionManager.setCurrentDevice(finalDevice ?? ""); // "Moto G (4)"
     }
   }
 }
