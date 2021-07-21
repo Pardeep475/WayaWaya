@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:wayawaya/app/shop/bloc/shop_bloc.dart';
 import 'package:wayawaya/app/shop/model/category_based_model.dart';
 import 'package:wayawaya/app/shop/view/item_retail_unit_listing.dart';
 import 'package:wayawaya/utils/app_color.dart';
@@ -9,12 +10,16 @@ import 'package:wayawaya/utils/utils.dart';
 class ExpandableCards extends StatefulWidget {
   final int index;
   final CategoryBasedModel categoryBasedModel;
+  final ShopBloc shopBloc;
+  final bool isRestaurant;
 
-  const ExpandableCards({
-    Key key,
-    this.index,
-    this.categoryBasedModel,
-  }) : super(key: key);
+  const ExpandableCards(
+      {Key key,
+      this.index,
+      this.categoryBasedModel,
+      this.shopBloc,
+      this.isRestaurant})
+      : super(key: key);
 
   @override
   _ExpandableCardsState createState() => _ExpandableCardsState();
@@ -61,6 +66,11 @@ class _ExpandableCardsState extends State<ExpandableCards> {
             index: index,
             onLikePressed: () {
               debugPrint('onLikePressed');
+              widget.shopBloc.updateFavourite(
+                  retailWithCategory:
+                      widget.categoryBasedModel.retailWithCategory[index]);
+              widget.shopBloc
+                  .fetchCategoryBasedListing(isRestaurant: widget.isRestaurant);
             },
             onLocationPressed: () {
               debugPrint('onLocationPressed');
@@ -68,13 +78,14 @@ class _ExpandableCardsState extends State<ExpandableCards> {
             onOfferPressed: () {
               debugPrint('onOfferPressed');
               try {
-                Navigator.pushNamed(
-                    context, AppString.OFFER_SCREEN_ROUTE,
+                Navigator.pushNamed(context, AppString.OFFER_SCREEN_ROUTE,
                     arguments:
                         widget.categoryBasedModel.retailWithCategory[index].id);
               } catch (e) {
                 Navigator.pushNamed(
-                    context, AppString.OFFER_SCREEN_ROUTE,);
+                  context,
+                  AppString.OFFER_SCREEN_ROUTE,
+                );
               }
             },
           ),

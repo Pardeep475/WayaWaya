@@ -14,10 +14,12 @@ import 'package:wayawaya/app/shop/model/retail_unit_category.dart';
 import 'package:wayawaya/app/shop/model/retail_with_category.dart';
 import 'package:wayawaya/common/model/categories_model.dart';
 import 'package:wayawaya/models/omni_channel_item_model/omni_channel_item_model.dart';
+import 'package:wayawaya/network/local/table/retail_unit_table.dart';
 import 'package:wayawaya/network/model/loyalty/loyalty_points.dart';
 import 'package:wayawaya/network/model/loyalty/loyalty_response.dart';
 import 'package:wayawaya/network/model/loyalty/loyalty_temp.dart';
 import 'package:wayawaya/utils/app_strings.dart';
+import 'package:wayawaya/utils/session_manager.dart';
 
 import 'table/campaign_table.dart';
 import 'table/loyalty_table.dart';
@@ -33,6 +35,14 @@ class ProfileDatabaseHelper {
   ProfileDatabaseHelper._internal();
 
   static Database _db;
+
+  static Future<Database> get database async {
+    if (_db == null) {
+      String defaultMall = await SessionManager.getDefaultMall();
+      _db = await initDataBase(defaultMall);
+    }
+    return _db;
+  }
 
   static Future initDataBase(String databasePath) async {
     try {
@@ -820,6 +830,33 @@ class ProfileDatabaseHelper {
       debugPrint('error:- database :-  $e');
     }
     return [];
+  }
+
+  static updateRetailWithCategory({
+    String databasePath,
+    String retailUnitId,
+    String flag,
+  }) async {
+    if (_db == null) {
+      await initDataBase(databasePath);
+    }
+    try {
+      String query = "UPDATE " +
+          RetailUnitTable.RETAIL_UNIT_TABLE_NAME +
+          " SET " +
+          RetailUnitTable.COLUMN_FAVORUITE +
+          "=" +
+          flag +
+          " WHERE " +
+          RetailUnitTable.COLUMN_ID +
+          " = \"" +
+          retailUnitId +
+          "\"";
+
+      await _db.rawQuery(query);
+    } catch (e) {
+      debugPrint('error:- database :-  $e');
+    }
   }
 
   static Future<List<ServiceModel>> getAllServices({

@@ -149,4 +149,12 @@ class ShopBloc {
 
     favouriteListingSink.add(_retailWithCategoryList);
   }
+
+  updateFavourite({RetailWithCategory retailWithCategory}) async {
+    String defaultMall = await SessionManager.getDefaultMall();
+    await ProfileDatabaseHelper.updateRetailWithCategory(
+        databasePath: defaultMall,
+        retailUnitId: retailWithCategory.id,
+        flag: retailWithCategory.favourite == "0" ? "1" : "0");
+  }
 }

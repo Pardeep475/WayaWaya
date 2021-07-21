@@ -81,6 +81,11 @@ class _LoginScreenState extends State<LoginScreen> {
           InkWell(
             onTap: () {
               debugPrint('create account');
+              FocusScopeNode currentFocus = FocusScope.of(context);
+
+              if (!currentFocus.hasPrimaryFocus) {
+                currentFocus.unfocus();
+              }
               SessionManager.setISLoginScreenVisible(true);
               Navigator.pushNamed(context, AppString.SIGN_UP_SCREEN_ROUTE);
             },
@@ -366,43 +371,12 @@ class _LoginScreenState extends State<LoginScreen> {
         pageBuilder: (context, animation1, animation2) {});
   }
 
-  authDialog() {
-    showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (_) {
-          Future.delayed(Duration(seconds: 1), () {
-            Navigator.of(context).pop(true);
-          });
-          return AlertDialog(
-            content: Container(
-              child: Row(
-                children: [
-                  SizedBox(
-                    height: 20,
-                    width: 20,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2.0,
-                    ),
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Text(
-                    'Signing in.....',
-                    style: TextStyle(
-                      color: Colors.grey[600],
-                      fontSize: 14,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        });
-  }
-
   _forgotButtonPressed(BuildContext context) async {
+    FocusScopeNode currentFocus = FocusScope.of(context);
+
+    if (!currentFocus.hasPrimaryFocus) {
+      currentFocus.unfocus();
+    }
     // try {
     //   print(DateTime.now().toUtc().timeZoneOffset);
     //   print(DateTime.now().timeZoneOffset);
@@ -415,6 +389,12 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   _loginButtonPressed(BuildContext context) {
+    FocusScopeNode currentFocus = FocusScope.of(context);
+
+    if (!currentFocus.hasPrimaryFocus) {
+      currentFocus.unfocus();
+    }
+
     SessionManager.setISLoginScreenVisible(true);
 
     if (_formKey.currentState.validate()) {

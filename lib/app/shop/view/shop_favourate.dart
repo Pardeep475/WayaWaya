@@ -5,6 +5,7 @@ import 'package:wayawaya/app/shop/bloc/shop_bloc.dart';
 import 'package:wayawaya/app/shop/model/retail_with_category.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_strings.dart';
+import 'package:wayawaya/utils/dimens.dart';
 import 'item_retail_unit_listing.dart';
 
 class ShopFavouriteScreen extends StatefulWidget {
@@ -62,13 +63,15 @@ class _ShopFavouriteScreenState extends State<ShopFavouriteScreen> {
             );
           } else {
             return ListView.builder(
+                padding: EdgeInsets.only(bottom: Dimens.thirty),
                 itemCount: snapshot.data.length,
                 itemBuilder: (context, index) {
                   return ItemRetailUnitListing(
                     index: index,
                     retailWithCategory: snapshot.data[index],
                     onLikePressed: () {
-                      debugPrint('onLikePressed');
+                      _shopBloc.updateFavourite(retailWithCategory: snapshot.data[index]);
+                      _shopBloc.fetchFavouriteListing(isRestaurant: widget.isRestaurant);
                     },
                     onLocationPressed: () {
                       debugPrint('onLocationPressed');

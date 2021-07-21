@@ -119,7 +119,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                 ),
                 widget.lastIcon ??
                     IconButton(
-                      padding: EdgeInsets.only(left: 25, right: 20),
+                      padding: EdgeInsets.only(left: Dimens.ten, right: Dimens.ten),
                       icon: Icon(
                         Icons.search,
                         color: appLightColor,
@@ -330,8 +330,10 @@ class _CustomAppBarState extends State<CustomAppBar> {
         title: AppString.login.toUpperCase(),
         content: AppString.currently_not_logged_in,
         buttonText: AppString.login.toUpperCase(),
-        onPressed: () =>
-            Navigator.pushNamed(context, AppString.LOGIN_SCREEN_ROUTE),
+        onPressed: () {
+          Navigator.pop(context);
+          Navigator.pushNamed(context, AppString.LOGIN_SCREEN_ROUTE);
+        },
       );
     }
   }

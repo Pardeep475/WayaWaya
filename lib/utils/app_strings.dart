@@ -116,7 +116,7 @@ class AppString {
       "Password and confirm password must be same";
   static const email_validation_error_message = "Please enter valid Email";
   static const enter_your_email_phone_username =
-      "Enter your email, phone number or username.";
+      "Enter your email address.";
   static const verification_email_has_been_sent =
       "Verification email has been sent to registered email address";
   static const unable_to_verify_email = "Unable to verify email";

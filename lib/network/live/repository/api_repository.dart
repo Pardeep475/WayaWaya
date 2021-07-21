@@ -162,7 +162,7 @@ class ApiRepository {
 
     debugPrint('updated_Data:-   $lastUpdate    \n     $oid');
     String url =
-        'last/updates?image_url=1&enable=true&where={%22_updated%22:{%22\$gt%22:%22$lastUpdate%22},%22r%22:{%22\$regex%22:%22^.*/campaigns|/triggerZones|/retailUnits|/categories|/pois|/appSoftwareParameters%22},%22\$or%22:[{%22c.campaign_channels.omni_channel_id%22:{%22\$elemMatch%22:{%22\$eq%22:%22$oid%22}}},{%22c.campaign_channels.omni_channel_id%22:{%22\$exists%22:false}}]}&page=${nextPageNo.toString()}&sort=_updated'
+        'last/updates?image_url=1&enable=true&where={%22_updated%22:{%22\$gt%22:%22${lastUpdate ?? '2015-07-17 18:00:18'}%22},%22r%22:{%22\$regex%22:%22^.*/campaigns|/triggerZones|/retailUnits|/categories|/pois|/appSoftwareParameters%22},%22\$or%22:[{%22c.campaign_channels.omni_channel_id%22:{%22\$elemMatch%22:{%22\$eq%22:%22$oid%22}}},{%22c.campaign_channels.omni_channel_id%22:{%22\$exists%22:false}}]}&page=${nextPageNo.toString()}&sort=_updated'
             .replaceAll(' ', '%20');
     final response =
         await _apiProvider.get(url: url, authHeader: authorization);

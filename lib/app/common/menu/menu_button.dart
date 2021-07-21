@@ -112,8 +112,10 @@ class MenuTile extends StatelessWidget {
           title: AppString.login.toUpperCase(),
           content: AppString.currently_not_logged_in,
           buttonText: AppString.login.toUpperCase(),
-          onPressed: () =>
-              Navigator.pushNamed(context, AppString.LOGIN_SCREEN_ROUTE),
+          onPressed: () {
+            Navigator.pop(context);
+            Navigator.pushNamed(context, AppString.LOGIN_SCREEN_ROUTE);
+          },
         );
       }
     } else {
@@ -172,7 +174,8 @@ class MenuTile extends StatelessWidget {
             Navigator.pushNamed(
               context,
               AppString.CUSTOM_WEB_VIEW_SCREEN_ROUTE,
-              arguments: CustomWebViewModel(title: title, webViewUrl: mapUrl.replaceAll(" ", "%20")),
+              arguments: CustomWebViewModel(
+                  title: title, webViewUrl: mapUrl.replaceAll(" ", "%20")),
             );
           }
           break;

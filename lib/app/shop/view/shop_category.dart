@@ -69,6 +69,8 @@ class _ShopCategoryScreenState extends State<ShopCategoryScreen> {
                 itemBuilder: (context, index) {
                   return ExpandableCards(
                     index: index,
+                    isRestaurant: widget.isRestaurant,
+                    shopBloc: _shopBloc,
                     categoryBasedModel: snapshot.data[index],
                   );
                 });

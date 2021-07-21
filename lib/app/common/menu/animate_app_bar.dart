@@ -71,8 +71,8 @@ class _AnimateAppBarState extends State<AnimateAppBar> {
 
   searchBar() {
     return Container(
-      height: Dimens.fifty,
       color: AppColor.white,
+      padding: EdgeInsets.only(top: Dimens.fifty),
       width: MediaQuery.of(context).size.width,
       child: Row(
         children: [
@@ -212,8 +212,11 @@ class _AnimateAppBarState extends State<AnimateAppBar> {
                                     title: AppString.login.toUpperCase(),
                                     content: AppString.currently_not_logged_in,
                                     buttonText: AppString.login.toUpperCase(),
-                                    onPressed: () => Navigator.pushNamed(
-                                        context, AppString.LOGIN_SCREEN_ROUTE),
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                      Navigator.pushNamed(context,
+                                          AppString.LOGIN_SCREEN_ROUTE);
+                                    },
                                   );
                                 } else {
                                   _animateAppBarWidgetBloc.searchSink.add(true);

@@ -106,6 +106,9 @@ class _ShopListingScreenState extends State<ShopListingScreen> {
                     retailWithCategory: snapshot.data[index],
                     onLikePressed: () {
                       debugPrint('onLikePressed');
+                      _shopBloc.updateFavourite(
+                          retailWithCategory: snapshot.data[index]);
+                      _shopBloc.fetchOrderedCategoryListing(isRestaurant: widget.isRestaurant);
                     },
                     onLocationPressed: () {
                       debugPrint('onLocationPressed');

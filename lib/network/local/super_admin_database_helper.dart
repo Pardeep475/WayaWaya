@@ -24,6 +24,14 @@ class SuperAdminDatabaseHelper {
 
   static Database _db;
 
+  static Future<Database> get database async {
+    if (_db == null) {
+      _db = await initDataBase();
+    }
+    return _db;
+  }
+
+
   static Future initDataBase() async {
     try {
       var databasesPath = await getDatabasesPath();

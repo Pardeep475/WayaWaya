@@ -47,6 +47,7 @@ class CommonLoginWithHomePageDialog extends StatelessWidget {
                 ),
               ),
               onPressed: () {
+                Navigator.pop(context);
                 Navigator.pushNamedAndRemoveUntil(
                     context, AppString.HOME_SCREEN_ROUTE, (route) => false);
               },
@@ -73,6 +74,7 @@ class CommonLoginWithHomePageDialog extends StatelessWidget {
                 ),
               ),
               onPressed: () {
+                Navigator.pop(context);
                 Navigator.pushNamedAndRemoveUntil(
                     context, AppString.LOGIN_SCREEN_ROUTE, (route) => false);
               },

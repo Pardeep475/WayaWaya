@@ -479,8 +479,10 @@ class CircularMenuState extends State<CircularMenu>
                                     title: AppString.login.toUpperCase(),
                                     content: AppString.currently_not_logged_in,
                                     buttonText: AppString.login.toUpperCase(),
-                                    onPressed: () =>
-                                        Navigator.pushNamed(context, AppString.LOGIN_SCREEN_ROUTE),
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                      Navigator.pushNamed(context, AppString.LOGIN_SCREEN_ROUTE);
+                                    }
                                   );
                                 }
 

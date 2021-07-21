@@ -3,11 +3,11 @@ class RgbCode {
   int g;
   int b;
 
-  Map<String, dynamic> toJson() => {"r": r, "g": g, "title": b};
+  Map<String, dynamic> toJson() => {"r": r, "g": g, "b": b};
 
   RgbCode.fromJson(Map<String, dynamic> json) {
     r = json['r'];
-    b = json['title'];
+    b = json['b'];
     g = json['g'];
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -17,6 +19,13 @@ class ItemRetailUnitListing extends StatelessWidget {
   final Function() onOfferPressed;
   final Function() onLocationPressed;
   final Function() onLikePressed;
+
+  // ignore: close_sinks
+  StreamController _likeColorChangedController = StreamController<String>();
+
+  StreamSink<String> get likeColorSink => _likeColorChangedController.sink;
+
+  Stream<String> get likeColorSinkStream => _likeColorChangedController.stream;
 
   ItemRetailUnitListing(
       {this.retailWithCategory,
@@ -252,35 +261,48 @@ class ItemRetailUnitListing extends StatelessWidget {
                                             width: Dimens.ten,
                                           ),
                                           InkWell(
-                                            onTap: onLikePressed,
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.end,
-                                              children: [
-                                                Icon(
-                                                  Icons.thumb_up,
-                                                  color: retailWithCategory
+                                            onTap: () {
+                                              likeColorSink.add(
+                                                  retailWithCategory
                                                               .favourite ==
-                                                          '1'
-                                                      ? AppColor.primary
-                                                      : AppColor.black,
-                                                ),
-                                                SizedBox(
-                                                  height: Dimens.six,
-                                                ),
-                                                Text(
-                                                  'Like'.toUpperCase(),
-                                                  style: TextStyle(
-                                                    fontSize: Dimens.ten,
-                                                    color: retailWithCategory
-                                                                .favourite ==
-                                                            '1'
-                                                        ? AppColor.primary
-                                                        : AppColor.black,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
+                                                          "0"
+                                                      ? "1"
+                                                      : "0");
+                                              onLikePressed();
+                                            },
+                                            child: StreamBuilder<String>(
+                                                initialData: retailWithCategory
+                                                    .favourite,
+                                                stream: likeColorSinkStream,
+                                                builder: (context, snapshot) {
+                                                  return Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.end,
+                                                    children: [
+                                                      Icon(
+                                                        Icons.thumb_up,
+                                                        color: snapshot.data ==
+                                                                '1'
+                                                            ? AppColor.primary
+                                                            : AppColor.black,
+                                                      ),
+                                                      SizedBox(
+                                                        height: Dimens.six,
+                                                      ),
+                                                      Text(
+                                                        'Like'.toUpperCase(),
+                                                        style: TextStyle(
+                                                          fontSize: Dimens.ten,
+                                                          color: snapshot
+                                                                      .data ==
+                                                                  '1'
+                                                              ? AppColor.primary
+                                                              : AppColor.black,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  );
+                                                }),
                                           ),
                                           SizedBox(
                                             width: Dimens.ten,
@@ -326,7 +348,8 @@ class ItemRetailUnitListing extends StatelessWidget {
     Navigator.pushNamed(
       context,
       AppString.CUSTOM_WEB_VIEW_SCREEN_ROUTE,
-      arguments: CustomWebViewModel(title: _getName(), webViewUrl: mapUrl.replaceAll(" ", "%20")),
+      arguments: CustomWebViewModel(
+          title: _getName(), webViewUrl: mapUrl.replaceAll(" ", "%20")),
     );
   }
 
