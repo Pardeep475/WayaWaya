@@ -5,9 +5,12 @@ import 'package:wayawaya/app/common/menu/model/main_menu_permission.dart';
 import 'package:wayawaya/app/home/model/campaign_model.dart';
 import 'package:wayawaya/app/rewards/model/rewards_categories.dart';
 import 'package:wayawaya/network/live/model/api_response.dart';
+import 'package:wayawaya/network/local/database_helper.dart';
 import 'package:wayawaya/network/local/profile_database_helper.dart';
 import 'package:wayawaya/network/local/super_admin_database_helper.dart';
+import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/session_manager.dart';
+import 'package:wayawaya/utils/utils.dart';
 
 class RewardsBloc {
   // ignore: close_sinks
@@ -85,10 +88,17 @@ class RewardsBloc {
   fetchRewardsList() async {
     rewardsListSink.add(ApiResponse.loading(null));
     try {
-      String defaultMall = await SessionManager.getDefaultMall();
       List<Campaign> campaignList =
-          await ProfileDatabaseHelper.getCampaignByType(
-              databasePath: defaultMall, campaignType: 'offer');
+          await DataBaseHelperCommon.getRewardsCampaignData(
+              limit: 25,
+              offset: 0,
+              rid: "",
+              searchText: "",
+              categoryId: "",
+              publish_date: Utils.getStringFromDate(
+                  DateTime.now(), AppString.DATE_FORMAT),
+              campaingType: "offer");
+
       rewardsListSink.add(ApiResponse.completed(campaignList));
     } catch (e) {
       rewardsListSink.add(ApiResponse.error(e));
@@ -96,7 +106,6 @@ class RewardsBloc {
   }
 
   fetchRewardsListByCategory(String categoryId) async {
-
     rewardsListSink.add(ApiResponse.loading(null));
     try {
       String defaultMall = await SessionManager.getDefaultMall();

@@ -354,6 +354,73 @@ class CampaignTable {
     // _mallList.sort();
     return _mallList;
   }
+//getRewardsCampaignData
 
+  static Future<List<Campaign>> getRewardsCampaignData(
+      {Database db,
+        String campaingType,
+        final int limit,
+        final int offset,
+        final String searchText,
+        final String rid,
+        final String publish_date,
+        final String categoryId}) async {
+    String whereClause = "";
+    String strType = "";
+    String searchQueryCondition = "";
+    String offerForRetailUnitCondition = "";
+
+    if (searchText != null && searchText.isNotEmpty) {
+
+      searchQueryCondition = " AND ( " + COLUMN_CAMPAIGN_ELEMENT + " LIKE '%" + searchText + "%' ) ";
+    }
+    if (rid != null && rid.isNotEmpty) {
+      offerForRetailUnitCondition = " AND ( rid LIKE '%" + rid + "%') ";
+    }
+
+    if (campaingType.isNotEmpty) {
+      whereClause = " WHERE type='" + campaingType + "' AND " + COLUMN_STATUS + "='approved' ";
+    } else {
+      whereClause = " WHERE " + COLUMN_STATUS + "='approved' ";
+    }
+
+    whereClause += " AND publish_date <= '" + publish_date + "'";
+
+    String query = "";
+    if (categoryId == "1") {
+      query = "SELECT *, '' as shop_name FROM " + CAMPAIGN_TABLE_NAME   +
+          whereClause +
+          searchQueryCondition +
+          offerForRetailUnitCondition +
+          " AND (voucher  LIKE '%\"is_coupon\": true%' or voucher LIKE '%\"is_coupon\":true%')" +
+          " ORDER BY " + COLUMN_START_DATE + " ASC" +
+          " LIMIT " + limit.toString() + " OFFSET " + offset.toString();
+    }else{
+      query =  "SELECT *, '' as shop_name FROM " + CAMPAIGN_TABLE_NAME +
+          whereClause +
+          " AND (voucher LIKE '%\"is_coupon\": true%' or voucher LIKE '%\"is_coupon\":true%') AND (" +
+          COLUMN_CAMPAIGN_ELEMENT +
+          " LIKE '%\"category_id\":" + "\"" + categoryId + "\"%' or " +
+          COLUMN_CAMPAIGN_ELEMENT +
+          " LIKE '%\"category_id\": " + "\"" + categoryId + "\"%')" +
+          " ORDER BY " + COLUMN_START_DATE + " ASC" +
+          " LIMIT " + limit.toString() + " OFFSET " + offset.toString();
+    }
+
+    List<Map> data;
+
+    debugPrint('campaign_query:-  $query');
+
+    await db.transaction((txn) async {
+      data = await txn.rawQuery(query);
+    });
+    debugPrint('database_testing:-   ${data.length}');
+    // debugPrint('database_testing:-   $data');
+    List<Campaign> _mallList = [];
+    data.forEach((element) {
+      _mallList.add(Campaign.fromJson(element));
+    });
+    return _mallList;
+  }
 
 }

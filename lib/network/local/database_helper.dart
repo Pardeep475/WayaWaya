@@ -164,6 +164,27 @@ class DataBaseHelperCommon {
     return await CampaignTable.getRetailUnitOffer(db: _db);
   }
 
+  static Future<List<Campaign>> getRewardsCampaignData(
+      {final String campaingType,
+      final int limit,
+      final int offset,
+      final String searchText,
+      final String rid,
+      final String publish_date,
+      final String categoryId}) async {
+    Database _db = await instance.database;
+    return await CampaignTable.getRewardsCampaignData(
+        db: _db,
+        limit: limit,
+        offset: offset,
+        rid: rid,
+        searchText: searchText,
+        publish_date:
+            Utils.getStringFromDate(DateTime.now(), AppString.DATE_FORMAT),
+        campaingType: campaingType,
+        categoryId: categoryId);
+  }
+
   static Future deleteData() async {
     Database _db = await instance.database;
     await _db.delete(CampaignTable.CAMPAIGN_TABLE_NAME);
