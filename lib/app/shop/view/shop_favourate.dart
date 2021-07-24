@@ -68,6 +68,7 @@ class _ShopFavouriteScreenState extends State<ShopFavouriteScreen> {
                 itemBuilder: (context, index) {
                   return ItemRetailUnitListing(
                     index: index,
+                    listRetailUnitCategory: snapshot.data,
                     retailWithCategory: snapshot.data[index],
                     onLikePressed: () {
                       _shopBloc.updateFavourite(retailWithCategory: snapshot.data[index]);

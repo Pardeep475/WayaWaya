@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:wayawaya/app/common/webview/model/custom_web_view_model.dart';
 import 'package:wayawaya/app/shop/model/retail_with_category.dart';
+import 'package:wayawaya/app/shop/model/shop_detail_model.dart';
 import 'package:wayawaya/app/shop/model/shop_status.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_images.dart';
@@ -15,21 +16,16 @@ import 'package:wayawaya/utils/utils.dart';
 
 class ItemRetailUnitListing extends StatelessWidget {
   final RetailWithCategory retailWithCategory;
+  final List<RetailWithCategory> listRetailUnitCategory;
   final int index;
   final Function() onOfferPressed;
   final Function() onLocationPressed;
   final Function() onLikePressed;
 
-  // ignore: close_sinks
-  StreamController _likeColorChangedController = StreamController<String>();
-
-  StreamSink<String> get likeColorSink => _likeColorChangedController.sink;
-
-  Stream<String> get likeColorSinkStream => _likeColorChangedController.stream;
-
   ItemRetailUnitListing(
       {this.retailWithCategory,
       this.index,
+      this.listRetailUnitCategory,
       this.onLocationPressed,
       this.onLikePressed,
       this.onOfferPressed});
@@ -38,8 +34,10 @@ class ItemRetailUnitListing extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
+        ShopDetailModel _shopDetailModel = ShopDetailModel(
+            index: index, listRetailUnitCategory: listRetailUnitCategory);
         Navigator.pushNamed(context, AppString.SHOP_DETAIL_SCREEN_ROUTE,
-            arguments: retailWithCategory);
+            arguments: _shopDetailModel);
       },
       child: Container(
         height: Dimens.oneEightyFive,
@@ -262,47 +260,36 @@ class ItemRetailUnitListing extends StatelessWidget {
                                           ),
                                           InkWell(
                                             onTap: () {
-                                              likeColorSink.add(
-                                                  retailWithCategory
-                                                              .favourite ==
-                                                          "0"
-                                                      ? "1"
-                                                      : "0");
                                               onLikePressed();
                                             },
-                                            child: StreamBuilder<String>(
-                                                initialData: retailWithCategory
-                                                    .favourite,
-                                                stream: likeColorSinkStream,
-                                                builder: (context, snapshot) {
-                                                  return Column(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment.end,
-                                                    children: [
-                                                      Icon(
-                                                        Icons.thumb_up,
-                                                        color: snapshot.data ==
-                                                                '1'
-                                                            ? AppColor.primary
-                                                            : AppColor.black,
-                                                      ),
-                                                      SizedBox(
-                                                        height: Dimens.six,
-                                                      ),
-                                                      Text(
-                                                        'Like'.toUpperCase(),
-                                                        style: TextStyle(
-                                                          fontSize: Dimens.ten,
-                                                          color: snapshot
-                                                                      .data ==
-                                                                  '1'
-                                                              ? AppColor.primary
-                                                              : AppColor.black,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  );
-                                                }),
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.end,
+                                              children: [
+                                                Icon(
+                                                  Icons.thumb_up,
+                                                  color: retailWithCategory
+                                                              .favourite ==
+                                                          '1'
+                                                      ? AppColor.primary
+                                                      : AppColor.black,
+                                                ),
+                                                SizedBox(
+                                                  height: Dimens.six,
+                                                ),
+                                                Text(
+                                                  'Like'.toUpperCase(),
+                                                  style: TextStyle(
+                                                    fontSize: Dimens.ten,
+                                                    color: retailWithCategory
+                                                                .favourite ==
+                                                            '1'
+                                                        ? AppColor.primary
+                                                        : AppColor.black,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
                                           ),
                                           SizedBox(
                                             width: Dimens.ten,

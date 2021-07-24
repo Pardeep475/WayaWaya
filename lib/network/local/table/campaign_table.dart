@@ -327,4 +327,33 @@ class CampaignTable {
     });
     return _mallList;
   }
+
+
+  static Future<List<Campaign>> getRetailUnitOffer(
+      {Database db}) async {
+
+    String query = "SELECT *, '' as shop_name FROM " + CampaignTable.CAMPAIGN_TABLE_NAME
+        + " WHERE " + CampaignTable.COLUMN_TYPE
+        + " = 'offer' ";
+
+    debugPrint('query_campaign:-  $query');
+
+    List<Map> data;
+
+    await db.transaction((txn) async {
+      data = await txn.rawQuery(query);
+    });
+
+    debugPrint('database_testing:-   ${data.length}');
+    debugPrint('database_testing:-   $data');
+    List<Campaign> _mallList = [];
+    data.forEach((element) {
+      _mallList.add(Campaign.fromJson(element));
+    });
+    data.map((e) => debugPrint('database_testing:-    $e'));
+    // _mallList.sort();
+    return _mallList;
+  }
+
+
 }

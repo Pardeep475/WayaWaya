@@ -14,6 +14,7 @@ import 'package:wayawaya/app/shop/model/retail_unit_category.dart';
 import 'package:wayawaya/app/shop/model/retail_with_category.dart';
 import 'package:wayawaya/common/model/categories_model.dart';
 import 'package:wayawaya/models/omni_channel_item_model/omni_channel_item_model.dart';
+import 'package:wayawaya/network/local/database_helper.dart';
 import 'package:wayawaya/network/local/table/retail_unit_table.dart';
 import 'package:wayawaya/network/model/loyalty/loyalty_points.dart';
 import 'package:wayawaya/network/model/loyalty/loyalty_response.dart';
@@ -821,8 +822,19 @@ class ProfileDatabaseHelper {
       debugPrint('database_testing:-  all search  ${data.length}');
       debugPrint('database_testing:-   $data');
       List<RetailWithCategory> _allSearchList = [];
+
+      List<Campaign> _offerCampaignList = await DataBaseHelperCommon.getRetailUnitOffer();
+      debugPrint('database_testing:- list of campaign   ${_offerCampaignList.length}');
       data.forEach((element) {
-        _allSearchList.add(RetailWithCategory.fromJson(element));
+        List<Campaign> offerList = _offerCampaignList.where((campaign) => campaign.rid == element['rid']).toList();
+        if(offerList.isEmpty){
+          _allSearchList.add(RetailWithCategory.fromJson(element));
+        }else{
+          RetailWithCategory retailWithCategory = RetailWithCategory.fromJson(element);
+          retailWithCategory.campaigns = offerList;
+          _allSearchList.add(retailWithCategory);
+        }
+
       });
       _allSearchList.sort((a, b) => a.name.compareTo(b.name));
       return _allSearchList;
@@ -1032,4 +1044,6 @@ class ProfileDatabaseHelper {
     }
     return [];
   }
+
+
 }

@@ -103,6 +103,7 @@ class _ShopListingScreenState extends State<ShopListingScreen> {
                 itemBuilder: (context, index) {
                   return ItemRetailUnitListing(
                     index: index,
+                    listRetailUnitCategory: snapshot.data,
                     retailWithCategory: snapshot.data[index],
                     onLikePressed: () {
                       debugPrint('onLikePressed');

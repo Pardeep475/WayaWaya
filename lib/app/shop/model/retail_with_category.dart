@@ -24,7 +24,7 @@ class RetailWithCategory {
 
   final String favourite;
 
-  final List<Campaign> campaigns;
+   List<Campaign> campaigns;
 
   final SubLocations subLocations;
 

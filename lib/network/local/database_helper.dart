@@ -159,6 +159,11 @@ class DataBaseHelperCommon {
         isCoupon: isCoupon);
   }
 
+  static Future<List<Campaign>> getRetailUnitOffer() async {
+    Database _db = await instance.database;
+    return await CampaignTable.getRetailUnitOffer(db: _db);
+  }
+
   static Future deleteData() async {
     Database _db = await instance.database;
     await _db.delete(CampaignTable.CAMPAIGN_TABLE_NAME);

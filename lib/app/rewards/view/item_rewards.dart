@@ -3,8 +3,10 @@ import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:wayawaya/app/auth/login/model/user_data_response.dart';
+import 'package:wayawaya/app/home/model/campaign_element.dart';
 import 'package:wayawaya/app/home/model/campaign_model.dart';
 import 'package:wayawaya/app/offers/model/detail_model.dart';
+import 'package:wayawaya/common/model/language_store.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_images.dart';
 import 'package:wayawaya/utils/app_strings.dart';
@@ -17,8 +19,14 @@ class ItemRewards extends StatelessWidget {
   final int index;
   final Campaign campaign;
   final List<Campaign> listOfCampaign;
+  final bool isBorder;
 
-  ItemRewards({this.size, this.index, this.campaign, this.listOfCampaign});
+  ItemRewards(
+      {this.size,
+      this.index,
+      this.campaign,
+      this.listOfCampaign,
+      this.isBorder = true});
 
   @override
   Widget build(BuildContext context) {
@@ -35,26 +43,28 @@ class ItemRewards extends StatelessWidget {
         width: MediaQuery.of(context).size.width,
         margin: EdgeInsets.symmetric(horizontal: Dimens.six),
         decoration: BoxDecoration(
-          border: Border(
-            top: BorderSide(
-              color: Color(0xffF1BD80),
-              width: Dimens.three,
-            ),
-            left: BorderSide(
-              color: Color(0xffF1BD80),
-              width: Dimens.three,
-            ),
-            right: BorderSide(
-              color: Color(0xffF1BD80),
-              width: Dimens.three,
-            ),
-            bottom: size - 1 != index
-                ? BorderSide.none
-                : BorderSide(
+          border: isBorder
+              ? Border(
+                  top: BorderSide(
                     color: Color(0xffF1BD80),
                     width: Dimens.three,
                   ),
-          ),
+                  left: BorderSide(
+                    color: Color(0xffF1BD80),
+                    width: Dimens.three,
+                  ),
+                  right: BorderSide(
+                    color: Color(0xffF1BD80),
+                    width: Dimens.three,
+                  ),
+                  bottom: size - 1 != index
+                      ? BorderSide.none
+                      : BorderSide(
+                          color: Color(0xffF1BD80),
+                          width: Dimens.three,
+                        ),
+                )
+              : Border(),
         ),
         child: Column(
           children: [
@@ -62,44 +72,33 @@ class ItemRewards extends StatelessWidget {
               child: Stack(
                 children: [
                   Positioned.fill(
-                    child: FutureBuilder(
-                      future: getImageUrl(context, campaign),
-                      builder: (context, snapshot) {
-                        if (snapshot.data == null) {
-                          return Image.asset(
-                            AppImages.rewards,
-                            fit: BoxFit.cover,
-                          );
-                        }
-                        return CachedNetworkImage(
-                          height: MediaQuery.of(context).size.height,
-                          width: MediaQuery.of(context).size.width,
-                          imageUrl: snapshot.data,
-                          fit: BoxFit.none,
-                          imageBuilder: (context, imageProvider) => Container(
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                image: imageProvider,
-                                fit: BoxFit.fill,
-                              ),
+                    child: CachedNetworkImage(
+                      height: MediaQuery.of(context).size.height * 0.23,
+                      width: MediaQuery.of(context).size.width,
+                      imageUrl: _getImage(context),
+                      fit: BoxFit.fill,
+                      imageBuilder: (context, imageProvider) => Container(
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: imageProvider,
+                            fit: BoxFit.fill,
+                          ),
+                        ),
+                      ),
+                      placeholder: (context, url) {
+                        return Container(
+                          child: Center(
+                            child: CircularProgressIndicator(
+                              valueColor: new AlwaysStoppedAnimation<Color>(
+                                  AppColor.primaryDark),
                             ),
                           ),
-                          placeholder: (context, url) {
-                            return Container(
-                              child: Center(
-                                child: CircularProgressIndicator(
-                                  valueColor: new AlwaysStoppedAnimation<Color>(
-                                      AppColor.primaryDark),
-                                ),
-                              ),
-                            );
-                          },
-                          errorWidget: (context, url, error) {
-                            return Image.asset(
-                              AppImages.icon_placeholder,
-                              fit: BoxFit.cover,
-                            );
-                          },
+                        );
+                      },
+                      errorWidget: (context, url, error) {
+                        return Image.asset(
+                          AppImages.icon_placeholder,
+                          fit: BoxFit.cover,
                         );
                       },
                     ),
@@ -172,12 +171,17 @@ class ItemRewards extends StatelessWidget {
     );
   }
 
-  Future<String> getImageUrl(BuildContext context, Campaign campaign) async {
-    try {
-      return Utils.parseMediaUrl(
-          Utils.getTranslatedCodeFromImageId(campaign.campaignElement.imageId));
-    } catch (e) {
-      return null;
+  String _getImage(BuildContext context) {
+    if (campaign == null) return '';
+    if (campaign.campaignElement == null) return '';
+    try{
+      CampaignElement camElement = CampaignElement.fromJson(jsonDecode(campaign.campaignElement));
+      List<LanguageStore> imageId = List<LanguageStore>.from(camElement.imageId.map((x) => LanguageStore.fromJson(x)));
+      return Utils.getTranslatedCode(context, imageId);
+    }catch(e){
+      CampaignElement camElement = CampaignElement.fromJson(jsonDecode(jsonDecode(campaign.campaignElement)));
+      List<LanguageStore> imageId = List<LanguageStore>.from(camElement.imageId.map((x) => LanguageStore.fromJson(x)));
+      return Utils.getTranslatedCode(context, imageId);
     }
   }
 

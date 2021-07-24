@@ -64,6 +64,8 @@ class _ExpandableCardsState extends State<ExpandableCards> {
             retailWithCategory:
                 widget.categoryBasedModel.retailWithCategory[index],
             index: index,
+            listRetailUnitCategory:
+                widget.categoryBasedModel.retailWithCategory,
             onLikePressed: () {
               debugPrint('onLikePressed');
               widget.shopBloc.updateFavourite(
