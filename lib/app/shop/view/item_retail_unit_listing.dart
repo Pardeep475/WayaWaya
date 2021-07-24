@@ -21,6 +21,7 @@ class ItemRetailUnitListing extends StatelessWidget {
   final Function() onOfferPressed;
   final Function() onLocationPressed;
   final Function() onLikePressed;
+  final bool isRestaurant;
 
   ItemRetailUnitListing(
       {this.retailWithCategory,
@@ -28,6 +29,7 @@ class ItemRetailUnitListing extends StatelessWidget {
       this.listRetailUnitCategory,
       this.onLocationPressed,
       this.onLikePressed,
+      this.isRestaurant,
       this.onOfferPressed});
 
   @override
@@ -35,7 +37,9 @@ class ItemRetailUnitListing extends StatelessWidget {
     return InkWell(
       onTap: () {
         ShopDetailModel _shopDetailModel = ShopDetailModel(
-            index: index, listRetailUnitCategory: listRetailUnitCategory);
+            title: isRestaurant ? "Shop Detail" : "Restaurant Detail",
+            index: index,
+            listRetailUnitCategory: listRetailUnitCategory);
         Navigator.pushNamed(context, AppString.SHOP_DETAIL_SCREEN_ROUTE,
             arguments: _shopDetailModel);
       },

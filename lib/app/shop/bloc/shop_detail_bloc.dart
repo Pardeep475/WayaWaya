@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:wayawaya/app/common/menu/model/main_menu_permission.dart';
+import 'package:wayawaya/app/shop/model/retail_with_category.dart';
+import 'package:wayawaya/network/local/profile_database_helper.dart';
 import 'package:wayawaya/network/local/super_admin_database_helper.dart';
 import 'package:wayawaya/utils/session_manager.dart';
 
@@ -31,4 +33,13 @@ class ShopDetailBloc {
     mainMenuPermissionSink.add(itemList);
     return itemList;
   }
+
+  updateFavourite({RetailWithCategory retailWithCategory}) async {
+    String defaultMall = await SessionManager.getDefaultMall();
+    await ProfileDatabaseHelper.updateRetailWithCategory(
+        databasePath: defaultMall,
+        retailUnitId: retailWithCategory.id,
+        flag: retailWithCategory.favourite == "0" ? "1" : "0");
+  }
+
 }

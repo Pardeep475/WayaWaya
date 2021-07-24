@@ -61,6 +61,7 @@ class _ExpandableCardsState extends State<ExpandableCards> {
         children: List.generate(
           widget.categoryBasedModel.retailWithCategory.length,
           (index) => ItemRetailUnitListing(
+            isRestaurant: widget.isRestaurant,
             retailWithCategory:
                 widget.categoryBasedModel.retailWithCategory[index],
             index: index,

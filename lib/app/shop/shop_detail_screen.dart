@@ -31,6 +31,8 @@ class ShopDetailScreen extends StatefulWidget {
 class _ShopDetailScreenState extends State<ShopDetailScreen> {
   ShopDetailBloc _shopDetailBloc;
 
+  List<RetailWithCategory> _listRetailUnitCategories = [];
+
   @override
   void initState() {
     _shopDetailBloc = ShopDetailBloc();
@@ -56,6 +58,7 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
   @override
   Widget build(BuildContext context) {
     ShopDetailModel shopDetailModel = ModalRoute.of(context).settings.arguments;
+    _listRetailUnitCategories = shopDetailModel.listRetailUnitCategory;
     return StreamBuilder<List<MainMenuPermission>>(
         initialData: [],
         stream: _shopDetailBloc.mainMenuPermissionStream,
@@ -63,7 +66,7 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
           return AnimateAppBar(
             // title: _getName(
             //     shopDetailModel.listRetailUnitCategory[shopDetailModel.index]),
-            title: 'Offer Detail',
+            title: shopDetailModel.title.toUpperCase(),
             isSliver: true,
             mainMenuPermissions: snapshot.data,
             physics: const NeverScrollableScrollPhysics(),
@@ -87,8 +90,8 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
                                     height: MediaQuery.of(context).size.height,
                                     width: MediaQuery.of(context).size.width,
                                     imageUrl: _getImagesLength(
-                                        shopDetailModel.listRetailUnitCategory[
-                                            index])[position],
+                                            _listRetailUnitCategories[index])[
+                                        position],
                                     fit: BoxFit.fill,
                                     imageBuilder: (context, imageProvider) =>
                                         Container(
@@ -209,7 +212,21 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
                                                 ? AppColor.primary
                                                 : AppColor.white,
                                           ),
-                                          onPressed: () {}),
+                                          onPressed: () async {
+                                            await _shopDetailBloc.updateFavourite(retailWithCategory: _listRetailUnitCategories[index]);
+
+                                            RetailWithCategory
+                                                _retailWithCategory =
+                                                _listRetailUnitCategories[
+                                                    index];
+                                            _retailWithCategory.favourite =
+                                                _retailWithCategory.favourite ==
+                                                        "0"
+                                                    ? "1"
+                                                    : "0";
+
+                                            setState(() {});
+                                          }),
                                     ],
                                   ),
                                 ),
@@ -384,8 +401,7 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
                                       ],
                                     ),
                                   ),
-                                  shopDetailModel.listRetailUnitCategory[index]
-                                              .campaigns ==
+                                  _listRetailUnitCategories[index].campaigns ==
                                           null
                                       ? SizedBox(
                                           height: Dimens.twoHundredFifty,
@@ -443,7 +459,9 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
                                                               height:
                                                                   Dimens.ten,
                                                               width: Dimens.ten,
-                                                              margin: EdgeInsets.all(Dimens.four),
+                                                              margin: EdgeInsets
+                                                                  .all(Dimens
+                                                                      .four),
                                                               decoration:
                                                                   BoxDecoration(
                                                                 color: index ==
@@ -471,7 +489,7 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
                         ],
                       );
                     },
-                    itemCount: shopDetailModel.listRetailUnitCategory.length),
+                    itemCount: _listRetailUnitCategories.length),
               ),
             ],
           );

@@ -22,7 +22,7 @@ class RetailWithCategory {
   final List<RetailUnitCategory> retailUnitCategories;
   final ColorCodes color;
 
-  final String favourite;
+   String favourite;
 
    List<Campaign> campaigns;
 
