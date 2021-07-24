@@ -16,6 +16,7 @@ import 'package:wayawaya/app/home/model/campaign_model.dart';
 import 'package:wayawaya/app/offers/model/detail_model.dart';
 import 'package:wayawaya/app/offers/model/voucher.dart';
 import 'package:wayawaya/app/rewards/redeem.dart';
+import 'package:wayawaya/common/model/language_store.dart';
 import 'package:wayawaya/config.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_images.dart';
@@ -267,56 +268,42 @@ class _RewardsDetailsState extends State<RewardsDetails> {
                                   child: Stack(
                                     children: [
                                       Positioned.fill(
-                                        child: FutureBuilder(
-                                          future: getImageUrl(
+                                        child: CachedNetworkImage(
+                                          height: MediaQuery.of(context)
+                                              .size
+                                              .height,
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          imageUrl: getImageUrl(
                                               context, _listOfCampaign[index]),
-                                          builder: (context, snapshot) {
-                                            if (snapshot.data == null) {
-                                              return Image.asset(
-                                                AppImages.rewards,
-                                                fit: BoxFit.cover,
-                                              );
-                                            }
-                                            return CachedNetworkImage(
-                                              height: MediaQuery.of(context)
-                                                  .size
-                                                  .height,
-                                              width: MediaQuery.of(context)
-                                                  .size
-                                                  .width,
-                                              imageUrl: snapshot.data,
-                                              fit: BoxFit.none,
-                                              imageBuilder:
-                                                  (context, imageProvider) =>
-                                                      Container(
-                                                decoration: BoxDecoration(
-                                                  image: DecorationImage(
-                                                    image: imageProvider,
-                                                    fit: BoxFit.fill,
-                                                  ),
+                                          fit: BoxFit.none,
+                                          imageBuilder:
+                                              (context, imageProvider) =>
+                                                  Container(
+                                            decoration: BoxDecoration(
+                                              image: DecorationImage(
+                                                image: imageProvider,
+                                                fit: BoxFit.fill,
+                                              ),
+                                            ),
+                                          ),
+                                          placeholder: (context, url) {
+                                            return Container(
+                                              child: Center(
+                                                child:
+                                                    CircularProgressIndicator(
+                                                  valueColor:
+                                                      new AlwaysStoppedAnimation<
+                                                              Color>(
+                                                          AppColor.primaryDark),
                                                 ),
                                               ),
-                                              placeholder: (context, url) {
-                                                return Container(
-                                                  child: Center(
-                                                    child:
-                                                        CircularProgressIndicator(
-                                                      valueColor:
-                                                          new AlwaysStoppedAnimation<
-                                                                  Color>(
-                                                              AppColor
-                                                                  .primaryDark),
-                                                    ),
-                                                  ),
-                                                );
-                                              },
-                                              errorWidget:
-                                                  (context, url, error) {
-                                                return Image.asset(
-                                                  AppImages.icon_placeholder,
-                                                  fit: BoxFit.cover,
-                                                );
-                                              },
+                                            );
+                                          },
+                                          errorWidget: (context, url, error) {
+                                            return Image.asset(
+                                              AppImages.icon_placeholder,
+                                              fit: BoxFit.cover,
                                             );
                                           },
                                         ),
@@ -577,12 +564,21 @@ class _RewardsDetailsState extends State<RewardsDetails> {
     );
   }
 
-  Future<String> getImageUrl(BuildContext context, Campaign campaign) async {
+  String getImageUrl(BuildContext context, Campaign campaign) {
+    if (campaign == null) return '';
+    if (campaign.campaignElement == null) return '';
     try {
-      return Utils.parseMediaUrl(
-          Utils.getTranslatedCodeFromImageId(campaign.campaignElement.imageId));
+      CampaignElement camElement =
+          CampaignElement.fromJson(jsonDecode(campaign.campaignElement));
+      List<LanguageStore> imageId = List<LanguageStore>.from(
+          camElement.imageId.map((x) => LanguageStore.fromJson(x)));
+      return Utils.getTranslatedCode(context, imageId);
     } catch (e) {
-      return null;
+      CampaignElement camElement = CampaignElement.fromJson(
+          jsonDecode(jsonDecode(campaign.campaignElement)));
+      List<LanguageStore> imageId = List<LanguageStore>.from(
+          camElement.imageId.map((x) => LanguageStore.fromJson(x)));
+      return Utils.getTranslatedCode(context, imageId);
     }
   }
 
@@ -663,13 +659,20 @@ class _RewardsDetailsState extends State<RewardsDetails> {
       }
 
       String description = '';
-      if (campaign.campaignElement != null &&
-          campaign.campaignElement.description != null) {
-        campaign.campaignElement.description.forEach((element) {
-          if (element.language == Language.EN_US) {
-            description = element.text;
-          }
-        });
+      if (campaign.campaignElement != null) {
+        try {
+          CampaignElement camElement =
+              campaignElementFromJson(campaign.campaignElement);
+          List<LanguageStore> name = List<LanguageStore>.from(
+              camElement.description.map((x) => LanguageStore.fromJson(x)));
+          description = Utils.getTranslatedCode(buildContext, name);
+        } catch (e) {
+          CampaignElement camElement =
+              campaignElementFromJson(jsonDecode(campaign.campaignElement));
+          List<LanguageStore> name = List<LanguageStore>.from(
+              camElement.description.map((x) => LanguageStore.fromJson(x)));
+          description = Utils.getTranslatedCode(buildContext, name);
+        }
       }
 
       Share.share(description + "\n" + _getImage(buildContext, campaign),
@@ -703,20 +706,55 @@ class _RewardsDetailsState extends State<RewardsDetails> {
   String _getImage(BuildContext context, Campaign campaign) {
     if (campaign == null) return '';
     if (campaign.campaignElement == null) return '';
-    return Utils.getTranslatedCodeFromImageId(campaign.campaignElement.imageId);
+    try {
+      CampaignElement camElement =
+          CampaignElement.fromJson(jsonDecode(campaign.campaignElement));
+      List<LanguageStore> imageId = List<LanguageStore>.from(
+          camElement.imageId.map((x) => LanguageStore.fromJson(x)));
+      return Utils.getTranslatedCode(context, imageId);
+    } catch (e) {
+      CampaignElement camElement = CampaignElement.fromJson(
+          jsonDecode(jsonDecode(campaign.campaignElement)));
+      List<LanguageStore> imageId = List<LanguageStore>.from(
+          camElement.imageId.map((x) => LanguageStore.fromJson(x)));
+      return Utils.getTranslatedCode(context, imageId);
+    }
   }
 
   _getTitle(BuildContext context, Campaign campaign) {
     if (campaign == null) return '';
     if (campaign.campaignElement == null) return '';
-    return Utils.getTranslatedCode(context, campaign.campaignElement.name);
+    // return Utils.getTranslatedCode(context, campaign.campaignElement.name);
+    try {
+      CampaignElement camElement =
+          campaignElementFromJson(campaign.campaignElement);
+      List<LanguageStore> name = List<LanguageStore>.from(
+          camElement.name.map((x) => LanguageStore.fromJson(x)));
+      return Utils.getTranslatedCode(context, name);
+    } catch (e) {
+      CampaignElement camElement =
+          campaignElementFromJson(jsonDecode(campaign.campaignElement));
+      List<LanguageStore> name = List<LanguageStore>.from(
+          camElement.name.map((x) => LanguageStore.fromJson(x)));
+      return Utils.getTranslatedCode(context, name);
+    }
   }
 
   _getDescription(BuildContext context, Campaign campaign) {
     if (campaign == null) return '';
     if (campaign.campaignElement == null) return '';
-    if (campaign.campaignElement.description == null) return '';
-    return Utils.getTranslatedCode(
-        context, campaign.campaignElement.description);
+    try {
+      CampaignElement camElement =
+          campaignElementFromJson(campaign.campaignElement);
+      List<LanguageStore> name = List<LanguageStore>.from(
+          camElement.description.map((x) => LanguageStore.fromJson(x)));
+      return Utils.getTranslatedCode(context, name);
+    } catch (e) {
+      CampaignElement camElement =
+          campaignElementFromJson(jsonDecode(campaign.campaignElement));
+      List<LanguageStore> name = List<LanguageStore>.from(
+          camElement.description.map((x) => LanguageStore.fromJson(x)));
+      return Utils.getTranslatedCode(context, name);
+    }
   }
 }

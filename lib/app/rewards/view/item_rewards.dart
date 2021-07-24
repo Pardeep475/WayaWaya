@@ -174,13 +174,17 @@ class ItemRewards extends StatelessWidget {
   String _getImage(BuildContext context) {
     if (campaign == null) return '';
     if (campaign.campaignElement == null) return '';
-    try{
-      CampaignElement camElement = CampaignElement.fromJson(jsonDecode(campaign.campaignElement));
-      List<LanguageStore> imageId = List<LanguageStore>.from(camElement.imageId.map((x) => LanguageStore.fromJson(x)));
+    try {
+      CampaignElement camElement =
+          CampaignElement.fromJson(jsonDecode(campaign.campaignElement));
+      List<LanguageStore> imageId = List<LanguageStore>.from(
+          camElement.imageId.map((x) => LanguageStore.fromJson(x)));
       return Utils.getTranslatedCode(context, imageId);
-    }catch(e){
-      CampaignElement camElement = CampaignElement.fromJson(jsonDecode(jsonDecode(campaign.campaignElement)));
-      List<LanguageStore> imageId = List<LanguageStore>.from(camElement.imageId.map((x) => LanguageStore.fromJson(x)));
+    } catch (e) {
+      CampaignElement camElement = CampaignElement.fromJson(
+          jsonDecode(jsonDecode(campaign.campaignElement)));
+      List<LanguageStore> imageId = List<LanguageStore>.from(
+          camElement.imageId.map((x) => LanguageStore.fromJson(x)));
       return Utils.getTranslatedCode(context, imageId);
     }
   }

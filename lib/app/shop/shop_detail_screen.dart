@@ -392,34 +392,78 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
                                         )
                                       : Container(
                                           height: Dimens.twoHundredFifty,
-                                          child: ListView.builder(
-                                            scrollDirection: Axis.horizontal,
-                                            shrinkWrap: true,
-                                            itemBuilder: (context, position) {
-                                              return ItemRewards(
-                                                isBorder: false,
-                                                index: index,
-                                                campaign: shopDetailModel
-                                                    .listRetailUnitCategory[
-                                                        index]
-                                                    .campaigns[position],
-                                                listOfCampaign: shopDetailModel
-                                                    .listRetailUnitCategory[
-                                                        index]
-                                                    .campaigns,
-                                                size: shopDetailModel
-                                                    .listRetailUnitCategory[
-                                                        index]
-                                                    .campaigns
-                                                    .length,
-                                              );
-                                            },
-                                            itemCount: shopDetailModel
-                                                .listRetailUnitCategory[index]
-                                                .campaigns
-                                                .length,
+                                          child: Stack(
+                                            children: [
+                                              TransformerPageView(
+                                                  loop: false,
+                                                  transformer:
+                                                      new ZoomOutPageTransformer(),
+                                                  itemCount: shopDetailModel
+                                                      .listRetailUnitCategory[
+                                                          index]
+                                                      .campaigns
+                                                      .length,
+                                                  itemBuilder:
+                                                      (context, position) {
+                                                    return Stack(
+                                                      children: [
+                                                        Positioned.fill(
+                                                          child: ItemRewards(
+                                                            isBorder: false,
+                                                            index: position,
+                                                            campaign: shopDetailModel
+                                                                    .listRetailUnitCategory[
+                                                                        index]
+                                                                    .campaigns[
+                                                                position],
+                                                            listOfCampaign:
+                                                                shopDetailModel
+                                                                    .listRetailUnitCategory[
+                                                                        index]
+                                                                    .campaigns,
+                                                            size: shopDetailModel
+                                                                .listRetailUnitCategory[
+                                                                    index]
+                                                                .campaigns
+                                                                .length,
+                                                          ),
+                                                        ),
+                                                        Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .center,
+                                                          children: List.generate(
+                                                              shopDetailModel
+                                                                  .listRetailUnitCategory[
+                                                                      index]
+                                                                  .campaigns
+                                                                  .length,
+                                                              (index) {
+                                                            return Container(
+                                                              height:
+                                                                  Dimens.ten,
+                                                              width: Dimens.ten,
+                                                              margin: EdgeInsets.all(Dimens.four),
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                color: index ==
+                                                                        position
+                                                                    ? Colors
+                                                                        .grey
+                                                                    : Colors.grey[
+                                                                        700],
+                                                                shape: BoxShape
+                                                                    .circle,
+                                                              ),
+                                                            );
+                                                          }),
+                                                        ),
+                                                      ],
+                                                    );
+                                                  }),
+                                            ],
                                           ),
-                                        )
+                                        ),
                                 ],
                               ),
                             ),
