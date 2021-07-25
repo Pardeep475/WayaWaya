@@ -147,7 +147,7 @@ class CampaignTable {
     return count;
   }
 
-  static Future<int> insertCampaignTable(
+  static insertCampaignTable(
       {Database db, Map<String, dynamic> row, String campaignId}) async {
     if (campaignId == null) {
       try{
@@ -168,25 +168,6 @@ class CampaignTable {
             where: '$COLUMN_ID = ?', whereArgs: [campaignId]);
       }
     }
-
-    // await db.transaction((txn) async {
-    //   var batch = txn.batch();
-    //   if (campaignId == null) {
-    //     batch.insert(CAMPAIGN_TABLE_NAME, row);
-    //   } else {
-    //     // dynamic campaign = await getCampaignById(db, campaignId);
-    //     dynamic campaign = txn.update(CAMPAIGN_TABLE_NAME, row,
-    //         where: '$COLUMN_ID = ?', whereArgs: [campaignId]);
-    //     if (campaign == null) {
-    //       batch.insert(CAMPAIGN_TABLE_NAME, row);
-    //     } else {
-    //       batch.update(CAMPAIGN_TABLE_NAME, row,
-    //           where: '$COLUMN_ID = ?', whereArgs: [campaignId]);
-    //     }
-    //   }
-    //   await batch.commit();
-    // });
-    // return 0;
   }
 
   static Future<int> updateCampaignTable(

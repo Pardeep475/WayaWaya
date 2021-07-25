@@ -6,6 +6,9 @@ import 'package:wayawaya/models/omni_channel_item_model/omni_channel_item_model.
 import 'package:wayawaya/network/local/database_helper.dart';
 import 'package:wayawaya/network/local/profile_database_helper.dart';
 import 'package:wayawaya/network/local/sync_service.dart';
+import 'package:wayawaya/network/model/loyalty/loyalty_header_response.dart';
+import 'package:wayawaya/network/model/loyalty/loyalty_response.dart';
+import 'package:wayawaya/network/model/loyalty/loyalty_temp.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/dimens.dart';
@@ -174,7 +177,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       case AppString.term_and_conditions:
         {
           debugPrint('settings_click_testing:-  ${settingsModel.title}');
-          _settingsBloc.termAndConditionOnClick(context);
+          // _settingsBloc.termAndConditionOnClick(context);
           _implementLocalDb();
           // _settingsBloc.syncCampaign(0);
           break;
@@ -184,11 +187,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   _implementLocalDb() async {
     String defaultMall = await SessionManager.getDefaultMall();
-    OmniChannelItemModel _omniChannelItemModel =
-        await ProfileDatabaseHelper.getActiveOmniChannel(
+    List<LoyaltyHeaderResponse> _serviceList =
+        await ProfileDatabaseHelper.getLoyaltyData(
       databasePath: defaultMall,
     );
-    debugPrint(
-        'qwertyui ${_omniChannelItemModel.id}    \n   ${_omniChannelItemModel.oid}');
+    _serviceList.forEach((element) {
+      debugPrint(
+          'LoyaltyTemp:-   ${element.timestamp}   ${element.totalMonthPoints}   ${element.month}');
+    });
+
   }
 }

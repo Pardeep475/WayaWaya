@@ -155,7 +155,7 @@ class MyAccountBloc {
         updateUserOnLocal(data, context);
       }
     } catch (e) {
-      debugPrint("error_in_login_api:-  $e");
+      debugPrint("error_in_updateUserInfoApi:-  $e");
       profileSink.add(ApiResponse.error(e));
       if (e is UnknownException ||
           e is InvalidFormatException ||
@@ -164,14 +164,12 @@ class MyAccountBloc {
           e is FetchDataException ||
           e is UnauthorisedException ||
           e is BadRequestException) {
-        debugPrint("error_in_login_api:-  e is exception");
         profileSink.add(
           ApiResponse.error(
             ErrorResponse(message: e.message),
           ),
         );
       } else {
-        debugPrint("error_in_login_api:-  $e is String");
         profileSink.add(
           ApiResponse.error(
             ErrorResponse(message: e),

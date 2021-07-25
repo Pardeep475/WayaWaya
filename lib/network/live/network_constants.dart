@@ -26,4 +26,5 @@ class NetworkConstants {
   static const loyalty_transactions_end_point = "loyaltyTransactions";
   static const refreshTokens = "refreshTokens/";
   static const lastUpdate = "last/updates";
+  static const categories = "categories";
 }

@@ -25,16 +25,16 @@ import 'package:wayawaya/utils/utils.dart';
 // language, currency
 class SelectPreferencesBloc {
   List<DropdownMenuItem<NotificationModel>> items = [];
+
   // ignore: close_sinks
   StreamController _mainMenuPermissionsController =
-  StreamController<List<MainMenuPermission>>();
+      StreamController<List<MainMenuPermission>>();
 
   StreamSink<List<MainMenuPermission>> get mainMenuPermissionSink =>
       _mainMenuPermissionsController.sink;
 
   Stream<List<MainMenuPermission>> get mainMenuPermissionStream =>
       _mainMenuPermissionsController.stream;
-
 
   // ignore: close_sinks
   StreamController _selectPreferencesController =
@@ -397,7 +397,7 @@ class SelectPreferencesBloc {
         updateUserOnLocal(data, context);
       }
     } catch (e) {
-      debugPrint("error_in_login_api:-  $e");
+      debugPrint("error_in_updateUserInfoApi:-  $e");
       selectPreferencesSink.add(ApiResponse.error(e));
       if (e is UnknownException ||
           e is InvalidFormatException ||
@@ -406,14 +406,12 @@ class SelectPreferencesBloc {
           e is FetchDataException ||
           e is UnauthorisedException ||
           e is BadRequestException) {
-        debugPrint("error_in_login_api:-  e is exception");
         selectPreferencesSink.add(
           ApiResponse.error(
             ErrorResponse(message: e.message),
           ),
         );
       } else {
-        debugPrint("error_in_login_api:-  $e is String");
         selectPreferencesSink.add(
           ApiResponse.error(
             ErrorResponse(message: e),
@@ -466,15 +464,12 @@ class SelectPreferencesBloc {
     }
   }
 
-
   fetchMenuButtons() async {
     String defaultMall = await SessionManager.getDefaultMall();
     List<MainMenuPermission> itemList =
-    await SuperAdminDatabaseHelper.getMenuButtons(defaultMall);
+        await SuperAdminDatabaseHelper.getMenuButtons(defaultMall);
     debugPrint('main_menu_permission_testing:--   ${itemList.length}');
     mainMenuPermissionSink.add(itemList);
     return itemList;
   }
-
-
 }

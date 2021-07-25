@@ -44,7 +44,7 @@ class AppString {
 
   static const String DEVICE_SEPARATOR = "~^";
   static const String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
-  static const String BUILD_TIME = "2015-07-17 18:00:18";
+  static const String BUILD_TIME = "2020-07-17 00:00:00";
   static const String DATE_FORMAT_UPDATE = "yyyy-MM-dd hh:mm:ss a";
   static const String DATE_FORMAT_WITHOUT_TIME = "yyyy-MM-dd 00:00:00";
   static const String STATE = "state";
@@ -115,8 +115,7 @@ class AppString {
   static const password_and_confirm_password_must_be_same =
       "Password and confirm password must be same";
   static const email_validation_error_message = "Please enter valid Email";
-  static const enter_your_email_phone_username =
-      "Enter your email address.";
+  static const enter_your_email_phone_username = "Enter your email address.";
   static const verification_email_has_been_sent =
       "Verification email has been sent to registered email address";
   static const unable_to_verify_email = "Unable to verify email";
@@ -196,7 +195,6 @@ class AppString {
   static const String header_title3_p4 =
       "– You can click the Reward and open the Rewards Detail page, and from there redeem the reward.";
 
-
   static const String rewards_wallet = "Rewards Wallet";
   static const String header_title4_p1 =
       "– The Rewards wallet, shows you how many points you have, as well as how many points you have redeemed.";
@@ -204,8 +202,7 @@ class AppString {
       "– You will also see your Monthly totals of points balance.";
   static const String header_title4_p3 =
       "– Click each month to expand it, and examine transaction details";
-  static const String header_title4_p4 =
-      "– Key to PIE chart:";
+  static const String header_title4_p4 = "– Key to PIE chart:";
 
   static const String header_title4_p4_1 =
       "\u2022 Available - The amount of points you have that you can still redeem.";
@@ -214,55 +211,44 @@ class AppString {
   static const String header_title4_p4_3 =
       "\u2022 Redeemed - The total number of points you have redeemed at point of sale. ";
 
-
   static const String loyalty_title = "Points Award Rules";
-  static const String open_the_app =
-      "Open the APP";
+  static const String open_the_app = "Open the APP";
   static const String h1_point1 =
       "– More than 1 times a week and earn 5 points";
   static const String h1_point2 =
       "– More than 3 times a week and earn 10 points";
   static const String h1_point3 =
       "– More than 5 times a week and earn 15 points";
-  static const String h1_note =
-      "Points can only be earned once per day";
+  static const String h1_note = "Points can only be earned once per day";
 
-  static const String header_2 =
-      "View a Promotion";
+  static const String header_2 = "View a Promotion";
   static const String h2_point1 =
       "– More than 1 times a month and earn 5 points";
   static const String h2_point2 =
       "– More than 3 times a month and earn 10 points";
   static const String h2_point3 =
       "– More than 5 times a month and earn 15 points";
-  static const String h2_note =
-      "Points can only be earned once per day";
+  static const String h2_note = "Points can only be earned once per day";
 
-  static const String header_3 =
-      "View Ads or Offers";
+  static const String header_3 = "View Ads or Offers";
   static const String h3_point1 =
       "– More than 1 times a month and earn 5 points";
   static const String h3_point2 =
       "– More than 3 times a month and earn 10 points";
   static const String h3_point3 =
       "– More than 5 times a month and earn 15 points";
-  static const String h3_note =
-      "Points can only be earned once per day";
+  static const String h3_note = "Points can only be earned once per day";
 
-  static const String header_4 =
-      "Visit a Store";
+  static const String header_4 = "Visit a Store";
   static const String h4_point1 =
       "– More than 1 times a month and earn 5 points";
   static const String h4_point2 =
       "– More than 3 times a month and earn 10 points";
   static const String h4_point3 =
       "– More than 5 times a month and earn 15 points";
-  static const String h4_note =
-      "Points can only be earned once per day";
+  static const String h4_note = "Points can only be earned once per day";
 
-  static const String header_5 =
-      "Visit the Mall";
-
+  static const String header_5 = "Visit the Mall";
 
   static const String intro =
       "Introducing the new Connect Waya-Waya® Rewards Programme!";
@@ -281,6 +267,14 @@ class AppString {
       "You need to visit the mall to earn points.";
   static const String not_at_venue_msg =
       "You need to visit the mall to earn/redeem shop points. If you are at the mall please check following and restart your app. \n ● You received a Welcome message when visiting the mall. \n ● You have this mall selected as your current mall.";
+
+  static const String redemption = "Points Redeemed";
+  static const String view_offer = "View Offer";
+  static const String mall_visit = "Mall Visit";
+  static const String store_visit = "Store Visit";
+  static const String scan = "Scan QR Code for earning points";
+  static const String qr_scan = "QR Scan";
+  static const String membership = "Membership";
 
   // Routes
   static const LOGIN_SCREEN_ROUTE = "LOGIN_SCREEN_ROUTE";

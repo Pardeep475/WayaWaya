@@ -80,7 +80,7 @@ class SignUpBloc {
         // signUpSink.add(ApiResponse.completed(ErrorResponse(differ: differ)));
       }
     } catch (e) {
-      debugPrint("error_in_login_api:-  $e");
+      debugPrint("error_in_registerApi:-  $e");
       // signUpSink.add(ApiResponse.error(e));
       if (e is UnknownException ||
           e is InvalidFormatException ||
@@ -89,14 +89,12 @@ class SignUpBloc {
           e is FetchDataException ||
           e is UnauthorisedException ||
           e is BadRequestException) {
-        debugPrint("error_in_login_api:-  e is exception");
         signUpSink.add(
           ApiResponse.error(
             ErrorResponse(differ: differ, message: e.message),
           ),
         );
       } else {
-        debugPrint("error_in_login_api:-  $e is String");
         signUpSink.add(
           ApiResponse.error(
             ErrorResponse(differ: differ, message: e),
@@ -135,7 +133,7 @@ class SignUpBloc {
         loginSuccess(user, differ, gender);
       }
     } catch (e) {
-      debugPrint("error_in_login_api:-  $e");
+      debugPrint("error_in_register_api_fetchUserDetails:-  $e");
       // loginSink.add(ApiResponse.error(e));
       if (e is UnknownException ||
           e is InvalidFormatException ||
@@ -144,14 +142,12 @@ class SignUpBloc {
           e is FetchDataException ||
           e is UnauthorisedException ||
           e is BadRequestException) {
-        debugPrint("error_in_login_api:-  e is exception");
         signUpSink.add(
           ApiResponse.error(
             ErrorResponse(differ: differ, message: e.message),
           ),
         );
       } else {
-        debugPrint("error_in_login_api:-  $e is String");
         signUpSink.add(
           ApiResponse.error(
             ErrorResponse(differ: differ, message: e),

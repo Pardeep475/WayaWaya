@@ -61,14 +61,12 @@ class LoginBloc {
           e is FetchDataException ||
           e is UnauthorisedException ||
           e is BadRequestException) {
-        debugPrint("error_in_login_api:-  e is exception");
         loginSink.add(
           ApiResponse.error(
             ErrorResponse(differ: differ, message: e.message),
           ),
         );
       } else {
-        debugPrint("error_in_login_api:-  $e is String");
         loginSink.add(
           ApiResponse.error(
             ErrorResponse(differ: differ, message: e),
@@ -173,7 +171,7 @@ class LoginBloc {
         loginSuccess(user, differ);
       }
     } catch (e) {
-      debugPrint("error_in_login_api:-  $e");
+      debugPrint("error_in_fetchUserDetails:-  $e");
       // loginSink.add(ApiResponse.error(e));
       if (e is UnknownException ||
           e is InvalidFormatException ||
@@ -182,14 +180,12 @@ class LoginBloc {
           e is FetchDataException ||
           e is UnauthorisedException ||
           e is BadRequestException) {
-        debugPrint("error_in_login_api:-  e is exception");
         loginSink.add(
           ApiResponse.error(
             ErrorResponse(differ: differ, message: e.message),
           ),
         );
       } else {
-        debugPrint("error_in_login_api:-  $e is String");
         loginSink.add(
           ApiResponse.error(
             ErrorResponse(differ: differ, message: e),

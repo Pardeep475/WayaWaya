@@ -1,7 +1,9 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:wayawaya/app/auth/login/model/user_data_response.dart';
 import 'package:wayawaya/app/home/model/campaign_model.dart';
+import 'package:wayawaya/models/omni_channel_item_model/omni_channel_item_model.dart';
 import 'package:wayawaya/network/live/repository/api_repository.dart';
 import 'package:wayawaya/network/local/database_helper_two.dart';
 import 'package:wayawaya/network/local/table/categories_table.dart';
@@ -9,6 +11,9 @@ import 'package:wayawaya/network/local/table/retail_unit_table.dart';
 import 'package:wayawaya/network/local/table/trigger_zone_table.dart';
 import 'package:wayawaya/network/local/table/venue_profile_table.dart';
 import 'package:wayawaya/network/model/campaign/campaign_api_response.dart';
+import 'package:wayawaya/network/model/category/category_wrapper.dart';
+import 'package:wayawaya/network/model/loyalty/loyalty_new.dart';
+import 'package:wayawaya/network/model/loyalty/loyalty_response.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/session_manager.dart';
 import 'package:wayawaya/utils/utils.dart';
@@ -16,6 +21,7 @@ import 'package:wayawaya/utils/utils.dart';
 import 'database_helper.dart';
 import 'profile_database_helper.dart';
 import 'table/campaign_table.dart';
+import 'table/loyalty_table.dart';
 
 class SyncService {
   // make it singleton class
@@ -31,10 +37,17 @@ class SyncService {
 
   static String lastUpdate;
 
+  static Map<String, Map<String, Map<String, Map<String, String>>>>
+      hashmapToUpdate = new Map();
+
+  static List<String> toRemove = [];
+
   static Future fetchAllSyncData() async {
-    // await setSyncDateQuery();
-    // return await fetchCampaignData(1);
-    // return await fetchUpdateData(1);
+    await setSyncDateQuery();
+    await fetchCampaignData(1);
+    await syncLoyalty();
+    // await fetchUpdateData(1);
+    // SessionManager.setSyncDate(Utils.getStringFromDate(Utils.firstDate(), AppString.DATE_FORMAT));
   }
 
   static setSyncDateQuery() async {
@@ -45,7 +58,6 @@ class SyncService {
       lastUpdate =
           Utils.getStringFromDate(Utils.firstDate(), AppString.DATE_FORMAT);
     }
-    return null;
   }
 
   // start campaign data
@@ -140,28 +152,36 @@ class SyncService {
           return;
         }
         // convert all response data
-        _convertResponseData(data: data.data);
+        await _convertResponseData(data: data.data);
         // check if you need to recall this api
-        _checkFetchOtherDataIfValue(data.data, page);
+        await _checkFetchOtherDataIfValue(data.data, page);
       }
     });
   }
 
   static _convertResponseData({dynamic data}) async {
     try {
+      bool startPost = false;
       if (data["_items"] == null) return;
-      data["_items"].forEach((element) {
+      data["_items"].forEach((element) async {
         if (element["o"] != null && element["o"].toString().trim() == "POST") {
           // start post request
+          startPost = true;
         } else {
           // update in database
-          _updateDataInDb(item: element);
+          await _updateDataInDb(item: element);
         }
       });
+      await iterateUpdatedHashMaps(hashmapToUpdate);
+
+      if (startPost) {
+        debugPrint("ConvertResponseData called startPost true");
+        await startPostRequests();
+      }
     } catch (e) {}
   }
 
-  static _updateDataInDb({dynamic item}) {
+  static _updateDataInDb({dynamic item}) async {
     try {
       var resEndPoint = item["r"].toString().split("/");
       String resourceName = sortEndPoint(resEndPoint);
@@ -181,16 +201,69 @@ class SyncService {
 
       if (item["o"] != null && item["o"].toString().trim() == "PATCH") {
         debugPrint("patch data resource end point columName %s");
-        _patchDataInDb(data: item);
+        await _patchDataInDb(data: item);
       } else if (item["o"] != null && item["o"].toString().trim() == "POST") {
-        // postNewDataToDb(item);
+        await _postNewDataToDb(data: item);
       } else if (item["o"] != null && item["o"].toString().trim() == "DELETE") {
-        // deleteFromDb(item);
+        await _deleteFromDb(data: item);
       }
     } catch (e) {}
   }
 
-  static _patchDataInDb({dynamic data}) {
+  static setHashMap(String id, Map<String, String> dataHashMap, String method,
+      String resourceName) {
+    Map<String, Map<String, String>> newDataHashMap = new Map();
+    newDataHashMap[id] = dataHashMap;
+
+    debugPrint(
+        "Data in setHashMap %s -- %s -- %s" + id + method + resourceName);
+
+    Map<String, Map<String, Map<String, String>>> resourceHashMap = new Map();
+
+    resourceHashMap[method] = newDataHashMap;
+
+    setMasterHashMap(resourceName, method, resourceHashMap, id);
+  }
+
+  static setMasterHashMap(String resource, String method,
+      Map<String, Map<String, Map<String, String>>> resourceData, String id) {
+    if (hashmapToUpdate[resource] != null) {
+      if (hashmapToUpdate[resource][method] != null &&
+          hashmapToUpdate[resource][method][id] != null) {
+        debugPrint("Data in setHashMap method and id exists %s -- %s -- %s" +
+            id +
+            method +
+            resource);
+        hashmapToUpdate[resource][method][id] = mergeHashMap(
+            hashmapToUpdate[resource][method][id], resourceData[method][id]);
+      } else if (hashmapToUpdate[resource][method] != null) {
+        debugPrint("Data in setHashMap method exists %s -- %s -- %s" +
+            id +
+            method +
+            resource);
+        hashmapToUpdate[resource][method][id] = resourceData[method][id];
+      } else {
+        debugPrint(
+            "Data in setHashMap method and id not exists %s -- %s -- %s" +
+                id +
+                method +
+                resource);
+        hashmapToUpdate[resource][method] = resourceData[method];
+      }
+    } else {
+      debugPrint(
+          "Data in setHashMap in else %s -- %s -- %s" + id + method + resource);
+      hashmapToUpdate[resource] = resourceData;
+    }
+  }
+
+  static Map<String, String> mergeHashMap(
+      Map<String, String> targetHashMap, Map<String, String> updatedHashMap) {
+    targetHashMap.addAll(updatedHashMap);
+    return targetHashMap;
+  }
+
+  static _patchDataInDb({dynamic data}) async {
     try {
       var resEndPoint = data["r"].toString().split("/");
       String resourceName = sortEndPoint(resEndPoint);
@@ -201,11 +274,11 @@ class SyncService {
       switch (resourceName) {
         case "retailUnits":
           {
-            keys.forEach((element) {
+            keys.forEach((element) async {
               try {
                 if (data["c"].containsKey(map[element])) {
                   String updatedValue = data["c"][map[element]];
-                  DataBaseHelperTwo.patchData(
+                  await DataBaseHelperTwo.patchData(
                       RetailUnitTable.RETAIL_UNIT_TABLE_NAME,
                       map[element],
                       updatedValue,
@@ -223,11 +296,11 @@ class SyncService {
           break;
         case "categories":
           {
-            keys.forEach((element) {
+            keys.forEach((element) async {
               try {
                 if (data["c"].containsKey(map[element])) {
                   String updatedValue = data["c"][map[element]];
-                  DataBaseHelperTwo.patchData(
+                  await DataBaseHelperTwo.patchData(
                       CategoriesTable.CATEGORY_TABLE_NAME,
                       map[element],
                       updatedValue,
@@ -241,11 +314,11 @@ class SyncService {
           break;
         case "triggerZones":
           {
-            keys.forEach((element) {
+            keys.forEach((element) async {
               try {
                 if (data["c"].containsKey(map[element])) {
                   String updatedValue = data["c"][map[element]];
-                  DataBaseHelperTwo.patchData(
+                  await DataBaseHelperTwo.patchData(
                       TriggerZoneTable.TRIGGER_ZONE_TABLE_NAME,
                       map[element],
                       updatedValue,
@@ -264,6 +337,194 @@ class SyncService {
           }
           break;
       }
+    } catch (e) {}
+  }
+
+  static _postNewDataToDb({dynamic data}) async {
+    try {
+      var resEndPoint = data["r"].toString().split("/");
+      String resourceName = sortEndPoint(resEndPoint);
+
+      Map<String, String> map = _getAllColumnNamesForDb(resourceName);
+      Set<String> keys = map.keys.toSet();
+      switch (resourceName) {
+        case "retailUnits":
+//                updateMapData();
+
+          // Constant.retail_SyncService = true;
+//                loadRetailUnit(jObject.get("i").getAsString());
+          break;
+
+        case "venues":
+          // Constant.venue_SyncService = true;
+          break;
+
+        case "categories":
+          // updateMapData();
+          // Constant.category_SyncService = true;
+          break;
+
+        case "cinema":
+          // Constant.cinema_SyncService = true;
+          break;
+
+        case "pois":
+//                updateMapData();
+          break;
+      }
+    } catch (e) {}
+  }
+
+  static _deleteFromDb({dynamic data}) async {
+    try {
+      var resEndPoint = data["r"].toString().split("/");
+      String resourceName = sortEndPoint(resEndPoint);
+
+      Map<String, String> map = _getAllColumnNamesForDb(resourceName);
+      Set<String> keys = map.keys.toSet();
+
+      switch (resourceName) {
+        case "loyaltyTransactions":
+          await DataBaseHelperTwo.deleteRecord(LoyaltyTable.LOYALTY_TABLE_NAME,
+              LoyaltyTable.COLUMN_ID, data["i"].toString(), false);
+          break;
+        case "categories":
+          await DataBaseHelperTwo.deleteRecord(
+              CategoriesTable.CATEGORY_TABLE_NAME,
+              CategoriesTable.COLUMN_ID,
+              data["i"].toString(),
+              false);
+          break;
+        case "venue":
+          await DataBaseHelperTwo.deleteRecord(
+              VenueProfileTable.TABLE_NAME_VENUE_PROFILE,
+              VenueProfileTable.COLUMN_IDENTIFIER,
+              data["i"].toString(),
+              true);
+          break;
+        case "retailUnits":
+          // updateMapData();
+          await DataBaseHelperTwo.deleteRecord(
+              RetailUnitTable.RETAIL_UNIT_TABLE_NAME,
+              RetailUnitTable.COLUMN_ID,
+              data["i"].toString(),
+              false);
+          break;
+        case "campaigns":
+          break;
+        case "triggerZones":
+          await DataBaseHelperTwo.deleteRecord(
+              CampaignTable.CAMPAIGN_TABLE_NAME,
+              CampaignTable.COLUMN_ID,
+              data["i"].toString(),
+              false);
+          break;
+        case "pois":
+//                updateMapData();
+          break;
+      }
+    } catch (e) {}
+  }
+
+  static iterateUpdatedHashMaps(
+      Map<String, Map<String, Map<String, Map<String, String>>>>
+          dataToUpdate) async {
+    Map<String, Map<String, Map<String, String>>> listOfDataToPatch = new Map();
+    debugPrint("iterateUpdatedHashMaps %s" + dataToUpdate.toString());
+    dataToUpdate.keys.forEach((element) {
+      // if (element == "retailUnits") {
+      //   debugPrint("Update map data in iterated data %s" + element);
+      // }
+      if (dataToUpdate[element].keys.contains("PATCH")) {
+        dataToUpdate[element]["PATCH"].keys.forEach((id) {
+          if (dataToUpdate[element]["POST"] != null &&
+              dataToUpdate[element]["POST"].keys.contains(id)) {
+            debugPrint("Multiple data for id exits %s" + id);
+            hashmapToUpdate[element]["POST"][id] = mergeHashMap(
+                dataToUpdate[element]["POST"][id],
+                dataToUpdate[element]["PATCH"][id]);
+          }
+          listOfDataToPatch[element] = hashmapToUpdate[element]["PATCH"];
+        });
+      }
+    });
+
+    if (listOfDataToPatch.isEmpty) {
+      debugPrint("Data has been updated %s" + dataToUpdate.toString());
+      await patchMergedData(hashmapToUpdate);
+    } else {
+      debugPrint("List of data is not empty.");
+      await getDataForUpdate(listOfDataToPatch);
+    }
+  }
+
+  static getDataForUpdate(
+      final Map<String, Map<String, Map<String, String>>>
+          apiDataHashMap) async {
+    List<Map<String, Map<String, Map<String, String>>>> list =
+        await DataBaseHelperTwo.getObjectHashMap(apiDataHashMap);
+
+    list.forEach((existingData) {
+      existingData.keys.forEach((resource) {
+        existingData[resource].keys.forEach((id) {
+          if (existingData[resource][id] != null) {
+            hashmapToUpdate[resource]["PATCH"][id] = mergeHashMap(
+                existingData[resource][id],
+                hashmapToUpdate[resource]["PATCH"][id]);
+          } else {
+            toRemove.add(id);
+          }
+        });
+      });
+    });
+
+    debugPrint("On Completed for getDataForUpdate %s  ${toRemove.length}");
+
+    toRemove.forEach((id) {
+      debugPrint("On Completed for Master data %s" +
+          hashmapToUpdate["campaigns"]["PATCH"][id].toString());
+      hashmapToUpdate["campaigns"]["PATCH"].remove(id);
+    });
+
+    debugPrint("List of ids to remove %s" + toRemove.length.toString());
+    if (toRemove.isNotEmpty) {
+      campaignListDataToGet(toRemove);
+    }
+    toRemove.clear();
+    patchMergedData(hashmapToUpdate);
+  }
+
+  static patchMergedData(
+      Map<String, Map<String, Map<String, Map<String, String>>>>
+          mergeDataHashMap) {}
+
+  static startPostRequests() async {
+    await setCategory(1);
+  }
+
+  static setCategory(int page) async {
+    try {
+      String authorization = await SessionManager.getAuthHeader();
+      Map<String, String> map = new Map();
+      map["page"] = '1';
+      map["sort"] = "-_updated";
+      map["where"] = "{\"_updated\":{\"\$gt\": \"" + lastUpdate + "\"}}";
+
+      Utils.checkConnectivity().then((value) async {
+        if (value != null && value) {
+          dynamic data = await _repository.categoryApiRepository(
+              authorization: authorization, map: map);
+          debugPrint('data_category:-    $data');
+          CategoryWrapper categoryWrapper = CategoryWrapper.fromJson(data.data);
+          debugPrint('data_category:-    ${categoryWrapper.items.length}');
+          await DataBaseHelperTwo.setCategoryToDataBase(categoryWrapper.items);
+
+          if (categoryWrapper.links != null &&
+              categoryWrapper.links.next != null) {
+            setCategory(page + 1);
+          }
+        }
+      });
     } catch (e) {}
   }
 
@@ -368,9 +629,138 @@ class SyncService {
     }
   }
 
+  static campaignListDataToGet(List<String> campaignsToGet) async {
+    try {
+      String authorization = await SessionManager.getAuthHeader();
+      OmniChannelItemModel _omniChannelItemModel =
+          await ProfileDatabaseHelper.getActiveOmniChannel(
+        databasePath: authorization,
+      );
+      String oid = _omniChannelItemModel.oid;
+
+      Map<String, String> campaignQuery = new Map();
+      campaignQuery["page"] = "1";
+      campaignQuery["sort"] = "-_updated";
+      campaignQuery["where"] = "{\"_updated\":{\"\$gt\":\"" +
+          lastUpdate +
+          "\"},\"campaign_channels.omni_channel_id\":{\"\$elemMatch\":{\"\$eq\":\"" +
+          oid +
+          "\"}}}";
+      if (campaignsToGet != null) {
+        campaignQuery["_id"] = "{\"\$in\":" + campaignsToGet.toString() + "}";
+      }
+      campaignQuery["enable"] = true.toString();
+      Utils.checkConnectivity().then((value) async {
+        if (value != null && value) {
+          dynamic data = await _repository.syncCampaignWithIdApiRepository(
+              authorization: authorization, map: campaignQuery);
+          debugPrint('data_category:-    $data');
+          CampaignApiResponse campaignApiResponse =
+              CampaignApiResponse.fromJson(data.data);
+          debugPrint('data_category:-    ${campaignApiResponse.items.length}');
+        }
+      });
+    } catch (e) {}
+  }
+
   static _checkFetchOtherDataIfValue(dynamic data, int page) async {
     if (data['_links'] == null) return;
     if (data['_links']["next"] == null) return;
     await fetchUpdateData(page + 1);
+  }
+
+  // sync loyalty
+
+  static syncLoyalty() {
+    Utils.checkConnectivity().then((value) async {
+      if (value != null && value) {
+        try {
+          String authToken = await SessionManager.getJWTToken();
+          String userData = await SessionManager.getUserData();
+          if (userData == null) {
+            return;
+          }
+          UserDataResponse _response = userDataResponseFromJson(userData);
+          if (_response == null) {
+            return;
+          }
+          String userId = _response.userId;
+          fetchLoyaltyFromNetwork(
+              page: 1, userID: userId, authToken: authToken);
+        } catch (e) {}
+      } else {}
+    });
+  }
+
+  static fetchLoyaltyFromNetwork(
+      {int page, String authToken, String userID}) async {
+    try {
+      String where = "";
+      String latestLoyalty = await DataBaseHelperTwo.latestLoyalty();
+      debugPrint('latest_loyalty_is:-   $latestLoyalty');
+      if (latestLoyalty == null) {
+        where = "{\"points\":{\"\$gt\":0},\"user_id\":\"" + userID + "\"}";
+      } else {
+        where = "{\"event_timestamp\":{\"\$gt\": \"" +
+            latestLoyalty +
+            "\"},\"points\":{\"\$gt\":0},\"user_id\":\"" +
+            userID +
+            "\"}";
+      }
+
+      Map<String, dynamic> loyaltyQuery = {
+        "page": page.toString(),
+        "sort": "-event_timestamp",
+        "enable": true,
+        "where": where,
+      };
+
+      dynamic _loyaltyData = await _repository.loyaltyApiRepository(
+          authorization: authToken, map: loyaltyQuery);
+      debugPrint("testing__:-  success $_loyaltyData");
+      if (_loyaltyData is DioError) {
+        // refresh token
+        updateRefreshToken(pageNo: page, loyalty: null, monthNo: -1);
+      } else {
+        LoyaltyResponse _loyaltyResponse =
+            LoyaltyResponse.fromJson(_loyaltyData.data);
+        debugPrint("testing__:-  success ${_loyaltyResponse.items.length}");
+
+        // set data to database
+        await DataBaseHelperTwo.setLoyaltyToDataBase(_loyaltyResponse.items);
+
+        if (_loyaltyResponse.links != null) {
+          if (_loyaltyResponse.links.next != null) {
+            fetchLoyaltyFromNetwork(
+                page: page + 1, userID: userID, authToken: authToken);
+          }
+        }
+      }
+    } catch (e) {
+      debugPrint("loyalty_error:-  $e");
+    }
+  }
+
+  static updateRefreshToken(
+      {int pageNo, LoyaltyNew loyalty, int monthNo}) async {
+    Utils.checkConnectivity().then((value) async {
+      try {
+        if (value != null && value) {
+          dynamic _refreshTokenApiResponse =
+              await _repository.refreshTokenApiRepository();
+          if (_refreshTokenApiResponse is DioError) {
+            // logout button functionality
+          } else {
+            SessionManager.setJWTToken(
+                _refreshTokenApiResponse.data['access_token']);
+            SessionManager.setRefreshToken(
+                _refreshTokenApiResponse.data['refresh_token']);
+            syncLoyalty();
+          }
+        }
+      } catch (e) {
+        // logout button functionality
+      }
+    });
   }
 }

@@ -45,8 +45,8 @@ class LoyaltyResponse {
 class LoyaltyData {
   LoyaltyData({
     this.id,
-    this.created,
-    this.updated,
+    // this.created,
+    // this.updated,
     this.eventTimestamp,
     this.userId,
     this.campaignId,
@@ -59,73 +59,70 @@ class LoyaltyData {
     this.amount,
     this.code,
     this.beacon,
-    this.links,
-    this.noOfTimes,
+    // this.links,
+    // this.noOfTimes,
   });
 
   String id;
-  String created;
-  String updated;
+
+  // String created;
+  // String updated;
   String eventTimestamp;
-  UserId userId;
+  String userId;
   String campaignId;
-  Type type;
+  String type;
   int points;
-  Status status;
+  String status;
   String description;
-  ActivationStatus activationStatus;
+  String activationStatus;
   int openingBalance;
   int amount;
   String code;
   String beacon;
-  ItemLinks links;
-  int noOfTimes;
+
+  // ItemLinks links;
+  // int noOfTimes;
 
   factory LoyaltyData.fromJson(Map<String, dynamic> json) => LoyaltyData(
         id: json["_id"],
-        created: json["_created"],
-        updated: json["_updated"],
+        // created: json["_created"],
+        // updated: json["_updated"],
         eventTimestamp: json["event_timestamp"],
-        userId: userIdValues.map[json["user_id"]],
-        campaignId: json["campaign_id"] == null ? null : json["campaign_id"],
-        type: typeValues.map[json["type"]],
+        userId: json["user_id"],
+        campaignId: json["campaign_id"],
+        type: json["type"],
         points: json["points"],
-        status: statusValues.map[json["status"]],
+        status: json["status"],
         description: json["description"],
-        activationStatus: activationStatusValues.map[json["activation_status"]],
+        activationStatus: json["activation_status"],
         openingBalance: json["opening_balance"],
         amount: json["amount"] == null ? null : json["amount"],
         code: json["code"] == null ? null : json["code"],
         beacon: json["beacon"] == null ? null : json["beacon"],
-        links: json["_links"] == null ? null : ItemLinks.fromJson(json["_links"]),
-        noOfTimes: json["no_of_times"] == null ? null : json["no_of_times"],
+        // links: json["_links"] == null ? null : ItemLinks.fromJson(json["_links"]),
+        // noOfTimes: json["no_of_times"] == null ? null : json["no_of_times"],
       );
 
   Map<String, dynamic> toJson() => {
         "_id": id,
-        "_created": created,
-        "_updated": updated,
+        // "_created": created,
+        // "_updated": updated,
         "event_timestamp": eventTimestamp,
-        "user_id": userIdValues.reverse[userId],
+        "user_id": userId,
         "campaign_id": campaignId == null ? null : campaignId,
-        "type": typeValues.reverse[type],
+        "type": type,
         "points": points,
-        "status": statusValues.reverse[status],
+        "status": status,
         "description": description,
-        "activation_status": activationStatusValues.reverse[activationStatus],
+        "activation_status": activationStatus,
         "opening_balance": openingBalance,
         "amount": amount == null ? null : amount,
         "code": code == null ? null : code,
         "beacon": beacon == null ? null : beacon,
-        "_links": links == null ? null :links.toJson(),
-        "no_of_times": noOfTimes == null ? null : noOfTimes,
+        // "_links": links == null ? null :links.toJson(),
+        // "no_of_times": noOfTimes == null ? null : noOfTimes,
       };
 }
-
-enum ActivationStatus { ACTIVATED }
-
-final activationStatusValues =
-    EnumValues({"activated": ActivationStatus.ACTIVATED});
 
 class ItemLinks {
   ItemLinks({
@@ -149,54 +146,19 @@ class Last {
     this.href,
   });
 
-  Title title;
+  String title;
   String href;
 
   factory Last.fromJson(Map<String, dynamic> json) => Last(
-        title: titleValues.map[json["title"]],
+        title: json["title"],
         href: json["href"],
       );
 
   Map<String, dynamic> toJson() => {
-        "title": titleValues.reverse[title],
+        "title": title,
         "href": href,
       };
 }
-
-enum Title {
-  LOYALTY_TRANSACTIONS_LISTS,
-  LAST_PAGE,
-  NEXT_PAGE,
-  HOME,
-  LOYALTY_TRANSACTIONS
-}
-
-final titleValues = EnumValues({
-  "home": Title.HOME,
-  "last page": Title.LAST_PAGE,
-  "loyaltyTransactions": Title.LOYALTY_TRANSACTIONS,
-  "loyaltyTransactions Lists": Title.LOYALTY_TRANSACTIONS_LISTS,
-  "next page": Title.NEXT_PAGE
-});
-
-enum Status { OPEN }
-
-final statusValues = EnumValues({"open": Status.OPEN});
-
-enum Type { REGISTER, APP_OPEN, VIEW_OFFER }
-
-final typeValues = EnumValues({
-  "app_open": Type.APP_OPEN,
-  "register": Type.REGISTER,
-  "view_offer": Type.VIEW_OFFER
-});
-
-enum UserId { C22_A887_E20444_C479_B073_E6_F12515_D0_E }
-
-final userIdValues = EnumValues({
-  "c22a887e20444c479b073e6f12515d0e":
-      UserId.C22_A887_E20444_C479_B073_E6_F12515_D0_E
-});
 
 class LoyaltyResponseLinks {
   LoyaltyResponseLinks({
@@ -213,17 +175,17 @@ class LoyaltyResponseLinks {
 
   factory LoyaltyResponseLinks.fromJson(Map<String, dynamic> json) =>
       LoyaltyResponseLinks(
-        parent: Last.fromJson(json["parent"]),
-        self: Last.fromJson(json["self"]),
-        next: Last.fromJson(json["next"]),
-        last: Last.fromJson(json["last"]),
+        parent: json["parent"] == null ? null : Last.fromJson(json["parent"]),
+        self: json["self"] == null ? null : Last.fromJson(json["self"]),
+        next: json["next"] == null ? null : Last.fromJson(json["next"]),
+        last: json["last"] == null ? null : Last.fromJson(json["last"]),
       );
 
   Map<String, dynamic> toJson() => {
-        "parent": parent.toJson(),
-        "self": self.toJson(),
-        "next": next.toJson(),
-        "last": last.toJson(),
+        "parent": parent == null ? null : parent.toJson(),
+        "self": self == null ? null : self.toJson(),
+        "next": next == null ? null : next.toJson(),
+        "last": last == null ? null : last.toJson(),
       };
 }
 
@@ -249,18 +211,4 @@ class Meta {
         "max_results": maxResults,
         "total": total,
       };
-}
-
-class EnumValues<T> {
-  Map<String, T> map;
-  Map<T, String> reverseMap;
-
-  EnumValues(this.map);
-
-  Map<T, String> get reverse {
-    if (reverseMap == null) {
-      reverseMap = map.map((k, v) => new MapEntry(v, k));
-    }
-    return reverseMap;
-  }
 }

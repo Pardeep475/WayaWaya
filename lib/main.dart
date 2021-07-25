@@ -64,9 +64,7 @@ class MyAppState extends State<MyApp> {
     _getCurrentDeviceInfo();
   }
 
-  updateDataToDatabase() async{
-
-  }
+  updateDataToDatabase() async {}
 
   @override
   Widget build(BuildContext context) {
@@ -298,9 +296,9 @@ class MyAppState extends State<MyApp> {
       debugPrint(
           'device_info_testing:- ${'Apple${AppString.DEVICE_SEPARATOR}${iosInfo.name}${AppString.DEVICE_SEPARATOR}${iosInfo.systemName} ${iosInfo.systemVersion}'.toUpperCase().trim()}'); // e.g.
       String finalDevice =
-      'Apple${AppString.DEVICE_SEPARATOR}${iosInfo.name}${AppString.DEVICE_SEPARATOR}${iosInfo.systemName} ${iosInfo.systemVersion}'
-          .toUpperCase()
-          .trim();
+          'Apple${AppString.DEVICE_SEPARATOR}${iosInfo.name}${AppString.DEVICE_SEPARATOR}${iosInfo.systemName} ${iosInfo.systemVersion}'
+              .toUpperCase()
+              .trim();
       SessionManager.setCurrentDevice(finalDevice ?? ""); // "Moto G (4)"
     }
   }

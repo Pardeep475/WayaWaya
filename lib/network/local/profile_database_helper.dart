@@ -16,6 +16,7 @@ import 'package:wayawaya/common/model/categories_model.dart';
 import 'package:wayawaya/models/omni_channel_item_model/omni_channel_item_model.dart';
 import 'package:wayawaya/network/local/database_helper.dart';
 import 'package:wayawaya/network/local/table/retail_unit_table.dart';
+import 'package:wayawaya/network/model/loyalty/loyalty_header_response.dart';
 import 'package:wayawaya/network/model/loyalty/loyalty_points.dart';
 import 'package:wayawaya/network/model/loyalty/loyalty_response.dart';
 import 'package:wayawaya/network/model/loyalty/loyalty_temp.dart';
@@ -823,18 +824,22 @@ class ProfileDatabaseHelper {
       debugPrint('database_testing:-   $data');
       List<RetailWithCategory> _allSearchList = [];
 
-      List<Campaign> _offerCampaignList = await DataBaseHelperCommon.getRetailUnitOffer();
-      debugPrint('database_testing:- list of campaign   ${_offerCampaignList.length}');
+      List<Campaign> _offerCampaignList =
+          await DataBaseHelperCommon.getRetailUnitOffer();
+      debugPrint(
+          'database_testing:- list of campaign   ${_offerCampaignList.length}');
       data.forEach((element) {
-        List<Campaign> offerList = _offerCampaignList.where((campaign) => campaign.rid == element['rid']).toList();
-        if(offerList.isEmpty){
+        List<Campaign> offerList = _offerCampaignList
+            .where((campaign) => campaign.rid == element['rid'])
+            .toList();
+        if (offerList.isEmpty) {
           _allSearchList.add(RetailWithCategory.fromJson(element));
-        }else{
-          RetailWithCategory retailWithCategory = RetailWithCategory.fromJson(element);
+        } else {
+          RetailWithCategory retailWithCategory =
+              RetailWithCategory.fromJson(element);
           retailWithCategory.campaigns = offerList;
           _allSearchList.add(retailWithCategory);
         }
-
       });
       _allSearchList.sort((a, b) => a.name.compareTo(b.name));
       return _allSearchList;
@@ -925,7 +930,7 @@ class ProfileDatabaseHelper {
     return [];
   }
 
-  static Future<List<LoyaltyTemp>> getLoyaltyData({
+  static Future<List<LoyaltyHeaderResponse>> getLoyaltyData({
     String databasePath,
   }) async {
     if (_db == null) {
@@ -948,9 +953,9 @@ class ProfileDatabaseHelper {
 
       debugPrint('database_testing:-  all search  ${data.length}');
       debugPrint('$data');
-      List<LoyaltyTemp> _loyaltyTemp = [];
+      List<LoyaltyHeaderResponse> _loyaltyTemp = [];
       data.forEach((element) {
-        _loyaltyTemp.add(LoyaltyTemp.fromJson(element));
+        _loyaltyTemp.add(LoyaltyHeaderResponse.fromJson(element));
       });
       return _loyaltyTemp;
     } catch (e) {
@@ -1036,7 +1041,9 @@ class ProfileDatabaseHelper {
       debugPrint('$data');
       List<LoyaltyData> _loyaltyData = [];
       data.forEach((element) {
-        _loyaltyData.add(LoyaltyData.fromJson(element));
+        LoyaltyData loyaltyData = LoyaltyData.fromJson(element);
+        loyaltyData.eventTimestamp = element["timestamp"];
+        _loyaltyData.add(loyaltyData);
       });
       return _loyaltyData;
     } catch (e) {
@@ -1045,5 +1052,45 @@ class ProfileDatabaseHelper {
     return [];
   }
 
+  static Future<String> latestLoyalty({
+    String databasePath,
+  }) async {
+    if (_db == null) {
+      await initDataBase(databasePath);
+    }
 
+    try {
+      List<Map> data = [];
+      String query = "SELECT " +
+          LoyaltyTable.COLUMN_TIMESTAMP +
+          " FROM " +
+          LoyaltyTable.LOYALTY_TABLE_NAME +
+          " ORDER BY " +
+          LoyaltyTable.COLUMN_TIMESTAMP +
+          " DESC LIMIT 1 ";
+
+      debugPrint('query_is :-    $query');
+
+      await _db.transaction((txn) async {
+        data = await txn.rawQuery(query);
+      });
+
+      debugPrint('database_testing:-  all search  ${data.length}');
+      debugPrint('$data');
+      List<LoyaltyData> _loyaltyData = [];
+      data.forEach((element) {
+        LoyaltyData loyaltyData = LoyaltyData.fromJson(element);
+        loyaltyData.eventTimestamp = element['timestamp'];
+        _loyaltyData.add(loyaltyData);
+      });
+      if (_loyaltyData.length > 0) {
+        return _loyaltyData[0].eventTimestamp;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      debugPrint('error:- database :-  $e');
+    }
+    return null;
+  }
 }

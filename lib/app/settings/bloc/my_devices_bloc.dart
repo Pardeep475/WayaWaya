@@ -107,7 +107,7 @@ class MyDevicesBloc {
         loginSuccess(user, context);
       }
     } catch (e) {
-      debugPrint("error_in_login_api:-  $e");
+      debugPrint("error_in_my_device_fetchUserDetails:-  $e");
       // loginSink.add(ApiResponse.error(e));
       if (e is UnknownException ||
           e is InvalidFormatException ||
@@ -116,7 +116,6 @@ class MyDevicesBloc {
           e is FetchDataException ||
           e is UnauthorisedException ||
           e is BadRequestException) {
-        debugPrint("error_in_login_api:-  e is exception");
         Navigator.pop(context);
         _showErrorDialog(
           context: context,
@@ -130,7 +129,7 @@ class MyDevicesBloc {
           onPressed: () => Navigator.pop(context),
         );
       } else {
-        debugPrint("error_in_login_api:-  $e is String");
+        debugPrint("error_my_device:-  $e is String");
         Navigator.pop(context);
         _showErrorDialog(
           context: context,

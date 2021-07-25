@@ -32,7 +32,7 @@ class ForgotPasswordBloc {
         loginSink.add(ApiResponse.completed(ErrorResponse(differ: differ)));
       }
     } catch (e) {
-      debugPrint("error_in_login_api:-  $e");
+      debugPrint("error_in_forgot_password_api:-  $e");
       // loginSink.add(ApiResponse.error(e));
       if (e is UnknownException ||
           e is InvalidFormatException ||
@@ -41,14 +41,12 @@ class ForgotPasswordBloc {
           e is FetchDataException ||
           e is UnauthorisedException ||
           e is BadRequestException) {
-        debugPrint("error_in_login_api:-  e is exception");
         loginSink.add(
           ApiResponse.error(
             ErrorResponse(differ: differ, message: e.message),
           ),
         );
       } else {
-        debugPrint("error_in_login_api:-  $e is String");
         loginSink.add(
           ApiResponse.error(
             ErrorResponse(differ: differ, message: e),
@@ -78,7 +76,7 @@ class ForgotPasswordBloc {
 
       debugPrint("testing__:-  success $user");
     } catch (e) {
-      debugPrint("error_in_login_api:-  ${e}");
+      debugPrint("error_in_authenticationCodeApi:-  ${e}");
       // loginSink.add(ApiResponse.error(e));
       if (e is UnknownException ||
           e is InvalidFormatException ||
@@ -87,14 +85,12 @@ class ForgotPasswordBloc {
           e is FetchDataException ||
           e is UnauthorisedException ||
           e is BadRequestException) {
-        debugPrint("error_in_login_api:-  e is exception");
         loginSink.add(
           ApiResponse.error(
             ErrorResponse(differ: differ, message: e.message),
           ),
         );
       } else {
-        debugPrint("error_in_login_api:-  $e is String");
         loginSink.add(
           ApiResponse.error(
             ErrorResponse(differ: differ, message: e),

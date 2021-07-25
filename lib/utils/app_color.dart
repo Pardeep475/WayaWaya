@@ -33,4 +33,8 @@ class AppColor {
   static const hint_color = Color(0xFF878787);
   static const text_color_credit_check_address = Color(0xFF3D3D3D);
   static const green = Color(0xFF1A7900);
+  static const pieChartColor = Color(0xFF56babe);
+  static const percentagePieXhartColor = Color(0xFF2490d3);
+  static const pieChartTextColor = Color(0xFFFFD978);
+  static const rowDivider = Color(0xFFebebeb);
 }

@@ -106,7 +106,7 @@ class ApiRepository {
             .replaceAll(' ', '%20');
     final response = await _apiProvider.get(
         url: url,
-            /*'${NetworkConstants.campaigns_end_point}?where={"status": "approved", "_updated":{"\$gt":"2021-06-10 09:57:28"}, "campaign_channels.omni_channel_id":{"\$elemMatch":{"\$eq":"ec6f1eb8901b4f419e2e25e4fa55a3e0"}}}&page=${nextPage.toString()}&enable=true'*/
+        /*'${NetworkConstants.campaigns_end_point}?where={"status": "approved", "_updated":{"\$gt":"2021-06-10 09:57:28"}, "campaign_channels.omni_channel_id":{"\$elemMatch":{"\$eq":"ec6f1eb8901b4f419e2e25e4fa55a3e0"}}}&page=${nextPage.toString()}&enable=true'*/
         authHeader: authorization);
     return response;
   }
@@ -137,9 +137,10 @@ class ApiRepository {
 
   Future<dynamic> loyaltyApiRepository(
       {String authorization, Map<String, dynamic> map}) async {
-    final response = await _apiProvider.get(
-        url: '${NetworkConstants.loyalty_transactions_end_point}',
-        authHeader: authorization);
+    String url =
+        '${NetworkConstants.loyalty_transactions_end_point}?page=${map["page"]}&sort=${map["sort"]}&where=${map["where"]}&enable=true';
+    final response =
+        await _apiProvider.get(url: url, authHeader: authorization);
     return response;
   }
 
@@ -162,7 +163,27 @@ class ApiRepository {
 
     debugPrint('updated_Data:-   $lastUpdate    \n     $oid');
     String url =
-        'last/updates?image_url=1&enable=true&where={%22_updated%22:{%22\$gt%22:%22${lastUpdate ?? '2015-07-17 18:00:18'}%22},%22r%22:{%22\$regex%22:%22^.*/campaigns|/triggerZones|/retailUnits|/categories|/pois|/appSoftwareParameters%22},%22\$or%22:[{%22c.campaign_channels.omni_channel_id%22:{%22\$elemMatch%22:{%22\$eq%22:%22$oid%22}}},{%22c.campaign_channels.omni_channel_id%22:{%22\$exists%22:false}}]}&page=${nextPageNo.toString()}&sort=_updated'
+        '${NetworkConstants.lastUpdate}?image_url=1&enable=true&where={%22_updated%22:{%22\$gt%22:%22${lastUpdate ?? '2015-07-17 18:00:18'}%22},%22r%22:{%22\$regex%22:%22^.*/campaigns|/triggerZones|/retailUnits|/categories|/pois|/appSoftwareParameters%22},%22\$or%22:[{%22c.campaign_channels.omni_channel_id%22:{%22\$elemMatch%22:{%22\$eq%22:%22$oid%22}}},{%22c.campaign_channels.omni_channel_id%22:{%22\$exists%22:false}}]}&page=${nextPageNo.toString()}&sort=_updated'
+            .replaceAll(' ', '%20');
+    final response =
+        await _apiProvider.get(url: url, authHeader: authorization);
+    return response;
+  }
+
+  Future<dynamic> categoryApiRepository(
+      {String authorization, Map<String, dynamic> map}) async {
+    String url =
+        '${NetworkConstants.categories}?page=${map["page"]}&sort=${map["sort"]}&where=${map["where"]}'
+            .replaceAll(' ', '%20');
+    final response =
+        await _apiProvider.get(url: url, authHeader: authorization);
+    return response;
+  }
+
+  Future<dynamic> syncCampaignWithIdApiRepository(
+      {String authorization, Map<String, dynamic> map}) async {
+    String url =
+        '${NetworkConstants.campaigns_end_point}?page=${map["page"]}&sort=${map["sort"]}&where=${map["where"]}&_id=${map["_id"]}&enable=true'
             .replaceAll(' ', '%20');
     final response =
         await _apiProvider.get(url: url, authHeader: authorization);
