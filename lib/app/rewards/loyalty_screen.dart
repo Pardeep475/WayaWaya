@@ -306,7 +306,9 @@ class _LoyaltyScreenState extends State<LoyaltyScreen> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.start,
                                       children: [
-                                        SizedBox(width: Dimens.five,),
+                                        SizedBox(
+                                          width: Dimens.five,
+                                        ),
                                         Text(
                                           AppString.membership,
                                           textAlign: TextAlign.center,
@@ -377,36 +379,42 @@ class _LoyaltyScreenState extends State<LoyaltyScreen> {
                               height: Dimens.one,
                               color: AppColor.rowDivider,
                             ),
-                            Container(
-                              padding:
-                                  EdgeInsets.symmetric(vertical: Dimens.ten),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  SizedBox(
-                                    width: Dimens.five,
-                                  ),
-                                  IconShadowWidget(
-                                    Icon(Icons.qr_code_scanner_sharp,
-                                        color: Colors.black, size: 36),
-                                  ),
-                                  SizedBox(
-                                    width: Dimens.ten,
-                                  ),
-                                  Text(
-                                    AppString.scan,
-                                    maxLines: 1,
-                                    textAlign: TextAlign.center,
-                                    style:
-                                        GoogleFonts.ubuntuCondensed().copyWith(
-                                      color: AppColor.black,
-                                      fontSize: Dimens.thirty,
-                                      fontWeight: FontWeight.w500,
-                                      letterSpacing: 0.8,
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.pushNamed(
+                                    context, AppString.QR_SCANNER_SCREEN_ROUTE);
+                              },
+                              child: Container(
+                                padding:
+                                    EdgeInsets.symmetric(vertical: Dimens.ten),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    SizedBox(
+                                      width: Dimens.five,
                                     ),
-                                  ),
-                                ],
+                                    IconShadowWidget(
+                                      Icon(Icons.qr_code_scanner_sharp,
+                                          color: Colors.black, size: 36),
+                                    ),
+                                    SizedBox(
+                                      width: Dimens.ten,
+                                    ),
+                                    Text(
+                                      AppString.scan,
+                                      maxLines: 1,
+                                      textAlign: TextAlign.center,
+                                      style: GoogleFonts.ubuntuCondensed()
+                                          .copyWith(
+                                        color: AppColor.black,
+                                        fontSize: Dimens.thirty,
+                                        fontWeight: FontWeight.w500,
+                                        letterSpacing: 0.8,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ],
