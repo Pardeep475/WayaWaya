@@ -66,6 +66,7 @@ dependencies:
   syncfusion_flutter_charts: ^19.2.48
   icon_shadow: ^1.0.1
   expandable_group: ^0.0.7
+  scroll_snap_list: ^0.8.2
 
 dev_dependencies:
   flutter_test:

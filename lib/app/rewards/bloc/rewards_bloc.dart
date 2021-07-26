@@ -106,14 +106,22 @@ class RewardsBloc {
   }
 
   fetchRewardsListByCategory(String categoryId) async {
+    debugPrint('categoryID:-   $categoryId');
     rewardsListSink.add(ApiResponse.loading(null));
     try {
-      String defaultMall = await SessionManager.getDefaultMall();
       List<Campaign> campaignList =
-          await ProfileDatabaseHelper.getCampaignByType(
-              databasePath: defaultMall,
-              campaignType: 'offer',
-              categoryId: categoryId);
+          await DataBaseHelperCommon.getRewardsCampaignData(
+              limit: 25,
+              offset: 0,
+              rid: "",
+              searchText: "",
+              categoryId: categoryId ?? "",
+              publish_date: Utils.getStringFromDate(
+                  DateTime.now(), AppString.DATE_FORMAT),
+              campaingType: "offer");
+
+      debugPrint('list_of_categories:-   ${campaignList.length}');
+
       rewardsListSink.add(ApiResponse.completed(campaignList));
     } catch (e) {
       rewardsListSink.add(ApiResponse.error(e));

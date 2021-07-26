@@ -22,6 +22,7 @@ import 'package:wayawaya/network/model/loyalty/loyalty_response.dart';
 import 'package:wayawaya/network/model/loyalty/loyalty_temp.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/session_manager.dart';
+import 'package:wayawaya/utils/utils.dart';
 
 import 'table/campaign_table.dart';
 import 'table/loyalty_table.dart';
@@ -575,72 +576,20 @@ class ProfileDatabaseHelper {
     if (_db == null) {
       await initDataBase(databasePath);
     }
-    String whereClause = "";
-    String searchQueryCondition = "";
-    String offerForRetailUnitCondition = "";
-    if (searchText != null && searchText != "") {
-      searchQueryCondition =
-          " AND ( campaign_element LIKE '%" + searchText + "%' ) ";
-    }
-    if (rid != null && rid != "") {
-      offerForRetailUnitCondition = " AND ( rid LIKE '%" + rid + "%') ";
-    }
-
-    if (campaignType != "") {
-      whereClause =
-          " WHERE type='" + campaignType + "' AND " + 'status' + "='approved' ";
-    } else {
-      whereClause = " WHERE " + 'status' + "='approved' ";
-    }
-
-    // whereClause += " AND publish_date <= '" + publish_date + "'";
-
-    String query = "";
-
-    if (categoryId == null) {
-      query = "SELECT *, '' as shop_name FROM " +
-          AppString.CAMPAIGN_TABLE_NAME +
-          " " +
-          whereClause +
-          searchQueryCondition +
-          offerForRetailUnitCondition +
-          " ORDER BY " +
-          'start_date' +
-          " ASC";
-    } else {
-      query = "SELECT *, '' as shop_name FROM campaign " +
-          whereClause +
-          " AND (voucher LIKE '%\"is_coupon\": true%' or voucher LIKE '%\"is_coupon\":true%') AND (" +
-          'campaign_element' +
-          " LIKE '%\"category_id\":" +
-          "\"" +
-          categoryId +
-          "\"%' or " +
-          'campaign_element' +
-          " LIKE '%\"category_id\": " +
-          "\"" +
-          categoryId +
-          "\"%')" +
-          " ORDER BY " +
-          'start_date' +
-          " ASC";
-    }
-
-    debugPrint('query_campaign:-  $query');
 
     List<Map> data;
 
-    await _db.transaction((txn) async {
-      data = await txn.rawQuery(query);
-    });
     // await _db.transaction((txn) async {
-    //   data = await txn.query(
-    //     AppString.CAMPAIGN_TABLE_NAME,
-    //     where: "status = ? and type = ?",
-    //     whereArgs: ['approved', campaignType],
-    //     orderBy: 'start_date ASC',
-    //   );
+    //   data = await txn.rawQuery(query);
     // });
+    await _db.transaction((txn) async {
+      data = await txn.query(
+        AppString.CAMPAIGN_TABLE_NAME,
+        where: "status = ? and type = ?",
+        whereArgs: ['approved', campaignType],
+        orderBy: 'start_date ASC',
+      );
+    });
 
     // _db.close();
     debugPrint('database_testing:-   ${data.length}');
@@ -825,7 +774,16 @@ class ProfileDatabaseHelper {
       List<RetailWithCategory> _allSearchList = [];
 
       List<Campaign> _offerCampaignList =
-          await DataBaseHelperCommon.getRetailUnitOffer();
+          await DataBaseHelperCommon.getCampaignOffersAndEvents(
+              limit: 25,
+              offset: 0,
+              rid: "",
+              searchText: "",
+              publish_date: Utils.getStringFromDate(
+                  DateTime.now(), AppString.DATE_FORMAT),
+              isCoupon: false,
+              campaingType: "offer");
+
       debugPrint(
           'database_testing:- list of campaign   ${_offerCampaignList.length}');
       data.forEach((element) {

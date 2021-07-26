@@ -150,17 +150,17 @@ class CampaignTable {
   static insertCampaignTable(
       {Database db, Map<String, dynamic> row, String campaignId}) async {
     if (campaignId == null) {
-      try{
+      try {
         return db.insert(CAMPAIGN_TABLE_NAME, row);
-      }catch(e){
+      } catch (e) {
         debugPrint('database_insert:-  $e');
       }
     } else {
       dynamic campaign = await getCampaignById(db, campaignId);
       if (campaign == null || campaign.length == 0 || campaign.length < 0) {
-        try{
+        try {
           return db.insert(CAMPAIGN_TABLE_NAME, row);
-        }catch(e){
+        } catch (e) {
           debugPrint('database_insert:-  $e');
         }
       } else {
@@ -172,18 +172,36 @@ class CampaignTable {
 
   static Future<int> updateCampaignTable(
       Database db, Map<String, dynamic> row, String campaignId) async {
-    try{
+    try {
       return await db.update(CAMPAIGN_TABLE_NAME, row,
           where: '$COLUMN_ID = ?', whereArgs: [campaignId]);
-    }catch(e){
+    } catch (e) {
       debugPrint('database_update:-  $e');
+      return 0;
     }
-
   }
 
   static Future<dynamic> getCampaignById(Database db, String campaignId) async {
     return await db.query(CAMPAIGN_TABLE_NAME,
         where: '$COLUMN_ID = ?', whereArgs: [campaignId]);
+  }
+
+  static Future<List<Campaign>> getCampaignByIdList(
+      Database db, String campaignId) async {
+    List<Map> data;
+    await db.transaction((txn) async {
+      data = await txn.query(
+        CAMPAIGN_TABLE_NAME,
+        where: "$COLUMN_ID = ?",
+        whereArgs: ['$campaignId'],
+        orderBy: 'start_date ASC',
+      );
+    });
+    List<Campaign> _mallList = [];
+    data.forEach((element) {
+      _mallList.add(Campaign.fromJson(element));
+    });
+    return _mallList;
   }
 
   static Future<List<Campaign>> getLauncherCampaignData(
@@ -265,33 +283,51 @@ class CampaignTable {
     String searchQueryCondition = "";
     String offerForRetailUnitCondition = "";
     if (searchText != null && searchText.isNotEmpty) {
-      searchQueryCondition = " AND ( " + CampaignTable.COLUMN_CAMPAIGN_ELEMENT + " LIKE '%" + searchText + "%' ) ";
+      searchQueryCondition = " AND ( " +
+          CampaignTable.COLUMN_CAMPAIGN_ELEMENT +
+          " LIKE '%" +
+          searchText +
+          "%' ) ";
     }
     if (rid != null && rid.isNotEmpty) {
       offerForRetailUnitCondition = " AND ( rid LIKE '%" + rid + "%') ";
     }
 
     if (campaingType.isNotEmpty) {
-      whereClause = " WHERE type='" + campaingType + "' AND " + CampaignTable.COLUMN_STATUS + "='approved' ";
+      whereClause = " WHERE type='" +
+          campaingType +
+          "' AND " +
+          CampaignTable.COLUMN_STATUS +
+          "='approved' ";
     } else {
       whereClause = " WHERE " + CampaignTable.COLUMN_STATUS + "='approved' ";
     }
 
     if (campaingType.isNotEmpty && campaingType == "offer") {
-      strType = " AND (voucher NOT  LIKE '%\"is_coupon\": true%'  AND  voucher  NOT LIKE '%\"is_coupon\":true%')";
+      strType =
+          " AND (voucher NOT  LIKE '%\"is_coupon\": true%'  AND  voucher  NOT LIKE '%\"is_coupon\":true%')";
     } else {
-      strType = " AND voucher NOT LIKE '%\"is_coupon\": " + isCoupon.toString() + "%'";
+      strType = " AND voucher NOT LIKE '%\"is_coupon\": " +
+          isCoupon.toString() +
+          "%'";
     }
 
     whereClause += " AND publish_date <= '" + publish_date + "'";
 
-    String query = "SELECT *, '' as shop_name FROM " + CampaignTable.CAMPAIGN_TABLE_NAME + " " +
+    String query = "SELECT *, '' as shop_name FROM " +
+        CampaignTable.CAMPAIGN_TABLE_NAME +
+        " " +
         whereClause +
         searchQueryCondition +
         offerForRetailUnitCondition +
         strType +
-        " ORDER BY " + CampaignTable.COLUMN_START_DATE + " ASC" +
-        " LIMIT " + limit.toString() + " OFFSET " + offset.toString();
+        " ORDER BY " +
+        CampaignTable.COLUMN_START_DATE +
+        " ASC" +
+        " LIMIT " +
+        limit.toString() +
+        " OFFSET " +
+        offset.toString();
 
     List<Map> data;
 
@@ -306,16 +342,15 @@ class CampaignTable {
     data.forEach((element) {
       _mallList.add(Campaign.fromJson(element));
     });
-    return _mallList;
+    return _mallList.reversed.toList();
   }
 
-
-  static Future<List<Campaign>> getRetailUnitOffer(
-      {Database db}) async {
-
-    String query = "SELECT *, '' as shop_name FROM " + CampaignTable.CAMPAIGN_TABLE_NAME
-        + " WHERE " + CampaignTable.COLUMN_TYPE
-        + " = 'offer' ";
+  static Future<List<Campaign>> getRetailUnitOffer({Database db}) async {
+    String query = "SELECT *, '' as shop_name FROM " +
+        CampaignTable.CAMPAIGN_TABLE_NAME +
+        " WHERE " +
+        CampaignTable.COLUMN_TYPE +
+        " = 'offer' ";
 
     debugPrint('query_campaign:-  $query');
 
@@ -332,35 +367,42 @@ class CampaignTable {
       _mallList.add(Campaign.fromJson(element));
     });
     data.map((e) => debugPrint('database_testing:-    $e'));
-    // _mallList.sort();
     return _mallList;
   }
+
 //getRewardsCampaignData
 
   static Future<List<Campaign>> getRewardsCampaignData(
       {Database db,
-        String campaingType,
-        final int limit,
-        final int offset,
-        final String searchText,
-        final String rid,
-        final String publish_date,
-        final String categoryId}) async {
+      String campaingType,
+      final int limit,
+      final int offset,
+      final String searchText,
+      final String rid,
+      final String publish_date,
+      final String categoryId}) async {
     String whereClause = "";
     String strType = "";
     String searchQueryCondition = "";
     String offerForRetailUnitCondition = "";
 
     if (searchText != null && searchText.isNotEmpty) {
-
-      searchQueryCondition = " AND ( " + COLUMN_CAMPAIGN_ELEMENT + " LIKE '%" + searchText + "%' ) ";
+      searchQueryCondition = " AND ( " +
+          COLUMN_CAMPAIGN_ELEMENT +
+          " LIKE '%" +
+          searchText +
+          "%' ) ";
     }
     if (rid != null && rid.isNotEmpty) {
       offerForRetailUnitCondition = " AND ( rid LIKE '%" + rid + "%') ";
     }
 
     if (campaingType.isNotEmpty) {
-      whereClause = " WHERE type='" + campaingType + "' AND " + COLUMN_STATUS + "='approved' ";
+      whereClause = " WHERE type='" +
+          campaingType +
+          "' AND " +
+          COLUMN_STATUS +
+          "='approved' ";
     } else {
       whereClause = " WHERE " + COLUMN_STATUS + "='approved' ";
     }
@@ -369,23 +411,41 @@ class CampaignTable {
 
     String query = "";
     if (categoryId == "1") {
-      query = "SELECT *, '' as shop_name FROM " + CAMPAIGN_TABLE_NAME   +
+      query = "SELECT *, '' as shop_name FROM " +
+          CAMPAIGN_TABLE_NAME +
           whereClause +
           searchQueryCondition +
           offerForRetailUnitCondition +
           " AND (voucher  LIKE '%\"is_coupon\": true%' or voucher LIKE '%\"is_coupon\":true%')" +
-          " ORDER BY " + COLUMN_START_DATE + " ASC" +
-          " LIMIT " + limit.toString() + " OFFSET " + offset.toString();
-    }else{
-      query =  "SELECT *, '' as shop_name FROM " + CAMPAIGN_TABLE_NAME +
+          " ORDER BY " +
+          COLUMN_START_DATE +
+          " ASC" +
+          " LIMIT " +
+          limit.toString() +
+          " OFFSET " +
+          offset.toString();
+    } else {
+      query = "SELECT *, '' as shop_name FROM " +
+          CAMPAIGN_TABLE_NAME +
           whereClause +
           " AND (voucher LIKE '%\"is_coupon\": true%' or voucher LIKE '%\"is_coupon\":true%') AND (" +
           COLUMN_CAMPAIGN_ELEMENT +
-          " LIKE '%\"category_id\":" + "\"" + categoryId + "\"%' or " +
+          " LIKE '%\"category_id\":" +
+          "\"" +
+          categoryId +
+          "\"%' or " +
           COLUMN_CAMPAIGN_ELEMENT +
-          " LIKE '%\"category_id\": " + "\"" + categoryId + "\"%')" +
-          " ORDER BY " + COLUMN_START_DATE + " ASC" +
-          " LIMIT " + limit.toString() + " OFFSET " + offset.toString();
+          " LIKE '%\"category_id\": " +
+          "\"" +
+          categoryId +
+          "\"%')" +
+          " ORDER BY " +
+          COLUMN_START_DATE +
+          " ASC" +
+          " LIMIT " +
+          limit.toString() +
+          " OFFSET " +
+          offset.toString();
     }
 
     List<Map> data;
@@ -403,5 +463,4 @@ class CampaignTable {
     });
     return _mallList;
   }
-
 }

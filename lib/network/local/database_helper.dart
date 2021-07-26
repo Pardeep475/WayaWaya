@@ -185,6 +185,13 @@ class DataBaseHelperCommon {
         categoryId: categoryId);
   }
 
+  static Future<List<Campaign>> getCampaignByIdList(String campaignId) async {
+    Database _db = await instance.database;
+    List<Campaign> campaignData =
+        await CampaignTable.getCampaignById(_db, campaignId);
+    return campaignData;
+  }
+
   static Future deleteData() async {
     Database _db = await instance.database;
     await _db.delete(CampaignTable.CAMPAIGN_TABLE_NAME);

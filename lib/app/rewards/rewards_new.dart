@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:scroll_snap_list/scroll_snap_list.dart';
 import 'package:wayawaya/app/common/dialogs/common_error_dialog.dart';
 import 'package:wayawaya/app/common/dialogs/common_not_at_venue_dialog.dart';
 import 'package:wayawaya/app/common/menu/animate_app_bar.dart';
@@ -113,81 +114,57 @@ class _RewardsBrowserState extends State<RewardsBrowser> {
                                   maxWidth: MediaQuery.of(context).size.width,
                                 ),
                                 color: Color(0xFFF0F0F0),
-                                child: Stack(
-                                  children: [
-                                    Positioned.fill(
-                                      child: RotatedBox(
-                                        quarterTurns: -1,
-                                        child: ListWheelScrollView.useDelegate(
-                                          itemExtent: itemWidth,
-                                          controller: _controller,
-                                          onSelectedItemChanged: (val) {
-                                            _rewardsBloc
-                                                .fetchRewardsListByCategory(
-                                                    snapshot
-                                                        .data[val].categoryId);
+                                child: ScrollSnapList(
+                                  onItemFocus: (int index) {
+                                    _rewardsBloc.fetchRewardsListByCategory(
+                                        snapshot.data[index].categoryId);
 
-                                            _rewardsBloc
-                                                .updateRewardsCategory(val);
-                                            _rewardsBloc
-                                                .titleRewardsCategorySink
-                                                .add(snapshot.data[val].name);
-                                          },
-                                          childDelegate:
-                                              ListWheelChildLoopingListDelegate(
-                                            children: List<Widget>.generate(
-                                              snapshot.data != null &&
-                                                      snapshot.data.isNotEmpty
-                                                  ? snapshot.data.length
-                                                  : 8,
-                                              (index) => Center(
-                                                child: RotatedBox(
-                                                  quarterTurns: 1,
-                                                  child: ItemCategoryOval(
-                                                    index: index,
-                                                    rewardsCategory:
-                                                        snapshot.data != null &&
-                                                                snapshot.data
-                                                                    .isNotEmpty
-                                                            ? snapshot
-                                                                .data[index]
-                                                            : null,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    Positioned(
-                                      bottom: 0,
-                                      left: 0,
-                                      right: 0,
-                                      child: StreamBuilder<String>(
-                                          initialData: 'All',
-                                          stream: _rewardsBloc
-                                              .titleRewardsCategoryStream,
-                                          builder: (context, snapshot) {
-                                            return Container(
-                                              width: MediaQuery.of(context)
-                                                  .size
-                                                  .width,
-                                              padding: EdgeInsets.only(
-                                                  top: Dimens.fifteen,
-                                                  bottom: Dimens.fifteen),
-                                              child: Text(
-                                                snapshot.data ?? "All",
-                                                textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                  fontSize: Dimens.eighteen,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                            );
-                                          }),
-                                    ),
-                                  ],
+                                    _rewardsBloc.updateRewardsCategory(index);
+                                    _rewardsBloc.titleRewardsCategorySink
+                                        .add(snapshot.data[index].name);
+                                  },
+                                  initialIndex: snapshot.data != null &&
+                                          snapshot.data.isNotEmpty
+                                      ? snapshot.data.length.toDouble()
+                                      : 8.toDouble(),
+                                  itemSize: Dimens.oneFifty,
+                                  itemBuilder: (context, index) {
+                                    return ItemCategoryOval(
+                                      index: index,
+                                      rewardsCategory: snapshot.data != null &&
+                                              snapshot.data.isNotEmpty
+                                          ? snapshot.data[index]
+                                          : null,
+                                    );
+                                  },
+                                  reverse: true,
+                                  itemCount: snapshot.data != null &&
+                                          snapshot.data.isNotEmpty
+                                      ? snapshot.data.length
+                                      : 8,
+                                  dynamicItemSize: true,
+                                  // dynamicSizeEquation: customEquation, //optional
+                                ),
+                              );
+                            }),
+                      ),
+                      SliverToBoxAdapter(
+                        child: StreamBuilder<String>(
+                            initialData: 'All',
+                            stream: _rewardsBloc.titleRewardsCategoryStream,
+                            builder: (context, snapshot) {
+                              return Container(
+                                width: MediaQuery.of(context).size.width,
+                                padding: EdgeInsets.only(
+                                    top: Dimens.fifteen,
+                                    bottom: Dimens.fifteen),
+                                child: Text(
+                                  snapshot.data ?? "All",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: Dimens.eighteen,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               );
                             }),
@@ -446,3 +423,80 @@ class _RewardsBrowserState extends State<RewardsBrowser> {
     );
   }
 }
+
+/*Stack(
+                                  children: [
+                                    Positioned.fill(
+                                      child: RotatedBox(
+                                        quarterTurns: -1,
+                                        child: ListWheelScrollView.useDelegate(
+                                          itemExtent: itemWidth,
+                                          controller: _controller,
+                                          onSelectedItemChanged: (val) {
+                                            _rewardsBloc
+                                                .fetchRewardsListByCategory(
+                                                    snapshot
+                                                        .data[val].categoryId);
+
+                                            _rewardsBloc
+                                                .updateRewardsCategory(val);
+                                            _rewardsBloc
+                                                .titleRewardsCategorySink
+                                                .add(snapshot.data[val].name);
+                                          },
+                                          childDelegate:
+                                              ListWheelChildLoopingListDelegate(
+                                            children: List<Widget>.generate(
+                                              snapshot.data != null &&
+                                                      snapshot.data.isNotEmpty
+                                                  ? snapshot.data.length
+                                                  : 8,
+                                              (index) => Center(
+                                                child: RotatedBox(
+                                                  quarterTurns: 1,
+                                                  child: ItemCategoryOval(
+                                                    index: index,
+                                                    rewardsCategory:
+                                                        snapshot.data != null &&
+                                                                snapshot.data
+                                                                    .isNotEmpty
+                                                            ? snapshot
+                                                                .data[index]
+                                                            : null,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Positioned(
+                                      bottom: 0,
+                                      left: 0,
+                                      right: 0,
+                                      child: StreamBuilder<String>(
+                                          initialData: 'All',
+                                          stream: _rewardsBloc
+                                              .titleRewardsCategoryStream,
+                                          builder: (context, snapshot) {
+                                            return Container(
+                                              width: MediaQuery.of(context)
+                                                  .size
+                                                  .width,
+                                              padding: EdgeInsets.only(
+                                                  top: Dimens.fifteen,
+                                                  bottom: Dimens.fifteen),
+                                              child: Text(
+                                                snapshot.data ?? "All",
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                  fontSize: Dimens.eighteen,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            );
+                                          }),
+                                    ),
+                                  ],
+                                )*/

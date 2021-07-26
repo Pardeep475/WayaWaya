@@ -12,31 +12,23 @@ class ItemCategoryOval extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (rewardsCategory != null)
-      debugPrint('itemCategoryOval:-   ${rewardsCategory.name}');
-
-    return AnimatedContainer(
-      duration: Duration(milliseconds: 400),
-      height: rewardsCategory != null
-          ? rewardsCategory.isSelected
-              ? Dimens.oneFifty
-              : Dimens.sixty
-          : 0 == index
-              ? Dimens.oneFifty
-              : Dimens.sixty,
-      padding: EdgeInsets.all(Dimens.eight),
-      decoration: BoxDecoration(
-        color: _getCategoryColor(index),
-        shape: BoxShape.circle,
-        image: DecorationImage(
-          scale: 1,
-          image: AssetImage(
-            rewardsCategory == null
-                ? _getCategoryIcon(index)
-                : _getCategoryIconRewards(rewardsCategory: rewardsCategory),
+      return Container(
+        width: Dimens.oneFifty,
+        height: Dimens.oneFifty,
+        padding: EdgeInsets.all(Dimens.eight),
+        decoration: BoxDecoration(
+          color: _getCategoryColor(index),
+          shape: BoxShape.circle,
+          image: DecorationImage(
+            scale: 1,
+            image: AssetImage(
+              rewardsCategory == null
+                  ? _getCategoryIcon(index)
+                  : _getCategoryIconRewards(rewardsCategory: rewardsCategory),
+            ),
           ),
         ),
-      ),
-    );
+      );
   }
 
   String getName({RewardsCategory rewardsCategory}) {
