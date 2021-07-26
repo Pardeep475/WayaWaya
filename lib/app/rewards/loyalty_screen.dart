@@ -102,6 +102,7 @@ class _LoyaltyScreenState extends State<LoyaltyScreen> {
                                               shape: BoxShape.circle),
                                           height: Dimens.twoHundred,
                                           width: Dimens.twoHundred,
+                                          padding: EdgeInsets.all(Dimens.five),
                                           child: Column(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.center,
@@ -116,13 +117,9 @@ class _LoyaltyScreenState extends State<LoyaltyScreen> {
                                                     .copyWith(
                                                   color: AppColor
                                                       .pieChartTextColor,
-                                                  fontSize: Dimens.forty,
+                                                  fontSize: Dimens.thirty,
                                                   fontWeight: FontWeight.bold,
-                                                  letterSpacing: 0.8,
                                                 ),
-                                              ),
-                                              SizedBox(
-                                                height: Dimens.five,
                                               ),
                                               Text(
                                                 'Available',
@@ -131,9 +128,8 @@ class _LoyaltyScreenState extends State<LoyaltyScreen> {
                                                     .copyWith(
                                                   color: AppColor
                                                       .pieChartTextColor,
-                                                  fontSize: Dimens.nineteen,
+                                                  fontSize: Dimens.seventeen,
                                                   fontWeight: FontWeight.w500,
-                                                  letterSpacing: 0.8,
                                                 ),
                                               ),
                                             ],
@@ -198,11 +194,11 @@ class _LoyaltyScreenState extends State<LoyaltyScreen> {
                                       width: "93%",
                                       height: "93%",
                                       widget: Container(
+                                        height: Dimens.twoHundred,
+                                        width: Dimens.twoHundred,
                                         decoration: BoxDecoration(
                                             color: Colors.black26,
                                             shape: BoxShape.circle),
-                                        height: Dimens.twoHundred,
-                                        width: Dimens.twoHundred,
                                         child: Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.center,
@@ -220,11 +216,7 @@ class _LoyaltyScreenState extends State<LoyaltyScreen> {
                                                     AppColor.pieChartTextColor,
                                                 fontSize: Dimens.forty,
                                                 fontWeight: FontWeight.bold,
-                                                letterSpacing: 0.8,
                                               ),
-                                            ),
-                                            SizedBox(
-                                              height: Dimens.five,
                                             ),
                                             Text(
                                               'Available',
@@ -233,9 +225,8 @@ class _LoyaltyScreenState extends State<LoyaltyScreen> {
                                                       .copyWith(
                                                 color:
                                                     AppColor.pieChartTextColor,
-                                                fontSize: Dimens.nineteen,
+                                                fontSize: Dimens.seventeen,
                                                 fontWeight: FontWeight.w500,
-                                                letterSpacing: 0.8,
                                               ),
                                             ),
                                           ],
@@ -401,16 +392,18 @@ class _LoyaltyScreenState extends State<LoyaltyScreen> {
                                     SizedBox(
                                       width: Dimens.ten,
                                     ),
-                                    Text(
-                                      AppString.scan,
-                                      maxLines: 1,
-                                      textAlign: TextAlign.center,
-                                      style: GoogleFonts.ubuntuCondensed()
-                                          .copyWith(
-                                        color: AppColor.black,
-                                        fontSize: Dimens.thirty,
-                                        fontWeight: FontWeight.w500,
-                                        letterSpacing: 0.8,
+                                    Expanded(
+                                      child: Text(
+                                        AppString.scan,
+                                        maxLines: 1,
+                                        textAlign: TextAlign.start,
+                                        style: GoogleFonts.ubuntuCondensed()
+                                            .copyWith(
+                                          color: AppColor.black,
+                                          fontSize: Dimens.twentyFour,
+                                          fontWeight: FontWeight.w500,
+                                          letterSpacing: 0.8,
+                                        ),
                                       ),
                                     ),
                                   ],
