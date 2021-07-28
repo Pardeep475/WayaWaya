@@ -84,8 +84,9 @@ class ApiRepository {
   Future<dynamic> updateUserPreferencesApiRepository(
       {String userId, dynamic params, Map<String, dynamic> map}) async {
     String authHeader = await SessionManager.getJWTToken();
+    String url = '${NetworkConstants.update_user_end_point}$userId'.trim();
     final response = await _apiProvider.patch(
-        url: '${NetworkConstants.update_user_end_point}$userId',
+        url: url,
         params: uploadPreferencesModelToJson(params),
         authHeader: authHeader,
         map: map);

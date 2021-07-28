@@ -1,4 +1,4 @@
-package com.example.wayawaya
+package za.co.venueengage.waya
 
 import io.flutter.embedding.android.FlutterActivity
 

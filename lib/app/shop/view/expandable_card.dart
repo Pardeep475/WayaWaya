@@ -11,14 +11,14 @@ class ExpandableCards extends StatefulWidget {
   final int index;
   final CategoryBasedModel categoryBasedModel;
   final ShopBloc shopBloc;
-  final bool isRestaurant;
+  final bool isShop;
 
   const ExpandableCards(
       {Key key,
       this.index,
       this.categoryBasedModel,
       this.shopBloc,
-      this.isRestaurant})
+      this.isShop})
       : super(key: key);
 
   @override
@@ -61,7 +61,7 @@ class _ExpandableCardsState extends State<ExpandableCards> {
         children: List.generate(
           widget.categoryBasedModel.retailWithCategory.length,
           (index) => ItemRetailUnitListing(
-            isRestaurant: widget.isRestaurant,
+            isShop: widget.isShop,
             retailWithCategory:
                 widget.categoryBasedModel.retailWithCategory[index],
             index: index,
@@ -73,7 +73,7 @@ class _ExpandableCardsState extends State<ExpandableCards> {
                   retailWithCategory:
                       widget.categoryBasedModel.retailWithCategory[index]);
               widget.shopBloc
-                  .fetchCategoryBasedListing(isRestaurant: widget.isRestaurant);
+                  .fetchCategoryBasedListing(isShop: widget.isShop);
             },
             onLocationPressed: () {
               debugPrint('onLocationPressed');

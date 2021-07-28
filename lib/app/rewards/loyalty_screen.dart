@@ -311,40 +311,40 @@ class _LoyaltyScreenState extends State<LoyaltyScreen> {
                                             letterSpacing: 0.8,
                                           ),
                                         ),
-                                        SizedBox(
-                                          width: Dimens.three,
-                                        ),
-                                        snapshot.data.status > 0
-                                            ? IconShadowWidget(
-                                                Icon(Icons.star,
-                                                    color: Colors.yellow,
-                                                    size: 36),
-                                              )
-                                            : SizedBox(),
-                                        SizedBox(
-                                          width: snapshot.data.status > 0
-                                              ? Dimens.three
-                                              : 0,
-                                        ),
-                                        snapshot.data.status > 1
-                                            ? IconShadowWidget(
-                                                Icon(Icons.star,
-                                                    color: Colors.yellow,
-                                                    size: 36),
-                                              )
-                                            : SizedBox(),
-                                        SizedBox(
-                                          width: snapshot.data.status > 1
-                                              ? Dimens.three
-                                              : 0,
-                                        ),
-                                        snapshot.data.status > 2
-                                            ? IconShadowWidget(
-                                                Icon(Icons.star,
-                                                    color: Colors.yellow,
-                                                    size: 36),
-                                              )
-                                            : SizedBox(),
+                                        // SizedBox(
+                                        //   width: Dimens.three,
+                                        // ),
+                                        // snapshot.data.status > 0
+                                        //     ? IconShadowWidget(
+                                        //         Icon(Icons.star,
+                                        //             color: Colors.yellow,
+                                        //             size: 36),
+                                        //       )
+                                        //     : SizedBox(),
+                                        // SizedBox(
+                                        //   width: snapshot.data.status > 0
+                                        //       ? Dimens.three
+                                        //       : 0,
+                                        // ),
+                                        // snapshot.data.status > 1
+                                        //     ? IconShadowWidget(
+                                        //         Icon(Icons.star,
+                                        //             color: Colors.yellow,
+                                        //             size: 36),
+                                        //       )
+                                        //     : SizedBox(),
+                                        // SizedBox(
+                                        //   width: snapshot.data.status > 1
+                                        //       ? Dimens.three
+                                        //       : 0,
+                                        // ),
+                                        // snapshot.data.status > 2
+                                        //     ? IconShadowWidget(
+                                        //         Icon(Icons.star,
+                                        //             color: Colors.yellow,
+                                        //             size: 36),
+                                        //       )
+                                        //     : SizedBox(),
                                         Expanded(
                                           child: SizedBox(),
                                         ),

@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:wayawaya/app/common/dialogs/common_login_dialog.dart';
 import 'package:wayawaya/app/common/menu/model/main_menu_permission.dart';
 import 'package:wayawaya/app/common/webview/model/custom_web_view_model.dart';
+import 'package:wayawaya/app/shop/model/shops_fav_model.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_images.dart';
 import 'package:wayawaya/utils/app_strings.dart';
@@ -145,7 +146,7 @@ class MenuTile extends StatelessWidget {
             Future.delayed(Duration(seconds: 1), () {
               debugPrint('pardeep_testing_animation:-   $title');
               Navigator.pushNamed(context, AppString.SHOP_SCREEN_ROUTE,
-                  arguments: true);
+                  arguments: ShopFavModel(isShop: true,index: 0));
             });
           }
           break;
@@ -154,7 +155,7 @@ class MenuTile extends StatelessWidget {
             Future.delayed(Duration(seconds: 1), () {
               debugPrint('pardeep_testing_animation:-   $title');
               Navigator.pushNamed(context, AppString.SHOP_SCREEN_ROUTE,
-                  arguments: false);
+                  arguments: ShopFavModel(isShop: false,index: 0));
             });
           }
           break;

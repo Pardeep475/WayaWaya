@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:wayawaya/app/common/menu/animate_app_bar.dart';
 import 'package:wayawaya/app/common/menu/model/main_menu_permission.dart';
 import 'package:wayawaya/app/settings/model/settings_model.dart';
+import 'package:wayawaya/app/shop/model/shops_fav_model.dart';
 import 'package:wayawaya/models/omni_channel_item_model/omni_channel_item_model.dart';
 import 'package:wayawaya/network/local/database_helper.dart';
 import 'package:wayawaya/network/local/profile_database_helper.dart';
@@ -161,8 +162,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
         }
       case AppString.my_favourites:
         {
-          debugPrint('settings_click_testing:-  ${settingsModel.title}');
-          // await SyncService.fetchAllSyncData();
+          Navigator.pushNamed(context, AppString.SHOP_SCREEN_ROUTE,
+              arguments: ShopFavModel(isShop: true,index: 3));
           break;
         }
       case AppString.privacy_policy:

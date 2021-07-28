@@ -81,12 +81,12 @@ class ShopBloc {
     orderListingSink.add(_retailWithCategoryList);
   }
 
-  fetchCategoryBasedListing({bool isRestaurant}) async {
+  fetchCategoryBasedListing({bool isShop}) async {
     String defaultMall = await SessionManager.getDefaultMall();
     List<RetailUnitCategory> _retailUnitCategoryList =
         await ProfileDatabaseHelper.getRestaurantAndStopData(
       databasePath: defaultMall,
-      isShop: isRestaurant,
+      isShop: isShop,
       searchQuery: '',
     );
     List<CategoryBasedModel> _categoryBasedModelList = [];
@@ -99,7 +99,7 @@ class ShopBloc {
           List<RetailWithCategory> _retailWithCategoryList =
               await ProfileDatabaseHelper.getRetailWithCategory(
                   databasePath: defaultMall,
-                  isShop: isRestaurant,
+                  isShop: isShop,
                   searchQuery: '',
                   categoryId: categoryName.categoryId,
                   favourite: 0);
@@ -138,12 +138,12 @@ class ShopBloc {
     return listCategoryName[listCategoryName.length - 1];
   }
 
-  fetchFavouriteListing({bool isRestaurant}) async {
+  fetchFavouriteListing({bool isShop}) async {
     String defaultMall = await SessionManager.getDefaultMall();
     List<RetailWithCategory> _retailWithCategoryList =
         await ProfileDatabaseHelper.getRetailWithCategory(
             databasePath: defaultMall,
-            isShop: isRestaurant,
+            isShop: isShop,
             searchQuery: '',
             categoryId: '',
             favourite: 1);

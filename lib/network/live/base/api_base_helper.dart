@@ -80,10 +80,12 @@ class ApiBaseHelper {
       dynamic params,
       Map<String, dynamic> map}) async {
     try {
-      debugPrint('api_url  :-  ${NetworkConstants.base_url}$url');
+
       debugPrint('auth_header  :-  $authHeader');
       debugPrint('api_params   :-   $params    ');
-      final response = await dio.patch('${NetworkConstants.base_url}$url',
+      String mainUrl = '${NetworkConstants.base_url}$url'.trim();
+      debugPrint('api_url  :-  $mainUrl');
+      final response = await dio.patch(mainUrl,
           data: params,
           queryParameters: map,
           options: Options(

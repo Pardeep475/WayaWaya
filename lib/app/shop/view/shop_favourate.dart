@@ -9,9 +9,9 @@ import 'package:wayawaya/utils/dimens.dart';
 import 'item_retail_unit_listing.dart';
 
 class ShopFavouriteScreen extends StatefulWidget {
-  final bool isRestaurant;
+  final bool isShop;
 
-  ShopFavouriteScreen({this.isRestaurant});
+  ShopFavouriteScreen({this.isShop});
 
   @override
   State<StatefulWidget> createState() => _ShopFavouriteScreenState();
@@ -26,7 +26,7 @@ class _ShopFavouriteScreenState extends State<ShopFavouriteScreen> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _shopBloc.fetchFavouriteListing(isRestaurant: widget.isRestaurant);
+      _shopBloc.fetchFavouriteListing(isShop: widget.isShop);
     });
   }
 
@@ -68,12 +68,12 @@ class _ShopFavouriteScreenState extends State<ShopFavouriteScreen> {
                 itemBuilder: (context, index) {
                   return ItemRetailUnitListing(
                     index: index,
-                    isRestaurant: widget.isRestaurant,
+                    isShop: widget.isShop,
                     listRetailUnitCategory: snapshot.data,
                     retailWithCategory: snapshot.data[index],
                     onLikePressed: () {
                       _shopBloc.updateFavourite(retailWithCategory: snapshot.data[index]);
-                      _shopBloc.fetchFavouriteListing(isRestaurant: widget.isRestaurant);
+                      _shopBloc.fetchFavouriteListing(isShop: widget.isShop);
                     },
                     onLocationPressed: () {
                       debugPrint('onLocationPressed');

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:wayawaya/app/common/menu/animate_app_bar.dart';
 import 'package:wayawaya/app/common/menu/model/main_menu_permission.dart';
 import 'package:wayawaya/app/shop/bloc/shop_bloc.dart';
+import 'package:wayawaya/app/shop/model/shops_fav_model.dart';
 import 'package:wayawaya/app/shop/view/shop_category.dart';
 import 'package:wayawaya/app/shop/view/shop_favourate.dart';
 import 'package:wayawaya/app/shop/view/shop_listing.dart';
@@ -23,19 +24,22 @@ class ShopScreen extends StatefulWidget {
 
 class _ShopScreenState extends State<ShopScreen> {
   ShopBloc _shopBloc;
-  bool isLogin = false;
-  bool isRestaurant = false;
+  bool isShop = false;
+  int initIndex = 0;
+  PageController _pageController = PageController();
 
   @override
   void initState() {
-    _checkIfLogin();
     _shopBloc = ShopBloc();
     super.initState();
-  }
-
-  _checkIfLogin() async {
-    isLogin = await SessionManager.isLogin();
-    setState(() {});
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      debugPrint('initial_index_is:-  $initIndex');
+      _pageController.animateToPage(
+        initIndex,
+        duration: Duration(microseconds: 100),
+        curve: Curves.easeInOut,
+      );
+    });
   }
 
   @override
@@ -43,14 +47,13 @@ class _ShopScreenState extends State<ShopScreen> {
     super.dispose();
   }
 
-  PageController _pageController = PageController();
-
   @override
   Widget build(BuildContext context) {
-    dynamic value = ModalRoute.of(context).settings.arguments;
+    ShopFavModel value = ModalRoute.of(context).settings.arguments;
     debugPrint('IsRestaurant:-   $value');
     if (value != null) {
-      isRestaurant = value;
+      isShop = value.isShop;
+      initIndex = value.index;
     }
 
     return SafeArea(
@@ -63,7 +66,7 @@ class _ShopScreenState extends State<ShopScreen> {
             stream: _shopBloc.mainMenuPermissionStream,
             builder: (context, snapshot) {
               return AnimateAppBar(
-                title: isRestaurant ? AppString.shops : AppString.restaurant,
+                title: isShop ? AppString.shops : AppString.restaurant,
                 isSliver: true,
                 mainMenuPermissions: snapshot.data,
                 physics: ClampingScrollPhysics(),
@@ -80,18 +83,14 @@ class _ShopScreenState extends State<ShopScreen> {
                           return PageView.builder(
                             controller: _pageController,
                             scrollDirection: Axis.horizontal,
-                            itemCount: isLogin != null && isLogin ? 3 : 2,
-                            onPageChanged: (index) {},
+                            itemCount: 3,
                             itemBuilder: (BuildContext context, int index) {
                               if (index == 0) {
-                                return ShopListingScreen(
-                                    isRestaurant: isRestaurant);
+                                return ShopListingScreen(isShop: isShop);
                               } else if (index == 1) {
-                                return ShopCategoryScreen(
-                                    isRestaurant: isRestaurant);
+                                return ShopCategoryScreen(isShop: isShop);
                               } else {
-                                return ShopFavouriteScreen(
-                                    isRestaurant: isRestaurant);
+                                return ShopFavouriteScreen(isShop: isShop);
                               }
                             },
                           );
