@@ -5,6 +5,7 @@ import 'package:wayawaya/app/settings/model/settings_model.dart';
 import 'package:wayawaya/app/shop/model/shops_fav_model.dart';
 import 'package:wayawaya/models/omni_channel_item_model/omni_channel_item_model.dart';
 import 'package:wayawaya/network/local/database_helper.dart';
+import 'package:wayawaya/network/local/notification_service.dart';
 import 'package:wayawaya/network/local/profile_database_helper.dart';
 import 'package:wayawaya/network/local/sync_service.dart';
 import 'package:wayawaya/network/model/loyalty/loyalty_header_response.dart';
@@ -13,6 +14,7 @@ import 'package:wayawaya/network/model/loyalty/loyalty_temp.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/dimens.dart';
+import 'package:wayawaya/utils/geo_fence_service.dart';
 import 'package:wayawaya/utils/session_manager.dart';
 import '../../constants.dart';
 import 'bloc/settings_bloc.dart';
@@ -163,7 +165,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       case AppString.my_favourites:
         {
           Navigator.pushNamed(context, AppString.SHOP_SCREEN_ROUTE,
-              arguments: ShopFavModel(isShop: true,index: 3));
+              arguments: ShopFavModel(isShop: true, index: 3));
           break;
         }
       case AppString.privacy_policy:
@@ -179,8 +181,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
         {
           debugPrint('settings_click_testing:-  ${settingsModel.title}');
           // _settingsBloc.termAndConditionOnClick(context);
-          _implementLocalDb();
+          // _implementLocalDb();
           // _settingsBloc.syncCampaign(0);
+          NotificationService.showSimpleNotification("");
+          GeoFenceService.requestPermission();
+          GeoFenceService.listenBackgroundLocation();
           break;
         }
     }
@@ -196,6 +201,5 @@ class _SettingsScreenState extends State<SettingsScreen> {
       debugPrint(
           'LoyaltyTemp:-   ${element.timestamp}   ${element.totalMonthPoints}   ${element.month}');
     });
-
   }
 }

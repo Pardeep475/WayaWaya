@@ -12,7 +12,6 @@ import 'package:wayawaya/app/shop/view/shop_listing.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/dimens.dart';
-import 'package:wayawaya/utils/session_manager.dart';
 import 'package:wayawaya/widgets/expandable_fab.dart';
 
 import '../../constants.dart';
@@ -169,14 +168,6 @@ class _ShopScreenState extends State<ShopScreen> {
                   duration: Duration(microseconds: 100),
                   curve: Curves.easeInOut,
                 );
-                // _shopBloc.listTypeSink.add(2);
-                // Navigator.of(context).pushReplacement(
-                //   MaterialPageRoute(
-                //     builder: (_) => ShopRestFav(
-                //       title: 'Restaurant',
-                //     ),
-                //   ),
-                // );
               },
               color: appLightColor,
               iconColor: Colors.white,

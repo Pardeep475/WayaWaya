@@ -156,7 +156,6 @@ class _AnimateAppBarState extends State<AnimateAppBar> {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('animate_app_bar_testing:-  ${widget.isSliver}');
     return SafeArea(
       top: widget.topValue ?? false,
       bottom: false,

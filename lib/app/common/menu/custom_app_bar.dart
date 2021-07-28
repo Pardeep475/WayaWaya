@@ -74,7 +74,6 @@ class _CustomAppBarState extends State<CustomAppBar> {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('animate_app_bar_testing:-  ${widget.title}');
     return StreamBuilder<List<Category>>(
         initialData: [],
         stream: _customAppBarBloc.profileCategoryStream,

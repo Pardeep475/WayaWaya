@@ -22,8 +22,6 @@ class MenuTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint(
-        'main_menu_permission_testing:-----  MenuTile ${itemList != null ? itemList.length : 'null'}');
     return GestureDetector(
       onTap: () => Navigator.push(
         context,
@@ -300,8 +298,6 @@ class RhombusMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint(
-        'main_menu_permission_testing:----- RhombusMenu  ${menuPermissionList != null ? menuPermissionList.length : 'null'}');
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: enabled ? 32 : 12, vertical: 8),
       child: Column(

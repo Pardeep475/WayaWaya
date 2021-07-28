@@ -3,6 +3,8 @@
 
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
@@ -41,15 +43,15 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="FLUTTER_NOTIFICATION_CLICK" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
-        <receiver
-            android:name="com.intivoto.geofence.GeofenceBroadcastReceiver"
-            android:enabled="true"
-            android:exported="true" />
-        <service
-            android:name="com.intivoto.geofence.GeofencePlugin"
-            android:exported="true"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
+        <receiver android:name="com.intivoto.geofence.GeofenceBroadcastReceiver"
+            android:enabled="true" android:exported="true"/>
+        <service android:name="com.intivoto.geofence.GeofencePlugin"
+            android:permission="android.permission.BIND_JOB_SERVICE" android:exported="true"/>
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data

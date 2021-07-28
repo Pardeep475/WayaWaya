@@ -37,7 +37,6 @@ class _MyDeviceScreenState extends State<MyDeviceScreen> {
       initialData: [],
       stream: _myDevicesBloc.mainMenuPermissionStream,
       builder: (context, snapshot) {
-        debugPrint('main_menu_permission_testing:--  StreamBuilder device screen ${snapshot.data}');
         return AnimateAppBar(
           title: AppString.my_devices.toUpperCase(),
           isSliver: true,

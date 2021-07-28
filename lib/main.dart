@@ -25,6 +25,7 @@ import 'package:wayawaya/app/shop/shop_detail_screen.dart';
 import 'package:wayawaya/app/shop/shop_screen.dart';
 import 'package:wayawaya/network/local/sync_service.dart';
 import 'package:wayawaya/utils/app_strings.dart';
+import 'package:wayawaya/utils/geo_fence_service.dart';
 import 'package:wayawaya/utils/session_manager.dart';
 import 'package:wayawaya/utils/size_config.dart';
 import 'app/auth/forgotpassword/forgot_password_screen.dart';
@@ -33,11 +34,13 @@ import 'app/home/home_screen.dart';
 import 'app/rewards/rewards_new.dart';
 import 'app/settings/my_account_screen.dart';
 import 'app/settings/my_devices_screen.dart';
+import 'network/local/notification_service.dart';
 import 'network/local/super_admin_database_helper.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  Geofence.initialize();
+  GeoFenceService.initGeofence();
+  await NotificationService().init();
   await SuperAdminDatabaseHelper.initDataBase();
   bool isFirstTime = await SessionManager.isFirstTime();
   runApp(MyApp(isFirstTime: isFirstTime));
@@ -303,9 +306,6 @@ class MyAppState extends State<MyApp> {
     }
   }
 }
-
-
-
 
 // Copyright 2013 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be

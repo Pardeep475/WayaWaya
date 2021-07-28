@@ -58,7 +58,6 @@ class RewardsBloc {
     String defaultMall = await SessionManager.getDefaultMall();
     List<MainMenuPermission> itemList =
         await SuperAdminDatabaseHelper.getMenuButtons(defaultMall);
-    debugPrint('main_menu_permission_testing:--   ${itemList.length}');
     mainMenuPermissionSink.add(itemList);
     return itemList;
   }

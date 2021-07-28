@@ -67,6 +67,7 @@ dependencies:
   icon_shadow: ^1.0.1
   expandable_group: ^0.0.7
   scroll_snap_list: ^0.8.2
+  flutter_local_notifications: ^7.0.0
 
 dev_dependencies:
   flutter_test:
