@@ -75,7 +75,6 @@ class SettingsBloc {
   }
 
   privacyPolicyOnClick(BuildContext context) {
-    debugPrint('privacy_policy_url:---->   error');
     Navigator.push(
       context,
       FullScreenPrivacyPolicyDialog(

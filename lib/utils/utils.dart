@@ -52,7 +52,8 @@ class Utils {
   }
 
   static bool checkNullOrEmpty(String value) {
-    if (value == null || value.isEmpty) return true;
+    if (value == null) return true;
+    if (value.isEmpty) return true;
     return false;
   }
 

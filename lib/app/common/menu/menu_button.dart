@@ -1,9 +1,16 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:wayawaya/app/common/dialogs/common_login_dialog.dart';
+import 'package:wayawaya/app/common/dialogs/common_not_at_venue_dialog.dart';
+import 'package:wayawaya/app/common/dialogs/full_screen_show_qr_and_barcode_generator_dialog.dart';
+import 'package:wayawaya/app/common/full_screen_not_an_vanue_dialog.dart';
 import 'package:wayawaya/app/common/menu/model/main_menu_permission.dart';
 import 'package:wayawaya/app/common/webview/model/custom_web_view_model.dart';
 import 'package:wayawaya/app/shop/model/shops_fav_model.dart';
+import 'package:wayawaya/network/local/profile_database_helper.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_images.dart';
 import 'package:wayawaya/utils/app_strings.dart';
@@ -144,7 +151,7 @@ class MenuTile extends StatelessWidget {
             Future.delayed(Duration(seconds: 1), () {
               debugPrint('pardeep_testing_animation:-   $title');
               Navigator.pushNamed(context, AppString.SHOP_SCREEN_ROUTE,
-                  arguments: ShopFavModel(isShop: true,index: 0));
+                  arguments: ShopFavModel(isShop: true, index: 0));
             });
           }
           break;
@@ -153,7 +160,7 @@ class MenuTile extends StatelessWidget {
             Future.delayed(Duration(seconds: 1), () {
               debugPrint('pardeep_testing_animation:-   $title');
               Navigator.pushNamed(context, AppString.SHOP_SCREEN_ROUTE,
-                  arguments: ShopFavModel(isShop: false,index: 0));
+                  arguments: ShopFavModel(isShop: false, index: 0));
             });
           }
           break;
@@ -180,14 +187,84 @@ class MenuTile extends StatelessWidget {
           break;
         case 'scanner':
           {
-            _openFurtherScreens(
-                context, AppString.QR_SCANNER_SCREEN_ROUTE, true);
+            await _scannerFunctionality(context);
+            // _openFurtherScreens(
+            //     context, AppString.QR_SCANNER_SCREEN_ROUTE, true);
           }
           break;
       }
     }
   }
 
+  _scannerFunctionality(BuildContext context) async {
+    debugPrint("scanner_functionality");
+    bool isUserInMall = await checkIfUserInMall();
+    if (!isUserInMall) {
+      Navigator.pushNamed(context, AppString.QR_SCANNER_SCREEN_ROUTE)
+          .then((value) async {
+        if (value != null) {
+          try {
+            Barcode scanData = value as Barcode;
+            dynamic jsonScanData = jsonDecode(scanData.code);
+            String rid = "";
+            String type = "";
+            String points = "";
+            rid = jsonScanData["shop_id"];
+            type = jsonScanData["type"];
+            points = jsonScanData["points"];
+            if (Utils.checkNullOrEmpty(rid)) return;
+            if (Utils.checkNullOrEmpty(type)) return;
+            bool isUserInMall = await checkIfUserInMall();
+            if (isUserInMall) {
+              Navigator.push(
+                context,
+                FullScreenNotAnVenueDialog(),
+              );
+              return;
+            }
+            bool checkRetailUnitByID =
+                await ProfileDatabaseHelper.checkRetailUnitByRid(rid);
+            if (checkRetailUnitByID) {
+              if(type.toLowerCase() == "store_visit".toLowerCase()){
+                // if (Utils.checkNullOrEmpty(type)) {
+                //   LoyaltyUtil.setStoreVisitLoyaltyPoints(mDataManager.getPreferencesHelper(), rid);
+                //   updateStoreVisitLoyaltyPoints();
+                // } else {
+                //   updateStoreVisitQRPoints(Integer.parseInt(points), rid);
+                // }
+              }else if(type.toLowerCase() == "redemption".toLowerCase()){
+
+              }
+            } else {
+              Navigator.push(
+                context,
+                FullScreenNotAnVenueDialog(
+                    content: AppString.no_shop_available),
+              );
+            }
+          } catch (e) {
+            Navigator.push(
+              context,
+              FullScreenNotAnVenueDialog(
+                  content: e.toString()),
+            );
+          }
+        }
+      });
+    } else {
+      Navigator.push(
+        context,
+        FullScreenNotAnVenueDialog(),
+      );
+    }
+  }
+
+  Future<bool> checkIfUserInMall() async {
+    bool isUserInMall = await SessionManager.getUserInMall();
+    return isUserInMall ?? false;
+  }
+
+  //{"shop_id": "628a09122f644de881f3a8776eb3286d", "type": "store_visit"}
   _openFurtherScreens(BuildContext context, String title, bool isBackStack) {
     Future.delayed(Duration(seconds: 1), () {
       debugPrint('pardeep_testing_animation:-   $title');

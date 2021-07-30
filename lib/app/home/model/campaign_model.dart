@@ -140,7 +140,7 @@ class Campaign {
         // triggerZoneList: json["trigger_zone_list"],
         type: json["type"],
         // viewResetCounter: json["view_reset_counter"],
-        voucher: json["voucher"],
+        voucher: json["voucher"] == null ? null : jsonEncode(json["voucher"]),
       );
 
   Map<String, dynamic> toJson() => {

@@ -24,7 +24,7 @@ class _QRScannerState extends State<QRScanner> {
     controller.resumeCamera();
   }
 
-  getFlash() async{
+  getFlash() async {
     await controller.toggleFlash();
   }
 
@@ -82,7 +82,6 @@ class _QRScannerState extends State<QRScanner> {
     return QRView(
       key: qrKey,
       onQRViewCreated: _onQRViewCreated,
-
       overlay: QrScannerOverlayShape(
           borderColor: Colors.black,
           borderRadius: 10,
@@ -97,9 +96,10 @@ class _QRScannerState extends State<QRScanner> {
       this.controller = controller;
     });
     controller.scannedDataStream.listen((scanData) {
-      setState(() {
-        result = scanData;
-      });
+      if (scanData.code != null) {
+        controller?.dispose();
+        Navigator.pop(context, scanData);
+      }
     });
   }
 

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -12,12 +14,10 @@ import 'package:wayawaya/network/local/table/trigger_zone_table.dart';
 import 'package:wayawaya/network/local/table/venue_profile_table.dart';
 import 'package:wayawaya/network/model/campaign/campaign_api_response.dart';
 import 'package:wayawaya/network/model/category/category_wrapper.dart';
-import 'package:wayawaya/network/model/loyalty/loyalty_new.dart';
 import 'package:wayawaya/network/model/loyalty/loyalty_response.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/session_manager.dart';
 import 'package:wayawaya/utils/utils.dart';
-
 import 'database_helper.dart';
 import 'profile_database_helper.dart';
 import 'table/campaign_table.dart';
@@ -41,6 +41,8 @@ class SyncService {
       hashmapToUpdate = new Map();
 
   static List<String> toRemove = [];
+
+  BuildContext context;
 
   static Future fetchAllSyncData() async {
     await setSyncDateQuery();
@@ -720,7 +722,10 @@ class SyncService {
       debugPrint("testing__:-  success $_loyaltyData");
       if (_loyaltyData is DioError) {
         // refresh token
-        updateRefreshToken(pageNo: page, loyalty: null, monthNo: -1);
+        bool returnValue = await updateRefreshToken();
+        if (returnValue) {
+          syncLoyalty();
+        }
       } else {
         LoyaltyResponse _loyaltyResponse =
             LoyaltyResponse.fromJson(_loyaltyData.data);
@@ -741,8 +746,7 @@ class SyncService {
     }
   }
 
-  static updateRefreshToken(
-      {int pageNo, LoyaltyNew loyalty, int monthNo}) async {
+  static Future<bool> updateRefreshToken() async {
     Utils.checkConnectivity().then((value) async {
       try {
         if (value != null && value) {
@@ -750,17 +754,107 @@ class SyncService {
               await _repository.refreshTokenApiRepository();
           if (_refreshTokenApiResponse is DioError) {
             // logout button functionality
+            return false;
           } else {
             SessionManager.setJWTToken(
                 _refreshTokenApiResponse.data['access_token']);
             SessionManager.setRefreshToken(
                 _refreshTokenApiResponse.data['refresh_token']);
-            syncLoyalty();
+            return true;
           }
+        } else {
+          return false;
         }
       } catch (e) {
         // logout button functionality
+        return false;
       }
     });
+  }
+
+  static Future checkUser() async {
+    try {
+      String userData = await SessionManager.getUserData();
+      UserDataResponse _response = userDataResponseFromJson(userData);
+      if (_response == null) return null;
+      Utils.checkConnectivity().then((value) async {
+        if (value != null && value) {
+          dynamic checkUser = await _repository.checkUserApiRepository(
+              userId: _response.username);
+          if (checkUser is DioError) {
+            // logout button functionality
+            return false;
+          } else {
+            UserDataResponse userDataResponse = UserDataResponse(
+              accessToken: _response.accessToken,
+              lastName: checkUser.data['last_name'] ?? _response.lastName,
+              username: checkUser.data['user_name'] ?? _response.username,
+              userId: checkUser.data['_id'] ?? _response.userId,
+              gender: checkUser.data['title'] ?? _response.gender,
+              dob: checkUser.data['date_of_birth'] ?? _response.dob,
+              firstName: checkUser.data['first_name'] ?? _response.firstName,
+              cellnumber: checkUser.data['cell_number_list'] == null
+                  ? _response.cellnumber
+                  : json.encode(checkUser.data['cell_number_list']),
+              isLogin: true,
+              isTester: checkUser.data['tester_flag'] ?? _response.isTester,
+              email: checkUser.data['email_list'] == null
+                  ? _response.email
+                  : json.encode(checkUser.data['email_list']),
+              clientApi: checkUser.data['social_media'] == null
+                  ? _response.clientApi
+                  : json.encode(checkUser.data['social_media']),
+              loginType: checkUser.data['social_media'] == null
+                  ? _response.loginType
+                  : json.encode(checkUser.data['social_media']),
+              loyaltyStatus: checkUser.data['loyalty_status'] == null
+                  ? _response.loyaltyStatus
+                  : json.encode(checkUser.data['loyalty_status']),
+              categories: checkUser.data['preferences'] == null
+                  ? _response.categories
+                  : checkUser.data['preferences']['categories'] == null
+                      ? _response.categories
+                      : checkUser.data['preferences']['categories'],
+              notification: checkUser.data['preferences'] == null
+                  ? _response.notification
+                  : checkUser.data['preferences']['notification'] == null
+                      ? _response.notification
+                      : checkUser.data['preferences']['notification']
+                          .toString(),
+              favouriteMall: checkUser.data['preferences'] == null
+                  ? _response.favouriteMall
+                  : checkUser.data['preferences']['favorite_malls'] == null
+                      ? _response.favouriteMall
+                      : checkUser.data['preferences']['favorite_malls']
+                          .toString(),
+              language: checkUser.data['preferences'] == null
+                  ? _response.language
+                  : checkUser.data['preferences']['default_language'] == null
+                      ? _response.language
+                      : checkUser.data['preferences']['default_language']
+                          .toString(),
+              currency: checkUser.data['preferences'] == null
+                  ? _response.currency
+                  : checkUser.data['preferences']['alternate_currency'] == null
+                      ? _response.currency
+                      : checkUser.data['preferences']['alternate_currency']
+                          .toString(),
+              devices: checkUser.data['devices'] == null
+                  ? _response.devices
+                  : json.encode(checkUser.data['devices']),
+              registrationDate: checkUser.data['registration_date'] ??
+                  _response.registrationDate,
+            );
+            SessionManager.setUserData(
+                userDataResponseToJson(userDataResponse));
+            return null;
+          }
+        } else {
+          return null;
+        }
+      });
+    } catch (e) {
+      return null;
+    }
   }
 }

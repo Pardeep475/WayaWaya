@@ -11,7 +11,8 @@ class SessionManager {
 
   SessionManager._internal();
 
-  static final Future<SharedPreferences> _pref = SharedPreferences.getInstance();
+  static final Future<SharedPreferences> _pref =
+      SharedPreferences.getInstance();
 
   static void setFirstTime(bool isFirstTime) {
     _pref.then((value) => value.setBool(AppString.IS_FIRST_TIME, isFirstTime));
@@ -160,6 +161,27 @@ class SessionManager {
   static Future<String> getSyncDate() async {
     return _pref.then((value) => value.getString(AppString.SYNC_DATE));
   }
+
+  static void setUserInMall(bool userInMall) async {
+    _pref.then((value) => value.setBool(AppString.USER_IN_MALL, userInMall));
+  }
+
+  static Future<bool> getUserInMall() async {
+    return _pref
+        .then((value) => value.getBool(AppString.USER_IN_MALL) ?? false);
+  }
+
+  // static void putOfferOpenLoyaltyJson(OfferOpenLoyaltyData OfferOpenLoyaltyData) {
+  //   String OfferOpenLoyaltyDataJson = mGson.toJson(OfferOpenLoyaltyData);
+  //   mPref.edit().putString(PREF_OFFER_OPEN_JSON, OfferOpenLoyaltyDataJson).apply();
+  //
+  //   Timber.d("OFFER_OPEN_LOYALTY: %s , %s", "OfferOpenLoyaltyData after set : ", getOfferOpenLoyaltyData().toString());
+  // }
+  //
+  // public OfferOpenLoyaltyData getOfferOpenLoyaltyData() {
+  //   return mGson.fromJson(mPref.getString(PREF_OFFER_OPEN_JSON, null),
+  //       OfferOpenLoyaltyData.class);
+  // }
 
   void clearAllData() {
     _pref.then((value) {

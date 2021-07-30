@@ -129,8 +129,7 @@ class FullScreenPrivacyPolicyDialog extends ModalRoute<bool> {
                     navigationDelegate: (NavigationRequest request) {
                       if (request.url.startsWith('https://www.youtube.com/')) {
                         print('blocking navigation to $request}');
-                        return NavigationDecision.prevent;
-                      }
+                        return NavigationDecision.prevent;}
                       print('allowing navigation to $request');
                       return NavigationDecision.navigate;
                     },

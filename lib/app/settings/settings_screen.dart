@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:wayawaya/app/common/dialogs/full_screen_show_qr_and_barcode_generator_dialog.dart';
 import 'package:wayawaya/app/common/menu/animate_app_bar.dart';
 import 'package:wayawaya/app/common/menu/model/main_menu_permission.dart';
 import 'package:wayawaya/app/settings/model/settings_model.dart';
 import 'package:wayawaya/app/shop/model/shops_fav_model.dart';
-import 'package:wayawaya/models/omni_channel_item_model/omni_channel_item_model.dart';
-import 'package:wayawaya/network/local/database_helper.dart';
-import 'package:wayawaya/network/local/notification_service.dart';
 import 'package:wayawaya/network/local/profile_database_helper.dart';
 import 'package:wayawaya/network/local/sync_service.dart';
 import 'package:wayawaya/network/model/loyalty/loyalty_header_response.dart';
-import 'package:wayawaya/network/model/loyalty/loyalty_response.dart';
-import 'package:wayawaya/network/model/loyalty/loyalty_temp.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/dimens.dart';
@@ -181,11 +177,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
         {
           debugPrint('settings_click_testing:-  ${settingsModel.title}');
           // _settingsBloc.termAndConditionOnClick(context);
-          // _implementLocalDb();
-          // _settingsBloc.syncCampaign(0);
-          NotificationService.showSimpleNotification("");
-          GeoFenceService.requestPermission();
-          GeoFenceService.listenBackgroundLocation();
+
+
+
+
+          await SyncService.checkUser();
+          // GeoFenceService.requestPermission();
+          // GeoFenceService.addLatLongToGeofence();
+          // GeoFenceService.listenBackgroundLocation();
+          // Future.delayed(Duration(seconds: 40),(){
+          //   GeoFenceService.removeLatLongToGeoFence();
+          // });
+
           break;
         }
     }

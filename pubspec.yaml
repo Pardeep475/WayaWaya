@@ -68,6 +68,10 @@ dependencies:
   expandable_group: ^0.0.7
   scroll_snap_list: ^0.8.2
   flutter_local_notifications: ^7.0.0
+  qr_flutter:
+    git:
+      url: git://github.com/lukef/qr.flutter.git
+  barcode_widget: ^2.0.1
 
 dev_dependencies:
   flutter_test:

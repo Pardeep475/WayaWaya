@@ -41,6 +41,8 @@ class AppString {
   static const String PREF_GUEST_USER_CURRENCY = "PREF_GUEST_USER_CURRENCY";
   static const String PREF_GUEST_USER_LANGUAGE = "PREF_GUEST_USER_LANGUAGE";
   static const String SYNC_DATE = "SYNC_DATE";
+  static const String USER_IN_MALL = "USER_IN_MALL";
+  static const String PREF_OFFER_OPEN_JSON = "PREF_OFFER_OPEN_JSON";
 
   static const String DEVICE_SEPARATOR = "~^";
   static const String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
@@ -275,6 +277,10 @@ class AppString {
   static const String scan = "Scan QR Code for earning points";
   static const String qr_scan = "QR Scan";
   static const String membership = "Membership";
+  static const String redeem_offer = "REDEEM OFFER";
+  static const String redeem_msg_2 = "If you have not shown the redemption page to the cashier, you will forfeit your points.";
+  static const String no_shop_available = "Please check the selected mall. The shop you\'r looking for is not available.";
+
 
   // Routes
   static const LOGIN_SCREEN_ROUTE = "LOGIN_SCREEN_ROUTE";

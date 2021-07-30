@@ -9,12 +9,15 @@ import 'package:intl/intl.dart';
 import 'package:share/share.dart';
 import 'package:transformer_page_view/transformer_page_view.dart';
 import 'package:wayawaya/app/auth/login/model/user_data_response.dart';
+import 'package:wayawaya/app/common/dialogs/common_login_dialog.dart';
+import 'package:wayawaya/app/common/dialogs/common_not_at_venue_dialog.dart';
 import 'package:wayawaya/app/common/webview/model/custom_web_view_model.dart';
 import 'package:wayawaya/app/common/zoom_out_page_transformation.dart';
 import 'package:wayawaya/app/home/model/campaign_element.dart';
 import 'package:wayawaya/app/home/model/campaign_model.dart';
 import 'package:wayawaya/app/offers/model/detail_model.dart';
 import 'package:wayawaya/app/offers/model/voucher.dart';
+import 'package:wayawaya/app/rewards/bloc/rewards_detail_bloc.dart';
 import 'package:wayawaya/app/rewards/redeem.dart';
 import 'package:wayawaya/common/model/language_store.dart';
 import 'package:wayawaya/config.dart';
@@ -34,165 +37,20 @@ class RewardsDetails extends StatefulWidget {
 }
 
 class _RewardsDetailsState extends State<RewardsDetails> {
+  final RewardsDetailBloc _rewardsDetailBloc = RewardsDetailBloc();
   int rewardPoints = 10;
   Widget _dialog;
-
-  redeemDialog() {
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: Text(''),
-        content: Container(
-          child: Text(
-            'Go to the cashier and redeem the Voucher in front of them”',
-            style: TextStyle(
-              color: Colors.grey[600],
-              fontSize: 16,
-            ),
-          ),
-        ),
-        actions: <Widget>[
-          TextButton(
-            child: Text(
-              'OK',
-              style: TextStyle(
-                color: black,
-                fontSize: 15,
-              ),
-            ),
-            onPressed: () {
-              // Navigator.of(context).pop();
-              App.pushTo(context: context, screen: RedeemVoucher());
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  checkPoints() {
-    if (rewardPoints < 5) {
-      _dialog = Container(
-        height: 200,
-        width: 200,
-        margin: EdgeInsets.only(top: 40),
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey, width: 2),
-          borderRadius: BorderRadius.all(Radius.circular(4)),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Spacer(
-              flex: 2,
-            ),
-            Text(
-              'You need 5 points.',
-              style: TextStyle(
-                color: Colors.grey[600],
-                fontSize: 16,
-              ),
-            ),
-            Spacer(
-              flex: 1,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  TextButton(
-                    child: Text(
-                      'OK',
-                      style: TextStyle(
-                        color: Colors.blue,
-                        fontSize: 16,
-                      ),
-                    ),
-                    onPressed: () {
-                      printY('OK');
-                    },
-                  ),
-                  TextButton(
-                    child: Text(
-                      'INFO',
-                      style: TextStyle(
-                        color: Colors.blue,
-                        fontSize: 16,
-                      ),
-                    ),
-                    onPressed: () {},
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      );
-      return _dialog;
-    } else {
-      _dialog = Container(
-        height: 200,
-        width: 200,
-        margin: EdgeInsets.only(top: 40),
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey, width: 2),
-          borderRadius: BorderRadius.all(Radius.circular(4)),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Spacer(
-              flex: 2,
-            ),
-            Text(
-              'Go to the cashier and redeem the Voucher in front of them.',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.grey[600],
-                fontSize: 16,
-              ),
-            ),
-            Spacer(
-              flex: 1,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15),
-              child: TextButton(
-                child: Text(
-                  'OK',
-                  style: TextStyle(
-                    color: Colors.blue,
-                    fontSize: 16,
-                  ),
-                ),
-                onPressed: () {
-                  printY('OK');
-                  App.pushTo(context: context, screen: RedeemVoucher());
-                },
-              ),
-            ),
-          ],
-        ),
-      );
-      return _dialog;
-    }
-  }
 
   @override
   void initState() {
     super.initState();
-    checkPoints();
+    // checkPoints();
   }
 
   @override
   Widget build(BuildContext context) {
-    // checkPoints();
-
-    // _campaign = ModalRoute.of(context).settings.arguments;
     DetailModel _detailModel = ModalRoute.of(context).settings.arguments;
     List<Campaign> _listOfCampaign = _detailModel.listOfCampaign;
-
     return Scaffold(
       backgroundColor: Colors.grey[100],
       body: Container(
@@ -459,7 +317,10 @@ class _RewardsDetailsState extends State<RewardsDetails> {
                                 children: [
                                   Expanded(
                                     child: InkWell(
-                                      onTap: () => checkPoints(),
+                                      onTap: () {
+                                        redeemClickEvent(
+                                            campaign: _listOfCampaign[index]);
+                                      },
                                       child: Column(
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
@@ -564,6 +425,286 @@ class _RewardsDetailsState extends State<RewardsDetails> {
     );
   }
 
+// redeem functionality start
+  redeemClickEvent({Campaign campaign}) async {
+    bool isUserInMall = await SessionManager.getUserInMall();
+    if (!isUserInMall) {
+      try {
+        int userLoyaltyPoints = await getLoyaltyPointsForRedeem();
+        int finalCouponPoints = getFinalUserPoints(campaign: campaign);
+        if (finalCouponPoints <= userLoyaltyPoints) {
+          String redeemMsg =
+              "Proceeding further will deduct $finalCouponPoints points from your balance of $userLoyaltyPoints points. \nMake sure you are at the cashier.";
+          String shopName = getShopName(campaign: campaign);
+          // redeem offer
+          _redeemOfferDialog(
+            context: context,
+            title: AppString.redeem_offer,
+            content: redeemMsg,
+            buttonText: AppString.redeem.toUpperCase(),
+            onPressed: () {
+              Navigator.pop(context);
+              String shopId = campaign.rid;
+              _rewardsDetailBloc.redeemLoyaltyPoints(context, finalCouponPoints,
+                  shopId, campaign.id, shopName, campaign.voucher);
+            },
+          );
+        } else {}
+      } catch (e) {}
+    } else {
+      _notAnVenueDialog(
+        onPressed: () => Navigator.pop(context),
+      );
+    }
+    // checkPoints();
+  }
+
+  int getFinalUserPoints({Campaign campaign}) {
+    try {
+      if (campaign.voucher == null) return 0;
+      dynamic voucherJson = jsonDecode(campaign.voucher);
+      if (voucherJson['value'] is String) {
+        return int.parse(voucherJson['value']);
+      } else {
+        return voucherJson['value'];
+      }
+    } catch (e) {
+      dynamic voucherJson = jsonDecode(jsonDecode(campaign.voucher));
+      if (voucherJson['value'] is String) {
+        return int.parse(voucherJson['value']);
+      } else {
+        return voucherJson['value'];
+      }
+    }
+  }
+
+  Future<int> getLoyaltyPointsForRedeem() async {
+    String userData = await SessionManager.getUserData();
+    UserDataResponse _response = userDataResponseFromJson(userData);
+    if (_response == null) return 0;
+    if (_response.loyaltyStatus == null) return 0;
+    dynamic loyaltyStatus = jsonDecode(_response.loyaltyStatus);
+    if (loyaltyStatus['points'] == null) return 0;
+    return loyaltyStatus['points'];
+  }
+
+  String getShopName({Campaign campaign}) {
+    if (campaign == null) return '';
+    if (campaign.campaignElement == null) return '';
+    try {
+      CampaignElement camElement =
+          campaignElementFromJson(campaign.campaignElement);
+      List<LanguageStore> name = List<LanguageStore>.from(
+          camElement.name.map((x) => LanguageStore.fromJson(x)));
+      return Utils.getTranslatedCode(context, name);
+    } catch (e) {
+      CampaignElement camElement =
+          campaignElementFromJson(jsonDecode(campaign.campaignElement));
+      List<LanguageStore> name = List<LanguageStore>.from(
+          camElement.name.map((x) => LanguageStore.fromJson(x)));
+      return Utils.getTranslatedCode(context, name);
+    }
+  }
+
+  redeemDialog() {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text(''),
+        content: Container(
+          child: Text(
+            'Go to the cashier and redeem the Voucher in front of them”',
+            style: TextStyle(
+              color: Colors.grey[600],
+              fontSize: 16,
+            ),
+          ),
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: Text(
+              'OK',
+              style: TextStyle(
+                color: black,
+                fontSize: 15,
+              ),
+            ),
+            onPressed: () {
+              // Navigator.of(context).pop();
+              App.pushTo(context: context, screen: RedeemVoucher());
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  checkPoints() {
+    if (rewardPoints < 5) {
+      _dialog = Container(
+        height: 200,
+        width: 200,
+        margin: EdgeInsets.only(top: 40),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey, width: 2),
+          borderRadius: BorderRadius.all(Radius.circular(4)),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Spacer(
+              flex: 2,
+            ),
+            Text(
+              'You need 5 points.',
+              style: TextStyle(
+                color: Colors.grey[600],
+                fontSize: 16,
+              ),
+            ),
+            Spacer(
+              flex: 1,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  TextButton(
+                    child: Text(
+                      'OK',
+                      style: TextStyle(
+                        color: Colors.blue,
+                        fontSize: 16,
+                      ),
+                    ),
+                    onPressed: () {
+                      printY('OK');
+                    },
+                  ),
+                  TextButton(
+                    child: Text(
+                      'INFO',
+                      style: TextStyle(
+                        color: Colors.blue,
+                        fontSize: 16,
+                      ),
+                    ),
+                    onPressed: () {},
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
+      return _dialog;
+    } else {
+      _dialog = Container(
+        height: 200,
+        width: 200,
+        margin: EdgeInsets.only(top: 40),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey, width: 2),
+          borderRadius: BorderRadius.all(Radius.circular(4)),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Spacer(
+              flex: 2,
+            ),
+            Text(
+              'Go to the cashier and redeem the Voucher in front of them.',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.grey[600],
+                fontSize: 16,
+              ),
+            ),
+            Spacer(
+              flex: 1,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              child: TextButton(
+                child: Text(
+                  'OK',
+                  style: TextStyle(
+                    color: Colors.blue,
+                    fontSize: 16,
+                  ),
+                ),
+                onPressed: () {
+                  printY('OK');
+                  App.pushTo(context: context, screen: RedeemVoucher());
+                },
+              ),
+            ),
+          ],
+        ),
+      );
+      return _dialog;
+    }
+  }
+
+  _redeemOfferDialog(
+      {BuildContext context,
+      Icon icon,
+      String title,
+      String content,
+      String buttonText,
+      VoidCallback onPressed}) {
+    showGeneralDialog(
+        barrierColor: Colors.black.withOpacity(0.1),
+        transitionBuilder: (context, a1, a2, widget) {
+          final curvedValue = Curves.easeInOutBack.transform(a1.value) - 1.0;
+          return Transform(
+            transform: Matrix4.translationValues(0.0, curvedValue * 200, 0.0),
+            child: AnimatedOpacity(
+              duration: Duration(milliseconds: 100),
+              opacity: a1.value,
+              child: CommonLoginDialog(
+                icon: icon,
+                title: title,
+                content: content,
+                buttonText: buttonText,
+                onPressed: onPressed,
+              ),
+            ),
+          );
+        },
+        transitionDuration: Duration(milliseconds: 200),
+        barrierDismissible: false,
+        barrierLabel: '',
+        context: context,
+        pageBuilder: (context, animation1, animation2) {});
+  }
+
+  _notAnVenueDialog({VoidCallback onPressed}) {
+    showGeneralDialog(
+        barrierColor: Colors.black.withOpacity(0.1),
+        transitionBuilder: (context, a1, a2, widget) {
+          final curvedValue = Curves.easeInOutBack.transform(a1.value) - 1.0;
+          return Transform(
+            transform: Matrix4.translationValues(0.0, curvedValue * 200, 0.0),
+            child: AnimatedOpacity(
+              duration: Duration(milliseconds: 100),
+              opacity: a1.value,
+              child: CommonNoAtVenueDialog(
+                onPressed: onPressed,
+              ),
+            ),
+          );
+        },
+        transitionDuration: Duration(milliseconds: 200),
+        barrierDismissible: false,
+        barrierLabel: '',
+        context: context,
+        pageBuilder: (context, animation1, animation2) {});
+  }
+
+  // redeem functionality ends
   String getImageUrl(BuildContext context, Campaign campaign) {
     if (campaign == null) return '';
     if (campaign.campaignElement == null) return '';

@@ -1051,4 +1051,21 @@ class ProfileDatabaseHelper {
     }
     return null;
   }
+
+  static Future<bool> checkRetailUnitByRid(String rid) async {
+    if (_db == null) {
+      String defaultMall = await SessionManager.getDefaultMall();
+      await initDataBase(defaultMall);
+    }
+    String query =
+        "SELECT * FROM  ${RetailUnitTable.RETAIL_UNIT_TABLE_NAME}  WHERE rid = $rid LIMIT 1";
+    List<Map> data = [];
+    await _db.transaction((txn) async {
+      data = await txn.rawQuery(query);
+    });
+    if (data.length > 0)
+      return true;
+    else
+      return false;
+  }
 }

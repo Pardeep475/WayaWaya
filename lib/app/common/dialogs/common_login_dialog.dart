@@ -20,7 +20,7 @@ class CommonLoginDialog extends StatelessWidget {
       title: Container(
         child: Row(
           children: [
-            icon,
+            icon ?? SizedBox(),
             SizedBox(
               width: 10,
             ),

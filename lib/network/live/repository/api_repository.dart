@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:wayawaya/app/auth/forgotpassword/model/authentication_code_model.dart';
 import 'package:wayawaya/app/auth/login/model/user_model.dart';
@@ -7,6 +9,7 @@ import 'package:wayawaya/app/settings/model/update_user_model.dart';
 import 'package:wayawaya/models/omni_channel_item_model/omni_channel_item_model.dart';
 import 'package:wayawaya/network/live/base/api_base_helper.dart';
 import 'package:wayawaya/network/local/profile_database_helper.dart';
+import 'package:wayawaya/network/model/loyalty/loyalty_new.dart';
 import 'package:wayawaya/utils/session_manager.dart';
 
 import '../network_constants.dart';
@@ -188,6 +191,31 @@ class ApiRepository {
             .replaceAll(' ', '%20');
     final response =
         await _apiProvider.get(url: url, authHeader: authorization);
+    return response;
+  }
+
+  Future<dynamic> postAppOpenLoyaltyTransaction({LoyaltyNew loyaltyNew}) async {
+    String authHeader = await SessionManager.getJWTToken();
+
+    Map<String, dynamic> map = loyaltyNew.toJson();
+    map.keys
+        .where((k) => map[k] == null) // filter keys
+        .toList() // create a copy to avoid concurrent modifications
+        .forEach(map.remove);
+
+    final response = await _apiProvider.post(
+        url: '${NetworkConstants.loyalty_transactions_end_point}',
+        params: json.encode(map),
+        authHeader: authHeader);
+    return response;
+  }
+
+  Future<dynamic> checkUserApiRepository({String userId}) async {
+    String authHeader = await SessionManager.getJWTToken();
+    final response = await _apiProvider.get(
+        url: '${NetworkConstants.update_user_end_point}$userId',
+        authHeader: authHeader);
+
     return response;
   }
 }

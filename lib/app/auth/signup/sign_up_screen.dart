@@ -605,7 +605,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
               debugPrint('Privacy Policy   $privacyPolicy');
             });
           } catch (e) {
-            debugPrint('privacy_policy_url:---->   error');
             Navigator.push(
               context,
               FullScreenPrivacyPolicyDialog(
