@@ -20,7 +20,7 @@ class Logger {
             .transform(filter.streamTransformer)
             .where((logs) => logs.length > 0)
             .listen(
-              (logs) {
+          (logs) {
             logs.forEach((log) {
               outputs
                   .where((output) => output.where(log))
