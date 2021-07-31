@@ -57,7 +57,7 @@ dependencies:
   rotated_corner_decoration:
   shape_of_view:
   share:
-  path_provider: ^2.0.2
+  path_provider:
   alphabet_list_scroll_view: ^2.0.0
   url_launcher: ^6.0.7
   scrollable_positioned_list:
@@ -72,6 +72,8 @@ dependencies:
     git:
       url: git://github.com/lukef/qr.flutter.git
   barcode_widget: ^2.0.1
+  synchronized:
+  uuid:
 
 dev_dependencies:
   flutter_test:

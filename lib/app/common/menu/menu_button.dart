@@ -3,7 +3,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:wayawaya/app/auth/login/model/user_data_response.dart';
 import 'package:wayawaya/app/common/dialogs/common_login_dialog.dart';
+import 'package:wayawaya/app/common/full_screen_enter_points_to_redeem_dialog.dart';
 import 'package:wayawaya/app/common/full_screen_not_an_vanue_dialog.dart';
 import 'package:wayawaya/app/common/menu/model/main_menu_permission.dart';
 import 'package:wayawaya/app/common/webview/model/custom_web_view_model.dart';
@@ -194,7 +196,7 @@ class MenuTile extends StatelessWidget {
   _scannerFunctionality(BuildContext context) async {
     debugPrint("scanner_functionality");
     bool isUserInMall = await checkIfUserInMall();
-    if (!isUserInMall) {
+    if (isUserInMall) {
       Navigator.pushNamed(context, AppString.QR_SCANNER_SCREEN_ROUTE)
           .then((value) async {
         if (value != null) {
@@ -210,7 +212,7 @@ class MenuTile extends StatelessWidget {
             if (Utils.checkNullOrEmpty(rid)) return;
             if (Utils.checkNullOrEmpty(type)) return;
             bool isUserInMall = await checkIfUserInMall();
-            if (isUserInMall) {
+            if (!isUserInMall) {
               Navigator.push(
                 context,
                 FullScreenNotAnVenueDialog(),
@@ -223,12 +225,42 @@ class MenuTile extends StatelessWidget {
               if (type.toLowerCase() == "store_visit".toLowerCase()) {
                 if (Utils.checkNullOrEmpty(points)) {
                   // LoyaltyUtil.setStoreVisitLoyaltyPoints(mDataManager.getPreferencesHelper(), rid);
-                  SyncService.updateStoreVisitLoyaltyPoints();
+                  SyncService.updateStoreVisitLoyaltyPoints(context: context);
                 } else {
-                  SyncService.updateStoreVisitQRPoints(int.parse(points), rid);
+                  SyncService.updateStoreVisitQRPoints(
+                      context: context,
+                      points: int.parse(points),
+                      shop_id: rid);
                 }
               } else if (type.toLowerCase() == "redemption".toLowerCase()) {
                 // redeem points
+                Navigator.push(
+                  context,
+                  FullScreenEnterPointsToRedeemDialog(
+                      onPressed: (points) async {
+                    int totalPoints = await getLoyaltyPointsForRedeem();
+                    if (points != 0) {
+                      if (points > totalPoints) {
+                        Navigator.push(
+                          context,
+                          FullScreenNotAnVenueDialog(
+                              title: AppString.error,
+                              content: AppString.no_sufficient_points),
+                        );
+                      } else {
+                        SyncService.redeemLoyaltyPoints(
+                            context: context, shop_id: rid, points: points);
+                      }
+                    } else {
+                      Navigator.push(
+                        context,
+                        FullScreenNotAnVenueDialog(
+                            title: AppString.error,
+                            content: AppString.no_points_entered),
+                      );
+                    }
+                  }),
+                );
               }
             } else {
               Navigator.push(
@@ -251,6 +283,16 @@ class MenuTile extends StatelessWidget {
         FullScreenNotAnVenueDialog(),
       );
     }
+  }
+
+  Future<int> getLoyaltyPointsForRedeem() async {
+    String userData = await SessionManager.getUserData();
+    UserDataResponse _response = userDataResponseFromJson(userData);
+    if (_response == null) return 0;
+    if (_response.loyaltyStatus == null) return 0;
+    dynamic loyaltyStatus = jsonDecode(_response.loyaltyStatus);
+    if (loyaltyStatus['points'] == null) return 0;
+    return loyaltyStatus['points'];
   }
 
   Future<bool> checkIfUserInMall() async {

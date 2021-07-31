@@ -69,6 +69,9 @@ class AppString {
   static const skip = "SKIP";
   static const login = "Login";
   static const email = "Email";
+  static const no_points_entered = "Please enter points to redeem";
+  static const enter_points = "Enter points to redeem";
+  static const enter_points_error = "Please enter points";
   static const password = "Password";
   static const confirm_password = "Confirm Password";
   static const submit = "Submit";
@@ -286,6 +289,8 @@ class AppString {
       "You don\'t have sufficient points to redeem.";
   static const String you_need_five_points = "You need 5 additional points";
   static const String info = "Info";
+  static const String redeem_now = "Redeem Now";
+  static const String loyalty_points_added_successfully = "The QR code scan was successful. Loyalty points will be evaluated and allocated to your account.";
 
   // Routes
   static const LOGIN_SCREEN_ROUTE = "LOGIN_SCREEN_ROUTE";

@@ -4,6 +4,7 @@ import 'package:wayawaya/app/common/menu/animate_app_bar.dart';
 import 'package:wayawaya/app/common/menu/model/main_menu_permission.dart';
 import 'package:wayawaya/app/settings/model/settings_model.dart';
 import 'package:wayawaya/app/shop/model/shops_fav_model.dart';
+import 'package:wayawaya/network/local/event_logger_service.dart';
 import 'package:wayawaya/network/local/profile_database_helper.dart';
 import 'package:wayawaya/network/local/sync_service.dart';
 import 'package:wayawaya/network/model/loyalty/loyalty_header_response.dart';
@@ -177,11 +178,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
         {
           debugPrint('settings_click_testing:-  ${settingsModel.title}');
           // _settingsBloc.termAndConditionOnClick(context);
+          // Constant.Preferences, Constant.LOG_TYPE_NAVIGATION, Constant.LOG_TYPE_NAVIGATION, Constant.LOG_GROUP_NAVIGATION, ""
+          EventLoggerService.eventLogger(
+              uuid: EventLoggerService.Settings,
+              action: EventLoggerService.LOG_TYPE_NAVIGATION,
+              type: EventLoggerService.LOG_TYPE_NAVIGATION,
+              group: EventLoggerService.LOG_GROUP_NAVIGATION,
+              data: "");
 
-
-
-
-          await SyncService.checkUser();
+          // await SyncService.checkUser();
           // GeoFenceService.requestPermission();
           // GeoFenceService.addLatLongToGeofence();
           // GeoFenceService.listenBackgroundLocation();

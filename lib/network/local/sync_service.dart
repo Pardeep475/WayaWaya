@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:wayawaya/app/auth/login/model/user_data_response.dart';
+import 'package:wayawaya/app/common/full_screen_not_an_vanue_dialog.dart';
 import 'package:wayawaya/app/home/model/campaign_model.dart';
 import 'package:wayawaya/models/omni_channel_item_model/omni_channel_item_model.dart';
 import 'package:wayawaya/network/live/repository/api_repository.dart';
@@ -722,10 +723,12 @@ class SyncService {
           authorization: authToken, map: loyaltyQuery);
       debugPrint("testing__:-  success $_loyaltyData");
       if (_loyaltyData is DioError) {
-        // refresh token
-        bool returnValue = await updateRefreshToken();
-        if (returnValue) {
-          syncLoyalty();
+        if (_loyaltyData.response.statusCode == 401) {
+          // refresh token
+          bool returnValue = await updateRefreshToken();
+          if (returnValue) {
+            syncLoyalty();
+          }
         }
       } else {
         LoyaltyResponse _loyaltyResponse =
@@ -859,7 +862,8 @@ class SyncService {
     }
   }
 
-  static Future updateStoreVisitQRPoints(int points, String shop_id) async {
+  static Future updateStoreVisitQRPoints(
+      {BuildContext context, int points, String shop_id}) async {
     try {
       String userData = await SessionManager.getUserData();
       UserDataResponse _response = userDataResponseFromJson(userData);
@@ -880,15 +884,45 @@ class SyncService {
           loyalty.shopId = shop_id;
           dynamic response = await _repository.postAppOpenLoyaltyTransaction(
               loyaltyNew: loyalty);
+          if (response is DioError) {
+            if (response.response.statusCode == 401) {
+              // refresh token
+              bool returnValue = await updateRefreshToken();
+              if (returnValue) {
+                updateStoreVisitQRPoints(context: context, shop_id: shop_id, points: points);
+              }
+            }
+          }else{
+            Navigator.push(
+              context,
+              FullScreenNotAnVenueDialog(
+                  title: AppString.success,
+                  content: AppString.loyalty_points_added_successfully),
+            );
+          }
           return;
+        } else {
+          Navigator.push(
+            context,
+            FullScreenNotAnVenueDialog(
+                title: AppString.error,
+                content: AppString.no_internet_connectivity),
+          );
         }
       });
     } catch (e) {
+      Navigator.push(
+        context,
+        FullScreenNotAnVenueDialog(
+            title: AppString.error,
+            content: AppString.no_internet_connectivity),
+      );
       return;
     }
   }
 
-  static Future redeemLoyaltyPoints(int points, String shop_id) async {
+  static Future redeemLoyaltyPoints(
+      {BuildContext context, int points, String shop_id}) async {
     try {
       String userData = await SessionManager.getUserData();
       UserDataResponse _response = userDataResponseFromJson(userData);
@@ -904,15 +938,45 @@ class SyncService {
           loyalty.shopId = shop_id;
           dynamic response = await _repository.postAppOpenLoyaltyTransaction(
               loyaltyNew: loyalty);
+
+          if (response is DioError) {
+            if (response.response.statusCode == 401) {
+              // refresh token
+              bool returnValue = await updateRefreshToken();
+              if (returnValue) {
+                redeemLoyaltyPoints(context: context, shop_id: shop_id, points: points);
+              }
+            }
+          }else{
+            Navigator.push(
+              context,
+              FullScreenNotAnVenueDialog(
+                  title: AppString.success,
+                  content: AppString.loyalty_points_added_successfully),
+            );
+          }
           return;
+        } else {
+          Navigator.push(
+            context,
+            FullScreenNotAnVenueDialog(
+                title: AppString.error,
+                content: AppString.no_internet_connectivity),
+          );
         }
       });
     } catch (e) {
+      Navigator.push(
+        context,
+        FullScreenNotAnVenueDialog(
+            title: AppString.error,
+            content: AppString.no_internet_connectivity),
+      );
       return;
     }
   }
 
-  static Future updateStoreVisitLoyaltyPoints(){
+  static Future updateStoreVisitLoyaltyPoints({BuildContext context}) {
 
   }
 }

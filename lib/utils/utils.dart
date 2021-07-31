@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:wayawaya/app/home/model/campaign_element.dart';
 import 'package:wayawaya/common/model/language_store.dart';
 import 'package:wayawaya/network/live/network_constants.dart';
+import 'package:wayawaya/utils/session_manager.dart';
 
 import 'app_color.dart';
 import 'app_strings.dart';
@@ -75,16 +76,13 @@ class Utils {
     }
   }
 
-
-   static String getStringFromDate(DateTime date, String format) {
+  static String getStringFromDate(DateTime date, String format) {
     String returnValue;
     try {
       DateFormat sdfmt2 = new DateFormat(format);
       returnValue = sdfmt2.format(date);
       return returnValue;
-    } catch (e) {
-
-    }
+    } catch (e) {}
 
     return "";
   }
@@ -425,5 +423,35 @@ class Utils {
     }
     print(val);
     return val;
+  }
+
+  static Future<String> getDeviceInfo(bool i) async {
+    String currentDevice = await SessionManager.getCurrentDevice();
+    var itemList = currentDevice.split(RegExp(r"~\^"));
+
+    if (i) {
+      String os = itemList[2].trim();
+      if (itemList[2].contains(AppString.ANDROID_NAME)) {
+        os = itemList[2].replaceAll(AppString.ANDROID_NAME, '').trim();
+      } else if (itemList[2].contains(AppString.IOS_NAME)) {
+        os = itemList[2].replaceAll(AppString.IOS_NAME, '').trim();
+      } else if (itemList[2].contains('iOS')) {
+        os = itemList[2].replaceAll('iOS', '').trim();
+      }
+      return os;
+    } else {
+      return itemList[1].trim();
+    }
+  }
+
+  static String getAppVersionName() {
+    String vrName = '1.1.27 Debug';
+    String finalVerName = "";
+    if (vrName.toLowerCase().contains("debug")) {
+      finalVerName = vrName.toLowerCase().replaceFirst("debug", "");
+    } else {
+      finalVerName = vrName.toLowerCase().replaceFirst("release", "");
+    }
+    return finalVerName;
   }
 }
