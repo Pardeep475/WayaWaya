@@ -5,8 +5,7 @@ import 'package:wayawaya/app/common/menu/model/main_menu_permission.dart';
 import 'package:wayawaya/network/local/super_admin_database_helper.dart';
 import 'package:wayawaya/utils/session_manager.dart';
 
-class CustomWebViewBloc{
-
+class CustomWebViewBloc {
   // ignore: close_sinks
   final _webViewController = StreamController<bool>();
 
@@ -14,10 +13,16 @@ class CustomWebViewBloc{
 
   Stream<bool> get webViewStream => _webViewController.stream;
 
+// ignore: close_sinks
+  final _gestureMapController = StreamController<bool>.broadcast();
+
+  StreamSink<bool> get gestureMapSink => _gestureMapController.sink;
+
+  Stream<bool> get gestureMapStream => _gestureMapController.stream;
 
   // ignore: close_sinks
   StreamController _mainMenuPermissionsController =
-  StreamController<List<MainMenuPermission>>();
+      StreamController<List<MainMenuPermission>>();
 
   StreamSink<List<MainMenuPermission>> get mainMenuPermissionSink =>
       _mainMenuPermissionsController.sink;
@@ -28,8 +33,13 @@ class CustomWebViewBloc{
   fetchMenuButtons() async {
     String defaultMall = await SessionManager.getDefaultMall();
     List<MainMenuPermission> itemList =
-    await SuperAdminDatabaseHelper.getMenuButtons(defaultMall);
+        await SuperAdminDatabaseHelper.getMenuButtons(defaultMall);
     mainMenuPermissionSink.add(itemList);
     return itemList;
+  }
+
+  setUpGestureMap() async {
+    bool value = await SessionManager.getGestureMap();
+    gestureMapSink.add(value);
   }
 }

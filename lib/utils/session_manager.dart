@@ -171,6 +171,61 @@ class SessionManager {
         .then((value) => value.getBool(AppString.USER_IN_MALL) ?? false);
   }
 
+  static void setGestureHome(bool gestureHome) async {
+    _pref.then((value) => value.setBool(AppString.GESTURE_HOME, gestureHome));
+  }
+
+  static Future<bool> getGestureHome() async {
+    return _pref.then((value) => value.getBool(AppString.GESTURE_HOME) ?? true);
+  }
+
+  static void setGestureMenu(bool gestureMenu) async {
+    _pref.then((value) => value.setBool(AppString.GESTURE_MENU, gestureMenu));
+  }
+
+  static Future<bool> getGestureMenu() async {
+    return _pref.then((value) => value.getBool(AppString.GESTURE_MENU) ?? true);
+  }
+
+  static void setGestureRetailUnit(bool gestureRetailUnit) async {
+    _pref.then((value) =>
+        value.setBool(AppString.GESTURE_DETAIL_RETAIL_UNIT, gestureRetailUnit));
+  }
+
+  static Future<bool> getGestureRetailUnit() async {
+    return _pref.then(
+        (value) => value.getBool(AppString.GESTURE_DETAIL_RETAIL_UNIT) ?? true);
+  }
+
+  static void setGestureMap(bool gestureRetailMap) async {
+    _pref.then(
+        (value) => value.setBool(AppString.GESTURE_MAP, gestureRetailMap));
+  }
+
+  static Future<bool> getGestureMap() async {
+    return _pref.then((value) => value.getBool(AppString.GESTURE_MAP) ?? true);
+  }
+
+  static void setGestureRewards(bool gestureRewards) async {
+    _pref.then(
+        (value) => value.setBool(AppString.GESTURE_REWARDS, gestureRewards));
+  }
+
+  static Future<bool> getGestureRewards() async {
+    return _pref
+        .then((value) => value.getBool(AppString.GESTURE_REWARDS) ?? true);
+  }
+
+  static void setGestureLoyalty(bool gestureLoyalty) async {
+    _pref.then(
+        (value) => value.setBool(AppString.GESTURE_LOYALTY, gestureLoyalty));
+  }
+
+  static Future<bool> getGestureLoyalty() async {
+    return _pref
+        .then((value) => value.getBool(AppString.GESTURE_LOYALTY) ?? true);
+  }
+
   // static void putOfferOpenLoyaltyJson(OfferOpenLoyaltyData OfferOpenLoyaltyData) {
   //   String OfferOpenLoyaltyDataJson = mGson.toJson(OfferOpenLoyaltyData);
   //   mPref.edit().putString(PREF_OFFER_OPEN_JSON, OfferOpenLoyaltyDataJson).apply();

@@ -43,6 +43,12 @@ class AppString {
   static const String SYNC_DATE = "SYNC_DATE";
   static const String USER_IN_MALL = "USER_IN_MALL";
   static const String PREF_OFFER_OPEN_JSON = "PREF_OFFER_OPEN_JSON";
+  static const String GESTURE_HOME = "GESTURE_HOME";
+  static const String GESTURE_MENU = "GESTURE_MENU";
+  static const String GESTURE_DETAIL_RETAIL_UNIT = "GESTURE_DETAIL_RETAIL_UNIT";
+  static const String GESTURE_MAP = "GESTURE_MAP";
+  static const String GESTURE_REWARDS = "GESTURE_REWARDS";
+  static const String GESTURE_LOYALTY = "GESTURE_LOYALTY";
 
   static const String DEVICE_SEPARATOR = "~^";
   static const String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
@@ -290,7 +296,36 @@ class AppString {
   static const String you_need_five_points = "You need 5 additional points";
   static const String info = "Info";
   static const String redeem_now = "Redeem Now";
-  static const String loyalty_points_added_successfully = "The QR code scan was successful. Loyalty points will be evaluated and allocated to your account.";
+  static const String loyalty_points_added_successfully =
+      "The QR code scan was successful. Loyalty points will be evaluated and allocated to your account.";
+  static const String for_video_calling_please_allow =
+      "For Video Calling, please allow the app to Appear on Top so that incoming video calls can be prioritized.";
+  static const String navigation_draw_over_the_app =
+      "You can also give the permission manually Tap (Settings > Apps > WayaWaya > Advanced > Draw over other apps)";
+  static const String close = "Close";
+  static const String allow = "Allow";
+  static const String menu = "Menu";
+  static const String change_mall = "Change\nMall";
+  static const String account_detail = "Account\nDetails";
+  static const String swipe_to_view_more_offers = "Swipe to view\nmore offers";
+  static const String swipe_to_view_more_events = "Swipe to view\nmore Events";
+  static const String swipe_to_view_more_ads = "Swipe to view\nmore ads";
+  static const String click_to_access_details = "Click to\naccess details";
+  static const String scan_rewards = "Scan\nRewards";
+  static const String click_to_view_web_page = "Click to view webpage";
+  static const String click_to_dial_the_number = "Click to dial the number";
+  static const String swipe_and_zoom_to_find_your_shop =
+      "Swipe and Zoom to find your shop";
+  static const String view_category_or_services = "View Category or service";
+  static const String slide_and_click = "Slide & click";
+  static const String show_detail = "Show details";
+  static const String slide = "Slide";
+  static const String earned_points = "Earned\nPoints";
+  static const String available_points = "Available\nPoints";
+  static const String redeemed_points = "Redeemed\nPoints";
+  static const String show_details_new_line = "Show\ndetails";
+  static const String your_points = "Your points";
+  static const String help = "Help";
 
   // Routes
   static const LOGIN_SCREEN_ROUTE = "LOGIN_SCREEN_ROUTE";

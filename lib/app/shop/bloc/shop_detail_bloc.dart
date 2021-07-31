@@ -25,6 +25,14 @@ class ShopDetailBloc {
 
   Stream<int> get indicatorStream => _indicatorController.stream;
 
+  final _gestureDetailRetailUnitController = StreamController<bool>.broadcast();
+
+  StreamSink<bool> get gestureDetailRetailUnitSink =>
+      _gestureDetailRetailUnitController.sink;
+
+  Stream<bool> get gestureDetailRetailUnitStream =>
+      _gestureDetailRetailUnitController.stream;
+
   fetchMenuButtons() async {
     String defaultMall = await SessionManager.getDefaultMall();
     List<MainMenuPermission> itemList =
@@ -40,4 +48,10 @@ class ShopDetailBloc {
         retailUnitId: retailWithCategory.id,
         flag: retailWithCategory.favourite == "0" ? "1" : "0");
   }
+
+  setUpGestureRetailUnit() async{
+    bool value = await SessionManager.getGestureRetailUnit();
+    gestureDetailRetailUnitSink.add(value);
+  }
+
 }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:wayawaya/app/common/dialogs/full_screen_show_qr_and_barcode_generator_dialog.dart';
+import 'package:wayawaya/app/common/full_screen_call_permission_dialog.dart';
 import 'package:wayawaya/app/common/menu/animate_app_bar.dart';
 import 'package:wayawaya/app/common/menu/model/main_menu_permission.dart';
 import 'package:wayawaya/app/settings/model/settings_model.dart';
@@ -12,6 +14,7 @@ import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/dimens.dart';
 import 'package:wayawaya/utils/geo_fence_service.dart';
+import 'package:wayawaya/utils/permission_service/permission_service.dart';
 import 'package:wayawaya/utils/session_manager.dart';
 import '../../constants.dart';
 import 'bloc/settings_bloc.dart';
@@ -178,13 +181,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
         {
           debugPrint('settings_click_testing:-  ${settingsModel.title}');
           // _settingsBloc.termAndConditionOnClick(context);
-          // Constant.Preferences, Constant.LOG_TYPE_NAVIGATION, Constant.LOG_TYPE_NAVIGATION, Constant.LOG_GROUP_NAVIGATION, ""
-          EventLoggerService.eventLogger(
-              uuid: EventLoggerService.Settings,
-              action: EventLoggerService.LOG_TYPE_NAVIGATION,
-              type: EventLoggerService.LOG_TYPE_NAVIGATION,
-              group: EventLoggerService.LOG_GROUP_NAVIGATION,
-              data: "");
+
+
+
+          // Navigator.push(context, FullScreenCallDialogPermission());
+          // EventLoggerService.eventLogger(
+          //     uuid: EventLoggerService.Settings,
+          //     action: EventLoggerService.LOG_TYPE_NAVIGATION,
+          //     type: EventLoggerService.LOG_TYPE_NAVIGATION,
+          //     group: EventLoggerService.LOG_GROUP_NAVIGATION,
+          //     data: "");
 
           // await SyncService.checkUser();
           // GeoFenceService.requestPermission();

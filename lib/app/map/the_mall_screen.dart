@@ -74,7 +74,7 @@ class _TheMallScreenState extends State<TheMallScreen> {
                                       padding:
                                           EdgeInsets.symmetric(vertical: 30),
                                       child: Text(
-                                        AppString.no_offer_found,
+                                        AppString.no_record_found,
                                         textAlign: TextAlign.center,
                                         style: GoogleFonts.ubuntuCondensed()
                                             .copyWith(

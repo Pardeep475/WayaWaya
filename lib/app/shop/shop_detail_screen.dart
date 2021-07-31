@@ -38,6 +38,7 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
     _shopDetailBloc = ShopDetailBloc();
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      _shopDetailBloc.setUpGestureRetailUnit();
       _shopDetailBloc.fetchMenuButtons();
     });
   }
@@ -59,443 +60,554 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
   Widget build(BuildContext context) {
     ShopDetailModel shopDetailModel = ModalRoute.of(context).settings.arguments;
     _listRetailUnitCategories = shopDetailModel.listRetailUnitCategory;
-    return StreamBuilder<List<MainMenuPermission>>(
-        initialData: [],
-        stream: _shopDetailBloc.mainMenuPermissionStream,
-        builder: (context, snapshot) {
-          return AnimateAppBar(
-            // title: _getName(
-            //     shopDetailModel.listRetailUnitCategory[shopDetailModel.index]),
-            title: shopDetailModel.title.toUpperCase(),
-            isSliver: true,
-            mainMenuPermissions: snapshot.data,
-            physics: const NeverScrollableScrollPhysics(),
-            children: [
-              SliverFillRemaining(
-                child: TransformerPageView(
-                    loop: false,
-                    transformer: new ZoomOutPageTransformer(),
-                    index: shopDetailModel.index,
-                    itemBuilder: (BuildContext context, int index) {
-                      return Column(
-                        children: [
-                          Stack(
+    return Stack(
+      children: [
+        StreamBuilder<List<MainMenuPermission>>(
+            initialData: [],
+            stream: _shopDetailBloc.mainMenuPermissionStream,
+            builder: (context, snapshot) {
+              return AnimateAppBar(
+                // title: _getName(
+                //     shopDetailModel.listRetailUnitCategory[shopDetailModel.index]),
+                title: shopDetailModel.title.toUpperCase(),
+                isSliver: true,
+                mainMenuPermissions: snapshot.data,
+                physics: const NeverScrollableScrollPhysics(),
+                children: [
+                  SliverFillRemaining(
+                    child: TransformerPageView(
+                        loop: false,
+                        transformer: new ZoomOutPageTransformer(),
+                        index: shopDetailModel.index,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Column(
                             children: [
-                              CarouselSlider.builder(
-                                itemCount: _getImagesLength(shopDetailModel
-                                        .listRetailUnitCategory[index])
-                                    .length,
-                                itemBuilder: (context, position, realIndex) {
-                                  return CachedNetworkImage(
-                                    height: MediaQuery.of(context).size.height,
-                                    width: MediaQuery.of(context).size.width,
-                                    imageUrl: _getImagesLength(
-                                            _listRetailUnitCategories[index])[
-                                        position],
-                                    fit: BoxFit.fill,
-                                    imageBuilder: (context, imageProvider) =>
-                                        Container(
-                                      decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                          image: imageProvider,
-                                          fit: BoxFit.fill,
+                              Stack(
+                                children: [
+                                  CarouselSlider.builder(
+                                    itemCount: _getImagesLength(shopDetailModel
+                                            .listRetailUnitCategory[index])
+                                        .length,
+                                    itemBuilder:
+                                        (context, position, realIndex) {
+                                      return CachedNetworkImage(
+                                        height:
+                                            MediaQuery.of(context).size.height,
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        imageUrl: _getImagesLength(
+                                            _listRetailUnitCategories[
+                                                index])[position],
+                                        fit: BoxFit.fill,
+                                        imageBuilder:
+                                            (context, imageProvider) =>
+                                                Container(
+                                          decoration: BoxDecoration(
+                                            image: DecorationImage(
+                                              image: imageProvider,
+                                              fit: BoxFit.fill,
+                                            ),
+                                          ),
                                         ),
+                                        placeholder: (context, url) {
+                                          return Container(
+                                            child: Center(
+                                              child: CircularProgressIndicator(
+                                                valueColor:
+                                                    new AlwaysStoppedAnimation<
+                                                            Color>(
+                                                        AppColor.primaryDark),
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                        errorWidget: (context, url, error) {
+                                          return Image.asset(
+                                            AppImages.icon_placeholder,
+                                            fit: BoxFit.cover,
+                                          );
+                                        },
+                                      );
+                                    },
+                                    options: CarouselOptions(
+                                      height:
+                                          MediaQuery.of(context).size.height /
+                                              3.3,
+                                      viewportFraction: 1.0,
+                                      onPageChanged: (index, reason) {
+                                        _shopDetailBloc.indicatorSink
+                                            .add(index);
+                                        debugPrint(
+                                            'indexing   $index   ${reason.index}');
+                                      },
+                                    ),
+                                  ),
+                                  Positioned(
+                                    width: MediaQuery.of(context).size.width,
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: List.generate(
+                                          _getImagesLength(shopDetailModel
+                                                      .listRetailUnitCategory[
+                                                  index])
+                                              .length, (index) {
+                                        return Container(
+                                          height: Dimens.ten,
+                                          width: Dimens.ten,
+                                          margin: EdgeInsets.all(Dimens.four),
+                                          decoration: BoxDecoration(
+                                            color: snapshot.data == index
+                                                ? Colors.grey
+                                                : Colors.grey[700],
+                                            shape: BoxShape.circle,
+                                          ),
+                                        );
+                                      }),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    bottom: 0,
+                                    right: 0,
+                                    left: 0,
+                                    child: Container(
+                                      color: Color(0xff3F000000),
+                                      child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.end,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          Visibility(
+                                            visible: false,
+                                            child: IconButton(
+                                              icon: Icon(
+                                                Icons.directions_car,
+                                                size: Dimens.thirty,
+                                                color: AppColor.white,
+                                              ),
+                                              onPressed: () {},
+                                            ),
+                                          ),
+                                          IconButton(
+                                            icon: Icon(
+                                              Icons.location_on,
+                                              size: Dimens.thirty,
+                                              color: AppColor.white,
+                                            ),
+                                            onPressed: () {
+                                              _onLocationPressed(shopDetailModel
+                                                      .listRetailUnitCategory[
+                                                  index]);
+                                            },
+                                          ),
+                                          IconButton(
+                                              icon: Icon(
+                                                Icons.share,
+                                                size: Dimens.twentySix,
+                                                color: AppColor.white,
+                                              ),
+                                              onPressed: () {
+                                                _shareFiles(
+                                                    context,
+                                                    shopDetailModel
+                                                            .listRetailUnitCategory[
+                                                        index]);
+                                              }),
+                                          IconButton(
+                                              icon: Icon(
+                                                Icons.thumb_up,
+                                                size: Dimens.twentySix,
+                                                color: shopDetailModel
+                                                            .listRetailUnitCategory[
+                                                                index]
+                                                            .favourite ==
+                                                        "1"
+                                                    ? AppColor.primary
+                                                    : AppColor.white,
+                                              ),
+                                              onPressed: () async {
+                                                await _shopDetailBloc
+                                                    .updateFavourite(
+                                                        retailWithCategory:
+                                                            _listRetailUnitCategories[
+                                                                index]);
+
+                                                RetailWithCategory
+                                                    _retailWithCategory =
+                                                    _listRetailUnitCategories[
+                                                        index];
+                                                _retailWithCategory.favourite =
+                                                    _retailWithCategory
+                                                                .favourite ==
+                                                            "0"
+                                                        ? "1"
+                                                        : "0";
+
+                                                setState(() {});
+                                              }),
+                                        ],
                                       ),
                                     ),
-                                    placeholder: (context, url) {
-                                      return Container(
-                                        child: Center(
-                                          child: CircularProgressIndicator(
-                                            valueColor:
-                                                new AlwaysStoppedAnimation<
-                                                        Color>(
-                                                    AppColor.primaryDark),
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                    errorWidget: (context, url, error) {
-                                      return Image.asset(
-                                        AppImages.icon_placeholder,
-                                        fit: BoxFit.cover,
-                                      );
-                                    },
-                                  );
-                                },
-                                options: CarouselOptions(
-                                  height:
-                                      MediaQuery.of(context).size.height / 3.3,
-                                  viewportFraction: 1.0,
-                                  onPageChanged: (index, reason) {
-                                    _shopDetailBloc.indicatorSink.add(index);
-                                    debugPrint(
-                                        'indexing   $index   ${reason.index}');
-                                  },
-                                ),
-                              ),
-                              Positioned(
-                                width: MediaQuery.of(context).size.width,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: List.generate(
-                                      _getImagesLength(shopDetailModel
-                                              .listRetailUnitCategory[index])
-                                          .length, (index) {
-                                    return Container(
-                                      height: Dimens.ten,
-                                      width: Dimens.ten,
-                                      margin: EdgeInsets.all(Dimens.four),
-                                      decoration: BoxDecoration(
-                                        color: snapshot.data == index
-                                            ? Colors.grey
-                                            : Colors.grey[700],
-                                        shape: BoxShape.circle,
-                                      ),
-                                    );
-                                  }),
-                                ),
-                              ),
-                              Positioned(
-                                bottom: 0,
-                                right: 0,
-                                left: 0,
-                                child: Container(
-                                  color: Color(0xff3F000000),
-                                  child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      Visibility(
-                                        visible: false,
-                                        child: IconButton(
-                                          icon: Icon(
-                                            Icons.directions_car,
-                                            size: Dimens.thirty,
-                                            color: AppColor.white,
-                                          ),
-                                          onPressed: () {},
-                                        ),
-                                      ),
-                                      IconButton(
-                                        icon: Icon(
-                                          Icons.location_on,
-                                          size: Dimens.thirty,
-                                          color: AppColor.white,
-                                        ),
-                                        onPressed: () {
-                                          _onLocationPressed(shopDetailModel
-                                              .listRetailUnitCategory[index]);
+                                  ),
+                                  Positioned(
+                                    top: 0,
+                                    child: SizedBox(
+                                      height: Dimens.sixteen,
+                                      child: ListView.builder(
+                                        scrollDirection: Axis.horizontal,
+                                        primary: false,
+                                        shrinkWrap: true,
+                                        itemCount: 2,
+                                        itemBuilder: (context, index) {
+                                          print(index);
+                                          return Container(
+                                            margin: EdgeInsets.all(
+                                              Dimens.eight,
+                                            ),
+                                            height: Dimens.thirty,
+                                            width: Dimens.thirty,
+                                            decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: Colors.red),
+                                          );
                                         },
                                       ),
-                                      IconButton(
-                                          icon: Icon(
-                                            Icons.share,
-                                            size: Dimens.twentySix,
-                                            color: AppColor.white,
-                                          ),
-                                          onPressed: () {
-                                            _shareFiles(
-                                                context,
-                                                shopDetailModel
-                                                        .listRetailUnitCategory[
-                                                    index]);
-                                          }),
-                                      IconButton(
-                                          icon: Icon(
-                                            Icons.thumb_up,
-                                            size: Dimens.twentySix,
-                                            color: shopDetailModel
-                                                        .listRetailUnitCategory[
-                                                            index]
-                                                        .favourite ==
-                                                    "1"
-                                                ? AppColor.primary
-                                                : AppColor.white,
-                                          ),
-                                          onPressed: () async {
-                                            await _shopDetailBloc.updateFavourite(retailWithCategory: _listRetailUnitCategories[index]);
-
-                                            RetailWithCategory
-                                                _retailWithCategory =
-                                                _listRetailUnitCategories[
-                                                    index];
-                                            _retailWithCategory.favourite =
-                                                _retailWithCategory.favourite ==
-                                                        "0"
-                                                    ? "1"
-                                                    : "0";
-
-                                            setState(() {});
-                                          }),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Expanded(
+                                child: Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  child: Column(
+                                    children: [
+                                      Expanded(
+                                        child: Row(
+                                          children: [
+                                            Container(
+                                              padding: EdgeInsets.only(
+                                                  right: Dimens.five,
+                                                  top: Dimens.three),
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                children: [
+                                                  Container(
+                                                    margin: EdgeInsets.fromLTRB(
+                                                        Dimens.two,
+                                                        Dimens.ten,
+                                                        0,
+                                                        Dimens.four),
+                                                    padding: EdgeInsets.only(
+                                                        left: Dimens.ten,
+                                                        right: Dimens.eight),
+                                                    height: Dimens.fortyFive,
+                                                    width: Dimens.fifty,
+                                                    child: CachedNetworkImage(
+                                                      height:
+                                                          MediaQuery.of(context)
+                                                              .size
+                                                              .height,
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                              .size
+                                                              .width,
+                                                      imageUrl: _getImage(
+                                                          context,
+                                                          shopDetailModel
+                                                                  .listRetailUnitCategory[
+                                                              index]),
+                                                      fit: BoxFit.fill,
+                                                      imageBuilder: (context,
+                                                              imageProvider) =>
+                                                          Container(
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          image:
+                                                              DecorationImage(
+                                                            image:
+                                                                imageProvider,
+                                                            fit: BoxFit.fill,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      placeholder:
+                                                          (context, url) {
+                                                        return Container(
+                                                          child: Center(
+                                                            child:
+                                                                CircularProgressIndicator(
+                                                              valueColor:
+                                                                  new AlwaysStoppedAnimation<
+                                                                          Color>(
+                                                                      AppColor
+                                                                          .primaryDark),
+                                                            ),
+                                                          ),
+                                                        );
+                                                      },
+                                                      errorWidget: (context,
+                                                          url, error) {
+                                                        return Image.asset(
+                                                          AppImages
+                                                              .icon_placeholder,
+                                                          fit: BoxFit.cover,
+                                                        );
+                                                      },
+                                                    ),
+                                                  ),
+                                                  Container(
+                                                    height:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .height *
+                                                            .2,
+                                                    width: Dimens.fifty,
+                                                    child: ListView(
+                                                      padding:
+                                                          EdgeInsets.all(0),
+                                                      children: _addIconsListData(
+                                                          shopDetailModel
+                                                                  .listRetailUnitCategory[
+                                                              index]),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            Expanded(
+                                              child: Container(
+                                                width: MediaQuery.of(context)
+                                                    .size
+                                                    .width,
+                                                padding: EdgeInsets.only(
+                                                    left: Dimens.five,
+                                                    right: Dimens.eight,
+                                                    top: Dimens.eight),
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      _getName(shopDetailModel
+                                                              .listRetailUnitCategory[
+                                                          index]),
+                                                      style: GoogleFonts
+                                                              .ubuntuCondensed()
+                                                          .copyWith(
+                                                        color: AppColor.black
+                                                            .withOpacity(0.7),
+                                                        fontSize:
+                                                            Dimens.nineteen,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        letterSpacing: 0.8,
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      height: Dimens.eight,
+                                                    ),
+                                                    Text(
+                                                      _getDescription(
+                                                          context,
+                                                          shopDetailModel
+                                                                  .listRetailUnitCategory[
+                                                              index]),
+                                                      style:
+                                                          GoogleFonts.ubuntu()
+                                                              .copyWith(
+                                                        color: AppColor.black
+                                                            .withOpacity(0.5),
+                                                        fontSize:
+                                                            Dimens.forteen,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        letterSpacing: 0.8,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      _listRetailUnitCategories[index]
+                                                  .campaigns ==
+                                              null
+                                          ? SizedBox(
+                                              height: Dimens.twoHundredFifty,
+                                            )
+                                          : Container(
+                                              height: Dimens.twoHundredFifty,
+                                              child: Stack(
+                                                children: [
+                                                  TransformerPageView(
+                                                      loop: false,
+                                                      transformer:
+                                                          new ZoomOutPageTransformer(),
+                                                      itemCount: shopDetailModel
+                                                          .listRetailUnitCategory[
+                                                              index]
+                                                          .campaigns
+                                                          .length,
+                                                      itemBuilder:
+                                                          (context, position) {
+                                                        return Stack(
+                                                          children: [
+                                                            Positioned.fill(
+                                                              child:
+                                                                  ItemRewards(
+                                                                isBorder: false,
+                                                                pointShow:
+                                                                    false,
+                                                                index: position,
+                                                                campaign: shopDetailModel
+                                                                    .listRetailUnitCategory[
+                                                                        index]
+                                                                    .campaigns[position],
+                                                                listOfCampaign:
+                                                                    shopDetailModel
+                                                                        .listRetailUnitCategory[
+                                                                            index]
+                                                                        .campaigns,
+                                                                size: shopDetailModel
+                                                                    .listRetailUnitCategory[
+                                                                        index]
+                                                                    .campaigns
+                                                                    .length,
+                                                              ),
+                                                            ),
+                                                            Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .center,
+                                                              children: List.generate(
+                                                                  shopDetailModel
+                                                                      .listRetailUnitCategory[
+                                                                          index]
+                                                                      .campaigns
+                                                                      .length,
+                                                                  (index) {
+                                                                return Container(
+                                                                  height: Dimens
+                                                                      .ten,
+                                                                  width: Dimens
+                                                                      .ten,
+                                                                  margin: EdgeInsets
+                                                                      .all(Dimens
+                                                                          .four),
+                                                                  decoration:
+                                                                      BoxDecoration(
+                                                                    color: index ==
+                                                                            position
+                                                                        ? Colors
+                                                                            .grey
+                                                                        : Colors
+                                                                            .grey[700],
+                                                                    shape: BoxShape
+                                                                        .circle,
+                                                                  ),
+                                                                );
+                                                              }),
+                                                            ),
+                                                          ],
+                                                        );
+                                                      }),
+                                                ],
+                                              ),
+                                            ),
                                     ],
                                   ),
                                 ),
                               ),
-                              Positioned(
-                                top: 0,
-                                child: SizedBox(
-                                  height: Dimens.sixteen,
-                                  child: ListView.builder(
-                                    scrollDirection: Axis.horizontal,
-                                    primary: false,
-                                    shrinkWrap: true,
-                                    itemCount: 2,
-                                    itemBuilder: (context, index) {
-                                      print(index);
-                                      return Container(
-                                        margin: EdgeInsets.all(
-                                          Dimens.eight,
-                                        ),
-                                        height: Dimens.thirty,
-                                        width: Dimens.thirty,
-                                        decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: Colors.red),
-                                      );
-                                    },
-                                  ),
-                                ),
-                              ),
                             ],
-                          ),
-                          Expanded(
-                            child: Container(
-                              width: MediaQuery.of(context).size.width,
-                              child: Column(
-                                children: [
-                                  Expanded(
-                                    child: Row(
-                                      children: [
-                                        Container(
-                                          padding: EdgeInsets.only(
-                                              right: Dimens.five,
-                                              top: Dimens.three),
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            children: [
-                                              Container(
-                                                margin: EdgeInsets.fromLTRB(
-                                                    Dimens.two,
-                                                    Dimens.ten,
-                                                    0,
-                                                    Dimens.four),
-                                                padding: EdgeInsets.only(
-                                                    left: Dimens.ten,
-                                                    right: Dimens.eight),
-                                                height: Dimens.fortyFive,
-                                                width: Dimens.fifty,
-                                                child: CachedNetworkImage(
-                                                  height: MediaQuery.of(context)
-                                                      .size
-                                                      .height,
-                                                  width: MediaQuery.of(context)
-                                                      .size
-                                                      .width,
-                                                  imageUrl: _getImage(
-                                                      context,
-                                                      shopDetailModel
-                                                              .listRetailUnitCategory[
-                                                          index]),
-                                                  fit: BoxFit.fill,
-                                                  imageBuilder: (context,
-                                                          imageProvider) =>
-                                                      Container(
-                                                    decoration: BoxDecoration(
-                                                      image: DecorationImage(
-                                                        image: imageProvider,
-                                                        fit: BoxFit.fill,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  placeholder: (context, url) {
-                                                    return Container(
-                                                      child: Center(
-                                                        child:
-                                                            CircularProgressIndicator(
-                                                          valueColor:
-                                                              new AlwaysStoppedAnimation<
-                                                                      Color>(
-                                                                  AppColor
-                                                                      .primaryDark),
-                                                        ),
-                                                      ),
-                                                    );
-                                                  },
-                                                  errorWidget:
-                                                      (context, url, error) {
-                                                    return Image.asset(
-                                                      AppImages
-                                                          .icon_placeholder,
-                                                      fit: BoxFit.cover,
-                                                    );
-                                                  },
-                                                ),
-                                              ),
-                                              Container(
-                                                height: MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                    .2,
-                                                width: Dimens.fifty,
-                                                child: ListView(
-                                                  padding: EdgeInsets.all(0),
-                                                  children: _addIconsListData(
-                                                      shopDetailModel
-                                                              .listRetailUnitCategory[
-                                                          index]),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        Expanded(
-                                          child: Container(
-                                            width: MediaQuery.of(context)
-                                                .size
-                                                .width,
-                                            padding: EdgeInsets.only(
-                                                left: Dimens.five,
-                                                right: Dimens.eight,
-                                                top: Dimens.eight),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  _getName(shopDetailModel
-                                                          .listRetailUnitCategory[
-                                                      index]),
-                                                  style: GoogleFonts
-                                                          .ubuntuCondensed()
-                                                      .copyWith(
-                                                    color: AppColor.black
-                                                        .withOpacity(0.7),
-                                                    fontSize: Dimens.nineteen,
-                                                    fontWeight: FontWeight.w500,
-                                                    letterSpacing: 0.8,
-                                                  ),
-                                                ),
-                                                SizedBox(
-                                                  height: Dimens.eight,
-                                                ),
-                                                Text(
-                                                  _getDescription(
-                                                      context,
-                                                      shopDetailModel
-                                                              .listRetailUnitCategory[
-                                                          index]),
-                                                  style: GoogleFonts.ubuntu()
-                                                      .copyWith(
-                                                    color: AppColor.black
-                                                        .withOpacity(0.5),
-                                                    fontSize: Dimens.forteen,
-                                                    fontWeight: FontWeight.w500,
-                                                    letterSpacing: 0.8,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  _listRetailUnitCategories[index].campaigns ==
-                                          null
-                                      ? SizedBox(
-                                          height: Dimens.twoHundredFifty,
-                                        )
-                                      : Container(
-                                          height: Dimens.twoHundredFifty,
-                                          child: Stack(
-                                            children: [
-                                              TransformerPageView(
-                                                  loop: false,
-                                                  transformer:
-                                                      new ZoomOutPageTransformer(),
-                                                  itemCount: shopDetailModel
-                                                      .listRetailUnitCategory[
-                                                          index]
-                                                      .campaigns
-                                                      .length,
-                                                  itemBuilder:
-                                                      (context, position) {
-                                                    return Stack(
-                                                      children: [
-                                                        Positioned.fill(
-                                                          child: ItemRewards(
-                                                            isBorder: false,
-                                                            pointShow: false,
-                                                            index: position,
-                                                            campaign: shopDetailModel
-                                                                    .listRetailUnitCategory[
-                                                                        index]
-                                                                    .campaigns[
-                                                                position],
-                                                            listOfCampaign:
-                                                                shopDetailModel
-                                                                    .listRetailUnitCategory[
-                                                                        index]
-                                                                    .campaigns,
-                                                            size: shopDetailModel
-                                                                .listRetailUnitCategory[
-                                                                    index]
-                                                                .campaigns
-                                                                .length,
-                                                          ),
-                                                        ),
-                                                        Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .center,
-                                                          children: List.generate(
-                                                              shopDetailModel
-                                                                  .listRetailUnitCategory[
-                                                                      index]
-                                                                  .campaigns
-                                                                  .length,
-                                                              (index) {
-                                                            return Container(
-                                                              height:
-                                                                  Dimens.ten,
-                                                              width: Dimens.ten,
-                                                              margin: EdgeInsets
-                                                                  .all(Dimens
-                                                                      .four),
-                                                              decoration:
-                                                                  BoxDecoration(
-                                                                color: index ==
-                                                                        position
-                                                                    ? Colors
-                                                                        .grey
-                                                                    : Colors.grey[
-                                                                        700],
-                                                                shape: BoxShape
-                                                                    .circle,
-                                                              ),
-                                                            );
-                                                          }),
-                                                        ),
-                                                      ],
-                                                    );
-                                                  }),
-                                            ],
-                                          ),
-                                        ),
-                                ],
-                              ),
+                          );
+                        },
+                        itemCount: _listRetailUnitCategories.length),
+                  ),
+                ],
+              );
+            }),
+        StreamBuilder<bool>(
+            initialData: false,
+            stream: _shopDetailBloc.gestureDetailRetailUnitStream,
+            builder: (context, snapshot) {
+              if (snapshot.data) {
+                return Material(
+                  color: Colors.transparent,
+                  child: GestureDetector(
+                    onTap: () async {
+                      SessionManager.setGestureRetailUnit(false);
+                      _shopDetailBloc.gestureDetailRetailUnitSink.add(false);
+                    },
+                    child: Container(
+                      height: MediaQuery.of(context).size.height,
+                      width: MediaQuery.of(context).size.width,
+                      decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.66),
+                      ),
+                      child: Stack(
+                        children: [
+                          Positioned(
+                            top: MediaQuery.of(context).size.height * 0.5,
+                            left: Dimens.ten,
+                            child: Column(
+                              children: [
+                                gestureV(
+                                    text: AppString.click_to_view_web_page),
+                                gestureV(
+                                    text: AppString.click_to_dial_the_number)
+                              ],
                             ),
                           ),
                         ],
-                      );
-                    },
-                    itemCount: _listRetailUnitCategories.length),
-              ),
-            ],
-          );
-        });
+                      ),
+                    ),
+                  ),
+                );
+              }
+              return SizedBox();
+            }),
+      ],
+    );
   }
+
+  Container gestureV({String text}) {
+    return Container(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Container(
+            height: Dimens.fiftyFive,
+            width: Dimens.fiftyFive,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(
+                  AppImages.touch_u,
+                ),
+                fit: BoxFit.scaleDown,
+              ),
+            ),
+          ),
+          Container(
+            child: Text(
+              text,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: AppColor.white,
+                fontSize: Dimens.twentyTwo,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
 
   List<Widget> _addIconsListData(RetailWithCategory retailWithCategory) {
     final List<Widget> _iconsList = [];

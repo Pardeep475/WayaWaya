@@ -52,6 +52,13 @@ class RewardsBloc {
   Stream<String> get titleRewardsCategoryStream =>
       _titleRewardsCategoryController.stream;
 
+// ignore: close_sinks
+  final _gestureRewardsController = StreamController<bool>.broadcast();
+
+  StreamSink<bool> get gestureRewardsSink => _gestureRewardsController.sink;
+
+  Stream<bool> get gestureRewardsStream => _gestureRewardsController.stream;
+
   List<RewardsCategory> _rewardsCategoryList;
 
   fetchMenuButtons() async {
@@ -126,4 +133,10 @@ class RewardsBloc {
       rewardsListSink.add(ApiResponse.error(e));
     }
   }
+
+  setUpGestureRewards() async{
+    bool value = await SessionManager.getGestureRewards();
+    gestureRewardsSink.add(value);
+  }
+
 }

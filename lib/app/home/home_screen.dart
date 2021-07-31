@@ -3,16 +3,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:transformer_page_view/transformer_page_view.dart';
 import 'package:wayawaya/app/common/dialogs/common_exit_dialog.dart';
-import 'package:wayawaya/app/common/dialogs/common_login_dialog.dart';
 import 'package:wayawaya/app/common/menu/animate_app_bar.dart';
 import 'package:wayawaya/app/common/menu/model/main_menu_permission.dart';
 import 'package:wayawaya/app/home/model/whatson_campaign.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_images.dart';
 import 'package:wayawaya/utils/app_strings.dart';
+import 'package:wayawaya/utils/dimens.dart';
+import 'package:wayawaya/utils/session_manager.dart';
 import 'dart:ui' as ui;
 import '../../config.dart';
 import '../../constants.dart';
@@ -32,6 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     _homeBloc = HomeBloc();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      _homeBloc.setUpGestureHome();
       _homeBloc.fetchMenuButtons();
       _homeBloc.getAllCampaign(context);
     });
@@ -52,8 +53,8 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Scaffold(
           backgroundColor: AppColor.primaryDark,
           body: Container(
-            height: App.height(context),
-            width: App.width(context),
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
             child: Stack(
               children: [
                 StreamBuilder<List<MainMenuPermission>>(
@@ -510,6 +511,73 @@ class _HomeScreenState extends State<HomeScreen> {
                         ],
                       );
                     }),
+                StreamBuilder<bool>(
+                    initialData: false,
+                    stream: _homeBloc.gestureHomeStream,
+                    builder: (context, snapshot) {
+                      if (snapshot.data) {
+                        return InkWell(
+                          onTap: () async {
+                            SessionManager.setGestureHome(false);
+                            _homeBloc.gestureHomeSink.add(false);
+                          },
+                          child: Container(
+                            height: App.height(context),
+                            width: App.width(context),
+                            decoration: BoxDecoration(
+                              color: Colors.black.withOpacity(0.66),
+                            ),
+                            child: Stack(
+                              children: [
+                                Positioned(
+                                  top: Dimens.sixtyFive,
+                                  left: Dimens.ten,
+                                  child: gestureV(text: AppString.menu),
+                                ),
+                                Align(
+                                  alignment: Alignment.topCenter,
+                                  child: Padding(
+                                    padding: EdgeInsets.only(
+                                        top: Dimens.fifty, left: Dimens.thirty),
+                                    child: gestureH(
+                                        text: AppString.account_detail),
+                                  ),
+                                ),
+                                Positioned(
+                                  right: 0,
+                                  top: Dimens.sixtyFive,
+                                  child: gestureV(text: AppString.change_mall),
+                                ),
+                                Positioned(
+                                  right: Dimens.thirty,
+                                  top: Dimens.twoHundred,
+                                  child: gestureV(
+                                      text:
+                                          AppString.swipe_to_view_more_offers),
+                                ),
+                                Positioned(
+                                  right: Dimens.thirty,
+                                  top: MediaQuery.of(context).size.height / 2,
+                                  child: gestureV(
+                                      text:
+                                          AppString.swipe_to_view_more_events),
+                                ),
+                                Positioned(
+                                  bottom: Dimens.seventy,
+                                  child: Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    alignment: Alignment.bottomCenter,
+                                    child: gestureV(
+                                        text: AppString.swipe_to_view_more_ads),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      }
+                      return SizedBox();
+                    }),
               ],
             ),
           ),
@@ -551,31 +619,29 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Container gestureV({String text}) {
     return Container(
-      height: 100,
-      width: text == 'Menu' ? 60 : 100,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
-            height: 45,
-            width: 50,
+            height: Dimens.fiftyFive,
+            width: Dimens.fiftyFive,
             decoration: BoxDecoration(
               image: DecorationImage(
                 image: AssetImage(
-                  'assets/touch_u.png',
+                  AppImages.touch_u,
                 ),
                 fit: BoxFit.scaleDown,
               ),
             ),
           ),
           Container(
-            height: 50,
             child: Text(
               text,
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: white,
+                color: AppColor.white,
+                fontSize: Dimens.twentyTwo,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -587,31 +653,29 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Container gestureH({String text}) {
     return Container(
-      height: 50,
-      width: 100,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Container(
-            height: 100,
-            width: 50,
-            child: Text(
-              text,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: white,
-                fontWeight: FontWeight.bold,
-              ),
+          Text(
+            text,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: AppColor.white,
+              fontSize: Dimens.twentyTwo,
+              fontWeight: FontWeight.bold,
             ),
           ),
+          SizedBox(
+            width: Dimens.ten,
+          ),
           Container(
-            height: 45,
-            width: 45,
+            height: Dimens.fiftyFive,
+            width: Dimens.fiftyFive,
             decoration: BoxDecoration(
               image: DecorationImage(
                 image: AssetImage(
-                  'assets/touch_r.png',
+                  AppImages.touch_r,
                 ),
                 fit: BoxFit.scaleDown,
               ),

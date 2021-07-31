@@ -73,4 +73,5 @@ class AppImages {
   static const ic_earn_points = "assets/image/ic_earn_points.png";
   static const ic_redeem_points = "assets/image/ic_redeem_points.png";
   static const ic_rewards_wallet = "assets/image/ic_rewards_wallet.png";
+  static const touch_r = "assets/image/touch_r.png";
 }

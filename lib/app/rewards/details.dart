@@ -317,40 +317,43 @@ class _RewardsDetailsState extends State<RewardsDetails> {
                                     MainAxisAlignment.spaceBetween,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  Expanded(
-                                    child: InkWell(
-                                      onTap: () {
-                                        redeemClickEvent(
-                                            campaign: _listOfCampaign[index]);
-                                      },
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          Icon(
-                                            FontAwesomeIcons.gift,
-                                            color: rewardPoints < 5
-                                                ? Colors.grey[700]
-                                                : Colors.green[900],
-                                          ),
-                                          SizedBox(
-                                            height: Dimens.ten,
-                                          ),
-                                          Text(
-                                            'REDEEM',
-                                            style: TextStyle(
-                                              color: rewardPoints < 5
-                                                  ? Colors.grey[600]
-                                                  : Colors.green[900],
-                                              fontSize: Dimens.twelve,
+                                  AppString.POINT_SHOW == true
+                                      ? Expanded(
+                                          child: InkWell(
+                                            onTap: () {
+                                              redeemClickEvent(
+                                                  campaign:
+                                                      _listOfCampaign[index]);
+                                            },
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                Icon(
+                                                  FontAwesomeIcons.gift,
+                                                  color: rewardPoints < 5
+                                                      ? Colors.grey[700]
+                                                      : Colors.green[900],
+                                                ),
+                                                SizedBox(
+                                                  height: Dimens.ten,
+                                                ),
+                                                Text(
+                                                  'REDEEM',
+                                                  style: TextStyle(
+                                                    color: rewardPoints < 5
+                                                        ? Colors.grey[600]
+                                                        : Colors.green[900],
+                                                    fontSize: Dimens.twelve,
+                                                  ),
+                                                ),
+                                              ],
                                             ),
                                           ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
+                                        )
+                                      : SizedBox(),
                                   Expanded(
                                     child: InkWell(
                                       onTap: () {
@@ -536,7 +539,6 @@ class _RewardsDetailsState extends State<RewardsDetails> {
       return Utils.getTranslatedCode(context, name);
     }
   }
-
 
   _redeemOfferDialog(
       {BuildContext context,

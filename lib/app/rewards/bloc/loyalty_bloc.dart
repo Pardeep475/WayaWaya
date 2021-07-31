@@ -56,6 +56,13 @@ class LoyaltyBloc {
   Stream<List<ExpandableModel>> get expandableListStream =>
       _expandableListController.stream;
 
+  // ignore: close_sinks
+  final _gestureLoyaltyController = StreamController<bool>.broadcast();
+
+  StreamSink<bool> get gestureLoyaltySink => _gestureLoyaltyController.sink;
+
+  Stream<bool> get gestureLoyaltyStream => _gestureLoyaltyController.stream;
+
   static final _repository = ApiRepository();
 
   fetchMenuButtons() async {
@@ -278,5 +285,10 @@ class LoyaltyBloc {
     if (_serviceList.isNotEmpty) {
       pieChartSink.add(_serviceList[0]);
     }
+  }
+
+  setUpGestureLoyalty() async {
+    bool value = await SessionManager.getGestureLoyalty();
+    gestureLoyaltySink.add(value);
   }
 }

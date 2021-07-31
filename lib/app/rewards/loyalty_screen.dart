@@ -14,6 +14,7 @@ import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_images.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/dimens.dart';
+import 'package:wayawaya/utils/session_manager.dart';
 
 import 'model/expandable_model.dart';
 import 'model/loyalty_points.dart';
@@ -32,6 +33,7 @@ class _LoyaltyScreenState extends State<LoyaltyScreen> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loyaltyBloc.setUpGestureLoyalty();
       _loyaltyBloc.setTotalBalance();
       _loyaltyBloc.syncLoyalty();
     });
@@ -39,259 +41,365 @@ class _LoyaltyScreenState extends State<LoyaltyScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      floatingActionButton: GestureDetector(
-        onTap: () {
-          Navigator.push(context, FullScreenLoyaltyInfoDialog());
-        },
-        child: Container(
-          child: Icon(
-            Icons.info_outline,
-            color: Color(0xff1774E6),
-            size: Dimens.forty,
+    return Stack(
+      children: [
+        Scaffold(
+          floatingActionButton: GestureDetector(
+            onTap: () {
+              Navigator.push(context, FullScreenLoyaltyInfoDialog());
+            },
+            child: Container(
+              child: Icon(
+                Icons.info_outline,
+                color: Color(0xff1774E6),
+                size: Dimens.forty,
+              ),
+            ),
           ),
-        ),
-      ),
-      body: Stack(
-        children: [
-          StreamBuilder<List<MainMenuPermission>>(
-              initialData: [],
-              stream: _loyaltyBloc.mainMenuPermissionStream,
-              builder: (context, snapshot) {
-                return AnimateAppBar(
-                  title: 'Home/Rewards/Wallet',
-                  isSliver: true,
-                  physics: ClampingScrollPhysics(),
-                  mainMenuPermissions: snapshot.data,
-                  children: [
-                    SliverToBoxAdapter(
-                      child: Container(
-                        alignment: Alignment.bottomRight,
-                        height: Dimens.twoHundredFifty,
-                        width: MediaQuery.of(context).size.width,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image:
-                                AssetImage(AppImages.ic_loyelty_chart_banner),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                        child: Container(
-                          alignment: Alignment.bottomRight,
-                          height: Dimens.twoHundred,
-                          width: Dimens.twoHundred,
-                          child: StreamBuilder<LoyaltyPoints>(
-                              stream: _loyaltyBloc.pieChartStream,
-                              builder: (context, snapshot) {
-                                if (snapshot == null || snapshot.data == null) {
-                                  final List<ChartData> chartData = [
-                                    ChartData(
-                                        '100', 100, AppColor.pieChartColor),
-                                    ChartData('', 0,
-                                        AppColor.percentagePieXhartColor),
-                                  ];
-                                  return SfCircularChart(
-                                    margin: EdgeInsets.all(0),
-                                    annotations: <CircularChartAnnotation>[
-                                      CircularChartAnnotation(
-                                        width: "93%",
-                                        height: "93%",
-                                        widget: Container(
-                                          decoration: BoxDecoration(
-                                              color: Colors.black26,
-                                              shape: BoxShape.circle),
-                                          height: Dimens.twoHundred,
-                                          width: Dimens.twoHundred,
-                                          padding: EdgeInsets.all(Dimens.five),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Text(
-                                                '0',
-                                                style: GoogleFonts
-                                                        .ubuntuCondensed()
-                                                    .copyWith(
-                                                  color: AppColor
-                                                      .pieChartTextColor,
-                                                  fontSize: Dimens.thirty,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
+          body: Stack(
+            children: [
+              StreamBuilder<List<MainMenuPermission>>(
+                  initialData: [],
+                  stream: _loyaltyBloc.mainMenuPermissionStream,
+                  builder: (context, snapshot) {
+                    return AnimateAppBar(
+                      title: 'Home/Rewards/Wallet',
+                      isSliver: true,
+                      physics: ClampingScrollPhysics(),
+                      mainMenuPermissions: snapshot.data,
+                      children: [
+                        SliverToBoxAdapter(
+                          child: Container(
+                            alignment: Alignment.bottomRight,
+                            height: Dimens.twoHundredFifty,
+                            width: MediaQuery.of(context).size.width,
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage(
+                                    AppImages.ic_loyelty_chart_banner),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            child: Container(
+                              alignment: Alignment.bottomRight,
+                              height: Dimens.twoHundred,
+                              width: Dimens.twoHundred,
+                              child: StreamBuilder<LoyaltyPoints>(
+                                  stream: _loyaltyBloc.pieChartStream,
+                                  builder: (context, snapshot) {
+                                    if (snapshot == null ||
+                                        snapshot.data == null) {
+                                      final List<ChartData> chartData = [
+                                        ChartData(
+                                            '100', 100, AppColor.pieChartColor),
+                                        ChartData('', 0,
+                                            AppColor.percentagePieXhartColor),
+                                      ];
+                                      return SfCircularChart(
+                                        margin: EdgeInsets.all(0),
+                                        annotations: <CircularChartAnnotation>[
+                                          CircularChartAnnotation(
+                                            width: "93%",
+                                            height: "93%",
+                                            widget: Container(
+                                              decoration: BoxDecoration(
+                                                  color: Colors.black26,
+                                                  shape: BoxShape.circle),
+                                              height: Dimens.twoHundred,
+                                              width: Dimens.twoHundred,
+                                              padding:
+                                                  EdgeInsets.all(Dimens.five),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  Text(
+                                                    '0',
+                                                    style: GoogleFonts
+                                                            .ubuntuCondensed()
+                                                        .copyWith(
+                                                      color: AppColor
+                                                          .pieChartTextColor,
+                                                      fontSize: Dimens.thirty,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    'Available',
+                                                    style: GoogleFonts
+                                                            .ubuntuCondensed()
+                                                        .copyWith(
+                                                      color: AppColor
+                                                          .pieChartTextColor,
+                                                      fontSize:
+                                                          Dimens.seventeen,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
-                                              Text(
-                                                'Available',
-                                                style: GoogleFonts
-                                                        .ubuntuCondensed()
-                                                    .copyWith(
-                                                  color: AppColor
-                                                      .pieChartTextColor,
-                                                  fontSize: Dimens.seventeen,
-                                                  fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ],
+                                        series: <CircularSeries>[
+                                          DoughnutSeries<ChartData, String>(
+                                              dataSource: chartData,
+                                              enableSmartLabels: true,
+                                              enableTooltip: true,
+                                              sortingOrder:
+                                                  SortingOrder.ascending,
+                                              dataLabelMapper: (data, __) =>
+                                                  '${data.x}',
+                                              dataLabelSettings:
+                                                  DataLabelSettings(
+                                                textStyle: TextStyle(
+                                                    fontSize: Dimens.forteen,
+                                                    color: AppColor
+                                                        .pieChartTextColor),
+                                                isVisible: true,
+                                                labelIntersectAction:
+                                                    LabelIntersectAction.none,
+                                                labelAlignment:
+                                                    ChartDataLabelAlignment.top,
+                                                connectorLineSettings:
+                                                    ConnectorLineSettings(
+                                                  length: '10',
+                                                  type: ConnectorType.curve,
+                                                  width: 2,
                                                 ),
+                                                labelPosition:
+                                                    ChartDataLabelPosition
+                                                        .inside,
                                               ),
-                                            ],
+                                              pointColorMapper:
+                                                  (ChartData data, _) =>
+                                                      data.color,
+                                              xValueMapper:
+                                                  (ChartData data, _) => data.x,
+                                              yValueMapper:
+                                                  (ChartData data, _) => data.y,
+                                              innerRadius: '55%',
+                                              radius: "80%")
+                                        ],
+                                      );
+                                    }
+                                    final List<ChartData> dynamicChartData = [
+                                      ChartData(
+                                          snapshot.data.availablePoints
+                                              .toString(),
+                                          snapshot.data.availablePoints
+                                              .toDouble(),
+                                          AppColor.pieChartColor),
+                                      ChartData(
+                                          snapshot.data.redeemed != 0
+                                              ? snapshot.data.redeemed
+                                                  .toString()
+                                              : "",
+                                          snapshot.data.redeemed.toDouble(),
+                                          AppColor.percentagePieXhartColor),
+                                    ];
+                                    return SfCircularChart(
+                                      margin: EdgeInsets.all(0),
+                                      annotations: <CircularChartAnnotation>[
+                                        CircularChartAnnotation(
+                                          width: "93%",
+                                          height: "93%",
+                                          widget: Container(
+                                            height: Dimens.twoHundred,
+                                            width: Dimens.twoHundred,
+                                            decoration: BoxDecoration(
+                                                color: Colors.black26,
+                                                shape: BoxShape.circle),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Text(
+                                                  snapshot.data.availablePoints
+                                                      .toString(),
+                                                  style: GoogleFonts
+                                                          .ubuntuCondensed()
+                                                      .copyWith(
+                                                    color: AppColor
+                                                        .pieChartTextColor,
+                                                    fontSize: Dimens.forty,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  'Available',
+                                                  style: GoogleFonts
+                                                          .ubuntuCondensed()
+                                                      .copyWith(
+                                                    color: AppColor
+                                                        .pieChartTextColor,
+                                                    fontSize: Dimens.seventeen,
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    ],
-                                    series: <CircularSeries>[
-                                      DoughnutSeries<ChartData, String>(
-                                          dataSource: chartData,
-                                          enableSmartLabels: true,
-                                          enableTooltip: true,
-                                          sortingOrder: SortingOrder.ascending,
-                                          dataLabelMapper: (data, __) =>
-                                              '${data.x}',
-                                          dataLabelSettings: DataLabelSettings(
-                                            textStyle: TextStyle(
-                                                fontSize: Dimens.forteen,
-                                                color:
-                                                    AppColor.pieChartTextColor),
-                                            isVisible: true,
-                                            labelIntersectAction:
-                                                LabelIntersectAction.none,
-                                            labelAlignment:
-                                                ChartDataLabelAlignment.top,
-                                            connectorLineSettings:
-                                                ConnectorLineSettings(
-                                              length: '10',
-                                              type: ConnectorType.curve,
-                                              width: 2,
+                                      ],
+                                      series: <CircularSeries>[
+                                        DoughnutSeries<ChartData, String>(
+                                            dataSource: dynamicChartData,
+                                            enableSmartLabels: true,
+                                            enableTooltip: true,
+                                            sortingOrder:
+                                                SortingOrder.ascending,
+                                            dataLabelMapper: (data, __) =>
+                                                '${data.x}',
+                                            dataLabelSettings:
+                                                DataLabelSettings(
+                                              textStyle: TextStyle(
+                                                  fontSize: Dimens.forteen,
+                                                  color: AppColor
+                                                      .pieChartTextColor),
+                                              isVisible: true,
+                                              labelIntersectAction:
+                                                  LabelIntersectAction.none,
+                                              labelAlignment:
+                                                  ChartDataLabelAlignment.top,
+                                              connectorLineSettings:
+                                                  ConnectorLineSettings(
+                                                length: '10',
+                                                type: ConnectorType.curve,
+                                                width: 2,
+                                              ),
+                                              labelPosition:
+                                                  ChartDataLabelPosition.inside,
                                             ),
-                                            labelPosition:
-                                                ChartDataLabelPosition.inside,
-                                          ),
-                                          pointColorMapper:
-                                              (ChartData data, _) => data.color,
-                                          xValueMapper: (ChartData data, _) =>
-                                              data.x,
-                                          yValueMapper: (ChartData data, _) =>
-                                              data.y,
-                                          innerRadius: '55%',
-                                          radius: "80%")
-                                    ],
-                                  );
-                                }
-                                final List<ChartData> dynamicChartData = [
-                                  ChartData(
-                                      snapshot.data.availablePoints.toString(),
-                                      snapshot.data.availablePoints.toDouble(),
-                                      AppColor.pieChartColor),
-                                  ChartData(
-                                      snapshot.data.redeemed != 0
-                                          ? snapshot.data.redeemed.toString()
-                                          : "",
-                                      snapshot.data.redeemed.toDouble(),
-                                      AppColor.percentagePieXhartColor),
-                                ];
-                                return SfCircularChart(
-                                  margin: EdgeInsets.all(0),
-                                  annotations: <CircularChartAnnotation>[
-                                    CircularChartAnnotation(
-                                      width: "93%",
-                                      height: "93%",
-                                      widget: Container(
-                                        height: Dimens.twoHundred,
-                                        width: Dimens.twoHundred,
-                                        decoration: BoxDecoration(
-                                            color: Colors.black26,
-                                            shape: BoxShape.circle),
-                                        child: Column(
+                                            pointColorMapper:
+                                                (ChartData data, _) =>
+                                                    data.color,
+                                            xValueMapper: (ChartData data, _) =>
+                                                data.x,
+                                            yValueMapper: (ChartData data, _) =>
+                                                data.y,
+                                            innerRadius: '55%',
+                                            radius: "80%")
+                                      ],
+                                    );
+                                  }),
+                            ),
+                          ),
+                        ),
+                        SliverToBoxAdapter(
+                          child: Card(
+                            elevation: Dimens.five,
+                            margin: EdgeInsets.all(0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: Dimens.ten),
+                                  child: StreamBuilder<LoyaltyPointsModel>(
+                                      initialData: LoyaltyPointsModel(
+                                          points: "0", status: 1),
+                                      stream: _loyaltyBloc.totalPointStream,
+                                      builder: (context, snapshot) {
+                                        return Row(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.center,
                                           mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          mainAxisSize: MainAxisSize.min,
+                                              MainAxisAlignment.start,
                                           children: [
-                                            Text(
-                                              snapshot.data.availablePoints
-                                                  .toString(),
-                                              style:
-                                                  GoogleFonts.ubuntuCondensed()
-                                                      .copyWith(
-                                                color:
-                                                    AppColor.pieChartTextColor,
-                                                fontSize: Dimens.forty,
-                                                fontWeight: FontWeight.bold,
-                                              ),
+                                            SizedBox(
+                                              width: Dimens.five,
                                             ),
                                             Text(
-                                              'Available',
+                                              AppString.membership,
+                                              textAlign: TextAlign.center,
                                               style:
                                                   GoogleFonts.ubuntuCondensed()
                                                       .copyWith(
-                                                color:
-                                                    AppColor.pieChartTextColor,
-                                                fontSize: Dimens.seventeen,
+                                                color: AppColor.black,
+                                                fontSize: Dimens.thirty,
                                                 fontWeight: FontWeight.w500,
+                                                letterSpacing: 0.8,
                                               ),
+                                            ),
+                                            // SizedBox(
+                                            //   width: Dimens.three,
+                                            // ),
+                                            // snapshot.data.status > 0
+                                            //     ? IconShadowWidget(
+                                            //         Icon(Icons.star,
+                                            //             color: Colors.yellow,
+                                            //             size: 36),
+                                            //       )
+                                            //     : SizedBox(),
+                                            // SizedBox(
+                                            //   width: snapshot.data.status > 0
+                                            //       ? Dimens.three
+                                            //       : 0,
+                                            // ),
+                                            // snapshot.data.status > 1
+                                            //     ? IconShadowWidget(
+                                            //         Icon(Icons.star,
+                                            //             color: Colors.yellow,
+                                            //             size: 36),
+                                            //       )
+                                            //     : SizedBox(),
+                                            // SizedBox(
+                                            //   width: snapshot.data.status > 1
+                                            //       ? Dimens.three
+                                            //       : 0,
+                                            // ),
+                                            // snapshot.data.status > 2
+                                            //     ? IconShadowWidget(
+                                            //         Icon(Icons.star,
+                                            //             color: Colors.yellow,
+                                            //             size: 36),
+                                            //       )
+                                            //     : SizedBox(),
+                                            Expanded(
+                                              child: SizedBox(),
+                                            ),
+                                            Text(
+                                              snapshot.data.points ?? "",
+                                              textAlign: TextAlign.center,
+                                              style:
+                                                  GoogleFonts.ubuntuCondensed()
+                                                      .copyWith(
+                                                color: AppColor.black,
+                                                fontSize: Dimens.thirty,
+                                                fontWeight: FontWeight.w500,
+                                                letterSpacing: 0.8,
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: Dimens.twenty,
                                             ),
                                           ],
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                  series: <CircularSeries>[
-                                    DoughnutSeries<ChartData, String>(
-                                        dataSource: dynamicChartData,
-                                        enableSmartLabels: true,
-                                        enableTooltip: true,
-                                        sortingOrder: SortingOrder.ascending,
-                                        dataLabelMapper: (data, __) =>
-                                            '${data.x}',
-                                        dataLabelSettings: DataLabelSettings(
-                                          textStyle: TextStyle(
-                                              fontSize: Dimens.forteen,
-                                              color:
-                                                  AppColor.pieChartTextColor),
-                                          isVisible: true,
-                                          labelIntersectAction:
-                                              LabelIntersectAction.none,
-                                          labelAlignment:
-                                              ChartDataLabelAlignment.top,
-                                          connectorLineSettings:
-                                              ConnectorLineSettings(
-                                            length: '10',
-                                            type: ConnectorType.curve,
-                                            width: 2,
-                                          ),
-                                          labelPosition:
-                                              ChartDataLabelPosition.inside,
-                                        ),
-                                        pointColorMapper: (ChartData data, _) =>
-                                            data.color,
-                                        xValueMapper: (ChartData data, _) =>
-                                            data.x,
-                                        yValueMapper: (ChartData data, _) =>
-                                            data.y,
-                                        innerRadius: '55%',
-                                        radius: "80%")
-                                  ],
-                                );
-                              }),
-                        ),
-                      ),
-                    ),
-                    SliverToBoxAdapter(
-                      child: Card(
-                        elevation: Dimens.five,
-                        margin: EdgeInsets.all(0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                              padding:
-                                  EdgeInsets.symmetric(vertical: Dimens.ten),
-                              child: StreamBuilder<LoyaltyPointsModel>(
-                                  initialData: LoyaltyPointsModel(
-                                      points: "0", status: 1),
-                                  stream: _loyaltyBloc.totalPointStream,
-                                  builder: (context, snapshot) {
-                                    return Row(
+                                        );
+                                      }),
+                                ),
+                                Divider(
+                                  height: Dimens.one,
+                                  color: AppColor.rowDivider,
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.pushNamed(context,
+                                        AppString.QR_SCANNER_SCREEN_ROUTE);
+                                  },
+                                  child: Container(
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: Dimens.ten),
+                                    child: Row(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.center,
                                       mainAxisAlignment:
@@ -300,210 +408,191 @@ class _LoyaltyScreenState extends State<LoyaltyScreen> {
                                         SizedBox(
                                           width: Dimens.five,
                                         ),
-                                        Text(
-                                          AppString.membership,
-                                          textAlign: TextAlign.center,
-                                          style: GoogleFonts.ubuntuCondensed()
-                                              .copyWith(
-                                            color: AppColor.black,
-                                            fontSize: Dimens.thirty,
-                                            fontWeight: FontWeight.w500,
-                                            letterSpacing: 0.8,
+                                        IconShadowWidget(
+                                          Icon(Icons.qr_code_scanner_sharp,
+                                              color: Colors.black, size: 36),
+                                        ),
+                                        SizedBox(
+                                          width: Dimens.ten,
+                                        ),
+                                        Expanded(
+                                          child: Text(
+                                            AppString.scan,
+                                            maxLines: 1,
+                                            textAlign: TextAlign.start,
+                                            style: GoogleFonts.ubuntuCondensed()
+                                                .copyWith(
+                                              color: AppColor.black,
+                                              fontSize: Dimens.twentyFour,
+                                              fontWeight: FontWeight.w500,
+                                              letterSpacing: 0.8,
+                                            ),
                                           ),
                                         ),
-                                        // SizedBox(
-                                        //   width: Dimens.three,
-                                        // ),
-                                        // snapshot.data.status > 0
-                                        //     ? IconShadowWidget(
-                                        //         Icon(Icons.star,
-                                        //             color: Colors.yellow,
-                                        //             size: 36),
-                                        //       )
-                                        //     : SizedBox(),
-                                        // SizedBox(
-                                        //   width: snapshot.data.status > 0
-                                        //       ? Dimens.three
-                                        //       : 0,
-                                        // ),
-                                        // snapshot.data.status > 1
-                                        //     ? IconShadowWidget(
-                                        //         Icon(Icons.star,
-                                        //             color: Colors.yellow,
-                                        //             size: 36),
-                                        //       )
-                                        //     : SizedBox(),
-                                        // SizedBox(
-                                        //   width: snapshot.data.status > 1
-                                        //       ? Dimens.three
-                                        //       : 0,
-                                        // ),
-                                        // snapshot.data.status > 2
-                                        //     ? IconShadowWidget(
-                                        //         Icon(Icons.star,
-                                        //             color: Colors.yellow,
-                                        //             size: 36),
-                                        //       )
-                                        //     : SizedBox(),
-                                        Expanded(
-                                          child: SizedBox(),
-                                        ),
-                                        Text(
-                                          snapshot.data.points ?? "",
-                                          textAlign: TextAlign.center,
-                                          style: GoogleFonts.ubuntuCondensed()
-                                              .copyWith(
-                                            color: AppColor.black,
-                                            fontSize: Dimens.thirty,
-                                            fontWeight: FontWeight.w500,
-                                            letterSpacing: 0.8,
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        SliverToBoxAdapter(
+                          child: StreamBuilder<List<ExpandableModel>>(
+                              initialData: null,
+                              stream: _loyaltyBloc.expandableListStream,
+                              builder: (context, snapshot) {
+                                if (snapshot.data == null) {
+                                  return Container(
+                                    alignment: Alignment.center,
+                                    height: Dimens.forty,
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        SizedBox(
+                                          height: Dimens.thirty,
+                                          width: Dimens.thirty,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: Dimens.two,
+                                            backgroundColor:
+                                                AppColor.primaryDark,
                                           ),
                                         ),
                                         SizedBox(
-                                          width: Dimens.twenty,
+                                          width: Dimens.ten,
+                                        ),
+                                        Text(
+                                          AppString.processing_data,
+                                          style: TextStyle(
+                                            color: Colors.grey[600],
+                                            fontSize: Dimens.forteen,
+                                          ),
                                         ),
                                       ],
-                                    );
-                                  }),
-                            ),
-                            Divider(
-                              height: Dimens.one,
-                              color: AppColor.rowDivider,
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.pushNamed(
-                                    context, AppString.QR_SCANNER_SCREEN_ROUTE);
-                              },
-                              child: Container(
-                                padding:
-                                    EdgeInsets.symmetric(vertical: Dimens.ten),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    SizedBox(
-                                      width: Dimens.five,
                                     ),
-                                    IconShadowWidget(
-                                      Icon(Icons.qr_code_scanner_sharp,
-                                          color: Colors.black, size: 36),
-                                    ),
-                                    SizedBox(
-                                      width: Dimens.ten,
-                                    ),
-                                    Expanded(
-                                      child: Text(
-                                        AppString.scan,
-                                        maxLines: 1,
-                                        textAlign: TextAlign.start,
-                                        style: GoogleFonts.ubuntuCondensed()
-                                            .copyWith(
-                                          color: AppColor.black,
-                                          fontSize: Dimens.twentyFour,
-                                          fontWeight: FontWeight.w500,
-                                          letterSpacing: 0.8,
+                                  );
+                                } else if (snapshot.data.isEmpty) {
+                                  return Wrap(
+                                    children: [
+                                      Card(
+                                        color: AppColor.white,
+                                        elevation: 2,
+                                        child: Container(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: Dimens.thirty),
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          child: Text(
+                                            AppString.no_record_found,
+                                            textAlign: TextAlign.center,
+                                            style: GoogleFonts.ubuntuCondensed()
+                                                .copyWith(
+                                              color: AppColor.black
+                                                  .withOpacity(0.7),
+                                              fontSize: Dimens.nineteen,
+                                              fontWeight: FontWeight.w500,
+                                              letterSpacing: 0.8,
+                                            ),
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  ],
-                                ),
+                                    ],
+                                  );
+                                } else {
+                                  return ListView.builder(
+                                      itemCount: snapshot.data.length,
+                                      physics: NeverScrollableScrollPhysics(),
+                                      shrinkWrap: true,
+                                      padding: EdgeInsets.only(
+                                          bottom: Dimens.thirty),
+                                      itemBuilder: (context, index) {
+                                        return ExpandableGroup(
+                                          header: _header(snapshot.data[index]
+                                              .headerExpandableModel),
+                                          items: _buildItems(
+                                              context,
+                                              snapshot.data[index]
+                                                  .childExpandableModel),
+                                        );
+                                      });
+                                }
+                              }),
+                        ),
+                        SliverToBoxAdapter(
+                          child: SizedBox(
+                            height: Dimens.forty,
+                          ),
+                        ),
+                      ],
+                    );
+                  }),
+            ],
+          ),
+        ),
+        StreamBuilder<bool>(
+            initialData: false,
+            stream: _loyaltyBloc.gestureLoyaltyStream,
+            builder: (context, snapshot) {
+              if (snapshot.data) {
+                return Material(
+                  color: Colors.transparent,
+                  child: GestureDetector(
+                    onTap: () async {
+                      SessionManager.setGestureLoyalty(false);
+                      _loyaltyBloc.gestureLoyaltySink.add(false);
+                    },
+                    child: Container(
+                      height: MediaQuery.of(context).size.height,
+                      width: MediaQuery.of(context).size.width,
+                      decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.66),
+                      ),
+                      child: Stack(
+                        children: [
+                          Positioned(
+                            top: MediaQuery.of(context).size.height * 0.19,
+                            left: Dimens.thirty,
+                            child: Container(
+                              width: MediaQuery.of(context).size.width,
+                              alignment: Alignment.topCenter,
+                              child: Column(
+                                children: [
+                                  gestureH(text: AppString.earn_points),
+                                  gestureH(text: AppString.available_points),
+                                  gestureH(text: AppString.redeemed_points),
+                                ],
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+                          Positioned(
+                            top: MediaQuery.of(context).size.height * 0.51,
+                            left: 0,
+                            child:
+                                gestureH(text: AppString.show_details_new_line),
+                          ),
+
+                          Positioned(
+                            right: 0,
+                            top: MediaQuery.of(context).size.height * 0.4,
+                            child: gestureV(text: AppString.your_points),
+                          ),
+                          Positioned(
+                            bottom: Dimens.forty,
+                            right: Dimens.twentyFive,
+                            child: gestureH(text: AppString.help),
+                          ),
+                        ],
                       ),
                     ),
-                    SliverToBoxAdapter(
-                      child: StreamBuilder<List<ExpandableModel>>(
-                          initialData: null,
-                          stream: _loyaltyBloc.expandableListStream,
-                          builder: (context, snapshot) {
-                            if (snapshot.data == null) {
-                              return Container(
-                                alignment: Alignment.center,
-                                height: Dimens.forty,
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    SizedBox(
-                                      height: Dimens.thirty,
-                                      width: Dimens.thirty,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: Dimens.two,
-                                        backgroundColor: AppColor.primaryDark,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: Dimens.ten,
-                                    ),
-                                    Text(
-                                      AppString.processing_data,
-                                      style: TextStyle(
-                                        color: Colors.grey[600],
-                                        fontSize: Dimens.forteen,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            } else if (snapshot.data.isEmpty) {
-                              return Wrap(
-                                children: [
-                                  Card(
-                                    color: AppColor.white,
-                                    elevation: 2,
-                                    child: Container(
-                                      padding: EdgeInsets.symmetric(
-                                          vertical: Dimens.thirty),
-                                      width: MediaQuery.of(context).size.width,
-                                      child: Text(
-                                        AppString.no_record_found,
-                                        textAlign: TextAlign.center,
-                                        style: GoogleFonts.ubuntuCondensed()
-                                            .copyWith(
-                                          color:
-                                              AppColor.black.withOpacity(0.7),
-                                          fontSize: Dimens.nineteen,
-                                          fontWeight: FontWeight.w500,
-                                          letterSpacing: 0.8,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              );
-                            } else {
-                              return ListView.builder(
-                                  itemCount: snapshot.data.length,
-                                  physics: NeverScrollableScrollPhysics(),
-                                  shrinkWrap: true,
-                                  padding:
-                                      EdgeInsets.only(bottom: Dimens.thirty),
-                                  itemBuilder: (context, index) {
-                                    return ExpandableGroup(
-                                      header: _header(snapshot
-                                          .data[index].headerExpandableModel),
-                                      items: _buildItems(
-                                          context,
-                                          snapshot.data[index]
-                                              .childExpandableModel),
-                                    );
-                                  });
-                            }
-                          }),
-                    ),
-                    SliverToBoxAdapter(
-                      child: SizedBox(
-                        height: Dimens.forty,
-                      ),
-                    ),
-                  ],
+                  ),
                 );
-              }),
-        ],
-      ),
+              }
+              return SizedBox();
+            }),
+      ],
     );
   }
 
@@ -572,6 +661,75 @@ class _LoyaltyScreenState extends State<LoyaltyScreen> {
             ),
           )
           .toList();
+
+  Container gestureV({String text}) {
+    return Container(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Container(
+            height: Dimens.fiftyFive,
+            width: Dimens.fiftyFive,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(
+                  AppImages.touch_u,
+                ),
+                fit: BoxFit.scaleDown,
+              ),
+            ),
+          ),
+          Container(
+            child: Text(
+              text,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: AppColor.white,
+                fontSize: Dimens.twentyTwo,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Container gestureH({String text}) {
+    return Container(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            text,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: AppColor.white,
+              fontSize: Dimens.twentyTwo,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          SizedBox(
+            width: Dimens.ten,
+          ),
+          Container(
+            height: Dimens.fiftyFive,
+            width: Dimens.fiftyFive,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(
+                  AppImages.touch_r,
+                ),
+                fit: BoxFit.scaleDown,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class ItemChildExpandable extends StatelessWidget {

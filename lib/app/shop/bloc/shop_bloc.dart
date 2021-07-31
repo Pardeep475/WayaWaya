@@ -66,7 +66,6 @@ class ShopBloc {
     return itemList;
   }
 
-
   fetchOrderedCategoryListing({bool isRestaurant}) async {
     String defaultMall = await SessionManager.getDefaultMall();
     List<RetailWithCategory> _retailWithCategoryList =

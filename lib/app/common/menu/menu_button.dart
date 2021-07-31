@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -409,273 +410,416 @@ class RhombusMenu extends StatelessWidget {
     return title;
   }
 
+  static final _gestureMenuController = StreamController<bool>.broadcast();
+
+  StreamSink<bool> get gestureMenuSink => _gestureMenuController.sink;
+
+  Stream<bool> get gestureMenuStream => _gestureMenuController.stream;
+
+  setUpGestureHome() async {
+    bool value = await SessionManager.getGestureMenu();
+    gestureMenuSink.add(value);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: enabled ? 32 : 12, vertical: 8),
+    if (enabled) {
+      Future.delayed(Duration(milliseconds: 500), () {
+        setUpGestureHome();
+      });
+    }
+    return Stack(
+      children: [
+        Padding(
+          padding:
+              EdgeInsets.symmetric(horizontal: enabled ? 32 : 12, vertical: 8),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  MenuButton(
+                    color: menuPermissionList == null ||
+                            menuPermissionList.length < 1
+                        ? Colors.amber
+                        : Utils.fromHex(menuPermissionList[0].color),
+                    icon: Icon(
+                      menuPermissionList == null ||
+                              menuPermissionList.length < 1
+                          ? Icons.home
+                          : fetchIcons(menuPermissionList[0], Icons.home),
+                      color: Colors.white,
+                      size: 35,
+                    ),
+                    label: menuPermissionList == null ||
+                            menuPermissionList.length < 1
+                        ? AppString.home_menu
+                        : getDisplayName(
+                            menuPermissionList[0], AppString.home_menu),
+                    enabled: enabled,
+                    cubic: _getCubic(AppString.home_menu),
+                    onPressed: () {
+                      Navigator.pop(context, AppString.home_menu);
+                    },
+                  )
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  MenuButton(
+                    color: menuPermissionList == null ||
+                            menuPermissionList.length < 2
+                        ? Colors.blue
+                        : Utils.fromHex(menuPermissionList[1].color),
+                    icon: Icon(
+                      menuPermissionList == null ||
+                              menuPermissionList.length < 2
+                          ? Icons.local_offer
+                          : fetchIcons(
+                              menuPermissionList[1], Icons.local_offer),
+                      color: Colors.white,
+                      size: 35,
+                    ),
+                    label: menuPermissionList == null ||
+                            menuPermissionList.length < 2
+                        ? AppString.offers_menu
+                        : getDisplayName(
+                            menuPermissionList[1], AppString.offers_menu),
+                    enabled: enabled,
+                    cubic: _getCubic(AppString.offers_menu),
+                    onPressed: () {
+                      Navigator.pop(context, AppString.offers_menu);
+                      // App.pushTo(
+                      //   context: context,
+                      //   screen: OffersList(),
+                      // );
+                    },
+                  ),
+                  MenuButton(
+                    color: menuPermissionList == null ||
+                            menuPermissionList.length < 3
+                        ? Colors.purple
+                        : Utils.fromHex(menuPermissionList[2].color),
+                    icon: Icon(
+                      menuPermissionList == null ||
+                              menuPermissionList.length < 3
+                          ? Icons.event
+                          : fetchIcons(menuPermissionList[2], Icons.event),
+                      color: Colors.white,
+                      size: 35,
+                    ),
+                    label: menuPermissionList == null ||
+                            menuPermissionList.length < 3
+                        ? AppString.events_menu
+                        : getDisplayName(
+                            menuPermissionList[2], AppString.events_menu),
+                    enabled: enabled,
+                    cubic: _getCubic(AppString.events_menu),
+                    onPressed: () {
+                      Navigator.pop(context, AppString.events_menu);
+                      // App.pushTo(
+                      //   context: context,
+                      //   screen: EventsList(),
+                      // );
+                    },
+                  )
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  MenuButton(
+                    color: menuPermissionList == null ||
+                            menuPermissionList.length < 4
+                        ? Colors.green
+                        : Utils.fromHex(menuPermissionList[3].color),
+                    icon: Icon(
+                      menuPermissionList == null ||
+                              menuPermissionList.length < 4
+                          ? Icons.shop
+                          : fetchIcons(menuPermissionList[3], Icons.shop),
+                      color: Colors.white,
+                      size: 35,
+                    ),
+                    label: menuPermissionList == null ||
+                            menuPermissionList.length < 4
+                        ? AppString.shops_menu
+                        : getDisplayName(
+                            menuPermissionList[3], AppString.shops_menu),
+                    enabled: enabled,
+                    cubic: _getCubic(AppString.shops_menu),
+                    onPressed: () {
+                      Navigator.pop(context, AppString.shops_menu);
+                      // App.pushTo(
+                      //   context: context,
+                      //   screen: ShopRestList(title: "SHOPS"),
+                      // );
+                    },
+                  ),
+                  MenuButton(
+                    color: menuPermissionList == null ||
+                            menuPermissionList.length < 5
+                        ? Colors.white
+                        : Colors.white,
+                    //fromHex(menuPermissionList[4].color),
+                    icon: Image.asset(
+                      AppImages.icon_barcode,
+                      height: 45,
+                      width: 45,
+                    ),
+                    label: "",
+                    enabled: enabled,
+                    cubic: _getCubic("Connect"),
+                    onPressed: () {
+                      Navigator.pop(context, 'scanner');
+                      // App.pushTo(
+                      //   context: context,
+                      //   screen: QRScanner(),
+                      // );
+                    },
+                  ),
+                  MenuButton(
+                    color: menuPermissionList == null ||
+                            menuPermissionList.length < 6
+                        ? Colors.yellow
+                        : Utils.fromHex(menuPermissionList[5].color),
+                    icon: Icon(
+                      menuPermissionList == null ||
+                              menuPermissionList.length < 6
+                          ? Icons.local_dining
+                          : fetchIcons(
+                              menuPermissionList[5], Icons.local_dining),
+                      color: Colors.white,
+                      size: 35,
+                    ),
+                    label: menuPermissionList == null ||
+                            menuPermissionList.length < 6
+                        ? AppString.restaurants_menu
+                        : getDisplayName(
+                            menuPermissionList[5], AppString.restaurants_menu),
+                    enabled: enabled,
+                    cubic: _getCubic(AppString.restaurants_menu),
+                    onPressed: () {
+                      Navigator.pop(context, AppString.restaurants_menu);
+                      // App.pushTo(
+                      //   context: context,
+                      //   screen: ShopRestList(title: "My RESTAURANTS"),
+                      // );
+                    },
+                  )
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  MenuButton(
+                    color: menuPermissionList == null ||
+                            menuPermissionList.length < 7
+                        ? Colors.red
+                        : Utils.fromHex(menuPermissionList[6].color),
+                    icon: Icon(
+                      menuPermissionList == null ||
+                              menuPermissionList.length < 7
+                          ? Icons.loyalty_rounded
+                          : fetchIcons(
+                              menuPermissionList[6], Icons.loyalty_rounded),
+                      color: Colors.white,
+                      size: 35,
+                    ),
+                    label: menuPermissionList == null ||
+                            menuPermissionList.length < 7
+                        ? AppString.rewards_menu
+                        : getDisplayName(
+                            menuPermissionList[6], AppString.rewards_menu),
+                    enabled: enabled,
+                    cubic: _getCubic(AppString.rewards_menu),
+                    onPressed: () {
+                      Navigator.pop(context, AppString.rewards_menu);
+                      // App.pushTo(
+                      //   context: context,
+                      //   screen: RewardsBrowser(),
+                      // );
+                    },
+                  ),
+                  MenuButton(
+                    color: menuPermissionList == null ||
+                            menuPermissionList.length < 8
+                        ? Colors.purple
+                        : Utils.fromHex(menuPermissionList[7].color),
+                    icon: Icon(
+                      menuPermissionList == null ||
+                              menuPermissionList.length < 8
+                          ? Icons.view_carousel
+                          : fetchIcons(
+                              menuPermissionList[7], Icons.view_carousel),
+                      color: Colors.white,
+                      size: 35,
+                    ),
+                    label: menuPermissionList == null ||
+                            menuPermissionList.length < 8
+                        ? AppString.the_mall_menu
+                        : getDisplayName(
+                            menuPermissionList[7], AppString.the_mall_menu),
+                    enabled: enabled,
+                    cubic: _getCubic(AppString.the_mall_menu),
+                    onPressed: () {
+                      Navigator.pop(context, AppString.the_mall_menu);
+                      // App.pushTo(
+                      //   context: context,
+                      //   screen: MallServices(),
+                      // );
+                    },
+                  )
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  MenuButton(
+                    color: menuPermissionList == null ||
+                            menuPermissionList.length < 9
+                        ? Colors.blue
+                        : Utils.fromHex(menuPermissionList[8].color),
+                    icon: Icon(
+                      menuPermissionList == null ||
+                              menuPermissionList.length < 9
+                          ? Icons.map
+                          : fetchIcons(menuPermissionList[8], Icons.map),
+                      color: Colors.white,
+                      size: 35,
+                    ),
+                    label: menuPermissionList == null ||
+                            menuPermissionList.length < 8
+                        ? AppString.mall_map_menu
+                        : getDisplayName(
+                            menuPermissionList[8], AppString.mall_map_menu),
+                    enabled: enabled,
+                    cubic: _getCubic(AppString.mall_map_menu),
+                    onPressed: () {
+                      Navigator.pop(context, AppString.mall_map_menu);
+                      // App.pushTo(
+                      //   context: context,
+                      //   screen: MapScreen(),
+                      // );
+                    },
+                  )
+                ],
+              ),
+            ],
+          ),
+        ),
+        enabled
+            ? StreamBuilder<bool>(
+                initialData: false,
+                stream: gestureMenuStream,
+                builder: (context, snapshot) {
+                  if (snapshot.data) {
+                    return Material(
+                      color: Colors.transparent,
+                      child: GestureDetector(
+                        onTap: () async {
+                          SessionManager.setGestureMenu(false);
+                          gestureMenuSink.add(false);
+                        },
+                        child: Container(
+                          height: MediaQuery.of(context).size.height,
+                          width: MediaQuery.of(context).size.width,
+                          decoration: BoxDecoration(
+                            color: Colors.black.withOpacity(0.66),
+                          ),
+                          child: Stack(
+                            children: [
+                              Positioned(
+                                top: MediaQuery.of(context).size.height / 2,
+                                left: 32,
+                                child: gestureV(
+                                    text: AppString.click_to_access_details),
+                              ),
+                              Container(
+                                width: MediaQuery.of(context).size.width,
+                                alignment: Alignment.bottomCenter,
+                                margin: EdgeInsets.only(top: Dimens.fifty),
+                                child: gestureV(text: AppString.scan_rewards),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  }
+                  return SizedBox();
+                })
+            : SizedBox(),
+      ],
+    );
+  }
+
+  Container gestureV({String text}) {
+    return Container(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              MenuButton(
-                color:
-                    menuPermissionList == null || menuPermissionList.length < 1
-                        ? Colors.amber
-                        : Utils.fromHex(menuPermissionList[0].color),
-                icon: Icon(
-                  menuPermissionList == null || menuPermissionList.length < 1
-                      ? Icons.home
-                      : fetchIcons(menuPermissionList[0], Icons.home),
-                  color: Colors.white,
-                  size: 35,
+          Container(
+            height: Dimens.fiftyFive,
+            width: Dimens.fiftyFive,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(
+                  AppImages.touch_u,
                 ),
-                label:
-                    menuPermissionList == null || menuPermissionList.length < 1
-                        ? AppString.home_menu
-                        : getDisplayName(
-                            menuPermissionList[0], AppString.home_menu),
-                enabled: enabled,
-                cubic: _getCubic(AppString.home_menu),
-                onPressed: () {
-                  Navigator.pop(context, AppString.home_menu);
-                },
-              )
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              MenuButton(
-                color:
-                    menuPermissionList == null || menuPermissionList.length < 2
-                        ? Colors.blue
-                        : Utils.fromHex(menuPermissionList[1].color),
-                icon: Icon(
-                  menuPermissionList == null || menuPermissionList.length < 2
-                      ? Icons.local_offer
-                      : fetchIcons(menuPermissionList[1], Icons.local_offer),
-                  color: Colors.white,
-                  size: 35,
-                ),
-                label:
-                    menuPermissionList == null || menuPermissionList.length < 2
-                        ? AppString.offers_menu
-                        : getDisplayName(
-                            menuPermissionList[1], AppString.offers_menu),
-                enabled: enabled,
-                cubic: _getCubic(AppString.offers_menu),
-                onPressed: () {
-                  Navigator.pop(context, AppString.offers_menu);
-                  // App.pushTo(
-                  //   context: context,
-                  //   screen: OffersList(),
-                  // );
-                },
+                fit: BoxFit.scaleDown,
               ),
-              MenuButton(
-                color:
-                    menuPermissionList == null || menuPermissionList.length < 3
-                        ? Colors.purple
-                        : Utils.fromHex(menuPermissionList[2].color),
-                icon: Icon(
-                  menuPermissionList == null || menuPermissionList.length < 3
-                      ? Icons.event
-                      : fetchIcons(menuPermissionList[2], Icons.event),
-                  color: Colors.white,
-                  size: 35,
-                ),
-                label:
-                    menuPermissionList == null || menuPermissionList.length < 3
-                        ? AppString.events_menu
-                        : getDisplayName(
-                            menuPermissionList[2], AppString.events_menu),
-                enabled: enabled,
-                cubic: _getCubic(AppString.events_menu),
-                onPressed: () {
-                  Navigator.pop(context, AppString.events_menu);
-                  // App.pushTo(
-                  //   context: context,
-                  //   screen: EventsList(),
-                  // );
-                },
-              )
-            ],
+            ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              MenuButton(
-                color:
-                    menuPermissionList == null || menuPermissionList.length < 4
-                        ? Colors.green
-                        : Utils.fromHex(menuPermissionList[3].color),
-                icon: Icon(
-                  menuPermissionList == null || menuPermissionList.length < 4
-                      ? Icons.shop
-                      : fetchIcons(menuPermissionList[3], Icons.shop),
-                  color: Colors.white,
-                  size: 35,
-                ),
-                label:
-                    menuPermissionList == null || menuPermissionList.length < 4
-                        ? AppString.shops_menu
-                        : getDisplayName(
-                            menuPermissionList[3], AppString.shops_menu),
-                enabled: enabled,
-                cubic: _getCubic(AppString.shops_menu),
-                onPressed: () {
-                  Navigator.pop(context, AppString.shops_menu);
-                  // App.pushTo(
-                  //   context: context,
-                  //   screen: ShopRestList(title: "SHOPS"),
-                  // );
-                },
+          Container(
+            child: Text(
+              text,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: AppColor.white,
+                fontSize: Dimens.twentyTwo,
+                fontWeight: FontWeight.bold,
               ),
-              MenuButton(
-                color:
-                    menuPermissionList == null || menuPermissionList.length < 5
-                        ? Colors.white
-                        : Colors.white,
-                //fromHex(menuPermissionList[4].color),
-                icon: Image.asset(
-                  AppImages.icon_barcode,
-                  height: 45,
-                  width: 45,
-                ),
-                label: "",
-                enabled: enabled,
-                cubic: _getCubic("Connect"),
-                onPressed: () {
-                  Navigator.pop(context, 'scanner');
-                  // App.pushTo(
-                  //   context: context,
-                  //   screen: QRScanner(),
-                  // );
-                },
-              ),
-              MenuButton(
-                color:
-                    menuPermissionList == null || menuPermissionList.length < 6
-                        ? Colors.yellow
-                        : Utils.fromHex(menuPermissionList[5].color),
-                icon: Icon(
-                  menuPermissionList == null || menuPermissionList.length < 6
-                      ? Icons.local_dining
-                      : fetchIcons(menuPermissionList[5], Icons.local_dining),
-                  color: Colors.white,
-                  size: 35,
-                ),
-                label:
-                    menuPermissionList == null || menuPermissionList.length < 6
-                        ? AppString.restaurants_menu
-                        : getDisplayName(
-                            menuPermissionList[5], AppString.restaurants_menu),
-                enabled: enabled,
-                cubic: _getCubic(AppString.restaurants_menu),
-                onPressed: () {
-                  Navigator.pop(context, AppString.restaurants_menu);
-                  // App.pushTo(
-                  //   context: context,
-                  //   screen: ShopRestList(title: "My RESTAURANTS"),
-                  // );
-                },
-              )
-            ],
+            ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              MenuButton(
-                color:
-                    menuPermissionList == null || menuPermissionList.length < 7
-                        ? Colors.red
-                        : Utils.fromHex(menuPermissionList[6].color),
-                icon: Icon(
-                  menuPermissionList == null || menuPermissionList.length < 7
-                      ? Icons.loyalty_rounded
-                      : fetchIcons(
-                          menuPermissionList[6], Icons.loyalty_rounded),
-                  color: Colors.white,
-                  size: 35,
-                ),
-                label:
-                    menuPermissionList == null || menuPermissionList.length < 7
-                        ? AppString.rewards_menu
-                        : getDisplayName(
-                            menuPermissionList[6], AppString.rewards_menu),
-                enabled: enabled,
-                cubic: _getCubic(AppString.rewards_menu),
-                onPressed: () {
-                  Navigator.pop(context, AppString.rewards_menu);
-                  // App.pushTo(
-                  //   context: context,
-                  //   screen: RewardsBrowser(),
-                  // );
-                },
-              ),
-              MenuButton(
-                color:
-                    menuPermissionList == null || menuPermissionList.length < 8
-                        ? Colors.purple
-                        : Utils.fromHex(menuPermissionList[7].color),
-                icon: Icon(
-                  menuPermissionList == null || menuPermissionList.length < 8
-                      ? Icons.view_carousel
-                      : fetchIcons(menuPermissionList[7], Icons.view_carousel),
-                  color: Colors.white,
-                  size: 35,
-                ),
-                label:
-                    menuPermissionList == null || menuPermissionList.length < 8
-                        ? AppString.the_mall_menu
-                        : getDisplayName(
-                            menuPermissionList[7], AppString.the_mall_menu),
-                enabled: enabled,
-                cubic: _getCubic(AppString.the_mall_menu),
-                onPressed: () {
-                  Navigator.pop(context, AppString.the_mall_menu);
-                  // App.pushTo(
-                  //   context: context,
-                  //   screen: MallServices(),
-                  // );
-                },
-              )
-            ],
+        ],
+      ),
+    );
+  }
+
+  Container gestureH({String text}) {
+    return Container(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            text,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: AppColor.white,
+              fontSize: Dimens.twentyTwo,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              MenuButton(
-                color:
-                    menuPermissionList == null || menuPermissionList.length < 9
-                        ? Colors.blue
-                        : Utils.fromHex(menuPermissionList[8].color),
-                icon: Icon(
-                  menuPermissionList == null || menuPermissionList.length < 9
-                      ? Icons.map
-                      : fetchIcons(menuPermissionList[8], Icons.map),
-                  color: Colors.white,
-                  size: 35,
+          SizedBox(
+            width: Dimens.ten,
+          ),
+          Container(
+            height: Dimens.fiftyFive,
+            width: Dimens.fiftyFive,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(
+                  AppImages.touch_r,
                 ),
-                label:
-                    menuPermissionList == null || menuPermissionList.length < 8
-                        ? AppString.mall_map_menu
-                        : getDisplayName(
-                            menuPermissionList[8], AppString.mall_map_menu),
-                enabled: enabled,
-                cubic: _getCubic(AppString.mall_map_menu),
-                onPressed: () {
-                  Navigator.pop(context, AppString.mall_map_menu);
-                  // App.pushTo(
-                  //   context: context,
-                  //   screen: MapScreen(),
-                  // );
-                },
-              )
-            ],
+                fit: BoxFit.scaleDown,
+              ),
+            ),
           ),
         ],
       ),

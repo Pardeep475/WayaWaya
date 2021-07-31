@@ -1,6 +1,5 @@
 import 'dart:io';
 
-// import 'package:device_preview/device_preview.dart';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_geofence/geofence.dart';
@@ -23,7 +22,6 @@ import 'package:wayawaya/app/search/search_screen.dart';
 import 'package:wayawaya/app/settings/settings_screen.dart';
 import 'package:wayawaya/app/shop/shop_detail_screen.dart';
 import 'package:wayawaya/app/shop/shop_screen.dart';
-import 'package:wayawaya/network/local/sync_service.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/geo_fence_service.dart';
 import 'package:wayawaya/utils/session_manager.dart';
@@ -39,7 +37,7 @@ import 'network/local/super_admin_database_helper.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  GeoFenceService.initGeofence();
+  // GeoFenceService.initGeofence();
   await NotificationService().init();
   await SuperAdminDatabaseHelper.initDataBase();
   bool isFirstTime = await SessionManager.isFirstTime();
@@ -307,82 +305,3 @@ class MyAppState extends State<MyApp> {
   }
 }
 
-// Copyright 2013 The Flutter Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
-
-// ignore_for_file: public_member_api_docs
-
-// class MyApp extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     Future<String> getEmail() => UserPreferences().getUserEmail();
-//     print(UserPreferences().getUserEmail().runtimeType);
-//
-//     return MultiProvider(
-//       providers: [
-//         ChangeNotifierProvider(create: (_) => AuthProvider()),
-//         ChangeNotifierProvider(create: (_) => UserProvider()),
-//       ],
-//       child: MaterialApp(
-//         title: 'Flutter Demo',
-//         debugShowCheckedModeBanner: false,
-//         theme: ThemeData(
-//           primarySwatch: Colors.cyan,
-//           primaryColor: Colors.teal,
-//           unselectedWidgetColor: Colors.grey[400],
-//         ),
-//         home: FutureBuilder(
-//           future: getEmail(),
-//           builder: (context, snapshot) {
-//             switch (snapshot.connectionState) {
-//               case ConnectionState.none:
-//               case ConnectionState.waiting:
-//                 return CircularProgressIndicator();
-//               default:
-//                 if (snapshot.data == null)
-//                   return _navigateToScreen();
-//                 else
-//                   return Splash();
-//                 return Splash();
-//             }
-//           },
-//         ),
-//       ),
-//     );
-//   }
-//
-//   _navigateToScreen() {
-//     bool mall = App.prefs.getBool('defaultMall') ?? false;
-//     bool bg = App.prefs.getBool('bgScreen') ?? false;
-//     bool login = App.prefs.getBool('login') ?? false;
-//     String callStat = Platform.isIOS
-//         ? 'GRANTED'
-//         : App.prefs.getString('callAccess') ?? 'DENIED';
-//     String locStat = App.prefs.getString('locAccess') ?? 'DENIED';
-//     String locType = App.prefs.getString('locType') ?? 'NOT SET';
-//     print(mall.toString() + "," + bg.toString() + "," + login.toString());
-//     if (mall == false) {
-//       return SelectMall();
-//     } else {
-//       if (bg == false) {
-//         printR(callStat + locStat + locType);
-//         if (callStat == 'GRANTED' &&
-//             locStat == 'GRANTED' &&
-//             locType == 'NOT SET') {
-//           return BackgroundScreen(
-//             showOnlyLocType: true,
-//           );
-//         } else {
-//           return BackgroundScreen();
-//         }
-//       } else {
-//         if (login == false) {
-//           return Login();
-//         } else {
-//           return HomeScreen();
-//         }
-//       }
-//     }
-//   }
-// }

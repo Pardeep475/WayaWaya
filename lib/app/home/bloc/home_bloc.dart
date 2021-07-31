@@ -9,7 +9,6 @@ import 'package:wayawaya/app/home/model/top_campaign_model.dart';
 import 'package:wayawaya/app/home/model/whatson_campaign.dart';
 import 'package:wayawaya/common/model/language_store.dart';
 import 'package:wayawaya/network/local/database_helper.dart';
-import 'package:wayawaya/network/local/profile_database_helper.dart';
 import 'package:wayawaya/network/local/super_admin_database_helper.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/session_manager.dart';
@@ -46,6 +45,13 @@ class HomeBloc {
   StreamSink<WhatsonCampaign> get topSink => _topCampaignController.sink;
 
   Stream<WhatsonCampaign> get topStream => _topCampaignController.stream;
+
+  final _gestureHomeController = StreamController<bool>.broadcast();
+
+  StreamSink<bool> get gestureHomeSink => _gestureHomeController.sink;
+
+  Stream<bool> get gestureHomeStream => _gestureHomeController.stream;
+
 
   List<Campaign> offersCampaignList = [];
   List<Campaign> eventsCampaignList = [];
@@ -220,4 +226,10 @@ class HomeBloc {
     mainMenuPermissionSink.add(itemList);
     return itemList;
   }
+
+  setUpGestureHome() async{
+    bool value = await SessionManager.getGestureHome();
+    gestureHomeSink.add(value);
+  }
+
 }
