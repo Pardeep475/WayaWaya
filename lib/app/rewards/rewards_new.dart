@@ -201,6 +201,7 @@ class _RewardsBrowserState extends State<RewardsBrowser> {
                                           delegate: SliverChildBuilderDelegate(
                                             (context, index) => ItemRewards(
                                               index: index,
+                                              pointShow: true,
                                               campaign:
                                                   snapshot.data.data[index],
                                               listOfCampaign:

@@ -14,6 +14,7 @@ import 'package:wayawaya/network/local/table/trigger_zone_table.dart';
 import 'package:wayawaya/network/local/table/venue_profile_table.dart';
 import 'package:wayawaya/network/model/campaign/campaign_api_response.dart';
 import 'package:wayawaya/network/model/category/category_wrapper.dart';
+import 'package:wayawaya/network/model/loyalty/loyalty_new.dart';
 import 'package:wayawaya/network/model/loyalty/loyalty_response.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/session_manager.dart';
@@ -856,5 +857,62 @@ class SyncService {
     } catch (e) {
       return null;
     }
+  }
+
+  static Future updateStoreVisitQRPoints(int points, String shop_id) async {
+    try {
+      String userData = await SessionManager.getUserData();
+      UserDataResponse _response = userDataResponseFromJson(userData);
+      if (_response == null) return null;
+      Utils.checkConnectivity().then((value) async {
+        if (value != null && value) {
+          LoyaltyNew loyalty = new LoyaltyNew();
+          loyalty.openingBalance = 0;
+          loyalty.userId = _response.userId;
+          loyalty.type = "store_visit";
+          loyalty.description = "Store Visit Points";
+          loyalty.status = "open";
+          loyalty.activationStatus = "activated";
+          loyalty.points = points;
+          loyalty.noOfTimes = 0;
+          loyalty.timestamp =
+              Utils.getStringFromDate(DateTime.now(), AppString.DATE_FORMAT);
+          loyalty.shopId = shop_id;
+          dynamic response = await _repository.postAppOpenLoyaltyTransaction(
+              loyaltyNew: loyalty);
+          return;
+        }
+      });
+    } catch (e) {
+      return;
+    }
+  }
+
+  static Future redeemLoyaltyPoints(int points, String shop_id) async {
+    try {
+      String userData = await SessionManager.getUserData();
+      UserDataResponse _response = userDataResponseFromJson(userData);
+      if (_response == null) return null;
+      Utils.checkConnectivity().then((value) async {
+        if (value != null && value) {
+          LoyaltyNew loyalty = new LoyaltyNew();
+          loyalty.userId = _response.userId;
+          loyalty.type = "redemption";
+          loyalty.points = points;
+          loyalty.timestamp =
+              Utils.getStringFromDate(DateTime.now(), AppString.DATE_FORMAT);
+          loyalty.shopId = shop_id;
+          dynamic response = await _repository.postAppOpenLoyaltyTransaction(
+              loyaltyNew: loyalty);
+          return;
+        }
+      });
+    } catch (e) {
+      return;
+    }
+  }
+
+  static Future updateStoreVisitLoyaltyPoints(){
+
   }
 }

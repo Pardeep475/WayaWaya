@@ -11,6 +11,8 @@ import 'package:transformer_page_view/transformer_page_view.dart';
 import 'package:wayawaya/app/auth/login/model/user_data_response.dart';
 import 'package:wayawaya/app/common/dialogs/common_login_dialog.dart';
 import 'package:wayawaya/app/common/dialogs/common_not_at_venue_dialog.dart';
+import 'package:wayawaya/app/common/full_screen_loyalty_info_dialog.dart';
+import 'package:wayawaya/app/common/full_screen_not_an_vanue_dialog.dart';
 import 'package:wayawaya/app/common/webview/model/custom_web_view_model.dart';
 import 'package:wayawaya/app/common/zoom_out_page_transformation.dart';
 import 'package:wayawaya/app/home/model/campaign_element.dart';
@@ -428,7 +430,7 @@ class _RewardsDetailsState extends State<RewardsDetails> {
 // redeem functionality start
   redeemClickEvent({Campaign campaign}) async {
     bool isUserInMall = await SessionManager.getUserInMall();
-    if (!isUserInMall) {
+    if (isUserInMall) {
       try {
         int userLoyaltyPoints = await getLoyaltyPointsForRedeem();
         int finalCouponPoints = getFinalUserPoints(campaign: campaign);
@@ -449,7 +451,36 @@ class _RewardsDetailsState extends State<RewardsDetails> {
                   shopId, campaign.id, shopName, campaign.voucher);
             },
           );
-        } else {}
+        } else {
+          if (AppString.POINT_SHOW) {
+            _rewardsDetailBloc.showErrorDialog(
+              icon: Icon(
+                FontAwesomeIcons.exclamationTriangle,
+                color: AppColor.orange_500,
+              ),
+              title: AppString.info.toUpperCase(),
+              content: AppString.you_need_five_points,
+              buttonText: AppString.ok.toUpperCase(),
+              context: context,
+              onPressed: () {
+                Navigator.pop(context);
+                Navigator.push(context, FullScreenLoyaltyInfoDialog());
+              },
+            );
+          } else {
+            _rewardsDetailBloc.showErrorDialog(
+              icon: Icon(
+                FontAwesomeIcons.exclamationTriangle,
+                color: AppColor.orange_500,
+              ),
+              title: AppString.error.toUpperCase(),
+              content: AppString.check_your_internet_connectivity,
+              buttonText: AppString.ok.toUpperCase(),
+              context: context,
+              onPressed: () => Navigator.pop(context),
+            );
+          }
+        }
       } catch (e) {}
     } else {
       _notAnVenueDialog(

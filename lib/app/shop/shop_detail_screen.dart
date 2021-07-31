@@ -426,6 +426,7 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
                                                         Positioned.fill(
                                                           child: ItemRewards(
                                                             isBorder: false,
+                                                            pointShow: false,
                                                             index: position,
                                                             campaign: shopDetailModel
                                                                     .listRetailUnitCategory[

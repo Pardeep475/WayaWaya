@@ -4,13 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:wayawaya/app/common/dialogs/common_login_dialog.dart';
-import 'package:wayawaya/app/common/dialogs/common_not_at_venue_dialog.dart';
-import 'package:wayawaya/app/common/dialogs/full_screen_show_qr_and_barcode_generator_dialog.dart';
 import 'package:wayawaya/app/common/full_screen_not_an_vanue_dialog.dart';
 import 'package:wayawaya/app/common/menu/model/main_menu_permission.dart';
 import 'package:wayawaya/app/common/webview/model/custom_web_view_model.dart';
 import 'package:wayawaya/app/shop/model/shops_fav_model.dart';
 import 'package:wayawaya/network/local/profile_database_helper.dart';
+import 'package:wayawaya/network/local/sync_service.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_images.dart';
 import 'package:wayawaya/utils/app_strings.dart';
@@ -19,10 +18,6 @@ import 'package:wayawaya/utils/session_manager.dart';
 import 'package:wayawaya/utils/utils.dart';
 
 class MenuTile extends StatelessWidget {
-  // final List<MainMenuPermission> itemList = [];
-
-  //  const static MenuTile({Key key, List<MainMenuPermission> itemList});
-  //
   final List<MainMenuPermission> itemList;
 
   const MenuTile({Key key, this.itemList}) : super(key: key);
@@ -225,15 +220,15 @@ class MenuTile extends StatelessWidget {
             bool checkRetailUnitByID =
                 await ProfileDatabaseHelper.checkRetailUnitByRid(rid);
             if (checkRetailUnitByID) {
-              if(type.toLowerCase() == "store_visit".toLowerCase()){
-                // if (Utils.checkNullOrEmpty(type)) {
-                //   LoyaltyUtil.setStoreVisitLoyaltyPoints(mDataManager.getPreferencesHelper(), rid);
-                //   updateStoreVisitLoyaltyPoints();
-                // } else {
-                //   updateStoreVisitQRPoints(Integer.parseInt(points), rid);
-                // }
-              }else if(type.toLowerCase() == "redemption".toLowerCase()){
-
+              if (type.toLowerCase() == "store_visit".toLowerCase()) {
+                if (Utils.checkNullOrEmpty(points)) {
+                  // LoyaltyUtil.setStoreVisitLoyaltyPoints(mDataManager.getPreferencesHelper(), rid);
+                  SyncService.updateStoreVisitLoyaltyPoints();
+                } else {
+                  SyncService.updateStoreVisitQRPoints(int.parse(points), rid);
+                }
+              } else if (type.toLowerCase() == "redemption".toLowerCase()) {
+                // redeem points
               }
             } else {
               Navigator.push(
@@ -245,8 +240,7 @@ class MenuTile extends StatelessWidget {
           } catch (e) {
             Navigator.push(
               context,
-              FullScreenNotAnVenueDialog(
-                  content: e.toString()),
+              FullScreenNotAnVenueDialog(content: e.toString()),
             );
           }
         }

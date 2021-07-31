@@ -7,11 +7,11 @@ import 'package:wayawaya/utils/dimens.dart';
 import 'package:wayawaya/utils/utils.dart';
 
 class FullScreenNotAnVenueDialog extends ModalRoute<bool> {
-  String title;
-  String content;
+  final String title;
+  final String content;
+  final VoidCallback onPressed;
 
-
-  FullScreenNotAnVenueDialog({this.title, this.content});
+  FullScreenNotAnVenueDialog({this.title, this.content, this.onPressed});
 
   @override
   Duration get transitionDuration => Duration(milliseconds: 500);
@@ -116,6 +116,7 @@ class FullScreenNotAnVenueDialog extends ModalRoute<bool> {
 
   void _onBackPressed(BuildContext context) {
     Navigator.pop(context);
+    if (onPressed != null) onPressed();
   }
 
   @override

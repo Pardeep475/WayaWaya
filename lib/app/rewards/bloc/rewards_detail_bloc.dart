@@ -38,7 +38,7 @@ class RewardsDetailBloc {
         updateLoyaltyPoints(context, loyalty, shopName, -1, false, mVoucher);
       } else {
         // show internet dialog
-        _showErrorDialog(
+        showErrorDialog(
           icon: Icon(
             FontAwesomeIcons.exclamationTriangle,
             color: AppColor.orange_500,
@@ -56,8 +56,10 @@ class RewardsDetailBloc {
   updateLoyaltyPoints(BuildContext context, LoyaltyNew loyalty, String shopName,
       int monthNo, bool isOfferView, dynamic mVoucher) async {
     try {
+      Utils.commonProgressDialog(context);
       dynamic response =
           await _repository.postAppOpenLoyaltyTransaction(loyaltyNew: loyalty);
+      Navigator.pop(context);
 
       if (response is DioError) {
         if (response.response.statusCode == 401) {
@@ -92,12 +94,12 @@ class RewardsDetailBloc {
                   "\n\n" +
                   AppString.redeem_msg_2;
           Voucher voucher;
-          try{
-             voucher = Voucher.fromJson(jsonDecode(mVoucher));  
-          }catch(e){
+          try {
+            voucher = Voucher.fromJson(jsonDecode(mVoucher));
+          } catch (e) {
             voucher = Voucher.fromJson(jsonDecode(jsonDecode(mVoucher)));
           }
-          
+
           String type;
           String code;
           if (voucher.enabled) {
@@ -112,7 +114,7 @@ class RewardsDetailBloc {
                 content: msg,
                 codeText: code,
                 type: type,
-                onOkButtonPressed: () async{
+                onOkButtonPressed: () async {
                   // check user api implemented
                   await SyncService.checkUser();
                 }),
@@ -122,7 +124,7 @@ class RewardsDetailBloc {
     } catch (e) {}
   }
 
-  _showErrorDialog(
+  showErrorDialog(
       {Icon icon,
       String title,
       String content,

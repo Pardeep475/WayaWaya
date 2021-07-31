@@ -20,12 +20,14 @@ class ItemRewards extends StatelessWidget {
   final Campaign campaign;
   final List<Campaign> listOfCampaign;
   final bool isBorder;
+  final bool pointShow;
 
   ItemRewards(
       {this.size,
       this.index,
       this.campaign,
       this.listOfCampaign,
+      this.pointShow = false,
       this.isBorder = true});
 
   @override
@@ -33,6 +35,7 @@ class ItemRewards extends StatelessWidget {
     getErrorText(campaign);
     return InkWell(
       onTap: () {
+        AppString.POINT_SHOW = this.pointShow;
         DetailModel _detailModel =
             DetailModel(listOfCampaign: this.listOfCampaign, position: index);
         Navigator.pushNamed(context, AppString.REWARDS_DETAIL_SCREEN_ROUTE,

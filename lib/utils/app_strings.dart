@@ -278,9 +278,14 @@ class AppString {
   static const String qr_scan = "QR Scan";
   static const String membership = "Membership";
   static const String redeem_offer = "REDEEM OFFER";
-  static const String redeem_msg_2 = "If you have not shown the redemption page to the cashier, you will forfeit your points.";
-  static const String no_shop_available = "Please check the selected mall. The shop you\'r looking for is not available.";
-
+  static const String redeem_msg_2 =
+      "If you have not shown the redemption page to the cashier, you will forfeit your points.";
+  static const String no_shop_available =
+      "Please check the selected mall. The shop you\'r looking for is not available.";
+  static const String no_sufficient_points =
+      "You don\'t have sufficient points to redeem.";
+  static const String you_need_five_points = "You need 5 additional points";
+  static const String info = "Info";
 
   // Routes
   static const LOGIN_SCREEN_ROUTE = "LOGIN_SCREEN_ROUTE";
@@ -345,4 +350,6 @@ class AppString {
   static const String CINEMA_CAMPAIGN = "cinema";
 
   static const String MAP_STORE_KEY = 'storeId';
+
+  static bool POINT_SHOW = false;
 }
