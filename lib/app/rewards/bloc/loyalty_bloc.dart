@@ -17,7 +17,6 @@ import 'package:wayawaya/network/model/loyalty/loyalty_header_response.dart';
 import 'package:wayawaya/network/model/loyalty/loyalty_new.dart';
 import 'package:wayawaya/network/model/loyalty/loyalty_points.dart';
 import 'package:wayawaya/network/model/loyalty/loyalty_response.dart';
-import 'package:wayawaya/network/model/loyalty/loyalty_temp.dart';
 import 'package:wayawaya/utils/session_manager.dart';
 import 'package:wayawaya/utils/utils.dart';
 

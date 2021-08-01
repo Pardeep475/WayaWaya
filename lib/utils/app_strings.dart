@@ -52,7 +52,7 @@ class AppString {
 
   static const String DEVICE_SEPARATOR = "~^";
   static const String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
-  static const String BUILD_TIME = "2020-07-17 00:00:00";
+  static const String BUILD_TIME = "2015-07-17 00:00:00";
   static const String DATE_FORMAT_UPDATE = "yyyy-MM-dd hh:mm:ss a";
   static const String DATE_FORMAT_WITHOUT_TIME = "yyyy-MM-dd 00:00:00";
   static const String STATE = "state";

@@ -34,57 +34,20 @@ class DataBaseHelperTwo {
 
   static patchData(String tableName, String columnName, String changedValue,
       String idColumnName, String recordId, bool isAdmin) async {
-    if (isAdmin) {
-      if (_adminDataBase == null) _adminDataBase = await fetchAdminDatabase();
-    } else {
-      if (_profileDataBase == null)
-        _profileDataBase = await fetchProfileDatabase();
-    }
-
+    String query =
+        " UPDATE $tableName SET $columnName = $changedValue WHERE $idColumnName = $recordId";
     try {
-      debugPrint("QueryForPatchData ----->" +
-          " UPDATE " +
-          tableName +
-          " SET " +
-          columnName +
-          " = " +
-          changedValue +
-          " WHERE " +
-          idColumnName +
-          " = " +
-          recordId);
       if (isAdmin) {
-        var value = await _adminDataBase.rawQuery(" UPDATE " +
-            tableName +
-            " SET " +
-            columnName +
-            " = " +
-            "" +
-            changedValue +
-            "" +
-            " WHERE " +
-            idColumnName +
-            " = " +
-            "'" +
-            recordId +
-            "'");
-        debugPrint("QueryForPatchData ----->   updated value :-  $value");
+        if (_adminDataBase == null) _adminDataBase = await fetchAdminDatabase();
+        await _adminDataBase.transaction((txn) async {
+          txn.rawQuery(query);
+        });
       } else {
-        var value = await _profileDataBase.rawQuery(" UPDATE " +
-            tableName +
-            " SET " +
-            columnName +
-            " = " +
-            "" +
-            changedValue +
-            "" +
-            " WHERE " +
-            idColumnName +
-            " = " +
-            "'" +
-            recordId +
-            "'");
-        debugPrint("QueryForPatchData ----->   updated value :-  $value");
+        if (_profileDataBase == null)
+          _profileDataBase = await fetchProfileDatabase();
+        await _profileDataBase.transaction((txn) async {
+          txn.rawQuery(query);
+        });
       }
     } catch (e) {
       debugPrint('database_error:-   ${e.toString()}');
@@ -93,41 +56,23 @@ class DataBaseHelperTwo {
 
   static deleteRecord(String tableName, String columnName, String recordId,
       bool isAdmin) async {
-    if (isAdmin) {
-      if (_adminDataBase == null) _adminDataBase = await fetchAdminDatabase();
-    } else {
-      if (_profileDataBase == null)
-        _profileDataBase = await fetchProfileDatabase();
-    }
+    String query = "Delete From $tableName Where $columnName = $recordId";
     try {
       if (isAdmin) {
-        await _adminDataBase.query("Delete From " +
-            tableName +
-            " Where " +
-            columnName +
-            " = " +
-            "\'" +
-            recordId +
-            "\'");
+        if (_adminDataBase == null) _adminDataBase = await fetchAdminDatabase();
+        await _adminDataBase.transaction((txn) async {
+          txn.rawQuery(query);
+        });
       } else {
-        await _profileDataBase.query("Delete From " +
-            tableName +
-            " Where " +
-            columnName +
-            " = " +
-            "\'" +
-            recordId +
-            "\'");
+        if (_profileDataBase == null)
+          _profileDataBase = await fetchProfileDatabase();
+        await _profileDataBase.transaction((txn) async {
+          txn.rawQuery(query);
+        });
       }
-      debugPrint("deleteRecord---> Delete From " +
-          tableName +
-          " Where " +
-          columnName +
-          " = " +
-          "\'" +
-          recordId +
-          "\'");
-    } catch (e) {}
+    } catch (e) {
+      debugPrint("error delete database:-  $e");
+    }
   }
 
   static setCategoryToDataBase(List<CategoryWrapperItem> list) async {
@@ -159,33 +104,32 @@ class DataBaseHelperTwo {
               whereArgs: [categoryId]);
           if (category == null || category.length == 0 || category.length < 0) {
             try {
-              return await _profileDataBase.insert(
-                  CategoriesTable.CATEGORY_TABLE_NAME, row);
+              return await txn.insert(CategoriesTable.CATEGORY_TABLE_NAME, row);
             } catch (e) {
               debugPrint('database_insert:-  $e');
             }
           } else {
-            return await _profileDataBase.update(
-                CategoriesTable.CATEGORY_TABLE_NAME, row,
+            return await txn.update(CategoriesTable.CATEGORY_TABLE_NAME, row,
                 where: '${CategoriesTable.COLUMN_ID} = ?',
                 whereArgs: [categoryId]);
           }
         }
       });
-    } catch (e) {}
+    } catch (e) {
+      debugPrint("error:-  insertCategoryTable $e");
+    }
   }
 
-  static Future<List<Map<String, Map<String, Map<String, String>>>>>
-      getObjectHashMap(
-          final Map<String, Map<String, Map<String, String>>>
+  static Future<List<Map<String, Map<String, Map<String, dynamic>>>>> getObjectHashMap(
+          final Map<String, Map<String, Map<String, dynamic>>>
               dataListToGet) async {
     if (_profileDataBase == null)
       _profileDataBase = await fetchProfileDatabase();
-    List<Map<String, Map<String, Map<String, String>>>> list = [];
-    Map<String, Map<String, Map<String, String>>> returnData = new Map();
-    Map<String, Map<String, String>> queryData = new Map();
+    List<Map<String, Map<String, Map<String, dynamic>>>> list = [];
+    Map<String, Map<String, Map<String, dynamic>>> returnData = new Map();
+    Map<String, Map<String, dynamic>> queryData = new Map();
 
-    dataListToGet.keys.forEach((resource) async {
+    await dataListToGet.keys.forEach((resource) async {
       if (dataListToGet[resource] != null) {
         dataListToGet[resource].keys.forEach((id) async {
           switch (resource) {
@@ -198,6 +142,7 @@ class DataBaseHelperTwo {
                 dynamic c = await _profileDataBase.rawQuery(query);
                 if (c != null) {
                   queryData.clear();
+                  // queryData[id] =
                   // queryData.put(id, gson.fromJson(gson.toJson(ProfileDb.CampaignTable.parseCursor(c)), HashMap.class));
                 } else {
                   queryData.clear();
@@ -243,6 +188,7 @@ class DataBaseHelperTwo {
       queryData.clear();
       list.add(returnData);
     });
+    return list;
   }
 
   // loyalty data implemented
@@ -253,7 +199,9 @@ class DataBaseHelperTwo {
       list.forEach((element) async {
         await insertLoyaltyTable(loyaltyId: element.id, row: element.toJson());
       });
-    } catch (e) {}
+    } catch (e) {
+      debugPrint("error:-  setLoyaltyToDataBase : $e");
+    }
   }
 
   static insertLoyaltyTable(
@@ -282,7 +230,9 @@ class DataBaseHelperTwo {
           }
         }
       });
-    } catch (e) {}
+    } catch (e) {
+      debugPrint('error:-  insertLoyaltyTable  $e');
+    }
   }
 
   static Future<int> loyaltyTableLength() async {

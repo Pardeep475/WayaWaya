@@ -39,7 +39,7 @@ class SyncService {
 
   static String lastUpdate;
 
-  static Map<String, Map<String, Map<String, Map<String, String>>>>
+  static Map<String, Map<String, Map<String, Map<String, dynamic>>>>
       hashmapToUpdate = new Map();
 
   static List<String> toRemove = [];
@@ -50,7 +50,7 @@ class SyncService {
     await setSyncDateQuery();
     await fetchCampaignData(1);
     await syncLoyalty();
-    // await fetchUpdateData(1);
+    await fetchUpdateData(1);
     // SessionManager.setSyncDate(Utils.getStringFromDate(Utils.firstDate(), AppString.DATE_FORMAT));
   }
 
@@ -194,12 +194,11 @@ class SyncService {
         // If resource is appsoftware parameter set method as post since only one data is present
         if (resourceName.toLowerCase() ==
             "appSoftwareParameters".toLowerCase()) {
-          debugPrint("getting updateDataInDb 1%s   ${item["o"].toString()}");
-          // setHashMap(item.get("i").getAsString(), gson.fromJson(item.get("c").getAsJsonObject(), HashMap.class), "POST", resourceName);
+          await setHashMap(item["i"].toString(), item["c"], "POST",
+              resourceName);
         } else {
-          debugPrint(
-              "getting updateDataInDb 2 %s ------%s-----   $resourceName   ${item["o"].toString()}");
-          // setHashMap(item.get("i").getAsString(), gson.fromJson(item.get("c").getAsJsonObject(), HashMap.class), item.get("o").getAsString(), resourceName);
+          await setHashMap(item["i"].toString(), item["c"],
+              item["o"].toString(), resourceName);
         }
       }
 
@@ -211,26 +210,32 @@ class SyncService {
       } else if (item["o"] != null && item["o"].toString().trim() == "DELETE") {
         await _deleteFromDb(data: item);
       }
-    } catch (e) {}
+    } catch (e) {
+      debugPrint("error_in:-   $e");
+    }
   }
 
-  static setHashMap(String id, Map<String, String> dataHashMap, String method,
-      String resourceName) {
-    Map<String, Map<String, String>> newDataHashMap = new Map();
-    newDataHashMap[id] = dataHashMap;
+  static setHashMap(String id, Map<String, dynamic> dataHashMap, String method,
+      String resourceName) async{
+    try{
+      Map<String, Map<String, dynamic>> newDataHashMap = new Map();
+      newDataHashMap[id] = dataHashMap;
 
-    debugPrint(
-        "Data in setHashMap %s -- %s -- %s" + id + method + resourceName);
+      debugPrint(
+          "Data in setHashMap %s -- %s -- %s" + id + method + resourceName);
 
-    Map<String, Map<String, Map<String, String>>> resourceHashMap = new Map();
+      Map<String, Map<String, Map<String, dynamic>>> resourceHashMap = new Map();
 
-    resourceHashMap[method] = newDataHashMap;
+      resourceHashMap[method] = newDataHashMap;
 
-    setMasterHashMap(resourceName, method, resourceHashMap, id);
+      setMasterHashMap(resourceName, method, resourceHashMap, id);
+    }catch(e){
+      debugPrint("error_map:-  hashmap:-  $e");
+    }
   }
 
   static setMasterHashMap(String resource, String method,
-      Map<String, Map<String, Map<String, String>>> resourceData, String id) {
+      Map<String, Map<String, Map<String, dynamic>>> resourceData, String id) {
     if (hashmapToUpdate[resource] != null) {
       if (hashmapToUpdate[resource][method] != null &&
           hashmapToUpdate[resource][method][id] != null) {
@@ -262,7 +267,7 @@ class SyncService {
   }
 
   static Map<String, String> mergeHashMap(
-      Map<String, String> targetHashMap, Map<String, String> updatedHashMap) {
+      Map<String, dynamic> targetHashMap, Map<String, dynamic> updatedHashMap) {
     targetHashMap.addAll(updatedHashMap);
     return targetHashMap;
   }
@@ -341,7 +346,9 @@ class SyncService {
           }
           break;
       }
-    } catch (e) {}
+    } catch (e) {
+      debugPrint("error_e:-   patch:-  $e");
+    }
   }
 
   static _postNewDataToDb({dynamic data}) async {
@@ -376,7 +383,9 @@ class SyncService {
 //                updateMapData();
           break;
       }
-    } catch (e) {}
+    } catch (e) {
+      debugPrint("error_e:-   post:-  $e");
+    }
   }
 
   static _deleteFromDb({dynamic data}) async {
@@ -427,13 +436,15 @@ class SyncService {
 //                updateMapData();
           break;
       }
-    } catch (e) {}
+    } catch (e) {
+      debugPrint("error_e:-  delete db:-  $e");
+    }
   }
 
   static iterateUpdatedHashMaps(
-      Map<String, Map<String, Map<String, Map<String, String>>>>
+      Map<String, Map<String, Map<String, Map<String, dynamic>>>>
           dataToUpdate) async {
-    Map<String, Map<String, Map<String, String>>> listOfDataToPatch = new Map();
+    Map<String, Map<String, Map<String, dynamic>>> listOfDataToPatch = new Map();
     debugPrint("iterateUpdatedHashMaps %s" + dataToUpdate.toString());
     dataToUpdate.keys.forEach((element) {
       // if (element == "retailUnits") {
@@ -463,9 +474,9 @@ class SyncService {
   }
 
   static getDataForUpdate(
-      final Map<String, Map<String, Map<String, String>>>
+      final Map<String, Map<String, Map<String, dynamic>>>
           apiDataHashMap) async {
-    List<Map<String, Map<String, Map<String, String>>>> list =
+    List<Map<String, Map<String, Map<String, dynamic>>>> list =
         await DataBaseHelperTwo.getObjectHashMap(apiDataHashMap);
 
     list.forEach((existingData) {
@@ -500,7 +511,9 @@ class SyncService {
 
   static patchMergedData(
       Map<String, Map<String, Map<String, Map<String, String>>>>
-          mergeDataHashMap) {}
+          mergeDataHashMap) {
+
+  }
 
   static startPostRequests() async {
     await setCategory(1);
@@ -889,10 +902,11 @@ class SyncService {
               // refresh token
               bool returnValue = await updateRefreshToken();
               if (returnValue) {
-                updateStoreVisitQRPoints(context: context, shop_id: shop_id, points: points);
+                updateStoreVisitQRPoints(
+                    context: context, shop_id: shop_id, points: points);
               }
             }
-          }else{
+          } else {
             Navigator.push(
               context,
               FullScreenNotAnVenueDialog(
@@ -944,10 +958,11 @@ class SyncService {
               // refresh token
               bool returnValue = await updateRefreshToken();
               if (returnValue) {
-                redeemLoyaltyPoints(context: context, shop_id: shop_id, points: points);
+                redeemLoyaltyPoints(
+                    context: context, shop_id: shop_id, points: points);
               }
             }
-          }else{
+          } else {
             Navigator.push(
               context,
               FullScreenNotAnVenueDialog(
@@ -976,7 +991,5 @@ class SyncService {
     }
   }
 
-  static Future updateStoreVisitLoyaltyPoints({BuildContext context}) {
-
-  }
+  static Future updateStoreVisitLoyaltyPoints({BuildContext context}) {}
 }
