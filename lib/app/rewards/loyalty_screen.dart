@@ -1,20 +1,29 @@
+import 'dart:convert';
+
 import 'package:expandable_group/expandable_group.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:icon_shadow/icon_shadow.dart';
+import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:wayawaya/app/auth/login/model/user_data_response.dart';
+import 'package:wayawaya/app/common/full_screen_enter_points_to_redeem_dialog.dart';
 import 'package:wayawaya/app/common/full_screen_loyalty_info_dialog.dart';
+import 'package:wayawaya/app/common/full_screen_not_an_vanue_dialog.dart';
 import 'package:wayawaya/app/common/menu/animate_app_bar.dart';
 import 'package:wayawaya/app/common/menu/model/main_menu_permission.dart';
 import 'package:wayawaya/app/rewards/bloc/loyalty_bloc.dart';
 import 'package:wayawaya/app/rewards/model/child_expandable_model.dart';
 import 'package:wayawaya/app/rewards/model/header_expandable_model.dart';
+import 'package:wayawaya/network/local/profile_database_helper.dart';
+import 'package:wayawaya/network/local/sync_service.dart';
 import 'package:wayawaya/network/model/loyalty/loyalty_points.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_images.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/dimens.dart';
 import 'package:wayawaya/utils/session_manager.dart';
+import 'package:wayawaya/utils/utils.dart';
 
 import 'model/expandable_model.dart';
 import 'model/loyalty_points.dart';
@@ -392,9 +401,8 @@ class _LoyaltyScreenState extends State<LoyaltyScreen> {
                                   color: AppColor.rowDivider,
                                 ),
                                 GestureDetector(
-                                  onTap: () {
-                                    Navigator.pushNamed(context,
-                                        AppString.QR_SCANNER_SCREEN_ROUTE);
+                                  onTap: () async{
+                                    await _scannerFunctionality(context);
                                   },
                                   child: Container(
                                     padding: EdgeInsets.symmetric(
@@ -730,6 +738,114 @@ class _LoyaltyScreenState extends State<LoyaltyScreen> {
       ),
     );
   }
+
+  _scannerFunctionality(BuildContext context) async {
+    debugPrint("scanner_functionality");
+    bool isUserInMall = await checkIfUserInMall();
+    if (isUserInMall) {
+      Navigator.pushNamed(context, AppString.QR_SCANNER_SCREEN_ROUTE)
+          .then((value) async {
+        if (value != null) {
+          try {
+            Barcode scanData = value as Barcode;
+            dynamic jsonScanData = jsonDecode(scanData.code);
+            String rid = "";
+            String type = "";
+            String points = "";
+            rid = jsonScanData["shop_id"];
+            type = jsonScanData["type"];
+            points = jsonScanData["points"];
+            if (Utils.checkNullOrEmpty(rid)) return;
+            if (Utils.checkNullOrEmpty(type)) return;
+            bool isUserInMall = await checkIfUserInMall();
+            if (!isUserInMall) {
+              Navigator.push(
+                context,
+                FullScreenNotAnVenueDialog(),
+              );
+              return;
+            }
+            bool checkRetailUnitByID =
+            await ProfileDatabaseHelper.checkRetailUnitByRid(rid);
+            if (checkRetailUnitByID) {
+              if (type.toLowerCase() == "store_visit".toLowerCase()) {
+                if (Utils.checkNullOrEmpty(points)) {
+                  // LoyaltyUtil.setStoreVisitLoyaltyPoints(mDataManager.getPreferencesHelper(), rid);
+                  SyncService.updateStoreVisitLoyaltyPoints(context: context);
+                } else {
+                  SyncService.updateStoreVisitQRPoints(
+                      context: context,
+                      points: int.parse(points),
+                      shop_id: rid);
+                }
+              } else if (type.toLowerCase() == "redemption".toLowerCase()) {
+                // redeem points
+                Navigator.push(
+                  context,
+                  FullScreenEnterPointsToRedeemDialog(
+                      onPressed: (points) async {
+                        int totalPoints = await getLoyaltyPointsForRedeem();
+                        if (points != 0) {
+                          if (points > totalPoints) {
+                            Navigator.push(
+                              context,
+                              FullScreenNotAnVenueDialog(
+                                  title: AppString.error,
+                                  content: AppString.no_sufficient_points),
+                            );
+                          } else {
+                            SyncService.redeemLoyaltyPoints(
+                                context: context, shop_id: rid, points: points);
+                          }
+                        } else {
+                          Navigator.push(
+                            context,
+                            FullScreenNotAnVenueDialog(
+                                title: AppString.error,
+                                content: AppString.no_points_entered),
+                          );
+                        }
+                      }),
+                );
+              }
+            } else {
+              Navigator.push(
+                context,
+                FullScreenNotAnVenueDialog(
+                    content: AppString.no_shop_available),
+              );
+            }
+          } catch (e) {
+            Navigator.push(
+              context,
+              FullScreenNotAnVenueDialog(content: e.toString()),
+            );
+          }
+        }
+      });
+    } else {
+      Navigator.push(
+        context,
+        FullScreenNotAnVenueDialog(),
+      );
+    }
+  }
+
+  Future<int> getLoyaltyPointsForRedeem() async {
+    String userData = await SessionManager.getUserData();
+    UserDataResponse _response = userDataResponseFromJson(userData);
+    if (_response == null) return 0;
+    if (_response.loyaltyStatus == null) return 0;
+    dynamic loyaltyStatus = jsonDecode(_response.loyaltyStatus);
+    if (loyaltyStatus['points'] == null) return 0;
+    return loyaltyStatus['points'];
+  }
+
+  Future<bool> checkIfUserInMall() async {
+    bool isUserInMall = await SessionManager.getUserInMall();
+    return isUserInMall ?? false;
+  }
+
 }
 
 class ItemChildExpandable extends StatelessWidget {

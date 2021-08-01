@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_geofence/geofence.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:wayawaya/app/auth/signup/sign_up_screen.dart';
 import 'package:wayawaya/app/auth/splash/splash_screen.dart';
@@ -37,7 +36,7 @@ import 'network/local/super_admin_database_helper.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // GeoFenceService.initGeofence();
+  GeoFenceService.initGeofence();
   await NotificationService().init();
   await SuperAdminDatabaseHelper.initDataBase();
   bool isFirstTime = await SessionManager.isFirstTime();
@@ -304,4 +303,3 @@ class MyAppState extends State<MyApp> {
     }
   }
 }
-

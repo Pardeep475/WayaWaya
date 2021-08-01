@@ -1,6 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_geofence/geofence.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:wayawaya/network/local/notification_service.dart';
+import 'package:wayawaya/utils/permission_service/permission_service.dart';
 
 class GeoFenceService {
   static final GeoFenceService _geoFenceService = GeoFenceService._internal();
@@ -19,23 +23,59 @@ class GeoFenceService {
     Geofence.initialize();
   }
 
-  static getCurrentLocation() {
-    Geofence.getCurrentLocation().then((coordinate) {
-      print(
-          "Your latitude is ${coordinate.latitude} and longitude ${coordinate.longitude}");
-      NotificationService.showSimpleNotification(
-          "Your latitude is ${coordinate.latitude} and longitude ${coordinate.longitude}");
+  static locationStream() async {
+    bool status = await PermissionService.checkLocationPermission();
+    if (status) {
+      getCurrentLocation();
+    } else {
+      bool statusLocation = await PermissionService.requestLocationPermission();
+      if (statusLocation) {
+        getCurrentLocation();
+      }
+    }
+  }
+
+  static getCurrentLocation() async {
+    Geolocator.getPositionStream().listen((Position position) {
+      print(position == null
+          ? 'Unknown'
+          : position.latitude.toString() +
+              ', ' +
+              position.longitude.toString());
     });
+
+    // Geofence.getCurrentLocation().then((coordinate) {
+    //   print(
+    //       "Your latitude is ${coordinate.latitude} and longitude ${coordinate.longitude}");
+    //   NotificationService.showSimpleNotification(
+    //       "Your latitude is ${coordinate.latitude} and longitude ${coordinate.longitude}");
+    // }).catchError((onError) {
+    //   debugPrint('current_location_error:-   $onError');
+    // }).onError((error, stackTrace) {
+    //   debugPrint('current_location_error:-   $error');
+    // });
   }
 
   static startListeningForLocationChanges() {
     Geofence.startListeningForLocationChanges();
   }
 
-  static addLatLongToGeofence() {
+  static addLatLongToGeofence() async {
+    bool status = await PermissionService.checkLocationPermission();
+    if (status) {
+      addLocationToGeofence();
+    } else {
+      bool statusLocation = await PermissionService.requestLocationPermission();
+      if (statusLocation) {
+        addLocationToGeofence();
+      }
+    }
+  }
+
+  static addLocationToGeofence() {
     Geolocation geolocation = Geolocation(
-        latitude: 29.548076,
-        longitude: 76.910275,
+        latitude: 29.5398,
+        longitude: 76.9731,
         radius: 1500,
         id: "GeoLocationAdded");
     Geofence.addGeolocation(geolocation, GeolocationEvent.entry)
@@ -43,8 +83,19 @@ class GeoFenceService {
       debugPrint("Georegion added Your geofence has been added!");
       NotificationService.showSimpleNotification(
           "Georegion added Your geofence has been added!");
+      startListeningForLocationChanges();
+      listenForGroundLocation();
+      listenBackgroundLocation();
     }).catchError((error) {
       print("failed with $error");
+    });
+  }
+
+  static listenForGroundLocation() {
+    Geofence.startListening(GeolocationEvent.entry, (entry) {
+      debugPrint("Entry of a georegion Welcome to: ${entry.id}");
+      NotificationService.showSimpleNotification(
+          "Entry of a georegion Welcome to: ${entry.id}");
     });
   }
 
@@ -61,8 +112,8 @@ class GeoFenceService {
 
   static removeLatLongToGeoFence() {
     Geolocation geolocation = Geolocation(
-        latitude: 29.548076,
-        longitude: 76.910275,
+        latitude: 29.5398,
+        longitude: 76.9731,
         radius: 1500,
         id: "GeoLocationAdded");
     Geofence.removeGeolocation(geolocation, GeolocationEvent.entry)

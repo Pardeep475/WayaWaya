@@ -307,7 +307,12 @@ class _OffersDetailsState extends State<OfferDetails> {
     try {
       String subject = _getTitle(buildContext, campaign);
       if (campaign.voucher != null) {
-        Voucher _voucher = Voucher.fromJson(jsonDecode(campaign.voucher));
+        Voucher _voucher;
+        try{
+          _voucher = Voucher.fromJson(jsonDecode(campaign.voucher));
+        }catch(e){
+          _voucher = Voucher.fromJson(jsonDecode(jsonDecode(campaign.voucher)));
+        }
         NumberFormat nf = NumberFormat.decimalPattern();
         String discount = nf.format(_voucher.discount);
         if (discount.isNotEmpty) {
@@ -333,9 +338,13 @@ class _OffersDetailsState extends State<OfferDetails> {
         }
       }
 
-      Share.share(description + "\n" + _getImage(buildContext, campaign),
+      Utils.shareFunctionality(
+          description: description,
+          image: _getImage(buildContext,campaign),
           subject: subject);
 
+      // Share.share(description + "\n" + _getImage(buildContext, campaign),
+      //     subject: subject);
       // Share.shareFiles([_getImage(buildContext)],
       //     subject: subject, text: description);
       // final String discount = nf.format(campaign.voucher.);

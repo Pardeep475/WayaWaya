@@ -172,19 +172,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
         {
           debugPrint('settings_click_testing:-  ${settingsModel.title}');
           _settingsBloc.privacyPolicyOnClick(context);
-          //
-          // DataBaseHelperCommon.deleteData();
-
           break;
         }
       case AppString.term_and_conditions:
         {
           debugPrint('settings_click_testing:-  ${settingsModel.title}');
-          // _settingsBloc.termAndConditionOnClick(context);
+          _settingsBloc.termAndConditionOnClick(context);
 
-
-
-          // Navigator.push(context, FullScreenCallDialogPermission());
           // EventLoggerService.eventLogger(
           //     uuid: EventLoggerService.Settings,
           //     action: EventLoggerService.LOG_TYPE_NAVIGATION,
@@ -194,6 +188,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
           // await SyncService.checkUser();
           // GeoFenceService.requestPermission();
+          // GeoFenceService.locationStream();
           // GeoFenceService.addLatLongToGeofence();
           // GeoFenceService.listenBackgroundLocation();
           // Future.delayed(Duration(seconds: 40),(){

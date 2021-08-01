@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:share/share.dart';
 import 'package:wayawaya/app/home/model/campaign_element.dart';
 import 'package:wayawaya/common/model/language_store.dart';
 import 'package:wayawaya/network/live/network_constants.dart';
@@ -453,5 +454,10 @@ class Utils {
       finalVerName = vrName.toLowerCase().replaceFirst("release", "");
     }
     return finalVerName;
+  }
+
+  static shareFunctionality(
+      {String description, String image, String subject}) {
+    Share.share(description + "\n" + image, subject: subject);
   }
 }

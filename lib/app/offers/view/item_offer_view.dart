@@ -30,13 +30,17 @@ class ItemOfferView extends StatelessWidget {
   String _getTitle(BuildContext context) {
     if (campaign == null) return '';
     if (campaign.campaignElement == null) return '';
-    try{
-      CampaignElement camElement = campaignElementFromJson(campaign.campaignElement);
-      List<LanguageStore> name = List<LanguageStore>.from(camElement.name.map((x) => LanguageStore.fromJson(x)));
+    try {
+      CampaignElement camElement =
+          campaignElementFromJson(campaign.campaignElement);
+      List<LanguageStore> name = List<LanguageStore>.from(
+          camElement.name.map((x) => LanguageStore.fromJson(x)));
       return Utils.getTranslatedCode(context, name);
-    }catch(e){
-      CampaignElement camElement = campaignElementFromJson(jsonDecode(campaign.campaignElement));
-      List<LanguageStore> name = List<LanguageStore>.from(camElement.name.map((x) => LanguageStore.fromJson(x)));
+    } catch (e) {
+      CampaignElement camElement =
+          campaignElementFromJson(jsonDecode(campaign.campaignElement));
+      List<LanguageStore> name = List<LanguageStore>.from(
+          camElement.name.map((x) => LanguageStore.fromJson(x)));
       return Utils.getTranslatedCode(context, name);
     }
   }
@@ -44,13 +48,17 @@ class ItemOfferView extends StatelessWidget {
   String _getImage(BuildContext context) {
     if (campaign == null) return '';
     if (campaign.campaignElement == null) return '';
-    try{
-      CampaignElement camElement = CampaignElement.fromJson(jsonDecode(campaign.campaignElement));
-      List<LanguageStore> imageId = List<LanguageStore>.from(camElement.imageId.map((x) => LanguageStore.fromJson(x)));
+    try {
+      CampaignElement camElement =
+          CampaignElement.fromJson(jsonDecode(campaign.campaignElement));
+      List<LanguageStore> imageId = List<LanguageStore>.from(
+          camElement.imageId.map((x) => LanguageStore.fromJson(x)));
       return Utils.getTranslatedCode(context, imageId);
-    }catch(e){
-      CampaignElement camElement = CampaignElement.fromJson(jsonDecode(jsonDecode(campaign.campaignElement)));
-      List<LanguageStore> imageId = List<LanguageStore>.from(camElement.imageId.map((x) => LanguageStore.fromJson(x)));
+    } catch (e) {
+      CampaignElement camElement = CampaignElement.fromJson(
+          jsonDecode(jsonDecode(campaign.campaignElement)));
+      List<LanguageStore> imageId = List<LanguageStore>.from(
+          camElement.imageId.map((x) => LanguageStore.fromJson(x)));
       return Utils.getTranslatedCode(context, imageId);
     }
   }
@@ -371,8 +379,9 @@ class ItemOfferView extends StatelessWidget {
       Navigator.pushNamed(
         context,
         AppString.CUSTOM_WEB_VIEW_SCREEN_ROUTE,
-        arguments:
-            CustomWebViewModel(title: _getTitle(context), webViewUrl: mapUrl.replaceAll(" ", "%20")),
+        arguments: CustomWebViewModel(
+            title: _getTitle(context),
+            webViewUrl: mapUrl.replaceAll(" ", "%20")),
       );
     } catch (e) {
       debugPrint('offers_error:-   $e');
@@ -383,7 +392,12 @@ class ItemOfferView extends StatelessWidget {
     try {
       String subject = _getTitle(buildContext);
       if (campaign.voucher != null) {
-        Voucher _voucher = Voucher.fromJson(jsonDecode(campaign.voucher));
+        Voucher _voucher;
+        try{
+          _voucher = Voucher.fromJson(jsonDecode(campaign.voucher));
+        }catch(e){
+          _voucher = Voucher.fromJson(jsonDecode(jsonDecode(campaign.voucher)));
+        }
         NumberFormat nf = NumberFormat.decimalPattern();
         String discount = nf.format(_voucher.discount);
         if (discount.isNotEmpty) {
@@ -394,19 +408,26 @@ class ItemOfferView extends StatelessWidget {
 
       String description = '';
       if (campaign.campaignElement != null) {
-        try{
-          CampaignElement camElement = campaignElementFromJson(campaign.campaignElement);
-          List<LanguageStore> name = List<LanguageStore>.from(camElement.description.map((x) => LanguageStore.fromJson(x)));
+        try {
+          CampaignElement camElement =
+              campaignElementFromJson(campaign.campaignElement);
+          List<LanguageStore> name = List<LanguageStore>.from(
+              camElement.description.map((x) => LanguageStore.fromJson(x)));
           description = Utils.getTranslatedCode(buildContext, name);
-        }catch(e){
-          CampaignElement camElement = campaignElementFromJson(jsonDecode(campaign.campaignElement));
-          List<LanguageStore> name = List<LanguageStore>.from(camElement.description.map((x) => LanguageStore.fromJson(x)));
+        } catch (e) {
+          CampaignElement camElement =
+              campaignElementFromJson(jsonDecode(campaign.campaignElement));
+          List<LanguageStore> name = List<LanguageStore>.from(
+              camElement.description.map((x) => LanguageStore.fromJson(x)));
           description = Utils.getTranslatedCode(buildContext, name);
         }
       }
-
-      Share.share(description + "\n" + _getImage(buildContext),
+      Utils.shareFunctionality(
+          description: description,
+          image: _getImage(buildContext),
           subject: subject);
+      // Share.share(description + "\n" + _getImage(buildContext),
+      //     subject: subject);
 
     } catch (e) {
       debugPrint('$e');

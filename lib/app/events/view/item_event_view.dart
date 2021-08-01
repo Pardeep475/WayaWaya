@@ -357,7 +357,12 @@ class ItemEventView extends StatelessWidget {
     try {
       String subject = _getTitle(buildContext);
       if (campaign.voucher != null) {
-        Voucher _voucher = Voucher.fromJson(jsonDecode(campaign.voucher));
+        Voucher _voucher;
+        try{
+          _voucher = Voucher.fromJson(jsonDecode(campaign.voucher));
+        }catch(e){
+          _voucher = Voucher.fromJson(jsonDecode(jsonDecode(campaign.voucher)));
+        }
         NumberFormat nf = NumberFormat.decimalPattern();
         String discount = nf.format(_voucher.discount);
         if (discount.isNotEmpty) {
@@ -366,18 +371,31 @@ class ItemEventView extends StatelessWidget {
         debugPrint('share_files:-   ${nf.format(_voucher.discount)}');
       }
 
+
       String description = '';
-      if (campaign.campaignElement != null &&
-          campaign.campaignElement.description != null) {
-        campaign.campaignElement.description.forEach((element) {
-          if (element.language == Language.EN_US) {
-            description = element.text;
-          }
-        });
+      if (campaign.campaignElement != null) {
+        try {
+          CampaignElement camElement =
+          campaignElementFromJson(campaign.campaignElement);
+          List<LanguageStore> name = List<LanguageStore>.from(
+              camElement.description.map((x) => LanguageStore.fromJson(x)));
+          description = Utils.getTranslatedCode(buildContext, name);
+        } catch (e) {
+          CampaignElement camElement =
+          campaignElementFromJson(jsonDecode(campaign.campaignElement));
+          List<LanguageStore> name = List<LanguageStore>.from(
+              camElement.description.map((x) => LanguageStore.fromJson(x)));
+          description = Utils.getTranslatedCode(buildContext, name);
+        }
       }
 
-      Share.share(description + "\n" + _getImage(buildContext),
+      Utils.shareFunctionality(
+          description: description,
+          image: _getImage(buildContext),
           subject: subject);
+
+      // Share.share(description + "\n" + _getImage(buildContext),
+      //     subject: subject);
 
       // Share.shareFiles([_getImage(buildContext)],
       //     subject: subject, text: description);

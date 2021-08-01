@@ -912,7 +912,11 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
       String description = _getDescription(buildContext, retailWithCategory);
       String image = _getImage(buildContext, retailWithCategory);
 
-      Share.share(description + "\n" + image, subject: subject);
+      // Share.share(description + "\n" + image, subject: subject);
+      Utils.shareFunctionality(
+          description: description,
+          image: image,
+          subject: subject);
     } catch (e) {
       debugPrint('$e');
     }
