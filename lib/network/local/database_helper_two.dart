@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:wayawaya/app/home/model/campaign_model.dart';
+import 'package:wayawaya/common/model/categories_model.dart';
 import 'package:wayawaya/network/local/profile_database_helper.dart';
 import 'package:wayawaya/network/local/table/categories_table.dart';
 import 'package:wayawaya/network/local/table/loyalty_table.dart';
 import 'package:wayawaya/network/model/category/category_wrapper.dart';
 import 'package:wayawaya/network/model/loyalty/loyalty_response.dart';
+import 'package:wayawaya/network/model/menu_items.dart';
+import 'package:wayawaya/network/model/retail_unit/retail_unit.dart';
 import 'package:wayawaya/utils/session_manager.dart';
 
 import 'super_admin_database_helper.dart';
@@ -120,7 +122,8 @@ class DataBaseHelperTwo {
     }
   }
 
-  static Future<List<Map<String, Map<String, Map<String, dynamic>>>>> getObjectHashMap(
+  static Future<List<Map<String, Map<String, Map<String, dynamic>>>>>
+      getObjectHashMap(
           final Map<String, Map<String, Map<String, dynamic>>>
               dataListToGet) async {
     if (_profileDataBase == null)
@@ -250,4 +253,78 @@ class DataBaseHelperTwo {
     );
     return timeStamp;
   }
+
+  static Future updateData(
+      final Map<String, Map<String, Map<String, Map<String, dynamic>>>>
+          dataList) async{
+    dataList.keys.forEach((resource) {
+      switch (resource) {
+        case "retailUnits":
+          {
+            dataList[resource].keys.forEach((method) {
+              dataList[resource][method].keys.forEach((id) {
+                try {
+                  // update retail unit
+                  debugPrint("${dataList[resource][method][id]}");
+                  // updateRetailUnitInDatabase(id, method, retailUnit);
+                  //
+                } catch (e) {
+                  debugPrint("error in converting retail unit object");
+                }
+              });
+            });
+          }
+          break;
+        case "categories":
+          {
+            dataList[resource].keys.forEach((method) {
+              dataList[resource][method].keys.forEach((id) {
+                try {
+                  // update category in database
+                  debugPrint("${dataList[resource][method][id]}");
+                  // updateCategoryInDatabase(id, method, retailUnit);
+                } catch (e) {
+                  debugPrint("error in converting retail unit object");
+                }
+              });
+            });
+          }
+          break;
+
+        case "appSoftwareParameters":
+          {
+            dataList[resource].keys.forEach((method) {
+              dataList[resource][method].keys.forEach((id) {
+                try {
+                  // update app software parameters in database
+                  debugPrint("${dataList[resource][method][id]}");
+                  // AppSoftwareParameter appSoftwareParameter = gson.fromJson(gson.toJson(dataList.get(resource).get(method).get(id)), AppSoftwareParameter.class);
+                  //
+                  // if (appSoftwareParameter.theMall() != null) {
+                  //   updateMenuItemsInDatabase(appSoftwareParameter.theMall(), ProfileDb.TheMallTable.TABLE_NAME);
+                  // }
+                  // if (appSoftwareParameter.services() != null) {
+                  //   Timber.d("App software params %s", dataList.get(resource).get(method).keySet());
+                  //   updateMenuItemsInDatabase(appSoftwareParameter.services(), ProfileDb.ServicesTable.TABLE_NAME);
+                  // }
+                } catch (e) {
+                  debugPrint("error in converting retail unit object");
+                }
+              });
+            });
+          }
+          break;
+      }
+    });
+  }
+
+  static void updateRetailUnitInDatabase(
+      final String id, final String method, final RetailUnit retailUnit) {}
+
+
+  static void updateCategoryInDatabase(final String id, final String method, final Category category) {
+
+  }
+
+  static void updateMenuItemsInDatabase(final List<MenuItems> menuItems, String tableName) {}
 }

@@ -25,8 +25,6 @@ class Point {
         "type": type,
         "coordinates": coordinates == null
             ? null
-            : List<dynamic>.from(
-                coordinates.map((x) => x),
-              ),
+            : jsonEncode(coordinates),
       };
 }

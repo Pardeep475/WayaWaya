@@ -167,8 +167,7 @@ class SessionManager {
   }
 
   static Future<bool> getUserInMall() async {
-    return _pref
-        .then((value) => value.getBool(AppString.USER_IN_MALL) ?? false);
+    return _pref.then((value) => value.getBool(AppString.USER_IN_MALL) ?? true);
   }
 
   static void setGestureHome(bool gestureHome) async {

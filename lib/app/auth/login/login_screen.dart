@@ -34,8 +34,8 @@ class _LoginScreenState extends State<LoginScreen> {
   _initViews() {
     debugPrint('performance_testing:-   login screen initState ');
     _emailController =
-        TextEditingController(text: 'pardeepsharma475@gmail.com');
-    _passwordController = TextEditingController(text: 'qwerty');
+        TextEditingController(/*text: 'pardeepsharma475@gmail.com'*/);
+    _passwordController = TextEditingController(/*text: 'qwerty'*/);
     _formKey = GlobalKey<FormState>();
     _loginBloc = LoginBloc();
   }

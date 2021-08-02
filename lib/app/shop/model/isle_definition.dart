@@ -34,11 +34,7 @@ class IsleDefinition {
       );
 
   Map<String, dynamic> toJson() => {
-        "lable": label == null
-            ? null
-            : List<dynamic>.from(
-                label.map((x) => x.toJson()),
-              ),
+        "lable": label == null ? null : jsonEncode(label),
         "zone_id": zoneId,
         "reference": reference,
         "shelf_area": shelfArea == null ? null : shelfArea.toJson(),

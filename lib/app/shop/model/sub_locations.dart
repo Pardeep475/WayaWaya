@@ -141,44 +141,23 @@ class SubLocations {
         "shop_origin_orientation": shopOriginOrientation,
         "building_id": buildingId,
         "opening_times": openingTimes == null ? null : openingTimes.toJson(),
-        "contact_item": contactItem == null
-            ? null
-            : List<dynamic>.from(
-                contactItem.map((x) => x.toJson()),
-              ),
+        "contact_item": contactItem == null ? null : jsonEncode(contactItem),
         "isle_definition":
             isleDefinition == null ? null : isleDefinition.toJson(),
         "location_xy": locationXy == null ? null : locationXy.toJson(),
-        "category_id": categoryId == null
-            ? null
-            : List<dynamic>.from(
-                categoryId.map((x) => x),
-              ),
+        "category_id": categoryId == null ? null : jsonEncode(categoryId),
         "qr_code_id": qrCodeId,
         "shop_origin_xy": shopOriginXy == null ? null : shopOriginXy.toJson(),
-        "carousel_outside": carouselOutside == null
-            ? null
-            : List<dynamic>.from(
-                carouselOutside.map((x) => x),
-              ),
+        "carousel_outside":
+            carouselOutside == null ? null : jsonEncode(carouselOutside),
         "shop_number": shopNumber,
         "corridor_view_id": corridorViewId,
-        "corridor_view_id": corridorViewId == null
-            ? null
-            : List<dynamic>.from(
-                corridorViewId.map((x) => x),
-              ),
-        "carousel_inside": carouselInside == null
-            ? null
-            : List<dynamic>.from(
-                carouselInside.map((x) => x),
-              ),
+        "corridor_view_id":
+            corridorViewId == null ? null : jsonEncode(corridorViewId),
+        "carousel_inside":
+            carouselInside == null ? null : jsonEncode(carouselInside),
         "floorplan_id": floorplanId,
         "floor_id": floorId,
-        "keyword_list": keywordList == null
-            ? null
-            : List<dynamic>.from(
-                keywordList.map((x) => x.toJson()),
-              ),
+        "keyword_list": keywordList == null ? null : jsonEncode(keywordList),
       };
 }

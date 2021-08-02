@@ -50,7 +50,7 @@ class SyncService {
     await setSyncDateQuery();
     await fetchCampaignData(1);
     await syncLoyalty();
-    await fetchUpdateData(1);
+    // await fetchUpdateData(1);
     // SessionManager.setSyncDate(Utils.getStringFromDate(Utils.firstDate(), AppString.DATE_FORMAT));
   }
 
@@ -194,8 +194,8 @@ class SyncService {
         // If resource is appsoftware parameter set method as post since only one data is present
         if (resourceName.toLowerCase() ==
             "appSoftwareParameters".toLowerCase()) {
-          await setHashMap(item["i"].toString(), item["c"], "POST",
-              resourceName);
+          await setHashMap(
+              item["i"].toString(), item["c"], "POST", resourceName);
         } else {
           await setHashMap(item["i"].toString(), item["c"],
               item["o"].toString(), resourceName);
@@ -216,20 +216,21 @@ class SyncService {
   }
 
   static setHashMap(String id, Map<String, dynamic> dataHashMap, String method,
-      String resourceName) async{
-    try{
+      String resourceName) async {
+    try {
       Map<String, Map<String, dynamic>> newDataHashMap = new Map();
       newDataHashMap[id] = dataHashMap;
 
       debugPrint(
           "Data in setHashMap %s -- %s -- %s" + id + method + resourceName);
 
-      Map<String, Map<String, Map<String, dynamic>>> resourceHashMap = new Map();
+      Map<String, Map<String, Map<String, dynamic>>> resourceHashMap =
+          new Map();
 
       resourceHashMap[method] = newDataHashMap;
 
       setMasterHashMap(resourceName, method, resourceHashMap, id);
-    }catch(e){
+    } catch (e) {
       debugPrint("error_map:-  hashmap:-  $e");
     }
   }
@@ -444,7 +445,8 @@ class SyncService {
   static iterateUpdatedHashMaps(
       Map<String, Map<String, Map<String, Map<String, dynamic>>>>
           dataToUpdate) async {
-    Map<String, Map<String, Map<String, dynamic>>> listOfDataToPatch = new Map();
+    Map<String, Map<String, Map<String, dynamic>>> listOfDataToPatch =
+        new Map();
     debugPrint("iterateUpdatedHashMaps %s" + dataToUpdate.toString());
     dataToUpdate.keys.forEach((element) {
       // if (element == "retailUnits") {
@@ -510,8 +512,18 @@ class SyncService {
   }
 
   static patchMergedData(
-      Map<String, Map<String, Map<String, Map<String, String>>>>
-          mergeDataHashMap) {
+      Map<String, Map<String, Map<String, Map<String, dynamic>>>>
+          mergeDataHashMap) async {
+    await DataBaseHelperTwo.updateData(mergeDataHashMap);
+    hashmapToUpdate.clear();
+
+    // if (!retailUnitsToDelete.isEmpty()) {
+    //   for (String retailUnitId : retailUnitsToDelete) {
+    //     mDataManager.mDatabaseHelper.deleteRecord(ProfileDb.RetailUnitTable.TABLE_NAME, ProfileDb.RetailUnitTable.COLUMN_ID, retailUnitId, false);
+    //   }
+    // }
+    // campaignsToDelete.clear();
+    // retailUnitsToDelete.clear();
 
   }
 
@@ -687,7 +699,6 @@ class SyncService {
   }
 
   // sync loyalty
-
   static syncLoyalty() {
     Utils.checkConnectivity().then((value) async {
       if (value != null && value) {

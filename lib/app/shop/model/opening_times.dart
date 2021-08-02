@@ -54,21 +54,9 @@ class OpeningTimes {
       );
 
   Map<String, dynamic> toJson() => {
-        "period": period == null
-            ? null
-            : List<dynamic>.from(
-                period.map((x) => x.toJson()),
-              ),
-        "title": title == null
-            ? null
-            : List<dynamic>.from(
-                title.map((x) => x.toJson()),
-              ),
-        "description": description == null
-            ? null
-            : List<dynamic>.from(
-                description.map((x) => x.toJson()),
-              ),
+        "period": period == null ? null : jsonEncode(period),
+        "title": title == null ? null : jsonEncode(title),
+        "description": description == null ? null : jsonEncode(description),
         "open_time": openTime,
         "start_date": startDate,
         "end_date": endDate,
