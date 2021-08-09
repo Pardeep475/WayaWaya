@@ -44,214 +44,223 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     // var user = Provider.of<AuthProvider>(context, listen: true);
     debugPrint('performance_testing:-   login screen build ');
-    return SafeArea(
-      child: Scaffold(
-        persistentFooterButtons: [
-          Builder(
-            builder: (BuildContext context) {
-              return CustomRaiseButton(
-                backgroundColor: AppColor.white,
-                title: AppString.login.toUpperCase(),
-                borderRadius: 0,
+    return WillPopScope(
+      onWillPop: () async {
+        return await Navigator.pushNamedAndRemoveUntil(
+            context, AppString.HOME_SCREEN_ROUTE, (route) => false);
+      },
+      child: SafeArea(
+        child: Scaffold(
+          persistentFooterButtons: [
+            Builder(
+              builder: (BuildContext context) {
+                return CustomRaiseButton(
+                  backgroundColor: AppColor.white,
+                  title: AppString.login.toUpperCase(),
+                  borderRadius: 0,
+                  width: MediaQuery.of(context).size.width,
+                  onPressed: () {
+                    _loginButtonPressed(context);
+                  },
+                );
+              },
+            ),
+            InkWell(
+              onTap: () {
+                debugPrint('forgot password');
+                _forgotButtonPressed(context);
+              },
+              child: Container(
                 width: MediaQuery.of(context).size.width,
-                onPressed: () {
-                  _loginButtonPressed(context);
-                },
-              );
-            },
-          ),
-          InkWell(
-            onTap: () {
-              debugPrint('forgot password');
-              _forgotButtonPressed(context);
-            },
-            child: Container(
-              width: MediaQuery.of(context).size.width,
-              padding: const EdgeInsets.symmetric(vertical: 7),
-              child: const Text(
-                AppString.forgot_password,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontWeight: FontWeight.w400,
-                  color: AppColor.colored_text,
+                padding: const EdgeInsets.symmetric(vertical: 7),
+                child: const Text(
+                  AppString.forgot_password,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w400,
+                    color: AppColor.colored_text,
+                  ),
                 ),
               ),
             ),
-          ),
-          InkWell(
-            onTap: () {
-              debugPrint('create account');
-              FocusScopeNode currentFocus = FocusScope.of(context);
+            InkWell(
+              onTap: () {
+                debugPrint('create account');
+                FocusScopeNode currentFocus = FocusScope.of(context);
 
-              if (!currentFocus.hasPrimaryFocus) {
-                currentFocus.unfocus();
-              }
-              SessionManager.setISLoginScreenVisible(true);
-              Navigator.pushNamed(context, AppString.SIGN_UP_SCREEN_ROUTE);
-            },
-            child: Container(
-              width: MediaQuery.of(context).size.width,
-              padding: const EdgeInsets.symmetric(vertical: 7),
-              child: const Text(
-                AppString.not_account_yet,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontWeight: FontWeight.w400,
-                  color: AppColor.colored_text,
+                if (!currentFocus.hasPrimaryFocus) {
+                  currentFocus.unfocus();
+                }
+                SessionManager.setISLoginScreenVisible(true);
+                Navigator.pushNamed(context, AppString.SIGN_UP_SCREEN_ROUTE);
+              },
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                padding: const EdgeInsets.symmetric(vertical: 7),
+                child: const Text(
+                  AppString.not_account_yet,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w400,
+                    color: AppColor.colored_text,
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
-        body: Stack(
-          children: [
-            SingleChildScrollView(
-              child: Column(
-                children: [
-                  Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 15),
-                    child: SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          Align(
-                            alignment: Alignment.topRight,
-                            child: Material(
-                              color: Colors.transparent,
-                              child: InkWell(
-                                // onTap: () => Navigator.of(context)
-                                //     .push(MaterialPageRoute(builder: (_) => Preferences())),
-                                onTap: () {
-                                  SessionManager.setISLoginScreenVisible(true);
-                                  Navigator.pushNamedAndRemoveUntil(
-                                      context,
-                                      AppString.SELECT_PREFERENCES_SCREEN_ROUTE,
-                                      (route) => false);
-                                },
-                                child: const Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(20, 10, 6, 10),
-                                  child: const Text(
-                                    AppString.skip,
-                                    style: TextStyle(
-                                      color: AppColor.primary,
-                                      fontSize: 16,
+          ],
+          body: Stack(
+            children: [
+              SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 15),
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            Align(
+                              alignment: Alignment.topRight,
+                              child: Material(
+                                color: Colors.transparent,
+                                child: InkWell(
+                                  // onTap: () => Navigator.of(context)
+                                  //     .push(MaterialPageRoute(builder: (_) => Preferences())),
+                                  onTap: () {
+                                    SessionManager.setISLoginScreenVisible(
+                                        true);
+                                    Navigator.pushNamedAndRemoveUntil(
+                                        context,
+                                        AppString
+                                            .SELECT_PREFERENCES_SCREEN_ROUTE,
+                                        (route) => false);
+                                  },
+                                  child: const Padding(
+                                    padding: const EdgeInsets.fromLTRB(
+                                        20, 10, 6, 10),
+                                    child: const Text(
+                                      AppString.skip,
+                                      style: TextStyle(
+                                        color: AppColor.primary,
+                                        fontSize: 16,
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                          FutureBuilder(
-                            builder: (context, snapshot) {
-                              if (snapshot.data == null) {
-                                return const SizedBox();
-                              }
-                              return Image.asset(
-                                snapshot.data,
-                                width: 300,
-                                height: 300,
-                                fit: BoxFit.cover,
-                              );
-                            },
-                            initialData: null,
-                            future: getImageFromAssets(),
-                          ),
-                          Form(
-                            key: _formKey,
-                            child: Column(
-                              children: [
-                                // _emailField(),
-                                _emailField(),
-                                _passwordField(),
-                              ],
+                            FutureBuilder(
+                              builder: (context, snapshot) {
+                                if (snapshot.data == null) {
+                                  return const SizedBox();
+                                }
+                                return Image.asset(
+                                  snapshot.data,
+                                  width: 300,
+                                  height: 300,
+                                  fit: BoxFit.cover,
+                                );
+                              },
+                              initialData: null,
+                              future: getImageFromAssets(),
                             ),
-                          ),
-                        ],
+                            Form(
+                              key: _formKey,
+                              child: Column(
+                                children: [
+                                  // _emailField(),
+                                  _emailField(),
+                                  _passwordField(),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            StreamBuilder<ApiResponse<ErrorResponse>>(
-              stream: _loginBloc.loginStream,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  switch (snapshot.data.status) {
-                    case Status.LOADING:
-                      Future.delayed(Duration(milliseconds: 200), () {
-                        Utils.commonProgressDialog(context);
-                      });
-                      return Container(
-                        width: MediaQuery.of(context).size.width,
-                        color: Colors.transparent,
-                        height: MediaQuery.of(context).size.height,
-                      );
-                      break;
-                    case Status.COMPLETED:
-                      {
-                        debugPrint("completed");
-                        Navigator.pop(context);
-                        Future.delayed(Duration(milliseconds: 100), () {
-                          _loginComplete();
+              StreamBuilder<ApiResponse<ErrorResponse>>(
+                stream: _loginBloc.loginStream,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    switch (snapshot.data.status) {
+                      case Status.LOADING:
+                        Future.delayed(Duration(milliseconds: 200), () {
+                          Utils.commonProgressDialog(context);
                         });
-                      }
-                      break;
-                    case Status.ERROR:
-                      {
-                        Navigator.pop(context);
-                        Future.delayed(Duration(milliseconds: 100), () {
-                          debugPrint(
-                              "Error error ${snapshot.data.data.message}");
+                        return Container(
+                          width: MediaQuery.of(context).size.width,
+                          color: Colors.transparent,
+                          height: MediaQuery.of(context).size.height,
+                        );
+                        break;
+                      case Status.COMPLETED:
+                        {
+                          debugPrint("completed");
+                          Navigator.pop(context);
+                          Future.delayed(Duration(milliseconds: 100), () {
+                            _loginComplete();
+                          });
+                        }
+                        break;
+                      case Status.ERROR:
+                        {
+                          Navigator.pop(context);
+                          Future.delayed(Duration(milliseconds: 100), () {
+                            debugPrint(
+                                "Error error ${snapshot.data.data.message}");
 
-                          if (snapshot.data.data.message == '401') {
-                            _showErrorDialog(
-                              icon: Icon(
-                                FontAwesomeIcons.exclamationCircle,
-                                color: AppColor.red_500,
-                              ),
-                              title: AppString.sorry,
-                              content: AppString
-                                  .invalid_cred_check_user_name_and_password,
-                              buttonText: AppString.ok.toUpperCase(),
-                              onPressed: () => Navigator.pop(context),
-                            );
-                          } else {
-                            if (snapshot.data.data.differ == 'USER_DETAILS') {
+                            if (snapshot.data.data.message == '401') {
                               _showErrorDialog(
                                 icon: Icon(
-                                  FontAwesomeIcons.exclamationTriangle,
-                                  color: AppColor.orange_500,
+                                  FontAwesomeIcons.exclamationCircle,
+                                  color: AppColor.red_500,
                                 ),
-                                title: AppString.login.toUpperCase(),
-                                content:
-                                    AppString.check_your_internet_connectivity,
-                                buttonText: AppString.preferences.toUpperCase(),
-                                onPressed: _loginComplete,
-                              );
-                            } else {
-                              _showErrorDialog(
-                                icon: Icon(
-                                  FontAwesomeIcons.exclamationTriangle,
-                                  color: AppColor.orange_500,
-                                ),
-                                title: AppString.login.toUpperCase(),
-                                content:
-                                    AppString.check_your_internet_connectivity,
+                                title: AppString.sorry,
+                                content: AppString
+                                    .invalid_cred_check_user_name_and_password,
                                 buttonText: AppString.ok.toUpperCase(),
                                 onPressed: () => Navigator.pop(context),
                               );
+                            } else {
+                              if (snapshot.data.data.differ == 'USER_DETAILS') {
+                                _showErrorDialog(
+                                  icon: Icon(
+                                    FontAwesomeIcons.exclamationTriangle,
+                                    color: AppColor.orange_500,
+                                  ),
+                                  title: AppString.login.toUpperCase(),
+                                  content: AppString
+                                      .check_your_internet_connectivity,
+                                  buttonText:
+                                      AppString.preferences.toUpperCase(),
+                                  onPressed: _loginComplete,
+                                );
+                              } else {
+                                _showErrorDialog(
+                                  icon: Icon(
+                                    FontAwesomeIcons.exclamationTriangle,
+                                    color: AppColor.orange_500,
+                                  ),
+                                  title: AppString.login.toUpperCase(),
+                                  content: AppString
+                                      .check_your_internet_connectivity,
+                                  buttonText: AppString.ok.toUpperCase(),
+                                  onPressed: () => Navigator.pop(context),
+                                );
+                              }
                             }
-                          }
-                        });
-                      }
-                      break;
+                          });
+                        }
+                        break;
+                    }
                   }
-                }
-                return SizedBox();
-              },
-            ),
-          ],
+                  return SizedBox();
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );

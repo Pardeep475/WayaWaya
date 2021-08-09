@@ -4,6 +4,7 @@ import 'package:wayawaya/common/model/categories_model.dart';
 import 'package:wayawaya/network/local/profile_database_helper.dart';
 import 'package:wayawaya/network/local/table/categories_table.dart';
 import 'package:wayawaya/network/local/table/loyalty_table.dart';
+import 'package:wayawaya/network/local/table/retail_unit_category_map.dart';
 import 'package:wayawaya/network/model/category/category_wrapper.dart';
 import 'package:wayawaya/network/model/loyalty/loyalty_response.dart';
 import 'package:wayawaya/network/model/menu_items.dart';
@@ -93,8 +94,6 @@ class DataBaseHelperTwo {
     String id = row["_id"];
     row..remove("_id");
     row["id"] = id;
-    debugPrint('map value is :-  $row');
-
     try {
       await _profileDataBase.transaction((txn) async {
         if (categoryId == null) {
@@ -212,7 +211,6 @@ class DataBaseHelperTwo {
     String timestamp = row["event_timestamp"];
     row..remove("event_timestamp");
     row["timestamp"] = timestamp;
-    debugPrint('map value is :-  $row');
 
     try {
       await _profileDataBase.transaction((txn) async {
@@ -256,17 +254,22 @@ class DataBaseHelperTwo {
 
   static Future updateData(
       final Map<String, Map<String, Map<String, Map<String, dynamic>>>>
-          dataList) async{
+          dataList) async {
     dataList.keys.forEach((resource) {
       switch (resource) {
         case "retailUnits":
           {
             dataList[resource].keys.forEach((method) {
-              dataList[resource][method].keys.forEach((id) {
+              dataList[resource][method].keys.forEach((id) async {
                 try {
                   // update retail unit
                   debugPrint("${dataList[resource][method][id]}");
-                  // updateRetailUnitInDatabase(id, method, retailUnit);
+                  RetailUnit retailUnit =
+                      RetailUnit.fromJson(dataList[resource][method][id]);
+                  if (method == "PATCH") {
+                    retailUnit.id = id;
+                  }
+                  await updateRetailUnitInDatabase(id, method, retailUnit);
                   //
                 } catch (e) {
                   debugPrint("error in converting retail unit object");
@@ -282,7 +285,9 @@ class DataBaseHelperTwo {
                 try {
                   // update category in database
                   debugPrint("${dataList[resource][method][id]}");
-                  // updateCategoryInDatabase(id, method, retailUnit);
+                  Category category =
+                      Category.fromJson(dataList[resource][method][id]);
+                  updateCategoryInDatabase(id, method, category);
                 } catch (e) {
                   debugPrint("error in converting retail unit object");
                 }
@@ -318,13 +323,110 @@ class DataBaseHelperTwo {
     });
   }
 
-  static void updateRetailUnitInDatabase(
-      final String id, final String method, final RetailUnit retailUnit) {}
+  static Future updateRetailUnitInDatabase(
+      final String id, final String method, final RetailUnit retailUnit) async {
+    if (_profileDataBase == null)
+      _profileDataBase = await fetchProfileDatabase();
+    int result;
+    String categoryToAdd = "";
+    String categoryToDelete = "(";
+    int count = 1;
 
-
-  static void updateCategoryInDatabase(final String id, final String method, final Category category) {
-
+    switch (method) {
+      case "PATCH":
+        {
+          String selection = RetailUnitTable.COLUMN_ID + " = ?";
+          try {
+            var value = await _profileDataBase.transaction((txn) async {
+              txn
+                  .update(RetailUnitTable.RETAIL_UNIT_TABLE_NAME,
+                      retailUnit.toJson(),
+                      where: selection,
+                      whereArgs: [id],
+                      conflictAlgorithm: ConflictAlgorithm.replace)
+                  .catchError((e) {
+                debugPrint("retailunit:- patch update $e");
+              });
+            });
+            retailUnit.subLocations.categoryId.forEach((categoryId) {
+              categoryToAdd +=
+                  "('" + retailUnit.id + "' , '" + categoryId + "')";
+              categoryToDelete += "'" + categoryId + "'";
+              if (count < retailUnit.subLocations.categoryId.length) {
+                categoryToAdd += ", ";
+                categoryToDelete += " , ";
+              } else {
+                categoryToDelete += ")";
+              }
+              count++;
+            });
+            String categorySelect = RetailUnitCategoryMap.COLUMN_RID +
+                " = ? AND " +
+                RetailUnitCategoryMap.COLUMN_CID +
+                " in " +
+                categoryToDelete;
+            await _profileDataBase.transaction((txn) async {
+              txn.delete(RetailUnitCategoryMap.RETAIL_CATEGORY_MAP_TABLE_NAME,
+                  where: categorySelect, whereArgs: [retailUnit.id]);
+              txn
+                  .rawQuery("INSERT OR IGNORE INTO retail_category_map " +
+                      "( rid , cid ) " +
+                      " VALUES " +
+                      categoryToAdd)
+                  .catchError((e) {
+                debugPrint("retailunit:- patch delete $e");
+              });
+            });
+          } catch (e) {
+            debugPrint("retailunit:- patch $e");
+          }
+        }
+        break;
+      case "POST":
+        {
+          try {
+            await _profileDataBase.transaction((txn) async {
+              txn.insert(
+                RetailUnitTable.RETAIL_UNIT_TABLE_NAME,
+                retailUnit.toJson(),
+              );
+            });
+            retailUnit.subLocations.categoryId.forEach((categoryId) {
+              categoryToAdd +=
+                  "('" + retailUnit.id + "' , '" + categoryId + "')";
+              categoryToDelete += "'" + categoryId + "'";
+              if (count < retailUnit.subLocations.categoryId.length) {
+                categoryToAdd += ", ";
+                categoryToDelete += " , ";
+              } else {
+                categoryToDelete += ")";
+              }
+              count++;
+            });
+            String categorySelect = RetailUnitCategoryMap.COLUMN_RID +
+                " = ? AND " +
+                RetailUnitCategoryMap.COLUMN_CID +
+                " in " +
+                categoryToDelete;
+            await _profileDataBase.transaction((txn) async {
+              txn.delete(RetailUnitCategoryMap.RETAIL_CATEGORY_MAP_TABLE_NAME,
+                  where: categorySelect, whereArgs: [retailUnit.id]);
+              txn.rawQuery("INSERT OR IGNORE INTO retail_category_map " +
+                  "( rid , cid ) " +
+                  " VALUES " +
+                  categoryToAdd);
+            });
+          } catch (e) {
+            debugPrint("retailunit:- post $e");
+          }
+        }
+        break;
+    }
   }
 
-  static void updateMenuItemsInDatabase(final List<MenuItems> menuItems, String tableName) {}
+  static void updateCategoryInDatabase(
+      final String id, final String method, final Category category) {}
+
+  static void updateMenuItemsInDatabase(
+      final List<MenuItems> menuItems, String tableName) {}
 }

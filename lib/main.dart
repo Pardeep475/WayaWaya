@@ -33,12 +33,14 @@ import 'app/settings/my_account_screen.dart';
 import 'app/settings/my_devices_screen.dart';
 import 'network/local/notification_service.dart';
 import 'network/local/super_admin_database_helper.dart';
+import 'utils/analytics_service/analytics_services.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   GeoFenceService.initGeofence();
   await NotificationService().init();
   await SuperAdminDatabaseHelper.initDataBase();
+  await AnalyticsServices.init();
   bool isFirstTime = await SessionManager.isFirstTime();
   runApp(MyApp(isFirstTime: isFirstTime));
 }

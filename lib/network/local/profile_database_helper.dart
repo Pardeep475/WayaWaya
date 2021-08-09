@@ -773,7 +773,9 @@ class ProfileDatabaseHelper {
       debugPrint('database_testing:-   $data');
       List<RetailWithCategory> _allSearchList = [];
 
-      List<Campaign> _offerCampaignList =
+      List<Campaign> _offerCampaignList = [];
+
+      List<Campaign> _normalOffersList =
           await DataBaseHelperCommon.getCampaignOffersAndEvents(
               limit: 25,
               offset: 0,
@@ -783,6 +785,20 @@ class ProfileDatabaseHelper {
                   DateTime.now(), AppString.DATE_FORMAT),
               isCoupon: false,
               campaingType: "offer");
+
+      List<Campaign> _rewardsOffersList =
+          await DataBaseHelperCommon.getRewardsCampaignData(
+              limit: 25,
+              offset: 0,
+              rid: "",
+              searchText: "",
+              categoryId: "",
+              publish_date: Utils.getStringFromDate(
+                  DateTime.now(), AppString.DATE_FORMAT),
+              campaingType: "offer");
+
+      _offerCampaignList.addAll(_normalOffersList);
+      _offerCampaignList.addAll(_rewardsOffersList);
 
       debugPrint(
           'database_testing:- list of campaign   ${_offerCampaignList.length}');

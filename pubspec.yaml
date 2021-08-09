@@ -72,9 +72,14 @@ dependencies:
     git:
       url: git://github.com/lukef/qr.flutter.git
   barcode_widget: ^2.0.1
+  package_info: ^2.0.2
   synchronized:
   uuid:
   geolocator:
+  firebase_core:
+  firebase_crashlytics:
+  upgrader:
+  open_appstore:
 
 dev_dependencies:
   flutter_test:

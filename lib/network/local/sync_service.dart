@@ -167,7 +167,8 @@ class SyncService {
     try {
       bool startPost = false;
       if (data["_items"] == null) return;
-      data["_items"].forEach((element) async {
+
+      await Future.forEach(data["_items"], (element) async {
         if (element["o"] != null && element["o"].toString().trim() == "POST") {
           // start post request
           startPost = true;
@@ -176,13 +177,16 @@ class SyncService {
           await _updateDataInDb(item: element);
         }
       });
+
       await iterateUpdatedHashMaps(hashmapToUpdate);
 
-      if (startPost) {
-        debugPrint("ConvertResponseData called startPost true");
-        await startPostRequests();
-      }
-    } catch (e) {}
+      // if (startPost) {
+      //   debugPrint("ConvertResponseData called startPost true");
+      //   await startPostRequests();
+      // }
+    } catch (e) {
+      debugPrint("_convertResponseData   $e");
+    }
   }
 
   static _updateDataInDb({dynamic item}) async {
@@ -211,7 +215,7 @@ class SyncService {
         await _deleteFromDb(data: item);
       }
     } catch (e) {
-      debugPrint("error_in:-   $e");
+      debugPrint("_updateDataInDb error:-   $e");
     }
   }
 
@@ -231,7 +235,7 @@ class SyncService {
 
       setMasterHashMap(resourceName, method, resourceHashMap, id);
     } catch (e) {
-      debugPrint("error_map:-  hashmap:-  $e");
+      debugPrint("setHashMap error_map:-  hashmap:-  $e");
     }
   }
 
@@ -267,7 +271,7 @@ class SyncService {
     }
   }
 
-  static Map<String, String> mergeHashMap(
+  static Map<String, dynamic> mergeHashMap(
       Map<String, dynamic> targetHashMap, Map<String, dynamic> updatedHashMap) {
     targetHashMap.addAll(updatedHashMap);
     return targetHashMap;
@@ -278,7 +282,7 @@ class SyncService {
       var resEndPoint = data["r"].toString().split("/");
       String resourceName = sortEndPoint(resEndPoint);
 
-      Map<String, String> map = _getAllColumnNamesForDb(resourceName);
+      Map<String, dynamic> map = _getAllColumnNamesForDb(resourceName);
       Set<String> keys = map.keys.toSet();
 
       switch (resourceName) {
@@ -287,16 +291,23 @@ class SyncService {
             keys.forEach((element) async {
               try {
                 if (data["c"].containsKey(map[element])) {
-                  String updatedValue = data["c"][map[element]];
+                  var updatedValue;
+                  if(data["c"][map[element]] is String){
+                    updatedValue = data["c"][map[element]];
+                  }else{
+                    updatedValue = jsonEncode(data["c"][map[element]]);
+                  }
                   await DataBaseHelperTwo.patchData(
                       RetailUnitTable.RETAIL_UNIT_TABLE_NAME,
                       map[element],
                       updatedValue,
                       RetailUnitTable.COLUMN_ID,
-                      data["i"].toString(),
+                      data["i"],
                       false);
                 }
-              } catch (e) {}
+              } catch (e) {
+                debugPrint("retailUnits:-  $e");
+              }
             });
           }
           break;
@@ -309,16 +320,23 @@ class SyncService {
             keys.forEach((element) async {
               try {
                 if (data["c"].containsKey(map[element])) {
-                  String updatedValue = data["c"][map[element]];
+                  var updatedValue;
+                  if(data["c"][map[element]] is String){
+                    updatedValue = data["c"][map[element]];
+                  }else{
+                    updatedValue = jsonEncode(data["c"][map[element]]);
+                  }
                   await DataBaseHelperTwo.patchData(
                       CategoriesTable.CATEGORY_TABLE_NAME,
                       map[element],
                       updatedValue,
                       CategoriesTable.COLUMN_ID,
-                      data["i"].toString(),
+                      data["i"],
                       false);
                 }
-              } catch (e) {}
+              } catch (e) {
+                debugPrint("categories:-  $e");
+              }
             });
           }
           break;
@@ -327,16 +345,23 @@ class SyncService {
             keys.forEach((element) async {
               try {
                 if (data["c"].containsKey(map[element])) {
-                  String updatedValue = data["c"][map[element]];
+                  var updatedValue;
+                  if(data["c"][map[element]] is String){
+                    updatedValue = data["c"][map[element]];
+                  }else{
+                    updatedValue = jsonEncode(data["c"][map[element]]);
+                  }
                   await DataBaseHelperTwo.patchData(
                       TriggerZoneTable.TRIGGER_ZONE_TABLE_NAME,
                       map[element],
                       updatedValue,
                       TriggerZoneTable.COLUMN_ID,
-                      data["i"].toString(),
+                      data["i"],
                       false);
                 }
-              } catch (e) {}
+              } catch (e) {
+                debugPrint("triggerZones:-  $e");
+              }
             });
           }
           break;
@@ -357,7 +382,7 @@ class SyncService {
       var resEndPoint = data["r"].toString().split("/");
       String resourceName = sortEndPoint(resEndPoint);
 
-      Map<String, String> map = _getAllColumnNamesForDb(resourceName);
+      Map<String, dynamic> map = _getAllColumnNamesForDb(resourceName);
       Set<String> keys = map.keys.toSet();
       switch (resourceName) {
         case "retailUnits":
@@ -394,8 +419,7 @@ class SyncService {
       var resEndPoint = data["r"].toString().split("/");
       String resourceName = sortEndPoint(resEndPoint);
 
-      Map<String, String> map = _getAllColumnNamesForDb(resourceName);
-      Set<String> keys = map.keys.toSet();
+      // Map<String, dynamic> map = _getAllColumnNamesForDb(resourceName);
 
       switch (resourceName) {
         case "loyaltyTransactions":
@@ -438,7 +462,7 @@ class SyncService {
           break;
       }
     } catch (e) {
-      debugPrint("error_e:-  delete db:-  $e");
+      debugPrint("_deleteFromDb error_e:-  delete db:-  $e");
     }
   }
 
@@ -524,7 +548,6 @@ class SyncService {
     // }
     // campaignsToDelete.clear();
     // retailUnitsToDelete.clear();
-
   }
 
   static startPostRequests() async {
@@ -534,7 +557,7 @@ class SyncService {
   static setCategory(int page) async {
     try {
       String authorization = await SessionManager.getAuthHeader();
-      Map<String, String> map = new Map();
+      Map<String, dynamic> map = new Map();
       map["page"] = '1';
       map["sort"] = "-_updated";
       map["where"] = "{\"_updated\":{\"\$gt\": \"" + lastUpdate + "\"}}";
@@ -557,8 +580,8 @@ class SyncService {
     } catch (e) {}
   }
 
-  static Map<String, String> _getAllColumnNamesForDb(String resourceName) {
-    Map<String, String> map = new Map<String, String>();
+  static Map<String, dynamic> _getAllColumnNamesForDb(String resourceName) {
+    Map<String, dynamic> map = new Map<String, dynamic>();
     if (resourceName == "retailUnits") {
       map["blog_link"] = RetailUnitTable.COLUMN_BLOG_LINK;
       map["cost_centre_code"] = RetailUnitTable.COLUMN_COST_CENTRE_CODE;
@@ -667,7 +690,7 @@ class SyncService {
       );
       String oid = _omniChannelItemModel.oid;
 
-      Map<String, String> campaignQuery = new Map();
+      Map<String, dynamic> campaignQuery = new Map();
       campaignQuery["page"] = "1";
       campaignQuery["sort"] = "-_updated";
       campaignQuery["where"] = "{\"_updated\":{\"\$gt\":\"" +

@@ -145,7 +145,7 @@ class EventLoggerService {
 
       clickLog.device = deviceDetails;
       String getAppVersion = Utils.getAppVersionName();
-      clickLog.appVersion = getAppVersion;
+      clickLog.appVersion = getAppVersion + "flutter";
       clickLog.group = group;
       clickLog.action = action;
       clickLog.data = data;

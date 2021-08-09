@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:wayawaya/utils/app_color.dart';
@@ -12,10 +14,16 @@ class CommonNoAtVenueDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Error'),
+      title: Text(
+        'Error',
+        textAlign: TextAlign.center,
+      ),
       content: Container(
         child: Text(
-          AppString.not_at_venue_msg,
+          Platform.isAndroid
+              ? AppString.not_at_venue_msg_android
+              : AppString.not_at_venue_msg_ios,
+          textAlign: TextAlign.center,
           style: TextStyle(
             color: Colors.grey[600],
             fontSize: 14,

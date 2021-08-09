@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:wayawaya/app/common/dialogs/full_screen_show_qr_and_barcode_generator_dialog.dart';
-import 'package:wayawaya/app/common/full_screen_call_permission_dialog.dart';
+import 'package:package_info/package_info.dart';
 import 'package:wayawaya/app/common/menu/animate_app_bar.dart';
 import 'package:wayawaya/app/common/menu/model/main_menu_permission.dart';
 import 'package:wayawaya/app/settings/model/settings_model.dart';
@@ -10,11 +8,10 @@ import 'package:wayawaya/network/local/event_logger_service.dart';
 import 'package:wayawaya/network/local/profile_database_helper.dart';
 import 'package:wayawaya/network/local/sync_service.dart';
 import 'package:wayawaya/network/model/loyalty/loyalty_header_response.dart';
+import 'package:wayawaya/utils/analytics_service/analytics_services.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/dimens.dart';
-import 'package:wayawaya/utils/geo_fence_service.dart';
-import 'package:wayawaya/utils/permission_service/permission_service.dart';
 import 'package:wayawaya/utils/session_manager.dart';
 import '../../constants.dart';
 import 'bloc/settings_bloc.dart';
@@ -87,14 +84,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              const Text(
-                AppString.app_version,
-                style: const TextStyle(
-                  fontStyle: FontStyle.italic,
-                  color: AppColor.dark_text,
-                  fontSize: 16,
-                ),
-              ),
+              FutureBuilder<String>(
+                  initialData: "",
+                  future: _fetchPlatformInfo(),
+                  builder: (context, snapshot) {
+                    return Text(
+                      "${AppString.app_version}${snapshot.data ?? ""}",
+                      style: TextStyle(
+                        fontStyle: FontStyle.italic,
+                        color: AppColor.dark_text,
+                        fontSize: 16,
+                      ),
+                    );
+                  }),
               SizedBox(
                 height: Dimens.five,
               ),
@@ -152,8 +154,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
       case AppString.preferences_small:
         {
           debugPrint('settings_click_testing:-  ${settingsModel.title}');
-          Navigator.pushNamed(
-              context, AppString.SELECT_PREFERENCES_SCREEN_ROUTE);
+          // Navigator.pushNamed(
+          //     context, AppString.SELECT_PREFERENCES_SCREEN_ROUTE);
           break;
         }
       case AppString.my_devices:
@@ -177,8 +179,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
       case AppString.term_and_conditions:
         {
           debugPrint('settings_click_testing:-  ${settingsModel.title}');
-          _settingsBloc.termAndConditionOnClick(context);
 
+          // await SyncService.fetchUpdateData(1);
+
+          AnalyticsServices.setForcefullyCrash();
+
+          // _settingsBloc.termAndConditionOnClick(context);
           // EventLoggerService.eventLogger(
           //     uuid: EventLoggerService.Settings,
           //     action: EventLoggerService.LOG_TYPE_NAVIGATION,
@@ -198,6 +204,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
           break;
         }
     }
+  }
+
+  Future<String> _fetchPlatformInfo() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    String appName = packageInfo.appName;
+    String packageName = packageInfo.packageName;
+    String version = packageInfo.version;
+    String buildNumber = packageInfo.buildNumber;
+    debugPrint(
+        "version_info:-  appName:-   $appName  packageName:-  $packageName  version:-  $version   buildNumber:-  $buildNumber");
+    return version;
   }
 
   _implementLocalDb() async {

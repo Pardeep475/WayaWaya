@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>737531777162-c1ti4bh3l3bsv2tkecjs1ctafkcp6ag4.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.737531777162-c1ti4bh3l3bsv2tkecjs1ctafkcp6ag4</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>737531777162-emdddt0ml6ut16htjukkupipuo86smlg.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCJGyQ5FkY6n3i5s35ec0KeXDKIcO5Abt8</string>
+	<key>GCM_SENDER_ID</key>
+	<string>737531777162</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>za.co.venueengage.wayawaya</string>
+	<key>PROJECT_ID</key>
+	<string>connect-waya-waya</string>
+	<key>STORAGE_BUCKET</key>
+	<string>connect-waya-waya.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:737531777162:ios:3b13dbc27710fb3ee65d73</string>
+</dict>
+</plist>

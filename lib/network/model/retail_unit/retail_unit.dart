@@ -10,7 +10,7 @@ RetailUnit retailUnitFromJson(String str) =>
 String retailUnitToJson(RetailUnit data) => json.encode(data.toJson());
 
 class RetailUnit {
-  final String id;
+  String id;
   final String name;
   final List<LanguageStore> blogLink;
   final List<LanguageStore> description;
@@ -18,7 +18,7 @@ class RetailUnit {
   final SubLocations subLocations;
   final String costCentreCode;
   final String ecommerceDetails;
-  final List<Category> categoryList;
+  // final List<Category> categoryList;
   final String favourite;
 
   RetailUnit(
@@ -30,7 +30,7 @@ class RetailUnit {
       this.subLocations,
       this.costCentreCode,
       this.ecommerceDetails,
-      this.categoryList,
+      // this.categoryList,
       this.favourite});
 
   factory RetailUnit.fromJson(Map<String, dynamic> json) => RetailUnit(
@@ -38,33 +38,55 @@ class RetailUnit {
         name: json["name"],
         blogLink: json["blog_link"] == null
             ? null
-            : List<LanguageStore>.from(
-                jsonDecode(json["blog_link"]).map(
-                  (x) => LanguageStore.fromJson(x),
-                ),
-              ),
+            : json["blog_link"] is String
+                ? List<LanguageStore>.from(
+                    jsonDecode(json["blog_link"]).map(
+                      (x) => LanguageStore.fromJson(x),
+                    ),
+                  )
+                : List<LanguageStore>.from(
+                    json["blog_link"].map(
+                      (x) => LanguageStore.fromJson(x),
+                    ),
+                  ),
         description: json["description"] == null
             ? null
-            : List<LanguageStore>.from(
-                jsonDecode(json["description"]).map(
-                  (x) => LanguageStore.fromJson(x),
-                ),
-              ),
+            : json["description"] is String
+                ? List<LanguageStore>.from(
+                    jsonDecode(json["description"]).map(
+                      (x) => LanguageStore.fromJson(x),
+                    ),
+                  )
+                : List<LanguageStore>.from(
+                    json["description"].map(
+                      (x) => LanguageStore.fromJson(x),
+                    ),
+                  ),
         status: json["status"],
         costCentreCode: json["cost_centre_code"],
         ecommerceDetails: json["ecommerce_details"],
-        categoryList: json["categoryList"] == null
-            ? null
-            : List<Category>.from(
-                jsonDecode(json["categoryList"]).map(
-                  (x) => Category.fromJson(x),
-                ),
-              ),
+        // categoryList: json["categoryList"] == null
+        //     ? null
+        //     : json["categoryList"] is String
+        //         ? List<Category>.from(
+        //             jsonDecode(json["categoryList"]).map(
+        //               (x) => Category.fromJson(x),
+        //             ),
+        //           )
+        //         : List<Category>.from(
+        //             json["categoryList"].map(
+        //               (x) => Category.fromJson(x),
+        //             ),
+        //           ),
         subLocations: json["sub_locations"] == null
             ? null
-            : SubLocations.fromJson(
-                jsonDecode(json["sub_locations"]),
-              ),
+            : json["sub_locations"] is String
+                ? SubLocations.fromJson(
+                    jsonDecode(json["sub_locations"]),
+                  )
+                : SubLocations.fromJson(
+                    json["sub_locations"],
+                  ),
         favourite: json["favourite"],
       );
 
@@ -77,7 +99,7 @@ class RetailUnit {
         "cost_centre_code": costCentreCode,
         "ecommerce_details": ecommerceDetails,
         "sub_locations": subLocations == null ? null : subLocations.toJson(),
-        "categoryList": categoryList == null ? null : jsonEncode(categoryList),
+        // "categoryList": categoryList == null ? null : jsonEncode(categoryList),
         "favourite": favourite,
       };
 

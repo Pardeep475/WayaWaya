@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "737531777162",
+    "project_id": "connect-waya-waya",
+    "storage_bucket": "connect-waya-waya.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:737531777162:android:ed3b8dbe6a64f2aee65d73",
+        "android_client_info": {
+          "package_name": "za.co.venueengage.waya"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "737531777162-emdddt0ml6ut16htjukkupipuo86smlg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "za.co.venueengage.waya",
+            "certificate_hash": "1f41749e3185480a125e38f39733b3d77a48fdcd"
+          }
+        },
+        {
+          "client_id": "737531777162-118kl7iufp2ci1441vtbg68glpo0ltve.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDX5RYUUx3EMaymTauJ5nXwX1HyjOgxjlI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "737531777162-118kl7iufp2ci1441vtbg68glpo0ltve.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

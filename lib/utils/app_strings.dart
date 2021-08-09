@@ -52,7 +52,7 @@ class AppString {
 
   static const String DEVICE_SEPARATOR = "~^";
   static const String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
-  static const String BUILD_TIME = "2015-07-17 00:00:00";
+  static const String BUILD_TIME = "2021-07-17 00:00:00";
   static const String DATE_FORMAT_UPDATE = "yyyy-MM-dd hh:mm:ss a";
   static const String DATE_FORMAT_WITHOUT_TIME = "yyyy-MM-dd 00:00:00";
   static const String STATE = "state";
@@ -138,7 +138,7 @@ class AppString {
       "Please agree your terms & conditions";
   static const String currently_not_logged_in =
       "Currently you are not logged in to access this feature please login with valid credentials.";
-  static const app_version = "App version - v1.0.0";
+  static const app_version = "App version - v";
   static const favourite_malls = "Favourite Malls";
   static const notification_frequency = "Notification Frequency";
   static const alternate_currency = "Alternate Currency";
@@ -276,9 +276,10 @@ class AppString {
       "Only for registered members.";
   static const String not_at_venue =
       "You need to visit the mall to earn points.";
-  static const String not_at_venue_msg =
+  static const String not_at_venue_msg_android =
       "You need to visit the mall to earn/redeem shop points. If you are at the mall please check following and restart your app. \n ● You received a Welcome message when visiting the mall. \n ● You have this mall selected as your current mall.";
-
+  static const String not_at_venue_msg_ios =
+      "You need to visit the mall to earn/redeem shop points. If you are at the mall please check following and restart your app. \n ● Your settings: location services is set to \"Always\"for the Connect Waya-Waya® app. \n ● You received a Welcome message when visiting the mall. \n ● You have this mall selected as your current mall.";
   static const String redemption = "Points Redeemed";
   static const String view_offer = "View Offer";
   static const String mall_visit = "Mall Visit";
