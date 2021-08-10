@@ -100,7 +100,7 @@ class RewardsBloc {
               offset: 0,
               rid: "",
               searchText: "",
-              categoryId: "",
+              categoryId: "1",
               publish_date: Utils.getStringFromDate(
                   DateTime.now(), AppString.DATE_FORMAT),
               campaingType: "offer");
@@ -134,9 +134,8 @@ class RewardsBloc {
     }
   }
 
-  setUpGestureRewards() async{
+  setUpGestureRewards() async {
     bool value = await SessionManager.getGestureRewards();
     gestureRewardsSink.add(value);
   }
-
 }

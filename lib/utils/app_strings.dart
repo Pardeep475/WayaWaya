@@ -115,6 +115,7 @@ class AppString {
   static const settings = "SETTINGS";
   static const logout = "LOGOUT";
   static const term_and_conditions = "Terms and Conditions";
+  static const user_config = "User Config";
   static const my_account = "My Account";
   static const preferences_small = "Preferences";
   static const my_devices = "My Devices";

@@ -1,23 +1,21 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:open_appstore/open_appstore.dart';
 import 'package:transformer_page_view/transformer_page_view.dart';
-import 'package:upgrader/upgrader.dart';
 import 'package:wayawaya/app/common/dialogs/common_exit_dialog.dart';
 import 'package:wayawaya/app/common/menu/animate_app_bar.dart';
 import 'package:wayawaya/app/common/menu/model/main_menu_permission.dart';
+import 'package:wayawaya/app/common/upgrade/upgrade_alert.dart';
+import 'package:wayawaya/app/common/upgrade/upgrader.dart';
 import 'package:wayawaya/app/home/model/whatson_campaign.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_images.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/dimens.dart';
 import 'package:wayawaya/utils/session_manager.dart';
-import 'dart:ui' as ui;
 import '../../config.dart';
-import '../../constants.dart';
 import 'bloc/home_bloc.dart';
 import 'view/common_image_widget.dart';
 
@@ -45,7 +43,8 @@ class _HomeScreenState extends State<HomeScreen> {
     Upgrader().clearSavedSettings();
     final appcastURL =
         'https://raw.githubusercontent.com/larryaasen/upgrader/master/test/testappcast.xml';
-    final cfg = AppcastConfiguration(url: appcastURL, supportedOS: ['android','ios']);
+    final cfg =
+        AppcastConfiguration(url: appcastURL, supportedOS: ['android', 'ios']);
 
     return WillPopScope(
       onWillPop: () async {
@@ -57,6 +56,10 @@ class _HomeScreenState extends State<HomeScreen> {
       child: UpgradeAlert(
         appcastConfig: cfg,
         debugLogging: true,
+        canDismissDialog: true,
+        showIgnore: false,
+        showLater: true,
+        dialogStyle: UpgradeDialogStyle.cupertino,
         onUpdate: () {
           OpenAppstore.launch(
               androidAppId: "za.co.venueengage.waya", iOSAppId: "1515126975");

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:package_info/package_info.dart';
+import 'package:wayawaya/app/common/dialogs/full_screen_user_config_dialog.dart';
 import 'package:wayawaya/app/common/menu/animate_app_bar.dart';
 import 'package:wayawaya/app/common/menu/model/main_menu_permission.dart';
 import 'package:wayawaya/app/settings/model/settings_model.dart';
@@ -176,6 +177,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
           _settingsBloc.privacyPolicyOnClick(context);
           break;
         }
+      case AppString.user_config:
+        {
+          // user config
+          Navigator.push(context, FullScreenUserConfigDialog());
+          break;
+        }
       case AppString.term_and_conditions:
         {
           debugPrint('settings_click_testing:-  ${settingsModel.title}');
@@ -228,4 +235,5 @@ class _SettingsScreenState extends State<SettingsScreen> {
           'LoyaltyTemp:-   ${element.timestamp}   ${element.totalMonthPoints}   ${element.month}');
     });
   }
+
 }

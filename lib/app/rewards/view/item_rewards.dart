@@ -149,7 +149,7 @@ class ItemRewards extends StatelessWidget {
                     future: getBumpImage(campaign),
                     builder: (context, snapshot) {
                       return Image.asset(
-                        AppImages.red_fist_bump,
+                        snapshot.data ?? AppImages.red_fist_bump,
                         height: Dimens.forty,
                         width: Dimens.forty,
                       );
@@ -208,12 +208,22 @@ class ItemRewards extends StatelessWidget {
   String getLoyaltyPoints(Campaign campaign) {
     try {
       debugPrint('campaign_voucher:-   ${campaign.voucher}');
-      dynamic voucherJson = jsonDecode(campaign.voucher);
-      int voucher = voucherJson['value'];
-      if (voucher != null && voucher > 0) {
-        return "$voucher Points";
-      } else {
-        return "0 Points";
+      try {
+        dynamic voucherJson = jsonDecode(jsonDecode(campaign.voucher));
+        int voucher = voucherJson['value'];
+        if (voucher != null && voucher > 0) {
+          return "$voucher Points";
+        } else {
+          return "0 Points";
+        }
+      } catch (e) {
+        dynamic voucherJson = jsonDecode(campaign.voucher);
+        int voucher = voucherJson['value'];
+        if (voucher != null && voucher > 0) {
+          return "$voucher Points";
+        } else {
+          return "0 Points";
+        }
       }
     } catch (e) {
       return "0 Points";

@@ -78,8 +78,9 @@ dependencies:
   geolocator:
   firebase_core:
   firebase_crashlytics:
-  upgrader:
   open_appstore:
+  version:
+  battery_plus:
 
 dev_dependencies:
   flutter_test:

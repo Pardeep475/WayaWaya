@@ -17,6 +17,7 @@ class PermissionService {
     return await Permission.locationAlways.status.isGranted;
   }
 
+
   static Future<bool> requestSystemOverLayPermission() async {
     PermissionStatus status = await Permission.systemAlertWindow.request();
     return status.isGranted;

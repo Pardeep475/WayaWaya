@@ -54,6 +54,8 @@ class SettingsBloc {
         .add(SettingsModel(icon: null, title: AppString.privacy_policy));
     _settingsItemList
         .add(SettingsModel(icon: null, title: AppString.term_and_conditions));
+    _settingsItemList.add(
+        SettingsModel(icon: Icons.account_box, title: AppString.user_config));
 
     settingsSink.add(_settingsItemList);
   }
