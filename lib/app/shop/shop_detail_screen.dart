@@ -608,7 +608,6 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
     );
   }
 
-
   List<Widget> _addIconsListData(RetailWithCategory retailWithCategory) {
     final List<Widget> _iconsList = [];
     if (retailWithCategory == null) _iconsList;
@@ -914,9 +913,7 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
 
       // Share.share(description + "\n" + image, subject: subject);
       Utils.shareFunctionality(
-          description: description,
-          image: image,
-          subject: subject);
+          description: description, image: image, subject: subject);
     } catch (e) {
       debugPrint('$e');
     }
