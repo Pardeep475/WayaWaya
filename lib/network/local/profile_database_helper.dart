@@ -19,7 +19,6 @@ import 'package:wayawaya/network/local/table/retail_unit_table.dart';
 import 'package:wayawaya/network/model/loyalty/loyalty_header_response.dart';
 import 'package:wayawaya/network/model/loyalty/loyalty_points.dart';
 import 'package:wayawaya/network/model/loyalty/loyalty_response.dart';
-import 'package:wayawaya/network/model/loyalty/loyalty_temp.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/session_manager.dart';
 import 'package:wayawaya/utils/utils.dart';
@@ -792,7 +791,7 @@ class ProfileDatabaseHelper {
               offset: 0,
               rid: "",
               searchText: "",
-              categoryId: "",
+              categoryId: "1",
               publish_date: Utils.getStringFromDate(
                   DateTime.now(), AppString.DATE_FORMAT),
               campaingType: "offer");
@@ -803,16 +802,20 @@ class ProfileDatabaseHelper {
       debugPrint(
           'database_testing:- list of campaign   ${_offerCampaignList.length}');
       data.forEach((element) {
-        List<Campaign> offerList = _offerCampaignList
-            .where((campaign) => campaign.rid == element['rid'])
-            .toList();
-        if (offerList.isEmpty) {
-          _allSearchList.add(RetailWithCategory.fromJson(element));
-        } else {
-          RetailWithCategory retailWithCategory =
-              RetailWithCategory.fromJson(element);
-          retailWithCategory.campaigns = offerList;
-          _allSearchList.add(retailWithCategory);
+        try {
+          List<Campaign> offerList = _offerCampaignList
+              .where((campaign) => campaign.rid == element['rid'])
+              .toList();
+          if (offerList.isEmpty) {
+            _allSearchList.add(RetailWithCategory.fromJson(element));
+          } else {
+            RetailWithCategory retailWithCategory =
+                RetailWithCategory.fromJson(element);
+            retailWithCategory.campaigns = offerList;
+            _allSearchList.add(retailWithCategory);
+          }
+        } catch (e) {
+          debugPrint('error:- database :-  $e');
         }
       });
       _allSearchList.sort((a, b) => a.name.compareTo(b.name));

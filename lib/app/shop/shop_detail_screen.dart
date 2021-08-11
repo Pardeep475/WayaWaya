@@ -634,7 +634,7 @@ class _ShopDetailScreenState extends State<ShopDetailScreen> {
         case 'telephone':
           {
             _iconsList.insert(
-              retailWithCategory.subLocations.contactItem.length > 1 ? 1 : 0,
+              _iconsList.length > 1 ? 1 : 0,
               customIconWidget(
                 Icons.phone,
                 () {
