@@ -27,4 +27,10 @@ class NetworkConstants {
   static const refreshTokens = "refreshTokens/";
   static const lastUpdate = "last/updates";
   static const categories = "categories";
+  
+  
+  // logging
+   static final String TYPE = "BufferedOutput";
+   static final String AUTH_HEADER = "Authorization";
+   static final String urlAppLog = base_url+"appEventLogs";
 }

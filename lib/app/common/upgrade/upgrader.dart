@@ -190,19 +190,19 @@ class Upgrader {
         print('upgrader: appcast item count: $count');
       }
       final bestItem = appcast.bestItem();
-      if (bestItem != null &&
-          bestItem.versionString != null &&
-          bestItem.versionString.isNotEmpty) {
-        if (debugLogging) {
-          print(
-              'upgrader: appcast best item version: ${bestItem.versionString}');
+      if (bestItem != null && bestItem.versionString != null) {
+        if (bestItem.versionString.isNotEmpty) {
+          if (debugLogging) {
+            print(
+                'upgrader: appcast best item version: ${bestItem.versionString}');
+          }
+          _appStoreVersion ??= bestItem.versionString;
+          _appStoreListingURL ??= bestItem.fileURL;
+          if (bestItem.isCriticalUpdate) {
+            _isCriticalUpdate = true;
+          }
+          _releaseNotes = bestItem.itemDescription;
         }
-        _appStoreVersion ??= bestItem.versionString;
-        _appStoreListingURL ??= bestItem.fileURL;
-        if (bestItem.isCriticalUpdate) {
-          _isCriticalUpdate = true;
-        }
-        _releaseNotes = bestItem.itemDescription;
       }
     } else {
       if (_packageInfo == null || _packageInfo.packageName.isEmpty) {
@@ -326,10 +326,9 @@ class Upgrader {
   }
 
   bool shouldDisplayUpgrade() {
-    final isBlocked = blocked();
-
+    // final isBlocked = blocked();
     if (debugLogging) {
-      print('upgrader: blocked: $isBlocked');
+      // print('upgrader: blocked: $isBlocked');
       print('upgrader: debugDisplayAlways: $debugDisplayAlways');
       print('upgrader: debugDisplayOnce: $debugDisplayOnce');
       print('upgrader: hasAlerted: $_hasAlerted');
@@ -337,19 +336,19 @@ class Upgrader {
 
     // If installed version is below minimum app version, or is a critical update,
     // disable ignore and later buttons.
-    if (isBlocked) {
-      showIgnore = false;
-      showLater = false;
-    }
+    // if (isBlocked) {
+    //   showIgnore = false;
+    //   showLater = false;
+    // }
     if (debugDisplayAlways || (debugDisplayOnce && !_hasAlerted)) {
       return true;
     }
     if (!isUpdateAvailable()) {
       return false;
     }
-    if (isBlocked) {
-      return true;
-    }
+    // if (isBlocked) {
+    //   return true;
+    // }
     if (isTooSoon() || alreadyIgnoredThisVersion()) {
       return false;
     }
@@ -420,7 +419,8 @@ class Upgrader {
   }
 
   bool shouldDisplayReleaseNotes() {
-    return showReleaseNotes && (_releaseNotes.isNotEmpty ?? false);
+    return showReleaseNotes &&
+        (_releaseNotes == null ? false : _releaseNotes.isNotEmpty ?? false);
   }
 
   /// Determine the current country code, either from the context, or
@@ -522,13 +522,13 @@ class Upgrader {
       ),
       actions: <Widget>[
         // if (showIgnore)
-          TextButton(
-              child: Text(messages.message(UpgraderMessage.buttonTitleIgnore)),
-              onPressed: () => onUserIgnored(context, true)),
+        TextButton(
+            child: Text(messages.message(UpgraderMessage.buttonTitleIgnore)),
+            onPressed: () => onUserIgnored(context, true)),
         // if (showLater)
-          TextButton(
-              child: Text(messages.message(UpgraderMessage.buttonTitleLater)),
-              onPressed: () => onUserLater(context, true)),
+        TextButton(
+            child: Text(messages.message(UpgraderMessage.buttonTitleLater)),
+            onPressed: () => onUserLater(context, true)),
         TextButton(
             child: Text(messages.message(UpgraderMessage.buttonTitleUpdate)),
             onPressed: () => onUserUpdated(context, !blocked())),
@@ -569,13 +569,13 @@ class Upgrader {
       ),
       actions: <Widget>[
         // if (showIgnore)
-          CupertinoDialogAction(
-              child: Text(messages.message(UpgraderMessage.buttonTitleIgnore)),
-              onPressed: () => onUserIgnored(context, true)),
+        CupertinoDialogAction(
+            child: Text(messages.message(UpgraderMessage.buttonTitleIgnore)),
+            onPressed: () => onUserIgnored(context, true)),
         // if (showLater)
-          CupertinoDialogAction(
-              child: Text(messages.message(UpgraderMessage.buttonTitleLater)),
-              onPressed: () => onUserLater(context, true)),
+        CupertinoDialogAction(
+            child: Text(messages.message(UpgraderMessage.buttonTitleLater)),
+            onPressed: () => onUserLater(context, true)),
         CupertinoDialogAction(
             isDefaultAction: true,
             child: Text(messages.message(UpgraderMessage.buttonTitleUpdate)),

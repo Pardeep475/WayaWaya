@@ -230,7 +230,7 @@ class FullScreenUserConfigDialog extends ModalRoute<bool> {
     try {
       var battery = Battery();
       int batteryPer = await battery.batteryLevel;
-      return "Battery Power :- $batteryPer";
+      return "Battery Power :- $batteryPer%";
     } catch (e) {
       return "Battery Power :- ";
     }

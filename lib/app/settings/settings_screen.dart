@@ -189,9 +189,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
           // await SyncService.fetchUpdateData(1);
 
-          AnalyticsServices.setForcefullyCrash();
+          // AnalyticsServices.setForcefullyCrash();
 
-          // _settingsBloc.termAndConditionOnClick(context);
+          _settingsBloc.termAndConditionOnClick(context);
           // EventLoggerService.eventLogger(
           //     uuid: EventLoggerService.Settings,
           //     action: EventLoggerService.LOG_TYPE_NAVIGATION,
@@ -235,5 +235,4 @@ class _SettingsScreenState extends State<SettingsScreen> {
           'LoyaltyTemp:-   ${element.timestamp}   ${element.totalMonthPoints}   ${element.month}');
     });
   }
-
 }

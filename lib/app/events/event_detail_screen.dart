@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:transformer_page_view/transformer_page_view.dart';
@@ -191,7 +192,6 @@ class _EventDetailScreen extends State<EventDetailScreen> {
   String _getDescription(BuildContext context, Campaign campaign) {
     if (campaign == null) return '';
     if (campaign.campaignElement == null) return '';
-    if (campaign.campaignElement.description == null) return '';
     String description = '';
     if (campaign.campaignElement != null) {
       try {
@@ -228,20 +228,20 @@ class _EventDetailScreen extends State<EventDetailScreen> {
       String startDate = campaign.startDate;
       String endDate = campaign.endDate;
 
-      // final Event event = Event(
-      //   title: title ?? '',
-      //   description: description ?? "",
-      //   location: location ?? "",
-      //   startDate:
-      //       startDate == null ? DateTime.now() : DateTime.parse(startDate),
-      //   allDay: true,
-      //   endDate: endDate == null ? DateTime.now() : DateTime.parse(endDate),
-      //   iosParams: IOSParams(reminder: Duration()),
-      //   androidParams: AndroidParams(
-      //     emailInvites: [],
-      //   ),
-      // );
-      // Add2Calendar.addEvent2Cal(event);
+      final Event event = Event(
+        title: title ?? '',
+        description: description ?? "",
+        location: location ?? "",
+        startDate:
+            startDate == null ? DateTime.now() : DateTime.parse(startDate),
+        allDay: true,
+        endDate: endDate == null ? DateTime.now() : DateTime.parse(endDate),
+        iosParams: IOSParams(reminder: Duration()),
+        androidParams: AndroidParams(
+          emailInvites: [],
+        ),
+      );
+      Add2Calendar.addEvent2Cal(event);
     } catch (e) {
       debugPrint("event_calender_issue:-  $e");
     }

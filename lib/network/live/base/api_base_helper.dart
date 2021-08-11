@@ -18,15 +18,18 @@ class ApiBaseHelper {
 
   static final dio = Dio();
 
-  Future<dynamic> get({String url, String authHeader,dynamic queryParams}) async {
+  Future<dynamic> get(
+      {String url, String authHeader, dynamic queryParams}) async {
     try {
       debugPrint('auth_header  :-  $authHeader');
       debugPrint('api_url  :-  ${NetworkConstants.base_url}$url');
-      final response = await dio.get('${NetworkConstants.base_url}$url',
+      final response = await dio.get(
+        '${NetworkConstants.base_url}$url',
         // queryParameters: queryParams,
         options: Options(
           headers: {"Authorization": "Bearer $authHeader"},
-        ),);
+        ),
+      );
       debugPrint('pardeep_testing:-  ${response.statusCode}');
       return response;
     } on SocketException {
@@ -80,7 +83,6 @@ class ApiBaseHelper {
       dynamic params,
       Map<String, dynamic> map}) async {
     try {
-
       debugPrint('auth_header  :-  $authHeader');
       debugPrint('api_params   :-   $params    ');
       String mainUrl = '${NetworkConstants.base_url}$url'.trim();
@@ -88,6 +90,36 @@ class ApiBaseHelper {
       final response = await dio.patch(mainUrl,
           data: params,
           queryParameters: map,
+          options: Options(
+            headers: {"Authorization": "Bearer $authHeader"},
+          ));
+      debugPrint('api_response_print:-    $response');
+
+      return response;
+    } on SocketException {
+      throw NoInternetException(AppString.check_your_internet_connectivity);
+    } on HttpException {
+      throw NoServiceFoundException(AppString.no_service_found_exception);
+    } on FormatException {
+      throw InvalidFormatException(AppString.invalid_format_exception);
+    } catch (e) {
+      debugPrint("pardeep_testing:-   ${e.toString()}");
+      if (e is DioError) {
+        return e;
+      } else {
+        throw UnknownException(e.toString());
+      }
+    }
+  }
+
+  Future<dynamic> loggingPost(
+      {String url, String authHeader, dynamic params}) async {
+    try {
+      debugPrint('api_url  :-  $url');
+      debugPrint('auth_header  :-  $authHeader');
+      debugPrint('api_params   :-   $params    ');
+      final response = await dio.post('$url',
+          data: params,
           options: Options(
             headers: {"Authorization": "Bearer $authHeader"},
           ));

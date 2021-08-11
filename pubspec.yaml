@@ -81,6 +81,7 @@ dependencies:
   open_appstore:
   version:
   battery_plus:
+  add_2_calendar: ^2.1.1
 
 dev_dependencies:
   flutter_test:

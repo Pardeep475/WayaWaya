@@ -14,7 +14,7 @@ class ClickLog {
    String group;
    String action;
    String data;
-   String production;
+   bool production;
 
   ClickLog(
       {this.uuid,

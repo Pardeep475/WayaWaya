@@ -1,4 +1,6 @@
 PODS:
+  - add_2_calendar (0.0.1):
+    - Flutter
   - battery_plus (1.0.0):
     - Flutter
   - device_info (0.0.1):
@@ -92,6 +94,7 @@ PODS:
     - Flutter
 
 DEPENDENCIES:
+  - add_2_calendar (from `.symlinks/plugins/add_2_calendar/ios`)
   - battery_plus (from `.symlinks/plugins/battery_plus/ios`)
   - device_info (from `.symlinks/plugins/device_info/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
@@ -129,6 +132,8 @@ SPEC REPOS:
     - PromisesObjC
 
 EXTERNAL SOURCES:
+  add_2_calendar:
+    :path: ".symlinks/plugins/add_2_calendar/ios"
   battery_plus:
     :path: ".symlinks/plugins/battery_plus/ios"
   device_info:
@@ -173,6 +178,7 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/webview_flutter/ios"
 
 SPEC CHECKSUMS:
+  add_2_calendar: e9d68636aed37fb18e12f5a3d74c2e0589487af0
   battery_plus: 7851ab482c336dd101ae735dc9363f01e1223c7c
   device_info: d7d233b645a32c40dfdc212de5cf646ca482f175
   Firebase: 817b9171d0d51dccc458b94a5e8edff6b1dd323d

@@ -49,6 +49,8 @@ class AppString {
   static const String GESTURE_MAP = "GESTURE_MAP";
   static const String GESTURE_REWARDS = "GESTURE_REWARDS";
   static const String GESTURE_LOYALTY = "GESTURE_LOYALTY";
+  static const String LAST_TIME_ALERT = "LAST_TIME_ALERT";
+  static const String IGNORE_THIS_VERSION = "IGNORE_THIS_VERSION";
 
   static const String DEVICE_SEPARATOR = "~^";
   static const String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";

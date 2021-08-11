@@ -40,7 +40,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Upgrader().clearSavedSettings();
     final appcastURL =
         'https://raw.githubusercontent.com/larryaasen/upgrader/master/test/testappcast.xml';
     final cfg =

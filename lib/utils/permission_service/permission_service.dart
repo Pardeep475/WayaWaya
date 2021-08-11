@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:permission_handler/permission_handler.dart';
 
 class PermissionService {
@@ -17,7 +19,6 @@ class PermissionService {
     return await Permission.locationAlways.status.isGranted;
   }
 
-
   static Future<bool> requestSystemOverLayPermission() async {
     PermissionStatus status = await Permission.systemAlertWindow.request();
     return status.isGranted;
@@ -25,14 +26,15 @@ class PermissionService {
 
   static Future<bool> requestLocationPermission() async {
     var status = await Permission.locationAlways.request();
+    bool value = status.isLimited;
     if (status.isGranted) {
       return status.isGranted;
     } else if (status.isPermanentlyDenied) {
-      // openAppSettings();
+      if (Platform.isAndroid) return await openAppSettings();
     } else if (status.isRestricted) {
-      // openAppSettings();
+      if (Platform.isAndroid) return await openAppSettings();
     } else {
-      // await requestLocationPermission();
+      if (Platform.isAndroid) return await openAppSettings();
     }
     return true;
   }

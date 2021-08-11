@@ -121,7 +121,7 @@ class RewardsBloc {
               offset: 0,
               rid: "",
               searchText: "",
-              categoryId: categoryId ?? "",
+              categoryId: categoryId ?? "1",
               publish_date: Utils.getStringFromDate(
                   DateTime.now(), AppString.DATE_FORMAT),
               campaingType: "offer");

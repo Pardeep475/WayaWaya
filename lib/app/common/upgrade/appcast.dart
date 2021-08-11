@@ -234,32 +234,36 @@ class AppcastItem {
 
   bool hostSupportsItem({String osVersion, String currentPlatform}) {
     var supported = true;
-    if (osString != null && osString.isNotEmpty) {
-      final platformEnum = 'TargetPlatform.' + osString;
-      currentPlatform = currentPlatform == null
-          ? defaultTargetPlatform.toString()
-          : 'TargetPlatform.' + currentPlatform;
-      supported = platformEnum.toLowerCase() == currentPlatform.toLowerCase();
+    if (osString != null) {
+      if (osString.isNotEmpty) {
+        final platformEnum = 'TargetPlatform.' + osString;
+        currentPlatform = currentPlatform == null
+            ? defaultTargetPlatform.toString()
+            : 'TargetPlatform.' + currentPlatform;
+        supported = platformEnum.toLowerCase() == currentPlatform.toLowerCase();
+      }
     }
 
-    if (supported && osVersion != null && osVersion.isNotEmpty) {
-      var osVersionValue;
-      try {
-        osVersionValue = Version.parse(osVersion);
-      } catch (e) {
-        print('appcast.hostSupportsItem: invalid osVerion: $e');
-        return false;
-      }
-      if (maximumSystemVersion != null) {
-        final maxVersion = Version.parse(maximumSystemVersion);
-        if (osVersionValue > maxVersion) {
-          supported = false;
+    if (supported && osVersion != null) {
+      if (osVersion.isNotEmpty) {
+        var osVersionValue;
+        try {
+          osVersionValue = Version.parse(osVersion);
+        } catch (e) {
+          print('appcast.hostSupportsItem: invalid osVerion: $e');
+          return false;
         }
-      }
-      if (supported && minimumSystemVersion != null) {
-        final minVersion = Version.parse(minimumSystemVersion);
-        if (osVersionValue < minVersion) {
-          supported = false;
+        if (maximumSystemVersion != null) {
+          final maxVersion = Version.parse(maximumSystemVersion);
+          if (osVersionValue > maxVersion) {
+            supported = false;
+          }
+        }
+        if (supported && minimumSystemVersion != null) {
+          final minVersion = Version.parse(minimumSystemVersion);
+          if (osVersionValue < minVersion) {
+            supported = false;
+          }
         }
       }
     }

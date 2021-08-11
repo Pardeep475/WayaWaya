@@ -40,10 +40,12 @@ class PlayStoreSearchAPI {
   }
 
   Document _decodeResults(jsonResponse) {
-    if (jsonResponse.isNotEmpty) {
-      final decodedResults = parse(jsonResponse);
+    if(jsonResponse != null){
+      if (jsonResponse.isNotEmpty) {
+        final decodedResults = parse(jsonResponse);
 
-      return decodedResults;
+        return decodedResults;
+      }
     }
     return null;
   }

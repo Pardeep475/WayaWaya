@@ -34,23 +34,23 @@ class UpgradeCard extends UpgradeBase {
     String countryCode,
     String minAppVersion,
   }) : super(
-    key: key,
-    appcastConfig: appcastConfig,
-    messages: messages,
-    debugDisplayAlways: debugAlwaysUpgrade,
-    debugDisplayOnce: debugDisplayOnce,
-    debugLogging: debugLogging,
-    durationToAlertAgain: durationToAlertAgain,
-    onIgnore: onIgnore,
-    onLater: onLater,
-    onUpdate: onUpdate,
-    client: client,
-    showIgnore: showIgnore,
-    showLater: showLater,
-    showReleaseNotes: showReleaseNotes,
-    countryCode: countryCode,
-    minAppVersion: minAppVersion,
-  );
+          key: key,
+          appcastConfig: appcastConfig,
+          messages: messages,
+          debugDisplayAlways: debugAlwaysUpgrade,
+          debugDisplayOnce: debugDisplayOnce,
+          debugLogging: debugLogging,
+          durationToAlertAgain: durationToAlertAgain,
+          onIgnore: onIgnore,
+          onLater: onLater,
+          onUpdate: onUpdate,
+          client: client,
+          showIgnore: showIgnore,
+          showLater: showLater,
+          showReleaseNotes: showReleaseNotes,
+          countryCode: countryCode,
+          minAppVersion: minAppVersion,
+        );
 
   @override
   Widget build(BuildContext context, UpgradeBaseState state) {
@@ -70,7 +70,7 @@ class UpgradeCard extends UpgradeBase {
               final message = Upgrader().message();
               final releaseNotes = Upgrader().releaseNotes;
               final shouldDisplayReleaseNotes =
-              Upgrader().shouldDisplayReleaseNotes();
+                  Upgrader().shouldDisplayReleaseNotes();
               if (Upgrader().debugLogging) {
                 print('UpgradeCard: will display');
                 print('UpgradeCard: showDialog title: $title');
@@ -114,40 +114,40 @@ class UpgradeCard extends UpgradeBase {
                           Padding(
                               padding: EdgeInsets.only(top: 15.0),
                               child: Text(Upgrader()
-                                  .messages
-                                  .message(UpgraderMessage.prompt) ??
+                                      .messages
+                                      .message(UpgraderMessage.prompt) ??
                                   '')),
                           if (notes != null) notes,
                         ],
                       ),
                       actions: <Widget>[
                         // if (Upgrader().showIgnore)
-                          TextButton(
-                              child: Text(Upgrader().messages.message(
-                                  UpgraderMessage.buttonTitleIgnore) ??
-                                  ''),
-                              onPressed: () {
-                                // Save the date/time as the last time alerted.
-                                Upgrader().saveLastAlerted();
-
-                                Upgrader().onUserIgnored(context, false);
-                                state.forceUpdateState();
-                              }),
-                        // if (Upgrader().showLater)
-                          TextButton(
-                              child: Text(Upgrader().messages.message(
-                                  UpgraderMessage.buttonTitleLater) ??
-                                  ''),
-                              onPressed: () {
-                                // Save the date/time as the last time alerted.
-                                Upgrader().saveLastAlerted();
-
-                                Upgrader().onUserLater(context, false);
-                                state.forceUpdateState();
-                              }),
                         TextButton(
                             child: Text(Upgrader().messages.message(
-                                UpgraderMessage.buttonTitleUpdate) ??
+                                    UpgraderMessage.buttonTitleIgnore) ??
+                                ''),
+                            onPressed: () {
+                              // Save the date/time as the last time alerted.
+                              Upgrader().saveLastAlerted();
+
+                              Upgrader().onUserIgnored(context, false);
+                              state.forceUpdateState();
+                            }),
+                        // if (Upgrader().showLater)
+                        TextButton(
+                            child: Text(Upgrader().messages.message(
+                                    UpgraderMessage.buttonTitleLater) ??
+                                ''),
+                            onPressed: () {
+                              // Save the date/time as the last time alerted.
+                              Upgrader().saveLastAlerted();
+
+                              Upgrader().onUserLater(context, false);
+                              state.forceUpdateState();
+                            }),
+                        TextButton(
+                            child: Text(Upgrader().messages.message(
+                                    UpgraderMessage.buttonTitleUpdate) ??
                                 ''),
                             onPressed: () {
                               // Save the date/time as the last time alerted.

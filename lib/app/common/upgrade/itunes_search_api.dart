@@ -93,17 +93,19 @@ class ITunesSearchAPI {
   }
 
   Map _decodeResults(String jsonResponse) {
-    if (jsonResponse.isNotEmpty) {
-      final decodedResults = json.decode(jsonResponse);
-      if (decodedResults is Map) {
-        final resultCount = decodedResults['resultCount'];
-        if (resultCount == 0) {
-          if (debugEnabled) {
-            print(
-                'upgrader.ITunesSearchAPI: results are empty: $decodedResults');
+    if (jsonResponse != null) {
+      if (jsonResponse.isNotEmpty) {
+        final decodedResults = json.decode(jsonResponse);
+        if (decodedResults is Map) {
+          final resultCount = decodedResults['resultCount'];
+          if (resultCount == 0) {
+            if (debugEnabled) {
+              print(
+                  'upgrader.ITunesSearchAPI: results are empty: $decodedResults');
+            }
           }
+          return decodedResults;
         }
-        return decodedResults;
       }
     }
     return null;

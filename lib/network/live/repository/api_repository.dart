@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:wayawaya/app/auth/forgotpassword/model/authentication_code_model.dart';
 import 'package:wayawaya/app/auth/login/model/user_model.dart';
 import 'package:wayawaya/app/auth/signup/model/sign_up_model.dart';
+import 'package:wayawaya/app/common/logger/click_log/click_log.dart';
 import 'package:wayawaya/app/preferences/model/upload_preferences_model.dart';
 import 'package:wayawaya/app/settings/model/update_user_model.dart';
 import 'package:wayawaya/models/omni_channel_item_model/omni_channel_item_model.dart';
@@ -216,6 +217,19 @@ class ApiRepository {
         url: '${NetworkConstants.update_user_end_point}$userId',
         authHeader: authHeader);
 
+    return response;
+  }
+
+
+  Future<dynamic> loggingApiRequest({ClickLog clickLog}) async {
+    String authHeader = await SessionManager.getAuthHeader();
+
+    Map<String, dynamic> map = clickLog.toJson();
+
+    final response = await _apiProvider.loggingPost(
+        url: '${NetworkConstants.urlAppLog}',
+        params: json.encode(map),
+        authHeader: authHeader);
     return response;
   }
 }

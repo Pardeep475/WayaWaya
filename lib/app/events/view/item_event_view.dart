@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -305,14 +306,20 @@ class ItemEventView extends StatelessWidget {
   String _getDescription(BuildContext context) {
     if (campaign == null) return '';
     if (campaign.campaignElement == null) return '';
-    if (campaign.campaignElement.description == null) return '';
     String description = '';
-    campaign.campaignElement.description.forEach((element) {
-      if (element.language == Language.EN_US) {
-        description = element.text;
+      try {
+        CampaignElement camElement =
+        campaignElementFromJson(campaign.campaignElement);
+        List<LanguageStore> name = List<LanguageStore>.from(
+            camElement.description.map((x) => LanguageStore.fromJson(x)));
+        description = Utils.getTranslatedCode(context, name);
+      } catch (e) {
+        CampaignElement camElement =
+        campaignElementFromJson(jsonDecode(campaign.campaignElement));
+        List<LanguageStore> name = List<LanguageStore>.from(
+            camElement.description.map((x) => LanguageStore.fromJson(x)));
+        description = Utils.getTranslatedCode(context, name);
       }
-    });
-
     return description;
   }
 
@@ -334,20 +341,20 @@ class ItemEventView extends StatelessWidget {
       String startDate = campaign.startDate;
       String endDate = campaign.endDate;
       debugPrint('location_add_to_calender:-   $location');
-      // final Event event = Event(
-      //   title: title ?? '',
-      //   description: description ?? "",
-      //   location: location ?? "",
-      //   startDate:
-      //       startDate == null ? DateTime.now() : DateTime.parse(startDate),
-      //   allDay: true,
-      //   endDate: endDate == null ? DateTime.now() : DateTime.parse(endDate),
-      //   iosParams: IOSParams(reminder: Duration()),
-      //   androidParams: AndroidParams(
-      //     emailInvites: [],
-      //   ),
-      // );
-      // Add2Calendar.addEvent2Cal(event);
+      final Event event = Event(
+        title: title ?? '',
+        description: description ?? "",
+        location: location ?? "",
+        startDate:
+            startDate == null ? DateTime.now() : DateTime.parse(startDate),
+        allDay: true,
+        endDate: endDate == null ? DateTime.now() : DateTime.parse(endDate),
+        iosParams: IOSParams(reminder: Duration()),
+        androidParams: AndroidParams(
+          emailInvites: [],
+        ),
+      );
+      Add2Calendar.addEvent2Cal(event);
     } catch (e) {
       debugPrint("event_calender_issue:-  $e");
     }

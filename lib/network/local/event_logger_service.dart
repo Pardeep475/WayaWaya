@@ -10,6 +10,7 @@ import 'package:wayawaya/app/common/logger/actions/print_output.dart';
 import 'package:wayawaya/app/common/logger/click_log/click_log.dart';
 import 'package:wayawaya/app/common/logger/click_log/device_details.dart';
 import 'package:wayawaya/app/common/logger/logger.dart';
+import 'package:wayawaya/network/live/repository/api_repository.dart';
 import 'package:wayawaya/utils/utils.dart';
 
 class EventLoggerService {
@@ -72,53 +73,54 @@ class EventLoggerService {
   static String Favourites = "30808f2ff3e141dd890a3f304c9cf3e0";
   static String AppLaunch = "79ebdb5403404eb98fd0fe5cf0468312";
 
-
   // group for Puree
-   static String LOG_GROUP_ADVERTISMENT = "Advertisement";
-   static String LOG_GROUP_NAVIGATION = "Navigation";
-   static String LOG_GROUP_PERFORMED_ACTION = "PerformedAction";
-   static String LOG_GROUP_CAMPAIGN = "campaigns";
-   static String LOG_GROUP_LOCATION = "location";
+  static String LOG_GROUP_ADVERTISMENT = "Advertisement";
+  static String LOG_GROUP_NAVIGATION = "Navigation";
+  static String LOG_GROUP_PERFORMED_ACTION = "PerformedAction";
+  static String LOG_GROUP_CAMPAIGN = "campaigns";
+  static String LOG_GROUP_LOCATION = "location";
+
   // The constants below are less interesting than those above.
-   static String LOG_GROUP_ADS = "advertisement";
+  static String LOG_GROUP_ADS = "advertisement";
+
   // log action
-   static String LOG_ACTION_EXPAND_CATEGORY = "expand_category";
-   static String LOG_ACTION_TRIGGERZONES_SYNCED = "triggerzones_synced";
-   static String LOG_ACTION_LIKED = "like";
-   static String LOG_ACTION_SOCIAL_LOGIN = "social_login";
+  static String LOG_ACTION_EXPAND_CATEGORY = "expand_category";
+  static String LOG_ACTION_TRIGGERZONES_SYNCED = "triggerzones_synced";
+  static String LOG_ACTION_LIKED = "like";
+  static String LOG_ACTION_SOCIAL_LOGIN = "social_login";
+
   //Type for Puree Log's
-   static String LOG_TYPE_CATEGORY_LIST = "category list";
-   static String LOG_TYPE_CAMPAIGN = "campaignLog";
-   static String LOG_TYPE_REWARDS = "rewardsLog";
+  static String LOG_TYPE_CATEGORY_LIST = "category list";
+  static String LOG_TYPE_CAMPAIGN = "campaignLog";
+  static String LOG_TYPE_REWARDS = "rewardsLog";
+
   //     static String LOG_TYPE_REWARDS = "rewards";
-   static String LOG_TYPE_Home = "app_home";
-   static String LOG_TYPE_LOCATION_LOGGER = "demographics";
-   static String LOG_TYPE_BEACON = "ibeacon";
-   static String LOG_TYPE_BEACON_DISCOVERED = "ibeacon_discovered";
-   static String LOG_TYPE_NOTIFICATION_DATA = "notification_data";
-   static String LOG_TYPE_ADVERTISEMENT_DATA = "advertisement_data";
-   static String LOG_TYPE_NOTIFICATION_SENT = "notification_sent";
-   static String LOG_TYPE_GEOFENCE = "geofence";
-   static String LOG_TYPE_NAVIGATION = "click";
-   static String LOG_TYPE_NAVIGATION_VIEW = "view";
-   static String LOG_TYPE_LOGIN = "login";
-   static String LOG_TYPE_LOGIN_CANCEL = "login_cancel";
-   static String LOG_TYPE_SIGNUP = "sign_up";
-   static String LOG_TYPE_LOGOUT = "logout";
-   static String LOG_TYPE_FORGOT_PASSWORD = "forgot_password";
-   static String LOG_TYPE_SKIP_LOGIN = "skip_login";
-   static String LOG_TYPE_PREFERENCE = "preference";
-   static String LOG_TYPE_CHANGE_PASSWORD = "change_password";
-   static String LOG_TYPE_LOCATE = "locate";
-   static String LOG_TYPE_SHARE = "share";
-   static String LOG_TYPE_OFFER = "offers";
-   static String LOG_TYPE_SCAN = "scan";
-   static String LOG_TYPE_SEARCH = "search";
-   static String LOG_TYPE_ATM = "atms";
-   static String LOG_TYPE_PARKING = "parking";
-  
-  
-  
+  static String LOG_TYPE_Home = "app_home";
+  static String LOG_TYPE_LOCATION_LOGGER = "demographics";
+  static String LOG_TYPE_BEACON = "ibeacon";
+  static String LOG_TYPE_BEACON_DISCOVERED = "ibeacon_discovered";
+  static String LOG_TYPE_NOTIFICATION_DATA = "notification_data";
+  static String LOG_TYPE_ADVERTISEMENT_DATA = "advertisement_data";
+  static String LOG_TYPE_NOTIFICATION_SENT = "notification_sent";
+  static String LOG_TYPE_GEOFENCE = "geofence";
+  static String LOG_TYPE_NAVIGATION = "click";
+  static String LOG_TYPE_NAVIGATION_VIEW = "view";
+  static String LOG_TYPE_LOGIN = "login";
+  static String LOG_TYPE_LOGIN_CANCEL = "login_cancel";
+  static String LOG_TYPE_SIGNUP = "sign_up";
+  static String LOG_TYPE_LOGOUT = "logout";
+  static String LOG_TYPE_FORGOT_PASSWORD = "forgot_password";
+  static String LOG_TYPE_SKIP_LOGIN = "skip_login";
+  static String LOG_TYPE_PREFERENCE = "preference";
+  static String LOG_TYPE_CHANGE_PASSWORD = "change_password";
+  static String LOG_TYPE_LOCATE = "locate";
+  static String LOG_TYPE_SHARE = "share";
+  static String LOG_TYPE_OFFER = "offers";
+  static String LOG_TYPE_SCAN = "scan";
+  static String LOG_TYPE_SEARCH = "search";
+  static String LOG_TYPE_ATM = "atms";
+  static String LOG_TYPE_PARKING = "parking";
+
   static void eventLogger(
       {String uuid,
       String action,
@@ -149,9 +151,10 @@ class EventLoggerService {
       clickLog.group = group;
       clickLog.action = action;
       clickLog.data = data;
-      clickLog.production = "";
-
-      logger.post(clickLog.toJson(),tag: action);
+      clickLog.production = false;
+      var apiRepo = ApiRepository();
+      await apiRepo.loggingApiRequest(clickLog: clickLog);
+      // logger.post(clickLog.toJson(), tag: "page_view");
     } catch (e) {
       debugPrint("Exception for puree in Constant's $e");
     }

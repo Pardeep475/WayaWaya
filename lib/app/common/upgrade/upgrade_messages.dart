@@ -46,7 +46,7 @@ class UpgraderMessages {
   /// Provide a [code] to override the system-reported default locale.
   UpgraderMessages({String code})
       : languageCode = (code ?? findLanguageCode()) {
-    assert(languageCode.isNotEmpty);
+    // assert(languageCode.isNotEmpty);
   }
 
   /// Override the message function to provide custom language localization.
@@ -99,84 +99,84 @@ class UpgraderMessages {
     switch (languageCode) {
       case 'ar':
         message =
-        'نسخة جديدة من {{appName}} متوفرة! النسخة {{currentAppStoreVersion}} متوفرة الآن, أنت تستخدم النسخة {{currentInstalledVersion}}.';
+            'نسخة جديدة من {{appName}} متوفرة! النسخة {{currentAppStoreVersion}} متوفرة الآن, أنت تستخدم النسخة {{currentInstalledVersion}}.';
         break;
       case 'bn':
         message =
-        '{{appName}} এর একটি নতুন সংস্করণ {{currentAppStoreVersion}} পাওয়া যাচ্ছে। আপনার অ্যাপলিকেশনের সংস্করণ হচ্ছে {{currentInstalledVersion}}।';
+            '{{appName}} এর একটি নতুন সংস্করণ {{currentAppStoreVersion}} পাওয়া যাচ্ছে। আপনার অ্যাপলিকেশনের সংস্করণ হচ্ছে {{currentInstalledVersion}}।';
         break;
       case 'es':
         message =
-        '¡Una nueva versión de {{appName}} está disponible! La versión {{currentAppStoreVersion}} ya está disponible-usted tiene {{currentInstalledVersion}}.';
+            '¡Una nueva versión de {{appName}} está disponible! La versión {{currentAppStoreVersion}} ya está disponible-usted tiene {{currentInstalledVersion}}.';
         break;
       case 'fa':
         message =
-        'نسخه‌ی جدیدی از {{appname}} موجود است! نسخه‌ی {{currentAppStoreVersion}} در دسترس است ولی شما همچنان از نسخه‌ی {{currentInstalledVersion}} استفاده می‌کنید.';
+            'نسخه‌ی جدیدی از {{appname}} موجود است! نسخه‌ی {{currentAppStoreVersion}} در دسترس است ولی شما همچنان از نسخه‌ی {{currentInstalledVersion}} استفاده می‌کنید.';
         break;
       case 'fil':
         message =
-        'May bagong bersyon ang {{appName}} na pwede nang magamit! Ang bersyong {{currentAppStoreVersion}} ay pwede nang magamit. Ikaw ay kasalukuyang gumagamit ng bersyong {{currentInstalledVersion}}.';
+            'May bagong bersyon ang {{appName}} na pwede nang magamit! Ang bersyong {{currentAppStoreVersion}} ay pwede nang magamit. Ikaw ay kasalukuyang gumagamit ng bersyong {{currentInstalledVersion}}.';
         break;
       case 'fr':
         message =
-        'Une nouvelle version de {{appName}} est disponible ! La version {{currentAppStoreVersion}} est maintenant disponible, vous avez la version {{currentInstalledVersion}}.';
+            'Une nouvelle version de {{appName}} est disponible ! La version {{currentAppStoreVersion}} est maintenant disponible, vous avez la version {{currentInstalledVersion}}.';
         break;
       case 'de':
         message =
-        'Eine neue Version von {{appName}} ist verfügbar! Die Version {{currentAppStoreVersion}} ist verfügbar, installiert ist die Version {{currentInstalledVersion}}.';
+            'Eine neue Version von {{appName}} ist verfügbar! Die Version {{currentAppStoreVersion}} ist verfügbar, installiert ist die Version {{currentInstalledVersion}}.';
         break;
       case 'hu':
         message =
-        'Új verzió érhető el az alkalmazásból {{appName}} ! Az elérhető új verzió: {{currentAppStoreVersion}} - a jelenlegi verzió: {{currentInstalledVersion}}.';
+            'Új verzió érhető el az alkalmazásból {{appName}} ! Az elérhető új verzió: {{currentAppStoreVersion}} - a jelenlegi verzió: {{currentInstalledVersion}}.';
         break;
       case 'id':
         message =
-        'Versi terbaru dari {{appName}} tersedia! Versi terbaru saat ini adalah {{currentAppStoreVersion}} - versi anda saat ini adalah {{currentInstalledVersion}}.';
+            'Versi terbaru dari {{appName}} tersedia! Versi terbaru saat ini adalah {{currentAppStoreVersion}} - versi anda saat ini adalah {{currentInstalledVersion}}.';
         break;
       case 'it':
         message =
-        'Una nuova versione di {{appName}} è disponibile! La versione {{currentAppStoreVersion}} è ora disponibile, voi avete {{currentInstalledVersion}}.';
+            'Una nuova versione di {{appName}} è disponibile! La versione {{currentAppStoreVersion}} è ora disponibile, voi avete {{currentInstalledVersion}}.';
         break;
       case 'kk':
         message =
-        '{{appName}} қосымша жаңа нұсқасын жүктеп алыңыз! Жаңа нұсқасы: {{currentAppStoreVersion}}, қазіргі нұсқасы: {{currentInstalledVersion}}';
+            '{{appName}} қосымша жаңа нұсқасын жүктеп алыңыз! Жаңа нұсқасы: {{currentAppStoreVersion}}, қазіргі нұсқасы: {{currentInstalledVersion}}';
         break;
       case 'ko':
         message =
-        '{{appName}}이 새 버전으로 업데이트되었습니다! 최신 버전 {{currentAppStoreVersion}}으로 업그레이드 가능합니다 - 현재 버전 {{currentInstalledVersion}}.';
+            '{{appName}}이 새 버전으로 업데이트되었습니다! 최신 버전 {{currentAppStoreVersion}}으로 업그레이드 가능합니다 - 현재 버전 {{currentInstalledVersion}}.';
         break;
       case 'pt':
         message =
-        'Há uma nova versão do {{appName}} disponível! A versão {{currentAppStoreVersion}} já está disponível, você tem a {{currentInstalledVersion}}.';
+            'Há uma nova versão do {{appName}} disponível! A versão {{currentAppStoreVersion}} já está disponível, você tem a {{currentInstalledVersion}}.';
         break;
       case 'pl':
         message =
-        'Nowa wersja {{appName}} jest dostępna! Wersja {{currentAppStoreVersion}} jest dostępna, Ty masz {{currentInstalledVersion}}.';
+            'Nowa wersja {{appName}} jest dostępna! Wersja {{currentAppStoreVersion}} jest dostępna, Ty masz {{currentInstalledVersion}}.';
         break;
       case 'ru':
         message =
-        'Доступна новая версия приложения {{appName}}! Новая версия: {{currentAppStoreVersion}}, текущая версия: {{currentInstalledVersion}}.';
+            'Доступна новая версия приложения {{appName}}! Новая версия: {{currentAppStoreVersion}}, текущая версия: {{currentInstalledVersion}}.';
         break;
       case 'ta':
         message =
-        '{{appName}}-ன் புதிய பதிப்பு {{currentAppStoreVersion}} இப்போது கிடைக்கிறது! உங்களிடம் {{currentInstalledVersion}} உள்ளது.';
+            '{{appName}}-ன் புதிய பதிப்பு {{currentAppStoreVersion}} இப்போது கிடைக்கிறது! உங்களிடம் {{currentInstalledVersion}} உள்ளது.';
         break;
       case 'tr':
         message =
-        '{{appName}} uygulamanızın yeni bir versiyonu mevcut! Versiyon {{currentAppStoreVersion}} şu anda erişilebilir, mevcut sürümünüz {{currentInstalledVersion}}.';
+            '{{appName}} uygulamanızın yeni bir versiyonu mevcut! Versiyon {{currentAppStoreVersion}} şu anda erişilebilir, mevcut sürümünüz {{currentInstalledVersion}}.';
         break;
       case 'uk':
         message =
-        'Доступна нова версія додатка {{appName}}! Нова версія: {{currentAppStoreVersion}}, поточна версія: {{currentInstalledVersion}}.';
+            'Доступна нова версія додатка {{appName}}! Нова версія: {{currentAppStoreVersion}}, поточна версія: {{currentInstalledVersion}}.';
         break;
       case 'vi':
         message =
-        'Đã có phiên bản mới của {{appName}}. Phiên bản {{currentAppStoreVersion}} đã sẵn sàng, bạn đang dùng {{currentInstalledVersion}}.';
+            'Đã có phiên bản mới của {{appName}}. Phiên bản {{currentAppStoreVersion}} đã sẵn sàng, bạn đang dùng {{currentInstalledVersion}}.';
         break;
       case 'en':
       default:
         message =
-        'A new version of {{appName}} is available! Version {{currentAppStoreVersion}} is now available-you have {{currentInstalledVersion}}.';
+            'A new version of {{appName}} is available! Version {{currentAppStoreVersion}} is now available-you have {{currentInstalledVersion}}.';
         break;
     }
     return message;

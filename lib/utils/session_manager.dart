@@ -225,6 +225,8 @@ class SessionManager {
         .then((value) => value.getBool(AppString.GESTURE_LOYALTY) ?? true);
   }
 
+
+
   // static void putOfferOpenLoyaltyJson(OfferOpenLoyaltyData OfferOpenLoyaltyData) {
   //   String OfferOpenLoyaltyDataJson = mGson.toJson(OfferOpenLoyaltyData);
   //   mPref.edit().putString(PREF_OFFER_OPEN_JSON, OfferOpenLoyaltyDataJson).apply();

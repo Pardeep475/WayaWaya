@@ -34,20 +34,24 @@ class _LoginScreenState extends State<LoginScreen> {
   _initViews() {
     debugPrint('performance_testing:-   login screen initState ');
     _emailController =
-        TextEditingController(/*text: 'pardeepsharma475@gmail.com'*/);
-    _passwordController = TextEditingController(/*text: 'qwerty'*/);
+        TextEditingController(text: 'pardeepsharma475@gmail.com');
+    _passwordController = TextEditingController(text: 'qwerty');
     _formKey = GlobalKey<FormState>();
     _loginBloc = LoginBloc();
   }
 
   @override
   Widget build(BuildContext context) {
-    // var user = Provider.of<AuthProvider>(context, listen: true);
-    debugPrint('performance_testing:-   login screen build ');
+    var value = ModalRoute.of(context).settings.arguments;
     return WillPopScope(
-      onWillPop: () async {
-        return await Navigator.pushNamedAndRemoveUntil(
-            context, AppString.HOME_SCREEN_ROUTE, (route) => false);
+      onWillPop: () {
+        if (value != null) {
+          Navigator.pop(context);
+          Navigator.pushNamedAndRemoveUntil(
+              context, AppString.HOME_SCREEN_ROUTE, (route) => true);
+        } else {
+          Navigator.pop(context);
+        }
       },
       child: SafeArea(
         child: Scaffold(
@@ -433,6 +437,7 @@ class _LoginScreenState extends State<LoginScreen> {
     debugPrint('login_testing :-   login complete');
     SessionManager.setISLoginScreenVisible(true);
     SessionManager.setISLogin(true);
+    Navigator.pop(context);
     Navigator.pushNamedAndRemoveUntil(
         context, AppString.HOME_SCREEN_ROUTE, (route) => false);
   }

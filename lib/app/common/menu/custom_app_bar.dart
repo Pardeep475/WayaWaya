@@ -331,7 +331,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
         buttonText: AppString.login.toUpperCase(),
         onPressed: () {
           Navigator.pop(context);
-          Navigator.pushNamed(context, AppString.LOGIN_SCREEN_ROUTE);
+          Navigator.pushNamed(context, AppString.LOGIN_SCREEN_ROUTE,arguments: "value");
         },
       );
     }
