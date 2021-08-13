@@ -82,6 +82,9 @@ dependencies:
   version:
   battery_plus:
   add_2_calendar: ^2.1.1
+  huawei_hmsavailability: ^5.2.0+300
+  advertising_id: ^2.0.0
+  string_to_hex: ^0.2.2
 
 dev_dependencies:
   flutter_test:

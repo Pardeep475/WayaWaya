@@ -15,6 +15,7 @@ import 'package:wayawaya/app/common/model/guest_preference.dart';
 import 'package:wayawaya/app/common/model/social_media.dart';
 import 'package:wayawaya/app/common/custom_raise_button.dart';
 import 'package:wayawaya/network/live/model/api_response.dart';
+import 'package:wayawaya/network/local/event_logger_service.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/dimens.dart';
@@ -227,6 +228,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   _loginComplete() {
     debugPrint('login_testing :-   login complete');
+    EventLoggerService.eventLogger(
+        uuid: EventLoggerService.SignUp,
+        action: "Register",
+        type: EventLoggerService.LOG_TYPE_SIGNUP,
+        group: EventLoggerService.LOG_GROUP_PERFORMED_ACTION,
+        data: "");
     SessionManager.setISLogin(true);
     Navigator.pushNamedAndRemoveUntil(
         context, AppString.HOME_SCREEN_ROUTE, (route) => false);

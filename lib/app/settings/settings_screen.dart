@@ -35,6 +35,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       _settingsBloc.fetchMenuButtons();
       _settingsBloc.setUpSettingsData();
+
+      EventLoggerService.eventLogger(
+          uuid: EventLoggerService.Settings,
+          action: EventLoggerService.LOG_TYPE_NAVIGATION,
+          type: EventLoggerService.LOG_TYPE_NAVIGATION,
+          group: EventLoggerService.LOG_GROUP_NAVIGATION,
+          data: "");
     });
   }
 
@@ -148,6 +155,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
     switch (settingsModel.title) {
       case AppString.my_account:
         {
+          EventLoggerService.eventLogger(
+              uuid: EventLoggerService.MyAccount,
+              action: EventLoggerService.LOG_TYPE_NAVIGATION,
+              type: EventLoggerService.LOG_TYPE_NAVIGATION,
+              group: EventLoggerService.LOG_GROUP_NAVIGATION,
+              data: "");
           debugPrint('settings_click_testing:-  ${settingsModel.title}');
           Navigator.pushNamed(context, AppString.MY_ACCOUNT_SCREEN_ROUTE);
           break;
@@ -155,18 +168,36 @@ class _SettingsScreenState extends State<SettingsScreen> {
       case AppString.preferences_small:
         {
           debugPrint('settings_click_testing:-  ${settingsModel.title}');
-          // Navigator.pushNamed(
-          //     context, AppString.SELECT_PREFERENCES_SCREEN_ROUTE);
+          EventLoggerService.eventLogger(
+              uuid: EventLoggerService.Preferences,
+              action: EventLoggerService.LOG_TYPE_NAVIGATION,
+              type: EventLoggerService.LOG_TYPE_NAVIGATION,
+              group: EventLoggerService.LOG_GROUP_NAVIGATION,
+              data: "");
+          Navigator.pushNamed(
+              context, AppString.SELECT_PREFERENCES_SCREEN_ROUTE);
           break;
         }
       case AppString.my_devices:
         {
+          EventLoggerService.eventLogger(
+              uuid: EventLoggerService.MyDevices,
+              action: EventLoggerService.LOG_TYPE_NAVIGATION,
+              type: EventLoggerService.LOG_TYPE_NAVIGATION,
+              group: EventLoggerService.LOG_GROUP_NAVIGATION,
+              data: "");
           debugPrint('settings_click_testing:-  ${settingsModel.title}');
           Navigator.pushNamed(context, AppString.MY_DEVICES_SCREEN_ROUTE);
           break;
         }
       case AppString.my_favourites:
         {
+          EventLoggerService.eventLogger(
+              uuid: EventLoggerService.Favourites,
+              action: EventLoggerService.LOG_TYPE_NAVIGATION,
+              type: EventLoggerService.LOG_TYPE_NAVIGATION,
+              group: EventLoggerService.LOG_GROUP_NAVIGATION,
+              data: "");
           Navigator.pushNamed(context, AppString.SHOP_SCREEN_ROUTE,
               arguments: ShopFavModel(isShop: true, index: 3));
           break;
@@ -192,12 +223,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
           // AnalyticsServices.setForcefullyCrash();
 
           _settingsBloc.termAndConditionOnClick(context);
-          // EventLoggerService.eventLogger(
-          //     uuid: EventLoggerService.Settings,
-          //     action: EventLoggerService.LOG_TYPE_NAVIGATION,
-          //     type: EventLoggerService.LOG_TYPE_NAVIGATION,
-          //     group: EventLoggerService.LOG_GROUP_NAVIGATION,
-          //     data: "");
 
           // await SyncService.checkUser();
           // GeoFenceService.requestPermission();

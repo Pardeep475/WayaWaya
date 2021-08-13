@@ -1,6 +1,10 @@
 import 'dart:io';
 
+import 'package:advertising_id/advertising_id.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:huawei_hmsavailability/huawei_hmsavailability.dart';
+import 'package:string_to_hex/string_to_hex.dart';
 import 'package:uuid/uuid.dart';
 import 'package:wayawaya/app/common/logger/actions/action_filter.dart';
 import 'package:wayawaya/app/common/logger/actions/analytics_output.dart';
@@ -129,10 +133,33 @@ class EventLoggerService {
       String data}) async {
     try {
       debugPrint("isProduction in Log----%s  ");
-      String deviceInfo = Platform.isAndroid ? "Android" : "IOS";
-      var uniqueIdBase = Uuid();
-      String uniqueID = uniqueIdBase.v1();
+      String deviceInfo = "";
+      if (Platform.isIOS) {
+        deviceInfo = "IOS";
+      } else {
+        try{
+          HmsApiAvailability client = new HmsApiAvailability();
+          int status = await client.isHMSAvailable();
+          if (status == 0 || status == 2 || status == 9 || status == 21) {
+            deviceInfo = "Huawei";
+          } else {
+            deviceInfo = "Android";
+          }
+        }catch(e){
+          deviceInfo = "Android";
+        }
+      }
+      String uniqueID = "";
       ClickLog clickLog = ClickLog();
+
+      try {
+        uniqueID = await AdvertisingId.id(true);
+        uniqueID = StringToHex.toColor(uniqueID.replaceAll("-", "")).toString();
+      } catch (e) {
+        var uniqueIdBase = Uuid();
+        uniqueID = uniqueIdBase.v1();
+        uniqueID = StringToHex.toColor(uniqueID.replaceAll("-", "")).toString();
+      }
 
       clickLog.uuid = uniqueID;
       clickLog.type = type;

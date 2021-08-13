@@ -26,8 +26,17 @@ class ForgotPasswordBloc {
 
       if (user is DioError) {
         debugPrint("testing__:-   ${user.response.data['_error']['message']}");
-        loginSink.add(ApiResponse.error(ErrorResponse(
-            differ: differ, message: user.response.data['_error']['message'])));
+        if (user.response.statusCode == 404) {
+          loginSink.add(
+            ApiResponse.error(
+              ErrorResponse(differ: differ, message: "User doesn't exists"),
+            ),
+          );
+        } else {
+          loginSink.add(ApiResponse.error(ErrorResponse(
+              differ: differ,
+              message: user.response.data['_error']['message'])));
+        }
       } else {
         loginSink.add(ApiResponse.completed(ErrorResponse(differ: differ)));
       }

@@ -31,6 +31,7 @@ import 'app/home/home_screen.dart';
 import 'app/rewards/rewards_new.dart';
 import 'app/settings/my_account_screen.dart';
 import 'app/settings/my_devices_screen.dart';
+import 'network/local/event_logger_service.dart';
 import 'network/local/notification_service.dart';
 import 'network/local/super_admin_database_helper.dart';
 import 'utils/analytics_service/analytics_services.dart';
@@ -42,6 +43,21 @@ Future<void> main() async {
   await SuperAdminDatabaseHelper.initDataBase();
   await AnalyticsServices.init();
   bool isFirstTime = await SessionManager.isFirstTime();
+  if (!isFirstTime) {
+    EventLoggerService.eventLogger(
+        uuid: "",
+        action: "app_first_launch",
+        type: EventLoggerService.LOG_TYPE_NAVIGATION,
+        group: EventLoggerService.LOG_GROUP_NAVIGATION,
+        data: "app launched for first time");
+  } else {
+    EventLoggerService.eventLogger(
+        uuid: "",
+        action: "app_launch",
+        type: EventLoggerService.LOG_TYPE_NAVIGATION,
+        group: EventLoggerService.LOG_GROUP_NAVIGATION,
+        data: "app launched");
+  }
   runApp(MyApp(isFirstTime: isFirstTime));
 }
 

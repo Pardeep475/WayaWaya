@@ -69,7 +69,7 @@ class _SelectPreferencesScreenState extends State<SelectPreferencesScreen> {
   _updateValues({int pos, MallProfileModel mallProfileModel, bool selected}) {
     debugPrint(
         'updated_mall_data_testing:-  index  $pos  active  ${mallProfileModel.active}  selected:-  $selected');
-    _selectPreferencesBloc.updateItemMallList(pos, mallProfileModel, selected);
+    // _selectPreferencesBloc.updateItemMallList(pos, mallProfileModel, selected);
   }
 
   String _currentNotification = "12 daily";

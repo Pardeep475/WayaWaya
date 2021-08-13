@@ -11,6 +11,7 @@ import 'package:wayawaya/app/common/full_screen_not_an_vanue_dialog.dart';
 import 'package:wayawaya/app/common/menu/model/main_menu_permission.dart';
 import 'package:wayawaya/app/common/webview/model/custom_web_view_model.dart';
 import 'package:wayawaya/app/shop/model/shops_fav_model.dart';
+import 'package:wayawaya/network/local/event_logger_service.dart';
 import 'package:wayawaya/network/local/profile_database_helper.dart';
 import 'package:wayawaya/network/local/sync_service.dart';
 import 'package:wayawaya/utils/app_color.dart';
@@ -196,14 +197,23 @@ class MenuTile extends StatelessWidget {
 
   _scannerFunctionality(BuildContext context) async {
     debugPrint("scanner_functionality");
+
     bool isUserInMall = await checkIfUserInMall();
     if (isUserInMall) {
       Navigator.pushNamed(context, AppString.QR_SCANNER_SCREEN_ROUTE)
           .then((value) async {
         if (value != null) {
           try {
+
             Barcode scanData = value as Barcode;
             dynamic jsonScanData = jsonDecode(scanData.code);
+            EventLoggerService.eventLogger(
+                uuid: EventLoggerService.Settings,
+                action: EventLoggerService.LOG_TYPE_SCAN,
+                type: EventLoggerService.LOG_TYPE_SCAN,
+                group: EventLoggerService.LOG_GROUP_PERFORMED_ACTION,
+                data: jsonEncode(jsonScanData));
+
             String rid = "";
             String type = "";
             String points = "";

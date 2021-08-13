@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:wayawaya/app/common/menu/custom_app_bar.dart';
 import 'package:wayawaya/app/common/menu/model/main_menu_permission.dart';
+import 'package:wayawaya/network/local/event_logger_service.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_images.dart';
 import 'package:wayawaya/utils/app_strings.dart';
@@ -51,6 +52,12 @@ class _SearchScreenState extends State<SearchScreen>
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _searchBloc.fetchMenuButtons();
       _initAnimation();
+      EventLoggerService.eventLogger(
+          uuid: EventLoggerService.GlobalSearch,
+          action: EventLoggerService.LOG_TYPE_SEARCH,
+          type: EventLoggerService.LOG_TYPE_SEARCH,
+          group: EventLoggerService.LOG_GROUP_PERFORMED_ACTION,
+          data: searchQuery);
     });
   }
 

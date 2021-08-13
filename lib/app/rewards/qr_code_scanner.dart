@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:wayawaya/constants.dart';
+import 'package:wayawaya/network/local/event_logger_service.dart';
 
 class QRScanner extends StatefulWidget {
   @override
@@ -15,6 +16,21 @@ class _QRScannerState extends State<QRScanner> {
 
   // In order to get hot reload to work we need to pause the camera if the platform
   // is android, or resume the camera if the platform is iOS.
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      EventLoggerService.eventLogger(
+          uuid: EventLoggerService.QRScan,
+          action: EventLoggerService.LOG_TYPE_NAVIGATION,
+          type: EventLoggerService.LOG_TYPE_NAVIGATION,
+          group: EventLoggerService.LOG_GROUP_NAVIGATION,
+          data: "");
+    });
+  }
+
   @override
   void reassemble() {
     super.reassemble();

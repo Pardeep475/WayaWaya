@@ -4,6 +4,7 @@ import 'package:wayawaya/app/auth/forgotpassword/model/error_response.dart';
 import 'package:wayawaya/app/common/dialogs/common_error_dialog.dart';
 import 'package:wayawaya/app/common/custom_raise_button.dart';
 import 'package:wayawaya/network/live/model/api_response.dart';
+import 'package:wayawaya/network/local/event_logger_service.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_strings.dart';
 import 'package:wayawaya/utils/dimens.dart';
@@ -91,6 +92,12 @@ class _LoginScreenState extends State<LoginScreen> {
               onTap: () {
                 debugPrint('create account');
                 FocusScopeNode currentFocus = FocusScope.of(context);
+                EventLoggerService.eventLogger(
+                    uuid: EventLoggerService.Login,
+                    action: EventLoggerService.LOG_TYPE_NAVIGATION,
+                    type: EventLoggerService.LOG_TYPE_LOGIN,
+                    group: EventLoggerService.LOG_GROUP_PERFORMED_ACTION,
+                    data: "register button");
 
                 if (!currentFocus.hasPrimaryFocus) {
                   currentFocus.unfocus();
@@ -130,6 +137,15 @@ class _LoginScreenState extends State<LoginScreen> {
                                   // onTap: () => Navigator.of(context)
                                   //     .push(MaterialPageRoute(builder: (_) => Preferences())),
                                   onTap: () {
+                                    EventLoggerService.eventLogger(
+                                        uuid: EventLoggerService.Login,
+                                        action: EventLoggerService
+                                            .LOG_TYPE_NAVIGATION,
+                                        type: EventLoggerService
+                                            .LOG_TYPE_SKIP_LOGIN,
+                                        group: EventLoggerService
+                                            .LOG_GROUP_PERFORMED_ACTION,
+                                        data: "skipped Login");
                                     SessionManager.setISLoginScreenVisible(
                                         true);
                                     Navigator.pushNamedAndRemoveUntil(
@@ -159,9 +175,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                 }
                                 return Image.asset(
                                   snapshot.data,
-                                  width: 300,
                                   height: 300,
-                                  fit: BoxFit.cover,
+                                  fit: BoxFit.fill,
                                 );
                               },
                               initialData: null,
@@ -386,7 +401,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
   _forgotButtonPressed(BuildContext context) async {
     FocusScopeNode currentFocus = FocusScope.of(context);
-
+    EventLoggerService.eventLogger(
+        uuid: EventLoggerService.ForgotPassword,
+        action: EventLoggerService.LOG_TYPE_NAVIGATION,
+        type: EventLoggerService.LOG_TYPE_FORGOT_PASSWORD,
+        group: EventLoggerService.LOG_GROUP_PERFORMED_ACTION,
+        data: "forgot password");
     if (!currentFocus.hasPrimaryFocus) {
       currentFocus.unfocus();
     }
@@ -413,6 +433,12 @@ class _LoginScreenState extends State<LoginScreen> {
     if (_formKey.currentState.validate()) {
       Utils.checkConnectivity().then((value) {
         if (value) {
+          EventLoggerService.eventLogger(
+              uuid: EventLoggerService.Login,
+              action: EventLoggerService.LOG_TYPE_LOGIN,
+              type: EventLoggerService.LOG_TYPE_LOGIN,
+              group: EventLoggerService.LOG_GROUP_PERFORMED_ACTION,
+              data: "login performed");
           UserModel userModel = UserModel(
               username: _emailController.text,
               password: _passwordController.text);

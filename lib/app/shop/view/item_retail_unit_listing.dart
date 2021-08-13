@@ -7,6 +7,7 @@ import 'package:wayawaya/app/common/webview/model/custom_web_view_model.dart';
 import 'package:wayawaya/app/shop/model/retail_with_category.dart';
 import 'package:wayawaya/app/shop/model/shop_detail_model.dart';
 import 'package:wayawaya/app/shop/model/shop_status.dart';
+import 'package:wayawaya/network/local/event_logger_service.dart';
 import 'package:wayawaya/utils/app_color.dart';
 import 'package:wayawaya/utils/app_images.dart';
 import 'package:wayawaya/utils/app_strings.dart';
@@ -36,6 +37,15 @@ class ItemRetailUnitListing extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
+        EventLoggerService.eventLogger(
+            uuid: isShop
+                ? EventLoggerService.ShopDetail
+                : EventLoggerService.RestaurantDetail,
+            action: EventLoggerService.LOG_TYPE_NAVIGATION,
+            type: EventLoggerService.LOG_TYPE_NAVIGATION,
+            group: EventLoggerService.LOG_GROUP_NAVIGATION,
+            data: retailWithCategory.id);
+
         ShopDetailModel _shopDetailModel = ShopDetailModel(
             title: isShop ? "Shop Detail" : "Restaurant Detail",
             index: index,
